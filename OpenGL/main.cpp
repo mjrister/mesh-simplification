@@ -7,7 +7,7 @@
 constexpr auto opengl_major_version = 4;
 constexpr auto opengl_minor_version = 6;
 
-void InitializeGlfw() {
+static void InitializeGlfw() {
 
 	glfwSetErrorCallback([](const int error, const char* const description) {
 		std::cerr << "Error " << error << ": " << description << std::endl;
@@ -22,7 +22,7 @@ void InitializeGlfw() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-GLFWwindow* CreateGlfwWindow(const char* const title, const int width, const int height) {
+static GLFWwindow* CreateGlfwWindow(const char* const title, const int width, const int height) {
 
 	if (auto* window = glfwCreateWindow(width, height, title, nullptr, nullptr)) {
 		glfwMakeContextCurrent(window);
@@ -43,7 +43,7 @@ GLFWwindow* CreateGlfwWindow(const char* const title, const int width, const int
 	throw std::runtime_error{"Window creation failed"};
 }
 
-void InitializeGl3w() {
+static void InitializeGl3w() {
 
 	if (gl3wInit()) {
 		throw std::runtime_error{"OpenGL initialization failed"};
