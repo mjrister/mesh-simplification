@@ -14,7 +14,7 @@ void InitializeGlfw() {
 	});
 
 	if (!glfwInit()) {
-		throw std::runtime_error{"GLFW initialization failed"};
+		throw std::runtime_error{ "GLFW initialization failed" };
 	}
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, opengl_major_version);
@@ -54,6 +54,11 @@ void InitializeGl3w() {
 		oss << "OpenGL " << opengl_major_version << "." << opengl_minor_version << "not supported";
 		throw std::runtime_error{oss.str()};
 	}
+
+#if _DEBUG
+	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << ", "
+		<< "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+#endif
 }
 
 int main() {
