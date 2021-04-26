@@ -63,17 +63,20 @@ int main() {
 		auto* window = CreateGlfwWindow("OpenGL", 640, 480);
 		InitializeGl3w();
 
+		glClearColor(0.75f, 0.75f, 0.75f, 0.5f);
+		glEnable(GL_DEPTH_TEST);
+
 		while (!glfwWindowShouldClose(window)) {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
-	}
-	catch (const std::runtime_error& e) {
+	} catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
 		glfwTerminate();
 		return EXIT_FAILURE;
 	}
 
+	glfwTerminate();
 	return EXIT_SUCCESS;
 }
