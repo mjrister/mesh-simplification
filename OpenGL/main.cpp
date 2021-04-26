@@ -11,6 +11,11 @@ public:
 		InitializeGlfw();
 		window_ = CreateGlfwWindow(title, width, height);
 		InitializeGl3w();
+
+#if _DEBUG
+		std::cout << "OpenGL version: " << glGetString(GL_VERSION) << ", "
+			<< "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+#endif
 	}
 
 	~Window() {
