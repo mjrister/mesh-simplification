@@ -87,7 +87,7 @@ ShaderProgram CreateShaderProgram() {
 	return ShaderProgram{vertex_shader_source, fragment_shader_source};
 }
 
-Mesh<3> CreateTriangle() {
+Mesh CreateTriangle() {
 
 	const std::vector<GLfloat> vertices{
 		-0.5f, -0.5f, 0.0f,
@@ -99,7 +99,7 @@ Mesh<3> CreateTriangle() {
 		0u, 1u, 2u
 	};
 
-	return Mesh<3>{vertices, indices};
+	return Mesh{vertices, indices};
 }
 
 int main() {
