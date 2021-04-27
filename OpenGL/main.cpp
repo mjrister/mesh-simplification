@@ -14,7 +14,7 @@ static void InitializeGlfw() {
 	});
 
 	if (!glfwInit()) {
-		throw std::runtime_error{ "GLFW initialization failed" };
+		throw std::runtime_error{"GLFW initialization failed"};
 	}
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, opengl_major_version);
