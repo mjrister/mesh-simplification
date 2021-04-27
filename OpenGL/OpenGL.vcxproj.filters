@@ -3,4 +3,8 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="shader.hpp" />
+    <ClInclude Include="shader_program.hpp" />
+  </ItemGroup>
 </Project>
