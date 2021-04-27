@@ -64,29 +64,6 @@ static void InitializeGl3w() {
 #endif
 }
 
-ShaderProgram CreateShaderProgram() {
-
-	constexpr GLchar vertex_shader_source[] = R"(
-		#version 330 core
-		layout (location = 0) in vec3 position;
-
-		void main() {
-		    gl_Position = vec4(position, 1.0f);
-		}
-	)";
-
-	constexpr GLchar fragment_shader_source[] = R"(
-		#version 330 core
-		out vec4 color;
-
-		void main() {
-		    color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-		}
-	)";
-
-	return ShaderProgram{vertex_shader_source, fragment_shader_source};
-}
-
 Mesh CreateTriangle() {
 
 	const std::vector<GLfloat> vertices{
@@ -109,7 +86,7 @@ int main() {
 		auto* window = CreateGlfwWindow("OpenGL", 640, 480);
 		InitializeGl3w();
 
-		const auto shader_program = CreateShaderProgram();
+		const ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 
 		const auto triangle = CreateTriangle();

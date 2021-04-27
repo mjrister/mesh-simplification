@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string_view>
+
 #include <GL/gl3w.h>
 
 #include "shader.hpp"
@@ -7,10 +9,10 @@
 class ShaderProgram {
 
 public:
-	ShaderProgram(const GLchar* const vertex_shader_source, const GLchar* const fragment_shader_source)
+	ShaderProgram(const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
 		: id_{glCreateProgram()} {
-		const Shader vertex_shader{vertex_shader_source, GL_VERTEX_SHADER};
-		const Shader fragment_shader{fragment_shader_source, GL_FRAGMENT_SHADER};
+		const Shader vertex_shader{vertex_shader_filepath, GL_VERTEX_SHADER};
+		const Shader fragment_shader{fragment_shader_filepath, GL_FRAGMENT_SHADER};
 		glAttachShader(id_, vertex_shader.Id());
 		glAttachShader(id_, fragment_shader.Id());
 		glLinkProgram(id_);

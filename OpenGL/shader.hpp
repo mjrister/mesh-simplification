@@ -1,6 +1,8 @@
 #pragma once
 
+#include <fstream>
 #include <stdexcept>
+#include <string_view>
 #include <vector>
 
 #include <GL/gl3w.h>
@@ -8,8 +10,10 @@
 class Shader {
 
 public:
-	Shader(const GLchar* const shader_source, const GLenum type) : id_{glCreateShader(type)} {
-		glShaderSource(id_, 1, &shader_source, nullptr);
+	Shader(const std::string_view filepath, const GLenum type) : id_{glCreateShader(type)} {
+		const auto shader_source = ReadFile(filepath);
+		const auto* const shader_source_cstr = shader_source.c_str();
+		glShaderSource(id_, 1, &shader_source_cstr, nullptr);
 		glCompileShader(id_);
 		VerifyCompileStatus();
 	}
@@ -28,6 +32,22 @@ public:
 	}
 
 private:
+	static std::string ReadFile(const std::string_view filepath) {
+
+		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
+			std::string source;
+			ifs.seekg(0, std::ios::end);
+			source.reserve(static_cast<std::size_t>(ifs.tellg()));
+			ifs.seekg(0, std::ios::beg);
+			source.assign(std::istreambuf_iterator{ifs}, std::istreambuf_iterator<char>{});
+			return source;
+		}
+
+		std::ostringstream oss;
+		oss << "Unable to open " << filepath;
+		throw std::runtime_error{oss.str()};
+	}
+
 	void VerifyCompileStatus() const {
 		GLint success;
 		glGetShaderiv(id_, GL_COMPILE_STATUS, &success);

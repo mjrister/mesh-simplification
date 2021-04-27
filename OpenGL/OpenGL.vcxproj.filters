@@ -8,4 +8,17 @@
     <ClInclude Include="shader_program.hpp" />
     <ClInclude Include="mesh.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\fragment.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\vertex.glsl">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{bc519ce1-d050-44ca-bf16-5049ce0cb9a2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>
