@@ -8,7 +8,7 @@ template <std::size_t N>
 class Mesh {
 
 public:
-	explicit Mesh(const std::array<GLfloat, 3 * N>& vertices) {
+	explicit Mesh(const std::array<GLfloat, 3 * N>& vertices, const std::array<GLuint, (N - 2) * 3>& indices) {
 
 		glGenVertexArrays(1, &vao_id_);
 		glBindVertexArray(vao_id_);
@@ -19,10 +19,6 @@ public:
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(0);
-	}
-
-	explicit Mesh(const std::array<GLfloat, 3 * N>& vertices, const std::array<GLuint, (N - 2) * 3>& indices)
-		: Mesh{vertices} {
 
 		glGenBuffers(1, &ebo_id_);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id_);
@@ -35,20 +31,14 @@ public:
 	Mesh& operator=(Mesh&&) noexcept = delete;
 
 	~Mesh() {
-		if (ebo_id_) {
-			glDeleteBuffers(1, &ebo_id_);
-		}
+		glDeleteBuffers(1, &ebo_id_);
 		glDeleteBuffers(1, &vbo_id_);
 		glDeleteVertexArrays(1, &vao_id_);
 	}
 
 	void Draw() const {
 		glBindVertexArray(vao_id_);
-		if (ebo_id_) {
-			glDrawElements(GL_TRIANGLES, (N - 2) * 3, GL_UNSIGNED_INT, nullptr);
-		} else {
-			glDrawArrays(GL_TRIANGLES, 0, N);
-		}
+		glDrawElements(GL_TRIANGLES, (N - 2) * 3, GL_UNSIGNED_INT, nullptr);
 	}
 
 private:
