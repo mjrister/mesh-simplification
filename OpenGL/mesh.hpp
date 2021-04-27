@@ -8,9 +8,8 @@
 class Mesh {
 
 public:
-	Mesh(std::vector<GLfloat> positions, std::vector<GLuint> indices)
-		: positions_{std::move(positions)},
-		  indices_{std::move(indices)} {
+	Mesh(std::vector<GLfloat> positions, std::vector<GLuint> indices) noexcept
+		: positions_{std::move(positions)}, indices_{std::move(indices)} {
 
 		glGenVertexArrays(1, &vao_id_);
 		glBindVertexArray(vao_id_);
@@ -38,13 +37,13 @@ public:
 		glDeleteVertexArrays(1, &vao_id_);
 	}
 
-	void Draw() const {
+	void Draw() const noexcept {
 		glBindVertexArray(vao_id_);
 		glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, nullptr);
 	}
 
 private:
+	GLuint vao_id_{0}, vbo_id_{0}, ebo_id_{0};
 	std::vector<GLfloat> positions_;
 	std::vector<GLuint> indices_;
-	GLuint vao_id_{0}, vbo_id_{0}, ebo_id_{0};
 };
