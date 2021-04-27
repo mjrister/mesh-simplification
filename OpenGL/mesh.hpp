@@ -29,6 +29,11 @@ public:
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof GLuint * indices.size(), indices.data(), GL_STATIC_DRAW);
 	}
 
+	Mesh(const Mesh&) = delete;
+	Mesh(Mesh&&) noexcept = delete;
+	Mesh& operator=(const Mesh&) = delete;
+	Mesh& operator=(Mesh&&) noexcept = delete;
+
 	~Mesh() {
 		if (ebo_id_) {
 			glDeleteBuffers(1, &ebo_id_);
