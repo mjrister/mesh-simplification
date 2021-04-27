@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <vector>
 
 #include <GL/gl3w.h>
 
@@ -8,7 +8,7 @@ template <std::size_t N>
 class Mesh {
 
 public:
-	explicit Mesh(const std::array<GLfloat, 3 * N>& vertices, const std::array<GLuint, (N - 2) * 3>& indices) {
+	Mesh(const std::vector<GLfloat>& vertices, const std::vector<GLuint>& indices) {
 
 		glGenVertexArrays(1, &vao_id_);
 		glBindVertexArray(vao_id_);

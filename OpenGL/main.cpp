@@ -89,13 +89,13 @@ ShaderProgram CreateShaderProgram() {
 
 Mesh<3> CreateTriangle() {
 
-	constexpr std::array<GLfloat, 9> vertices{
+	const std::vector<GLfloat> vertices{
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
 		0.0f, 0.5f, 0.0f
 	};
 
-	constexpr std::array<GLuint, 3> indices{
+	const std::vector<GLuint> indices{
 		0u, 1u, 2u
 	};
 
