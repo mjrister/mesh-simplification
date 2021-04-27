@@ -4,6 +4,9 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
+#include "mesh.hpp"
+#include "shader_program.hpp"
+
 constexpr auto opengl_major_version = 4;
 constexpr auto opengl_minor_version = 6;
 
@@ -61,6 +64,40 @@ static void InitializeGl3w() {
 #endif
 }
 
+ShaderProgram CreateShaderProgram() {
+
+	constexpr GLchar vertex_shader_source[] = R"(
+		#version 330 core
+		layout (location = 0) in vec3 position;
+
+		void main() {
+		    gl_Position = vec4(position, 1.0f);
+		}
+	)";
+
+	constexpr GLchar fragment_shader_source[] = R"(
+		#version 330 core
+		out vec4 color;
+
+		void main() {
+		    color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+		}
+	)";
+
+	return ShaderProgram{vertex_shader_source, fragment_shader_source};
+}
+
+Mesh<3> CreateTriangle() {
+
+	constexpr std::array<GLfloat, 9> vertices{
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.0f, 0.5f, 0.0f
+	};
+
+	return Mesh<3>{vertices};
+}
+
 int main() {
 
 	try {
@@ -68,11 +105,15 @@ int main() {
 		auto* window = CreateGlfwWindow("OpenGL", 640, 480);
 		InitializeGl3w();
 
-		glClearColor(0.75f, 0.75f, 0.75f, 0.5f);
-		glEnable(GL_DEPTH_TEST);
+		const auto shader_program = CreateShaderProgram();
+		shader_program.Enable();
+
+		const auto triangle = CreateTriangle();
 
 		while (!glfwWindowShouldClose(window)) {
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
+			triangle.Draw();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}

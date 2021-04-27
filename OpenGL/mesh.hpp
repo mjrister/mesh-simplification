@@ -1,0 +1,51 @@
+#pragma once
+
+#include <array>
+
+#include <GL/gl3w.h>
+
+template <std::size_t N>
+class Mesh {
+
+public:
+	explicit Mesh(const std::array<GLfloat, 3 * N>& vertices) {
+
+		glGenVertexArrays(1, &vao_id_);
+		glBindVertexArray(vao_id_);
+
+		glGenBuffers(1, &vbo_id_);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_id_);
+		glBufferData(GL_ARRAY_BUFFER, sizeof GLfloat * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+		glEnableVertexAttribArray(0);
+	}
+
+	explicit Mesh(const std::array<GLfloat, 3 * N>& vertices, const std::array<GLuint, (N - 2) * 3>& indices)
+		: Mesh{vertices} {
+
+		glGenBuffers(1, &ebo_id_);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id_);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof GLuint * indices.size(), indices.data(), GL_STATIC_DRAW);
+	}
+
+	~Mesh() {
+		if (ebo_id_) {
+			glDeleteBuffers(1, &ebo_id_);
+		}
+		glDeleteBuffers(1, &vbo_id_);
+		glDeleteVertexArrays(1, &vao_id_);
+	}
+
+	void Draw() const {
+		glBindVertexArray(vao_id_);
+		if (ebo_id_) {
+			glDrawElements(GL_TRIANGLES, (N - 2) * 3, GL_UNSIGNED_INT, nullptr);
+		} else {
+			glDrawArrays(GL_TRIANGLES, 0, N);
+		}
+	}
+
+private:
+	GLuint vao_id_{0}, vbo_id_{0}, ebo_id_{0};
+};
