@@ -95,7 +95,11 @@ Mesh<3> CreateTriangle() {
 		0.0f, 0.5f, 0.0f
 	};
 
-	return Mesh<3>{vertices};
+	constexpr std::array<GLuint, 3> indices{
+		0u, 1u, 2u
+	};
+
+	return Mesh<3>{vertices, indices};
 }
 
 int main() {
