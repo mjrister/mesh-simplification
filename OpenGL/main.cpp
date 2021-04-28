@@ -12,10 +12,6 @@ constexpr auto opengl_minor_version = 6;
 
 static void InitializeGlfw() {
 
-	glfwSetErrorCallback([](const int error, const char* const description) {
-		std::cerr << "Error " << error << ": " << description << std::endl;
-	});
-
 	if (!glfwInit()) {
 		throw std::runtime_error{"GLFW initialization failed"};
 	}
