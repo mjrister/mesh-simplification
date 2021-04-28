@@ -16,8 +16,8 @@ public:
 		const auto vertex_shader_source = ReadFile(vertex_shader_filepath);
 		const auto fragment_shader_source = ReadFile(fragment_shader_filepath);
 
-		const Shader vertex_shader{vertex_shader_source.c_str(), GL_VERTEX_SHADER};
-		const Shader fragment_shader{fragment_shader_source.c_str(), GL_FRAGMENT_SHADER};
+		const Shader vertex_shader{GL_VERTEX_SHADER, vertex_shader_source.c_str(),};
+		const Shader fragment_shader{GL_FRAGMENT_SHADER, fragment_shader_source.c_str()};
 
 		glAttachShader(id_, vertex_shader.id);
 		glAttachShader(id_, fragment_shader.id);
@@ -49,7 +49,7 @@ private:
 	class Shader {
 
 	public:
-		Shader(const GLchar* const shader_source, const GLenum type) : id{glCreateShader(type)} {
+		Shader(const GLenum type, const GLchar* const shader_source) : id{glCreateShader(type)} {
 			glShaderSource(id, 1, &shader_source, nullptr);
 			glCompileShader(id);
 			VerifyCompileStatus();
