@@ -7,6 +7,7 @@
     <ClInclude Include="shader_program.hpp" />
     <ClInclude Include="mesh.hpp" />
     <ClInclude Include="object_loader.hpp" />
+    <ClInclude Include="shader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">

@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="mesh.hpp" />
     <ClInclude Include="object_loader.hpp" />
+    <ClInclude Include="shader.hpp" />
     <ClInclude Include="shader_program.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,8 @@
 
 #include <GL/gl3w.h>
 
+#include "shader.hpp"
+
 class ShaderProgram {
 
 public:
@@ -15,8 +17,8 @@ public:
 		  vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath).c_str()},
 		  fragment_shader_{GL_FRAGMENT_SHADER, ReadFile(fragment_shader_filepath).c_str()} {
 
-		glAttachShader(id_, vertex_shader_.id);
-		glAttachShader(id_, fragment_shader_.id);
+		glAttachShader(id_, vertex_shader_.Id());
+		glAttachShader(id_, fragment_shader_.Id());
 
 		glLinkProgram(id_);
 		VerifyStatus(GL_LINK_STATUS);
@@ -24,8 +26,8 @@ public:
 		glValidateProgram(id_);
 		VerifyStatus(GL_VALIDATE_STATUS);
 
-		glDetachShader(id_, vertex_shader_.id);
-		glDetachShader(id_, fragment_shader_.id);
+		glDetachShader(id_, vertex_shader_.Id());
+		glDetachShader(id_, fragment_shader_.Id());
 	}
 
 	ShaderProgram(const ShaderProgram&) = delete;
@@ -42,43 +44,9 @@ public:
 	}
 
 private:
-	class Shader {
+	static std::string ReadFile(const std::string_view shader_filepath) {
 
-	public:
-		Shader(const GLenum type, const GLchar* const shader_source) : id{glCreateShader(type)} {
-			glShaderSource(id, 1, &shader_source, nullptr);
-			glCompileShader(id);
-			VerifyCompileStatus();
-		}
-
-		Shader(const Shader&) = delete;
-		Shader(Shader&&) noexcept = delete;
-		Shader& operator=(const Shader&) = delete;
-		Shader& operator=(Shader&&) noexcept = delete;
-
-		~Shader() {
-			glDeleteShader(id);
-		}
-
-		void VerifyCompileStatus() const {
-			GLint success;
-			glGetShaderiv(id, GL_COMPILE_STATUS, &success);
-
-			if (!success) {
-				GLsizei log_length;
-				glGetShaderiv(id, GL_INFO_LOG_LENGTH, &log_length);
-				std::vector<GLchar> info_log(log_length);
-				glGetShaderInfoLog(id, log_length, &log_length, info_log.data());
-				throw std::runtime_error{info_log.data()};
-			}
-		}
-
-		GLuint id;
-	};
-
-	static std::string ReadFile(const std::string_view filepath) {
-
-		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
+		if (std::ifstream ifs{shader_filepath.data()}; ifs.good()) {
 			std::string source;
 			ifs.seekg(0, std::ios::end);
 			source.reserve(static_cast<std::size_t>(ifs.tellg()));
@@ -88,13 +56,13 @@ private:
 		}
 
 		std::ostringstream oss;
-		oss << "Unable to open " << filepath;
+		oss << "Unable to open " << shader_filepath;
 		throw std::runtime_error{oss.str()};
 	}
 
-	void VerifyStatus(const GLenum type) const {
+	void VerifyStatus(const GLenum status_type) const {
 		GLint success;
-		glGetProgramiv(id_, type, &success);
+		glGetProgramiv(id_, status_type, &success);
 
 		if (!success) {
 			GLsizei log_length;
