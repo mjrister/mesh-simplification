@@ -11,16 +11,12 @@ class ShaderProgram {
 
 public:
 	ShaderProgram(const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
-		: id_{glCreateProgram()} {
+		: id_{glCreateProgram()},
+		  vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath).c_str()},
+		  fragment_shader_{GL_FRAGMENT_SHADER, ReadFile(fragment_shader_filepath).c_str()} {
 
-		const auto vertex_shader_source = ReadFile(vertex_shader_filepath);
-		const auto fragment_shader_source = ReadFile(fragment_shader_filepath);
-
-		const Shader vertex_shader{GL_VERTEX_SHADER, vertex_shader_source.c_str(),};
-		const Shader fragment_shader{GL_FRAGMENT_SHADER, fragment_shader_source.c_str()};
-
-		glAttachShader(id_, vertex_shader.id);
-		glAttachShader(id_, fragment_shader.id);
+		glAttachShader(id_, vertex_shader_.id);
+		glAttachShader(id_, fragment_shader_.id);
 
 		glLinkProgram(id_);
 		VerifyStatus(GL_LINK_STATUS);
@@ -28,8 +24,8 @@ public:
 		glValidateProgram(id_);
 		VerifyStatus(GL_VALIDATE_STATUS);
 
-		glDetachShader(id_, vertex_shader.id);
-		glDetachShader(id_, fragment_shader.id);
+		glDetachShader(id_, vertex_shader_.id);
+		glDetachShader(id_, fragment_shader_.id);
 	}
 
 	ShaderProgram(const ShaderProgram&) = delete;
@@ -69,7 +65,7 @@ private:
 			glGetShaderiv(id, GL_COMPILE_STATUS, &success);
 
 			if (!success) {
-				GLsizei log_length{0};
+				GLsizei log_length;
 				glGetShaderiv(id, GL_INFO_LOG_LENGTH, &log_length);
 				std::vector<GLchar> info_log(log_length);
 				glGetShaderInfoLog(id, log_length, &log_length, info_log.data());
@@ -77,7 +73,7 @@ private:
 			}
 		}
 
-		GLuint id{0};
+		GLuint id;
 	};
 
 	static std::string ReadFile(const std::string_view filepath) {
@@ -101,7 +97,7 @@ private:
 		glGetProgramiv(id_, type, &success);
 
 		if (!success) {
-			GLsizei log_length{0};
+			GLsizei log_length;
 			glGetProgramiv(id_, GL_INFO_LOG_LENGTH, &log_length);
 			std::vector<GLchar> info_log(log_length);
 			glGetProgramInfoLog(id_, log_length, &log_length, info_log.data());
@@ -109,5 +105,6 @@ private:
 		}
 	}
 
-	GLuint id_{0};
+	GLuint id_;
+	Shader vertex_shader_, fragment_shader_;
 };
