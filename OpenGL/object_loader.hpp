@@ -1,31 +1,34 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include <glm/glm.hpp>
 #include <GL/gl3w.h>
 
 class ObjectLoader {
 
 public:
 	static void LoadString(std::istream& is) {
-		std::vector<glm::vec3> positions, normals;
-		std::vector<glm::vec2> texture_coordinates;
+		std::vector<GLfloat> positions, normals, texture_coordinates;
 
 		for (std::string line; std::getline(is, line);) {
-			if (line.empty() || StartsWith(line, "#")) {
-				continue;
-			}
+			if (line.empty() || StartsWith(line, "#")) continue;
 			if (StartsWith(line, "v ")) {
-				positions.push_back(ParseFloat3(line));
-			} else if (StartsWith(line, "vn ")) {
-				normals.push_back(ParseFloat3(line));
-			} else if (StartsWith(line, "vt ")) {
-				texture_coordinates.push_back(ParseFloat2(line));
+				const auto position = ParseLine<GLfloat, 3>(line);
+				positions.insert(positions.cend(), position.cbegin(), position.cend());
+			}
+			else if (StartsWith(line, "vn ")) {
+				const auto normal = ParseLine<GLfloat, 3>(line);
+				normals.insert(normals.cend(), normal.cbegin(), normal.cend());
+			}
+			else if (StartsWith(line, "vt ")) {
+				const auto texture_coordinate = ParseLine<GLfloat, 2>(line);
+				texture_coordinates.insert(
+					texture_coordinates.cend(), texture_coordinate.cbegin(), texture_coordinate.cend());
 			}
 		}
 	}
@@ -35,30 +38,18 @@ private:
 		return line.compare(0, prefix.size(), prefix.data()) == 0;
 	}
 
-	static glm::vec3 ParseFloat3(const std::string_view line) {
-		if (const auto values = ParseFloatData(line); values.size() == 3) {
-			return glm::vec3{values[0], values[1], values[2]};
-		}
-		std::ostringstream oss;
-		oss << "Unsupported position format " << line;
-		throw std::runtime_error{oss.str()};
-	}
-
-	static glm::vec2 ParseFloat2(const std::string_view line) {
-		if (const auto values = ParseFloatData(line); values.size() == 2) {
-			return glm::vec2{values[0], values[1]};
+	template <typename T, std::size_t N>
+	static std::array<T, N> ParseLine(const std::string_view line) {
+		if (const auto tokens = Split(line); tokens.size() == N) {
+			std::array<T, N> data{};
+			for (std::size_t i = 0; i < N; ++i) {
+				data[i] = ParseToken<T>(tokens[i]);
+			}
+			return data;
 		}
 		std::ostringstream oss;
 		oss << "Unsupported format " << line;
 		throw std::runtime_error{oss.str()};
-	}
-
-	static std::vector<GLfloat> ParseFloatData(const std::string_view line) {
-		const auto tokens = Split(line);
-		std::vector<GLfloat> data;
-		data.reserve(tokens.size() - 1);
-		std::transform(tokens.cbegin() + 1, tokens.cend(), std::back_inserter(data), ParseToken<GLfloat>);
-		return data;
 	}
 
 	static std::vector<std::string_view> Split(const std::string_view line) {
