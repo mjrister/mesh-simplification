@@ -1,24 +1,66 @@
 #pragma once
 
+#include <fstream>
+#include <stdexcept>
 #include <string_view>
+#include <vector>
 
 #include <GL/gl3w.h>
 
-#include "shader.hpp"
-
 class ShaderProgram {
+
+	class Shader {
+
+	public:
+		Shader(const GLchar* const shader_source, const GLenum type) : id{glCreateShader(type)} {
+			glShaderSource(id, 1, &shader_source, nullptr);
+			glCompileShader(id);
+			VerifyCompileStatus();
+		}
+
+		Shader(const Shader&) = delete;
+		Shader(Shader&&) noexcept = delete;
+		Shader& operator=(const Shader&) = delete;
+		Shader& operator=(Shader&&) noexcept = delete;
+
+		~Shader() {
+			glDeleteShader(id);
+		}
+
+		void VerifyCompileStatus() const {
+			GLint success;
+			glGetShaderiv(id, GL_COMPILE_STATUS, &success);
+
+			if (!success) {
+				GLsizei log_length{0};
+				glGetShaderiv(id, GL_INFO_LOG_LENGTH, &log_length);
+				std::vector<GLchar> info_log(log_length);
+				glGetShaderInfoLog(id, log_length, &log_length, info_log.data());
+				throw std::runtime_error{info_log.data()};
+			}
+		}
+
+		GLuint id{0};
+	};
 
 public:
 	ShaderProgram(const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
 		: id_{glCreateProgram()} {
-		const Shader vertex_shader{vertex_shader_filepath, GL_VERTEX_SHADER};
-		const Shader fragment_shader{fragment_shader_filepath, GL_FRAGMENT_SHADER};
-		glAttachShader(id_, vertex_shader.Id());
-		glAttachShader(id_, fragment_shader.Id());
+
+		const auto vertex_shader_source = ReadFile(vertex_shader_filepath);
+		const auto fragment_shader_source = ReadFile(fragment_shader_filepath);
+
+		const Shader vertex_shader{vertex_shader_source.c_str(), GL_VERTEX_SHADER};
+		const Shader fragment_shader{fragment_shader_source.c_str(), GL_FRAGMENT_SHADER};
+
+		glAttachShader(id_, vertex_shader.id);
+		glAttachShader(id_, fragment_shader.id);
+
 		glLinkProgram(id_);
 		VerifyLinkStatus();
-		glDetachShader(id_, fragment_shader.Id());
-		glDetachShader(id_, vertex_shader.Id());
+
+		glDetachShader(id_, fragment_shader.id);
+		glDetachShader(id_, vertex_shader.id);
 	}
 
 	ShaderProgram(const ShaderProgram&) = delete;
@@ -35,6 +77,22 @@ public:
 	}
 
 private:
+	static std::string ReadFile(const std::string_view filepath) {
+
+		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
+			std::string source;
+			ifs.seekg(0, std::ios::end);
+			source.reserve(static_cast<std::size_t>(ifs.tellg()));
+			ifs.seekg(0, std::ios::beg);
+			source.assign(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
+			return source;
+		}
+
+		std::ostringstream oss;
+		oss << "Unable to open " << filepath;
+		throw std::runtime_error{oss.str()};
+	}
+
 	void VerifyLinkStatus() const {
 		GLint success;
 		glGetProgramiv(id_, GL_LINK_STATUS, &success);
