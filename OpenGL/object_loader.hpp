@@ -9,6 +9,8 @@
 
 #include <GL/gl3w.h>
 
+#include "utils/string_utils.hpp"
+
 class ObjectLoader {
 
 public:
@@ -40,7 +42,7 @@ private:
 
 	template <typename T, std::size_t N>
 	static std::array<T, N> ParseLine(const std::string_view line) {
-		if (const auto tokens = Split(line, " "); tokens.size() == N) {
+		if (const auto tokens = utils::Split(line, " "); tokens.size() == N) {
 			std::array<T, N> data{};
 			for (std::size_t i = 0; i < N; ++i) {
 				data[i] = ParseToken<T>(tokens[i]);
@@ -50,16 +52,6 @@ private:
 		std::ostringstream oss;
 		oss << "Unsupported format " << line;
 		throw std::runtime_error{oss.str()};
-	}
-
-	static std::vector<std::string_view> Split(const std::string_view line, const std::string_view delimiter) {
-		std::vector<std::string_view> tokens;
-		for (size_t i = 0, j = 0; j != std::string_view::npos; i = j + 1) {
-			if (j = line.find_first_of(delimiter, i); i != j) {
-				tokens.push_back(line.substr(i, j - i));
-			}
-		}
-		return tokens;
 	}
 
 	template <typename T>

@@ -8,6 +8,9 @@
     <ClInclude Include="mesh.hpp" />
     <ClInclude Include="object_loader.hpp" />
     <ClInclude Include="shader.hpp" />
+    <ClInclude Include="utils\string_utils.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -20,6 +23,9 @@
   <ItemGroup>
     <Filter Include="shaders">
       <UniqueIdentifier>{bc519ce1-d050-44ca-bf16-5049ce0cb9a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{48e9edca-52c8-4520-99ef-22029f2334b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
