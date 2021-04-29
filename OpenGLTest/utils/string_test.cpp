@@ -39,9 +39,17 @@ namespace {
 		const auto tokens = string::Split("  ", delimiter);
 		ASSERT_TRUE(tokens.empty());
 	}
+
+	TEST(String, TestSplitNoWhitespaceString) {
+		const auto* delimiter = " ";
+		const auto tokens = string::Split("Hello", delimiter);
+		ASSERT_EQ(tokens.size(), 1);
+		ASSERT_EQ("Hello", tokens[0]);
+	}
+
 	TEST(String, TestSplitStringOnWhitespace) {
 		constexpr auto* delimiter = " ";
-		const auto tokens = string::Split("   vt 0.707 0.395 0.684   ", delimiter);
+		const auto tokens = string::Split("   vt 0.707  0.395 0.684   ", delimiter);
 		ASSERT_EQ(tokens.size(), 4);
 		ASSERT_EQ("vt", tokens[0]);
 		ASSERT_EQ("0.707", tokens[1]);
