@@ -5,6 +5,23 @@
 using namespace utils;
 
 namespace {
+
+	TEST(StringUtils, TestEmptyStringStartsWithPrefix) {
+		ASSERT_FALSE(StartsWith("", "Hello, World!"));
+	}
+
+	TEST(StringUtils, TestStringStartsWithPrefix) {
+		ASSERT_TRUE(StartsWith("Hello, World!", "Hello"));
+	}
+
+	TEST(StringUtils, TestStringDoesNotStartWithPrefix) {
+		ASSERT_FALSE(StartsWith("Hello, World!", "World"));
+	}
+
+	TEST(StringUtils, TestShortStringDoesNotContainLongPrefix) {
+		ASSERT_FALSE(StartsWith("Hello", "Hello, World!"));
+	}
+
 	TEST(StringUtils, TestSplitEmptyString) {
 		constexpr auto* delimiter = " ";
 		const auto tokens = Split("", delimiter);
