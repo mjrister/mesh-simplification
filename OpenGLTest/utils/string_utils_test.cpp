@@ -22,10 +22,34 @@ namespace {
 		ASSERT_FALSE(string::StartsWith(line, prefix));
 	}
 
-	TEST(StringUtils, TestShortStringDoesNotContainLongPrefix) {
+	TEST(StringUtils, TestShortStringDoesNotStartWithLongPrefix) {
 		constexpr auto* line = "Hello";
 		constexpr auto* prefix = "Hello, World!";
 		ASSERT_FALSE(string::StartsWith(line, prefix));
+	}
+
+	TEST(StringUtils, TestEmptyStringEndsWithSuffix) {
+		constexpr auto* line = "";
+		constexpr auto* prefix = "Hello";
+		ASSERT_FALSE(string::EndsWith(line, prefix));
+	}
+
+	TEST(StringUtils, TestStringEndsWithSuffix) {
+		constexpr auto* line = "Hello, World!";
+		constexpr auto* prefix = "World!";
+		ASSERT_TRUE(string::EndsWith(line, prefix));
+	}
+
+	TEST(StringUtils, TestStringDoesNotEndWithSuffix) {
+		constexpr auto* line = "Hello, World!";
+		constexpr auto* prefix = "Hello";
+		ASSERT_FALSE(string::EndsWith(line, prefix));
+	}
+
+	TEST(StringUtils, TestShortStringDoesNotEndWithLongSuffix) {
+		constexpr auto* line = "Hello";
+		constexpr auto* prefix = "Hello, World!";
+		ASSERT_FALSE(string::EndsWith(line, prefix));
 	}
 
 	TEST(StringUtils, TestSplitEmptyString) {
