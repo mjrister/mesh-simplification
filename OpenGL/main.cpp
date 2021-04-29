@@ -4,8 +4,8 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
-#include "mesh.hpp"
-#include "shader_program.hpp"
+#include "graphics/mesh.hpp"
+#include "graphics/shader_program.hpp"
 
 constexpr auto opengl_major_version = 4;
 constexpr auto opengl_minor_version = 6;

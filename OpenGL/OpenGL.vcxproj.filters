@@ -4,15 +4,21 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shader_program.hpp" />
-    <ClInclude Include="mesh.hpp" />
-    <ClInclude Include="object_loader.hpp" />
-    <ClInclude Include="shader.hpp" />
     <ClInclude Include="utils\string_utils.hpp">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\file_utils.hpp">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="object_loader.hpp" />
+    <ClInclude Include="graphics\shader.hpp">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\shader_program.hpp">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\mesh.hpp">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -29,6 +35,9 @@
     </Filter>
     <Filter Include="utils">
       <UniqueIdentifier>{48e9edca-52c8-4520-99ef-22029f2334b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{e2a2d935-f222-40b4-b7c5-da80e71d06b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

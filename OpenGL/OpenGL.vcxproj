@@ -167,10 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\file_utils.hpp" />
-    <ClInclude Include="mesh.hpp" />
+    <ClInclude Include="graphics\mesh.hpp" />
     <ClInclude Include="object_loader.hpp" />
-    <ClInclude Include="shader.hpp" />
-    <ClInclude Include="shader_program.hpp" />
+    <ClInclude Include="graphics\shader.hpp" />
+    <ClInclude Include="graphics\shader_program.hpp" />
     <ClInclude Include="utils\string_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
