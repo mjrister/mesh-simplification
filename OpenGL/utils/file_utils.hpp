@@ -5,11 +5,11 @@
 #include <stdexcept>
 #include <string_view>
 
-namespace utils {
+namespace file {
 
-	static std::string ReadFile(const std::string_view shader_filepath) {
+	static std::string Read(const std::string_view filepath) {
 
-		if (std::ifstream ifs{shader_filepath.data()}; ifs.good()) {
+		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
 			std::string source;
 			ifs.seekg(0, std::ios::end);
 			source.reserve(static_cast<std::size_t>(ifs.tellg()));
@@ -19,7 +19,7 @@ namespace utils {
 		}
 
 		std::ostringstream oss;
-		oss << "Unable to open " << shader_filepath;
+		oss << "Unable to open " << filepath;
 		throw std::runtime_error{oss.str()};
 	}
 }

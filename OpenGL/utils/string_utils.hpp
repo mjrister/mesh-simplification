@@ -4,7 +4,7 @@
 #include <string_view>
 #include <vector>
 
-namespace utils {
+namespace string {
 
 	static constexpr bool StartsWith(const std::string_view line, const std::string_view prefix) {
 		return line.compare(0, prefix.size(), prefix.data()) == 0;

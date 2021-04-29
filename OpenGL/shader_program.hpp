@@ -14,8 +14,8 @@ class ShaderProgram {
 public:
 	ShaderProgram(const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
 		: id_{glCreateProgram()},
-		  vertex_shader_{GL_VERTEX_SHADER, utils::ReadFile(vertex_shader_filepath).c_str()},
-		  fragment_shader_{GL_FRAGMENT_SHADER, utils::ReadFile(fragment_shader_filepath).c_str()} {
+		  vertex_shader_{GL_VERTEX_SHADER, file::Read(vertex_shader_filepath).c_str()},
+		  fragment_shader_{GL_FRAGMENT_SHADER, file::Read(fragment_shader_filepath).c_str()} {
 
 		glAttachShader(id_, vertex_shader_.Id());
 		glAttachShader(id_, fragment_shader_.Id());

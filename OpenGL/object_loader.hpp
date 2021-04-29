@@ -17,16 +17,16 @@ public:
 		std::vector<GLfloat> positions, normals, texture_coordinates;
 
 		for (std::string line; std::getline(is, line);) {
-			if (line.empty() || utils::StartsWith(line, "#")) continue;
-			if (utils::StartsWith(line, "v ")) {
+			if (line.empty() || string::StartsWith(line, "#")) continue;
+			if (string::StartsWith(line, "v ")) {
 				const auto position = ParseLine<GLfloat, 3>(line);
 				positions.insert(positions.cend(), position.cbegin(), position.cend());
 			}
-			else if (utils::StartsWith(line, "vn ")) {
+			else if (string::StartsWith(line, "vn ")) {
 				const auto normal = ParseLine<GLfloat, 3>(line);
 				normals.insert(normals.cend(), normal.cbegin(), normal.cend());
 			}
-			else if (utils::StartsWith(line, "vt ")) {
+			else if (string::StartsWith(line, "vt ")) {
 				const auto texture_coordinate = ParseLine<GLfloat, 2>(line);
 				texture_coordinates.insert(
 					texture_coordinates.cend(), texture_coordinate.cbegin(), texture_coordinate.cend());
@@ -37,7 +37,7 @@ public:
 private:
 	template <typename T, std::size_t N>
 	static std::array<T, N> ParseLine(const std::string_view line) {
-		if (const auto tokens = utils::Split(line, " "); tokens.size() == N) {
+		if (const auto tokens = string::Split(line, " "); tokens.size() == N) {
 			std::array<T, N> data{};
 			for (std::size_t i = 0; i < N; ++i) {
 				data[i] = ParseToken<T>(tokens[i]);
