@@ -43,9 +43,9 @@ namespace {
 		constexpr auto* delimiter = " ";
 		const auto tokens = string::Split("   vt 0.707 0.395 0.684   ", delimiter);
 		ASSERT_EQ(tokens.size(), 4);
-		ASSERT_EQ(tokens[0], "vt");
-		ASSERT_EQ(tokens[1], "0.707");
-		ASSERT_EQ(tokens[2], "0.395");
-		ASSERT_EQ(tokens[3], "0.684");
+		ASSERT_EQ("vt", tokens[0]);
+		ASSERT_EQ("0.707", tokens[1]);
+		ASSERT_EQ("0.395", tokens[2]);
+		ASSERT_EQ("0.684", tokens[3]);
 	}
 }

@@ -11,6 +11,7 @@
 #include "utils/string_utils.hpp"
 
 class ObjectLoader {
+	friend class ObjectLoaderTest;
 
 public:
 	static void LoadString(std::istream& is) {
@@ -37,7 +38,7 @@ public:
 private:
 	template <typename T, std::size_t N>
 	static std::array<T, N> ParseLine(const std::string_view line) {
-		if (const auto tokens = string::Split(line, " "); tokens.size() == N) {
+		if (const auto tokens = string::Split(line, " "); tokens.size() == N + 1) {
 			std::array<T, N> data{};
 			for (std::size_t i = 0; i < N; ++i) {
 				data[i] = ParseToken<T>(tokens[i + 1]);
@@ -46,7 +47,7 @@ private:
 		}
 		std::ostringstream oss;
 		oss << "Unsupported format " << line;
-		throw std::runtime_error{oss.str()};
+		throw std::invalid_argument{oss.str()};
 	}
 
 	template <typename T>
@@ -55,8 +56,8 @@ private:
 		if (const auto [_, error_code] = std::from_chars(token.data(), token.data() + token.size(), value);
 			error_code == std::errc::invalid_argument) {
 			std::ostringstream oss;
-			oss << "An error occurred while attempting to parse " << token;
-			throw std::runtime_error{oss.str()};
+			oss << "Unable to convert " << token << " to type '" << typeid(T).name();
+			throw std::invalid_argument{oss.str()};
 		}
 		return value;
 	}
