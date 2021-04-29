@@ -2,19 +2,30 @@
 
 #include <array>
 #include <charconv>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include <GL/gl3w.h>
 
-#include "utils/string_utils.hpp"
+#include "graphics/mesh.hpp"
+#include "utils/string.hpp"
 
 class ObjectLoader {
 	friend class ObjectLoaderTest;
 
 public:
-	static void LoadString(std::istream& is) {
+	static Mesh LoadMesh(const std::string_view filepath) {
+		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
+			return LoadMesh(ifs);
+		}
+		std::ostringstream oss;
+		oss << "Unable to open " << filepath;
+		throw std::invalid_argument{oss.str()};
+	}
+
+	static Mesh LoadMesh(std::istream& is) {
 		std::vector<GLfloat> positions, normals, texture_coordinates;
 
 		for (std::string line; std::getline(is, line);) {
@@ -22,17 +33,17 @@ public:
 			if (string::StartsWith(line, "v ")) {
 				const auto position = ParseLine<GLfloat, 3>(line);
 				positions.insert(positions.cend(), position.cbegin(), position.cend());
-			}
-			else if (string::StartsWith(line, "vn ")) {
+			} else if (string::StartsWith(line, "vn ")) {
 				const auto normal = ParseLine<GLfloat, 3>(line);
 				normals.insert(normals.cend(), normal.cbegin(), normal.cend());
-			}
-			else if (string::StartsWith(line, "vt ")) {
+			} else if (string::StartsWith(line, "vt ")) {
 				const auto texture_coordinate = ParseLine<GLfloat, 2>(line);
 				texture_coordinates.insert(
 					texture_coordinates.cend(), texture_coordinate.cbegin(), texture_coordinate.cend());
 			}
 		}
+
+		return Mesh{{}, {}};
 	}
 
 private:
