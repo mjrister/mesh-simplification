@@ -1,28 +1,64 @@
 #pragma once
 
-#include <fstream>
+#include <algorithm>
+#include <array>
+#include <charconv>
 #include <sstream>
-#include <string_view>
+#include <string>
+#include <vector>
+
+#include <GL/gl3w.h>
+
+#include "utils/string_utils.hpp"
 
 class ObjectLoader {
 
 public:
-	static void LoadMesh(const std::string_view object_filepath) {
+	static void LoadString(std::istream& is) {
+		std::vector<GLfloat> positions, normals, texture_coordinates;
 
-		if (std::ifstream ifs{object_filepath.data()}; ifs.good()) {
-			LoadMesh(ifs);
-			return;
+		for (std::string line; std::getline(is, line);) {
+			if (line.empty() || StartsWith(line, "#")) continue;
+			if (StartsWith(line, "v ")) {
+				const auto position = ParseLine<GLfloat, 3>(line);
+				positions.insert(positions.cend(), position.cbegin(), position.cend());
+			}
+			else if (StartsWith(line, "vn ")) {
+				const auto normal = ParseLine<GLfloat, 3>(line);
+				normals.insert(normals.cend(), normal.cbegin(), normal.cend());
+			}
+			else if (StartsWith(line, "vt ")) {
+				const auto texture_coordinate = ParseLine<GLfloat, 2>(line);
+				texture_coordinates.insert(
+					texture_coordinates.cend(), texture_coordinate.cbegin(), texture_coordinate.cend());
+			}
 		}
+	}
 
+private:
+	template <typename T, std::size_t N>
+	static std::array<T, N> ParseLine(const std::string_view line) {
+		if (const auto tokens = utils::Split(line, " "); tokens.size() == N) {
+			std::array<T, N> data{};
+			for (std::size_t i = 0; i < N; ++i) {
+				data[i] = ParseToken<T>(tokens[i]);
+			}
+			return data;
+		}
 		std::ostringstream oss;
-		oss << "Unable to open " << object_filepath;
+		oss << "Unsupported format " << line;
 		throw std::runtime_error{oss.str()};
 	}
 
-	static void LoadMesh(std::istream& is) {
-
-		for (std::string line; std::getline(is, line);) {
-
+	template <typename T>
+	static T ParseToken(const std::string_view token) {
+		T value;
+		if (const auto [_, error_code] = std::from_chars(token.data(), token.data() + token.size(), value);
+			error_code == std::errc::invalid_argument) {
+			std::ostringstream oss;
+			oss << "An error occurred while attempting to parse " << token;
+			throw std::runtime_error{oss.str()};
 		}
+		return value;
 	}
 };
