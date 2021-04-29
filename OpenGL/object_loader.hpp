@@ -36,10 +36,6 @@ public:
 	}
 
 private:
-	static constexpr bool StartsWith(const std::string_view line, const std::string_view prefix) {
-		return line.compare(0, prefix.size(), prefix.data()) == 0;
-	}
-
 	template <typename T, std::size_t N>
 	static std::array<T, N> ParseLine(const std::string_view line) {
 		if (const auto tokens = utils::Split(line, " "); tokens.size() == N) {

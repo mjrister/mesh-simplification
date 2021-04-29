@@ -6,6 +6,10 @@
 
 namespace utils {
 
+	static constexpr bool StartsWith(const std::string_view line, const std::string_view prefix) {
+		return line.compare(0, prefix.size(), prefix.data()) == 0;
+	}
+
 	static constexpr std::string_view Trim(std::string_view line) noexcept {
 		line.remove_prefix(std::min(line.find_first_not_of(' '), line.size()));
 		line.remove_suffix(line.size() - line.find_last_not_of(' ') - 1);
