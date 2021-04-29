@@ -49,7 +49,7 @@ namespace {
 
 	TEST(String, TestSplitStringOnWhitespace) {
 		constexpr auto* delimiter = " ";
-		const auto tokens = string::Split("   vt 0.707  0.395 0.684   ", delimiter);
+		const auto tokens = string::Split("  vt 0.707  0.395 0.684  ", delimiter);
 		ASSERT_EQ(tokens.size(), 4);
 		ASSERT_EQ("vt", tokens[0]);
 		ASSERT_EQ("0.707", tokens[1]);
