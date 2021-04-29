@@ -166,6 +166,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="utils\file_utils.hpp" />
     <ClInclude Include="mesh.hpp" />
     <ClInclude Include="object_loader.hpp" />
     <ClInclude Include="shader.hpp" />

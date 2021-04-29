@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>
 #include <stdexcept>
 #include <string_view>
 #include <vector>
@@ -8,14 +7,15 @@
 #include <GL/gl3w.h>
 
 #include "shader.hpp"
+#include "utils/file_utils.hpp"
 
 class ShaderProgram {
 
 public:
 	ShaderProgram(const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
 		: id_{glCreateProgram()},
-		  vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath).c_str()},
-		  fragment_shader_{GL_FRAGMENT_SHADER, ReadFile(fragment_shader_filepath).c_str()} {
+		  vertex_shader_{GL_VERTEX_SHADER, utils::ReadFile(vertex_shader_filepath).c_str()},
+		  fragment_shader_{GL_FRAGMENT_SHADER, utils::ReadFile(fragment_shader_filepath).c_str()} {
 
 		glAttachShader(id_, vertex_shader_.Id());
 		glAttachShader(id_, fragment_shader_.Id());
@@ -44,22 +44,6 @@ public:
 	}
 
 private:
-	static std::string ReadFile(const std::string_view shader_filepath) {
-
-		if (std::ifstream ifs{shader_filepath.data()}; ifs.good()) {
-			std::string source;
-			ifs.seekg(0, std::ios::end);
-			source.reserve(static_cast<std::size_t>(ifs.tellg()));
-			ifs.seekg(0, std::ios::beg);
-			source.assign(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
-			return source;
-		}
-
-		std::ostringstream oss;
-		oss << "Unable to open " << shader_filepath;
-		throw std::runtime_error{oss.str()};
-	}
-
 	void VerifyStatus(const GLenum status_type) const {
 		GLint success;
 		glGetProgramiv(id_, status_type, &success);

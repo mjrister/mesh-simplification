@@ -11,6 +11,9 @@
     <ClInclude Include="utils\string_utils.hpp">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="utils\file_utils.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
