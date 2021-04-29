@@ -1,45 +1,45 @@
 #include <gtest/gtest.h>
 
-#include "utils/string_utils.hpp"
+#include "utils/string.hpp"
 
 namespace {
 
-	TEST(StringUtils, TestEmptyStringStartsWithPrefix) {
+	TEST(String, TestEmptyStringStartsWithPrefix) {
 		constexpr auto* line = "";
 		constexpr auto* prefix = "Hello";
 		ASSERT_FALSE(string::StartsWith(line, prefix));
 	}
 
-	TEST(StringUtils, TestStringStartsWithPrefix) {
+	TEST(String, TestStringStartsWithPrefix) {
 		constexpr auto* line = "Hello, World!";
 		constexpr auto* prefix = "Hello";
 		ASSERT_TRUE(string::StartsWith(line, prefix));
 	}
 
-	TEST(StringUtils, TestStringDoesNotStartWithPrefix) {
+	TEST(String, TestStringDoesNotStartWithPrefix) {
 		constexpr auto* line = "Hello, World!";
 		constexpr auto* prefix = "World!";
 		ASSERT_FALSE(string::StartsWith(line, prefix));
 	}
 
-	TEST(StringUtils, TestShortStringDoesNotStartWithLongPrefix) {
+	TEST(String, TestShortStringDoesNotStartWithLongPrefix) {
 		constexpr auto* line = "Hello";
 		constexpr auto* prefix = "Hello, World!";
 		ASSERT_FALSE(string::StartsWith(line, prefix));
 	}
 
-	TEST(StringUtils, TestSplitEmptyString) {
+	TEST(String, TestSplitEmptyString) {
 		constexpr auto* delimiter = " ";
 		const auto tokens = string::Split("", delimiter);
 		ASSERT_TRUE(tokens.empty());
 	}
 
-	TEST(StringUtils, TestSplitWhitespaceString) {
+	TEST(String, TestSplitWhitespaceString) {
 		constexpr auto* delimiter = " ";
 		const auto tokens = string::Split("  ", delimiter);
 		ASSERT_TRUE(tokens.empty());
 	}
-	TEST(StringUtils, TestSplitStringOnWhitespace) {
+	TEST(String, TestSplitStringOnWhitespace) {
 		constexpr auto* delimiter = " ";
 		const auto tokens = string::Split("   vt 0.707 0.395 0.684   ", delimiter);
 		ASSERT_EQ(tokens.size(), 4);

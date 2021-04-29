@@ -20,6 +20,6 @@ namespace file {
 
 		std::ostringstream oss;
 		oss << "Unable to open " << filepath;
-		throw std::runtime_error{oss.str()};
+		throw std::invalid_argument{oss.str()};
 	}
 }

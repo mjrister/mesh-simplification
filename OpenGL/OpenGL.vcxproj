@@ -166,12 +166,12 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils\file_utils.hpp" />
+    <ClInclude Include="utils\file.hpp" />
     <ClInclude Include="graphics\mesh.hpp" />
     <ClInclude Include="object_loader.hpp" />
     <ClInclude Include="graphics\shader.hpp" />
     <ClInclude Include="graphics\shader_program.hpp" />
-    <ClInclude Include="utils\string_utils.hpp" />
+    <ClInclude Include="utils\string.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl" />

@@ -35,7 +35,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object_loader_test.cpp" />
-    <ClCompile Include="utils\string_utils_test.cpp" />
+    <ClCompile Include="utils\string_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenGL\OpenGL.vcxproj">

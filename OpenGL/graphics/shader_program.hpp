@@ -7,7 +7,7 @@
 #include <GL/gl3w.h>
 
 #include "shader.hpp"
-#include "utils/file_utils.hpp"
+#include "utils/file.hpp"
 
 class ShaderProgram {
 

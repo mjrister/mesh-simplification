@@ -94,7 +94,7 @@ int main() {
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
-	} catch (const std::runtime_error& e) {
+	} catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
 		glfwTerminate();
 		return EXIT_FAILURE;

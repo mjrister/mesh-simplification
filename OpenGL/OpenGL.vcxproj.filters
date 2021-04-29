@@ -4,10 +4,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils\string_utils.hpp">
+    <ClInclude Include="utils\string.hpp">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\file_utils.hpp">
+    <ClInclude Include="utils\file.hpp">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="object_loader.hpp" />
