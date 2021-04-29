@@ -7,19 +7,27 @@ using namespace utils;
 namespace {
 
 	TEST(StringUtils, TestEmptyStringStartsWithPrefix) {
-		ASSERT_FALSE(StartsWith("", "Hello, World!"));
+		constexpr auto* line = "";
+		constexpr auto* prefix = "a";
+		ASSERT_FALSE(StartsWith(line, prefix));
 	}
 
 	TEST(StringUtils, TestStringStartsWithPrefix) {
-		ASSERT_TRUE(StartsWith("Hello, World!", "Hello"));
+		constexpr auto* line = "Hello, World!";
+		constexpr auto* prefix = "Hello";
+		ASSERT_TRUE(StartsWith(line, prefix));
 	}
 
 	TEST(StringUtils, TestStringDoesNotStartWithPrefix) {
-		ASSERT_FALSE(StartsWith("Hello, World!", "World"));
+		constexpr auto* line = "Hello, World!";
+		constexpr auto* prefix = "World!";
+		ASSERT_TRUE(StartsWith(line, prefix));
 	}
 
 	TEST(StringUtils, TestShortStringDoesNotContainLongPrefix) {
-		ASSERT_FALSE(StartsWith("Hello", "Hello, World!"));
+		constexpr auto* line = "Hello";
+		constexpr auto* prefix = "Hello, World!";
+		ASSERT_TRUE(StartsWith(line, prefix));
 	}
 
 	TEST(StringUtils, TestSplitEmptyString) {
