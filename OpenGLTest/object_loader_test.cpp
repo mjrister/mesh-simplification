@@ -17,6 +17,10 @@ protected:
 
 namespace {
 
+	TEST_F(ObjectLoaderTest, TestParseEmptyStringToken) {
+		ASSERT_THROW(ParseToken<int>(""), std::invalid_argument);
+	}
+
 	TEST_F(ObjectLoaderTest, TestParseIntToken) {
 		const auto expected = 42;
 		const auto actual = ParseToken<int>("42");
