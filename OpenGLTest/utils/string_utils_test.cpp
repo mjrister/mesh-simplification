@@ -6,7 +6,7 @@ namespace {
 
 	TEST(StringUtils, TestEmptyStringStartsWithPrefix) {
 		constexpr auto* line = "";
-		constexpr auto* prefix = "a";
+		constexpr auto* prefix = "Hello";
 		ASSERT_FALSE(string::StartsWith(line, prefix));
 	}
 
