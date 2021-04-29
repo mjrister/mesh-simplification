@@ -40,7 +40,7 @@ private:
 		if (const auto tokens = string::Split(line, " "); tokens.size() == N) {
 			std::array<T, N> data{};
 			for (std::size_t i = 0; i < N; ++i) {
-				data[i] = ParseToken<T>(tokens[i]);
+				data[i] = ParseToken<T>(tokens[i + 1]);
 			}
 			return data;
 		}
