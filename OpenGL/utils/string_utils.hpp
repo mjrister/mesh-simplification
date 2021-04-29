@@ -10,12 +10,6 @@ namespace utils {
 		return line.compare(0, prefix.size(), prefix.data()) == 0;
 	}
 
-	static constexpr std::string_view Trim(std::string_view line) noexcept {
-		line.remove_prefix(std::min(line.find_first_not_of(' '), line.size()));
-		line.remove_suffix(line.size() - line.find_last_not_of(' ') - 1);
-		return line;
-	}
-
 	static std::vector<std::string_view> Split(const std::string_view line, const std::string_view delimiter) {
 		std::vector<std::string_view> tokens;
 		for (auto i = line.find_first_not_of(delimiter); i != std::string_view::npos;) {
