@@ -4,13 +4,12 @@
     <ClCompile Include="utils\string_utils_test.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="object_loader_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
       <UniqueIdentifier>{f96d5c31-664b-4b54-a68a-5152be897c41}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>
