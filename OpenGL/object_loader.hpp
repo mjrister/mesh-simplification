@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <array>
 #include <charconv>
 #include <sstream>
@@ -18,16 +17,16 @@ public:
 		std::vector<GLfloat> positions, normals, texture_coordinates;
 
 		for (std::string line; std::getline(is, line);) {
-			if (line.empty() || StartsWith(line, "#")) continue;
-			if (StartsWith(line, "v ")) {
+			if (line.empty() || utils::StartsWith(line, "#")) continue;
+			if (utils::StartsWith(line, "v ")) {
 				const auto position = ParseLine<GLfloat, 3>(line);
 				positions.insert(positions.cend(), position.cbegin(), position.cend());
 			}
-			else if (StartsWith(line, "vn ")) {
+			else if (utils::StartsWith(line, "vn ")) {
 				const auto normal = ParseLine<GLfloat, 3>(line);
 				normals.insert(normals.cend(), normal.cbegin(), normal.cend());
 			}
-			else if (StartsWith(line, "vt ")) {
+			else if (utils::StartsWith(line, "vt ")) {
 				const auto texture_coordinate = ParseLine<GLfloat, 2>(line);
 				texture_coordinates.insert(
 					texture_coordinates.cend(), texture_coordinate.cbegin(), texture_coordinate.cend());
