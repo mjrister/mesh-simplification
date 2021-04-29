@@ -10,11 +10,6 @@ namespace string {
 		return prefix.size() <= string.size() && string.compare(0, prefix.size(), prefix.data()) == 0;
 	}
 
-	static constexpr bool EndsWith(const std::string_view string, const std::string_view suffix) {
-		return suffix.size() <= string.size()
-			&& string.compare(string.size() - suffix.size(), suffix.size(), suffix) == 0;
-	}
-
 	static std::vector<std::string_view> Split(const std::string_view string, const std::string_view delimiter) {
 		std::vector<std::string_view> tokens;
 		for (auto i = string.find_first_not_of(delimiter); i != std::string_view::npos;) {
