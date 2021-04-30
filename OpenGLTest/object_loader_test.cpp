@@ -13,6 +13,10 @@ protected:
 	std::array<T, N> ParseLine(const std::string_view line) const {
 		return ObjectLoader::ParseLine<T, N>(line);
 	}
+
+	std::array<GLint, 3> ParseIndexGroup(const std::string_view line) const {
+		return ObjectLoader::ParseIndexGroup(line);
+	}
 };
 
 namespace {
@@ -51,5 +55,37 @@ namespace {
 		ASSERT_FLOAT_EQ(0.707f, tokens[0]);
 		ASSERT_FLOAT_EQ(0.395f, tokens[1]);
 		ASSERT_FLOAT_EQ(0.684f, tokens[2]);
+	}
+
+	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionIndex) {
+		const auto index_group = ParseIndexGroup("1");
+		ASSERT_EQ(3, index_group.size());
+		ASSERT_EQ(1, index_group[0]);
+		ASSERT_EQ(-1, index_group[1]);
+		ASSERT_EQ(-1, index_group[2]);
+	}
+
+	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndTextureCoordinatesIndices) {
+		const auto index_group = ParseIndexGroup("1/2");
+		ASSERT_EQ(3, index_group.size());
+		ASSERT_EQ(1, index_group[0]);
+		ASSERT_EQ(2, index_group[1]);
+		ASSERT_EQ(-1, index_group[2]);
+	}
+
+	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndNormalIndices) {
+		const auto index_group = ParseIndexGroup("1//2");
+		ASSERT_EQ(3, index_group.size());
+		ASSERT_EQ(1, index_group[0]);
+		ASSERT_EQ(-1, index_group[1]);
+		ASSERT_EQ(2, index_group[2]);
+	}
+
+	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionTextureCoordinatesAndNormalIndices) {
+		const auto index_group = ParseIndexGroup("1/2/3");
+		ASSERT_EQ(3, index_group.size());
+		ASSERT_EQ(1, index_group[0]);
+		ASSERT_EQ(2, index_group[1]);
+		ASSERT_EQ(3, index_group[2]);
 	}
 }
