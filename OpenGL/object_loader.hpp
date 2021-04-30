@@ -103,7 +103,7 @@ private:
 
 	static std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " "); tokens.size() == 4) {
-			return { ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3]) };
+			return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
 		}
 		std::ostringstream oss;
 		oss << "Unsupported format " << line;
