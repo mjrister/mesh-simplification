@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <charconv>
 #include <fstream>
@@ -41,6 +42,25 @@ public:
 				texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
 			} else if (string::StartsWith(line, "f ")) {
 				faces.push_back(ParseFace(line));
+			}
+		}
+
+		std::vector<glm::vec3> ordered_normals(positions.size());
+		std::vector<glm::vec2> ordered_texture_coordinates(positions.size());
+
+		for (const auto& face : faces) {
+			for (const auto& index_group : face) {
+				const auto position_index = index_group.x;
+				ValidateIndex(position_index, positions.size());
+
+				if (const auto texture_coordinate_index = index_group.y; texture_coordinate_index != npos_index_) {
+					ValidateIndex(texture_coordinate_index, texture_coordinates.size());
+					ordered_texture_coordinates[position_index] = texture_coordinates[texture_coordinate_index];
+				}
+				if (const auto normal_index = index_group.z; normal_index != npos_index_) {
+					ValidateIndex(normal_index, normals.size());
+					ordered_normals[position_index] = normals[normal_index];
+				}
 			}
 		}
 
@@ -100,13 +120,13 @@ private:
 		const auto count = std::count(line.cbegin(), line.cend(), *delimiter);
 
 		if (count == 0 && tokens.size() == 1) {
-			return {ParseToken<GLint>(tokens[0]), index_unavailable_, index_unavailable_};
+			return {ParseToken<GLint>(tokens[0]), npos_index_, npos_index_};
 		}
 		if (count == 1 && tokens.size() == 2) {
-			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), index_unavailable_};
+			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), npos_index_};
 		}
 		if (count == 2 && tokens.size() == 2 && *line.cbegin() != '/' && *(line.cend() - 1) != '/') {
-			return {ParseToken<GLint>(tokens[0]), index_unavailable_, ParseToken<GLint>(tokens[1])};
+			return {ParseToken<GLint>(tokens[0]), npos_index_, ParseToken<GLint>(tokens[1])};
 		}
 		if (count == 2 && tokens.size() == 3) {
 			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), ParseToken<GLint>(tokens[2])};
@@ -117,5 +137,13 @@ private:
 		throw std::invalid_argument{oss.str()};
 	}
 
-	static constexpr GLint index_unavailable_ = -1;
+	static void ValidateIndex(const GLint index, const GLint max_value) {
+		if (index != std::clamp(index, 0, max_value)) {
+			std::ostringstream oss;
+			oss << "Index out of bounds: " << index;
+			throw std::invalid_argument{oss.str()};
+		}
+	}
+
+	static constexpr GLint npos_index_ = -1;
 };
