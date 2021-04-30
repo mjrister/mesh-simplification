@@ -1,6 +1,7 @@
-#include <gtest/gtest.h>
-
 #include "object_loader.hpp"
+
+#include <glm/glm.hpp>
+#include <gtest/gtest.h>
 
 class ObjectLoaderTest : public testing::Test {
 protected:
@@ -14,79 +15,59 @@ protected:
 		return ObjectLoader::ParseLine<T, N>(line);
 	}
 
-	std::array<GLint, 3> ParseIndexGroup(const std::string_view line) const {
+	glm::ivec3 ParseIndexGroup(const std::string_view line) const {
 		return ObjectLoader::ParseIndexGroup(line);
+	}
+
+	std::array<glm::ivec3, 3> ParseFace(const std::string_view line) const {
+		return ObjectLoader::ParseFace(line);
 	}
 };
 
 namespace {
 
 	TEST_F(ObjectLoaderTest, TestParseEmptyStringToken) {
-		ASSERT_THROW(ParseToken<int>(""), std::invalid_argument);
+		ASSERT_THROW(ParseToken<GLint>(""), std::invalid_argument);
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIntToken) {
-		const auto expected = 42;
-		const auto actual = ParseToken<int>("42");
-		ASSERT_EQ(expected, actual);
+		ASSERT_EQ(42, ParseToken<GLint>("42"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFloatToken) {
-		const auto expected = 3.14f;
-		const auto actual = ParseToken<float>("3.14");
-		ASSERT_FLOAT_EQ(expected, actual);
+		ASSERT_FLOAT_EQ(3.14f, ParseToken<GLfloat>("3.14"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseInvalidFloat) {
-		ASSERT_THROW(ParseToken<float>("Definitely a float"), std::invalid_argument);
+		ASSERT_THROW(ParseToken<GLfloat>("Definitely a float"), std::invalid_argument);
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseEmptyLine) {
-		ASSERT_THROW((ParseLine<float, 0>("")), std::invalid_argument);
+		ASSERT_THROW((ParseLine<GLfloat, 0>("")), std::invalid_argument);
 	}
 
-	TEST_F(ObjectLoaderTest, TestParseLineWithIncorrectSizeParameter) {
-		ASSERT_THROW((ParseLine<float, 4>("vt 0.707 0.395 0.684")), std::invalid_argument);
+	TEST_F(ObjectLoaderTest, TestParseLineWithInvalidSizeParameter) {
+		ASSERT_THROW((ParseLine<GLfloat, 4>("vt 0.707 0.395 0.684")), std::invalid_argument);
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseLineWithCorrectSizeParameter) {
-		const auto tokens = ParseLine<float, 3>("vt 0.707 0.395 0.684");
-		ASSERT_EQ(3, tokens.size());
-		ASSERT_FLOAT_EQ(0.707f, tokens[0]);
-		ASSERT_FLOAT_EQ(0.395f, tokens[1]);
-		ASSERT_FLOAT_EQ(0.684f, tokens[2]);
+		ASSERT_EQ((std::array<GLfloat, 3>{0.707f, 0.395f, 0.684f}), (ParseLine<GLfloat, 3>("vt 0.707 0.395 0.684")));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionIndex) {
-		const auto index_group = ParseIndexGroup("1");
-		ASSERT_EQ(3, index_group.size());
-		ASSERT_EQ(1, index_group[0]);
-		ASSERT_EQ(-1, index_group[1]);
-		ASSERT_EQ(-1, index_group[2]);
+		ASSERT_EQ((glm::ivec3{1, -1, -1}), ParseIndexGroup("1"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndTextureCoordinatesIndices) {
-		const auto index_group = ParseIndexGroup("1/2");
-		ASSERT_EQ(3, index_group.size());
-		ASSERT_EQ(1, index_group[0]);
-		ASSERT_EQ(2, index_group[1]);
-		ASSERT_EQ(-1, index_group[2]);
+		ASSERT_EQ((glm::ivec3{1, 2, -1}), ParseIndexGroup("1/2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndNormalIndices) {
-		const auto index_group = ParseIndexGroup("1//2");
-		ASSERT_EQ(3, index_group.size());
-		ASSERT_EQ(1, index_group[0]);
-		ASSERT_EQ(-1, index_group[1]);
-		ASSERT_EQ(2, index_group[2]);
+		ASSERT_EQ((glm::ivec3{1, -1, 2}), ParseIndexGroup("1//2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionTextureCoordinatesAndNormalIndices) {
-		const auto index_group = ParseIndexGroup("1/2/3");
-		ASSERT_EQ(3, index_group.size());
-		ASSERT_EQ(1, index_group[0]);
-		ASSERT_EQ(2, index_group[1]);
-		ASSERT_EQ(3, index_group[2]);
+		ASSERT_EQ((glm::ivec3{1, 2, 3}), ParseIndexGroup("1/2/3"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithInvalidFormat) {
@@ -98,5 +79,18 @@ namespace {
 		ASSERT_THROW(ParseIndexGroup("//3"), std::invalid_argument);
 		ASSERT_THROW(ParseIndexGroup("1/2/"), std::invalid_argument);
 		ASSERT_THROW(ParseIndexGroup("/2/3"), std::invalid_argument);
+	}
+
+	TEST_F(ObjectLoaderTest, TestParseFace) {
+		const std::array<glm::ivec3, 3> face = {
+			glm::ivec3{0, 1, 2},
+			glm::ivec3{3, 4, 5},
+			glm::ivec3{6, 7, 8}
+		};
+		ASSERT_EQ(face, ParseFace("f 0/1/2 3/4/5 6/7/8"));
+	}
+
+	TEST_F(ObjectLoaderTest, TestParseFaceWithInvalidFormat) {
+		ASSERT_THROW(ParseFace("f 0/1/2 3/4/5"), std::invalid_argument);
 	}
 }
