@@ -22,6 +22,10 @@ protected:
 	std::array<glm::ivec3, 3> ParseFace(const std::string_view line) const {
 		return ObjectLoader::ParseFace(line);
 	}
+
+	void ValidateIndex(const GLint index, const GLint max_value) const {
+		return ObjectLoader::ValidateIndex(index, max_value);
+	}
 };
 
 namespace {
@@ -97,5 +101,13 @@ namespace {
 
 	TEST_F(ObjectLoaderTest, TestParseFaceWithInvalidFormat) {
 		ASSERT_THROW(ParseFace("f 0/1/2 3/4/5"), std::invalid_argument);
+	}
+
+	TEST_F(ObjectLoaderTest, TestValidateIndex) {
+		constexpr auto min_value = 0, max_value = 42;
+		ASSERT_NO_THROW(ValidateIndex(min_value, max_value));
+		ASSERT_NO_THROW(ValidateIndex(max_value, max_value));
+		ASSERT_THROW(ValidateIndex(min_value - 1, max_value), std::invalid_argument);
+		ASSERT_THROW(ValidateIndex(max_value + 1, max_value), std::invalid_argument);
 	}
 }
