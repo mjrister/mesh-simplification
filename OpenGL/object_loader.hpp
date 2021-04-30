@@ -134,5 +134,19 @@ private:
 		}
 	}
 
+	template <typename T, std::uint8_t N>
+	static std::vector<T> Flatten(const std::vector<glm::vec<N, T>>& list) {
+		std::vector<T> data;
+		data.reserve(list.size() * N);
+
+		for (const auto& item : list) {
+			for (std::uint8_t i = 0; i < N; ++i) {
+				data.push_back(item[i]);
+			}
+		}
+
+		return data;
+	}
+
 	static constexpr GLint npos_index_ = -1;
 };
