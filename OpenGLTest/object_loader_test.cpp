@@ -88,4 +88,15 @@ namespace {
 		ASSERT_EQ(2, index_group[1]);
 		ASSERT_EQ(3, index_group[2]);
 	}
+
+	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithInvalidFormat) {
+		ASSERT_THROW(ParseIndexGroup("/"), std::invalid_argument);
+		ASSERT_THROW(ParseIndexGroup("//"), std::invalid_argument);
+		ASSERT_THROW(ParseIndexGroup("1/"), std::invalid_argument);
+		ASSERT_THROW(ParseIndexGroup("1//"), std::invalid_argument);
+		ASSERT_THROW(ParseIndexGroup("/2/"), std::invalid_argument);
+		ASSERT_THROW(ParseIndexGroup("//3"), std::invalid_argument);
+		ASSERT_THROW(ParseIndexGroup("1/2/"), std::invalid_argument);
+		ASSERT_THROW(ParseIndexGroup("/2/3"), std::invalid_argument);
+	}
 }

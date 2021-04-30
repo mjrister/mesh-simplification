@@ -85,7 +85,7 @@ private:
 		if (count == 1 && tokens.size() == 2) {
 			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), -1};
 		}
-		if (count == 2 && tokens.size() == 2) {
+		if (count == 2 && tokens.size() == 2 && *index_group.cbegin() != '/' && *(index_group.cend() - 1) != '/') {
 			return {ParseToken<GLint>(tokens[0]), -1, ParseToken<GLint>(tokens[1])};
 		}
 		if (count == 2 && tokens.size() == 3) {
