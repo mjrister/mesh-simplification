@@ -82,7 +82,7 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFace) {
-		const std::array<glm::ivec3, 3> face = {
+		constexpr std::array<glm::ivec3, 3> face = {
 			glm::ivec3{0, 1, 2},
 			glm::ivec3{3, 4, 5},
 			glm::ivec3{6, 7, 8}
