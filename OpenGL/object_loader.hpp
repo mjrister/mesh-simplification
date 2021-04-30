@@ -51,14 +51,14 @@ public:
 		for (const auto& face : faces) {
 			for (const auto& index_group : face) {
 				const auto position_index = index_group.x;
-				ValidateIndex(position_index, positions.size());
+				ValidateIndex(position_index, positions.size() - 1);
 
 				if (const auto texture_coordinate_index = index_group.y; texture_coordinate_index != npos_index_) {
-					ValidateIndex(texture_coordinate_index, texture_coordinates.size());
+					ValidateIndex(texture_coordinate_index, texture_coordinates.size() - 1);
 					ordered_texture_coordinates[position_index] = texture_coordinates[texture_coordinate_index];
 				}
 				if (const auto normal_index = index_group.z; normal_index != npos_index_) {
-					ValidateIndex(normal_index, normals.size());
+					ValidateIndex(normal_index, normals.size() - 1);
 					ordered_normals[position_index] = normals[normal_index];
 				}
 			}
