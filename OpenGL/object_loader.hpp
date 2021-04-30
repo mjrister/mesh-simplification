@@ -72,4 +72,37 @@ private:
 		}
 		return value;
 	}
+
+	static std::array<GLint, 3> ParesIndexGroup(const std::string_view index_group) {
+
+		static constexpr auto delimiter = "/";
+		const auto tokens = string::Split(index_group, delimiter);
+
+		switch (std::count(index_group.cbegin(), index_group.cend(), delimiter)) {
+			case 0:
+				if (tokens.size() == 1) {
+					return {ParseToken<GLint>(tokens[0]), -1, -1};
+				}
+				break;
+			case 1:
+				if (tokens.size() == 2) {
+					return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), -1};
+				}
+				break;
+			case 2:
+				if (tokens.size() == 2) {
+					return {ParseToken<GLint>(tokens[0]), -1, ParseToken<GLint>(tokens[1])};
+				}
+				if (tokens.size() == 3) {
+					return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), ParseToken<GLint>(tokens[2])};
+				}
+				break;
+			default:
+				break;
+		}
+
+		std::ostringstream oss;
+		oss << "Invalid index group format " << index_group;
+		throw std::invalid_argument{oss.str()};
+	}
 };
