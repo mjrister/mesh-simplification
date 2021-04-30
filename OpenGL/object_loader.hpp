@@ -8,12 +8,13 @@
 #include <vector>
 
 #include <GL/gl3w.h>
+#include <glm/glm.hpp>
 
 #include "graphics/mesh.hpp"
 #include "utils/string.hpp"
 
 class ObjectLoader {
-	friend class ObjectLoaderTest;
+		friend class ObjectLoaderTest;
 
 public:
 	static Mesh LoadMesh(const std::string_view filepath) {
@@ -47,11 +48,11 @@ public:
 	}
 
 private:
-	template <typename T, std::size_t N>
+	template <typename T, std::uint8_t N>
 	static std::array<T, N> ParseLine(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " "); tokens.size() == N + 1) {
 			std::array<T, N> data{};
-			for (std::size_t i = 0; i < N; ++i) {
+			for (std::uint8_t i = 0; i < N; ++i) {
 				data[i] = ParseToken<T>(tokens[i + 1]);
 			}
 			return data;
@@ -73,27 +74,41 @@ private:
 		return value;
 	}
 
-	static std::array<GLint, 3> ParseIndexGroup(const std::string_view index_group) {
+	static std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
+		if (const auto tokens = string::Split(line, " "); tokens.size() == 4) {
+			return std::array<glm::ivec3, 3>{
+				ParseIndexGroup(tokens[1]),
+				ParseIndexGroup(tokens[2]),
+				ParseIndexGroup(tokens[3])
+			};
+		}
+		std::ostringstream oss;
+		oss << "Unsupported format " << line;
+		throw std::invalid_argument{oss.str()};
+	}
 
+	static glm::ivec3 ParseIndexGroup(const std::string_view line) {
 		static constexpr auto delimiter = "/";
-		const auto tokens = string::Split(index_group, delimiter);
-		const auto count = std::count(index_group.cbegin(), index_group.cend(), *delimiter);
+		const auto tokens = string::Split(line, delimiter);
+		const auto count = std::count(line.cbegin(), line.cend(), *delimiter);
 
 		if (count == 0 && tokens.size() == 1) {
-			return {ParseToken<GLint>(tokens[0]), -1, -1};
+			return {ParseToken<GLint>(tokens[0]), index_unavailable_, index_unavailable_};
 		}
 		if (count == 1 && tokens.size() == 2) {
-			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), -1};
+			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), index_unavailable_};
 		}
-		if (count == 2 && tokens.size() == 2 && *index_group.cbegin() != '/' && *(index_group.cend() - 1) != '/') {
-			return {ParseToken<GLint>(tokens[0]), -1, ParseToken<GLint>(tokens[1])};
+		if (count == 2 && tokens.size() == 2 && *line.cbegin() != '/' && *(line.cend() - 1) != '/') {
+			return {ParseToken<GLint>(tokens[0]), index_unavailable_, ParseToken<GLint>(tokens[1])};
 		}
 		if (count == 2 && tokens.size() == 3) {
 			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), ParseToken<GLint>(tokens[2])};
 		}
 
 		std::ostringstream oss;
-		oss << "Invalid index group format " << index_group;
+		oss << "Unsupported format " << line;
 		throw std::invalid_argument{oss.str()};
 	}
+
+	static constexpr GLint index_unavailable_ = -1;
 };
