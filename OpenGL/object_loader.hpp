@@ -27,20 +27,20 @@ public:
 	}
 
 	static Mesh LoadMesh(std::istream& is) {
-		std::vector<GLfloat> positions, normals, texture_coordinates;
+		std::vector<glm::vec3> positions, normals;
+		std::vector<glm::vec2> texture_coordinates;
+		std::vector<std::array<glm::ivec3, 3>> faces;
 
 		for (std::string line; std::getline(is, line);) {
 			if (line.empty() || string::StartsWith(line, "#")) continue;
 			if (string::StartsWith(line, "v ")) {
-				const auto position = ParseLine<GLfloat, 3>(line);
-				positions.insert(positions.cend(), position.cbegin(), position.cend());
+				positions.push_back(ParseLine<GLfloat, 3>(line));
 			} else if (string::StartsWith(line, "vn ")) {
-				const auto normal = ParseLine<GLfloat, 3>(line);
-				normals.insert(normals.cend(), normal.cbegin(), normal.cend());
+				normals.push_back(ParseLine<GLfloat, 3>(line));
 			} else if (string::StartsWith(line, "vt ")) {
-				const auto texture_coordinate = ParseLine<GLfloat, 2>(line);
-				texture_coordinates.insert(
-					texture_coordinates.cend(), texture_coordinate.cbegin(), texture_coordinate.cend());
+				texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
+			} else if (string::StartsWith(line, "f ")) {
+				faces.push_back(ParseFace(line));
 			}
 		}
 
@@ -49,13 +49,20 @@ public:
 
 private:
 	template <typename T, std::uint8_t N>
-	static std::array<T, N> ParseLine(const std::string_view line) {
+	static auto ParseLine(const std::string_view line) {
+		static_assert(2 <= N && N <= 3);
 		if (const auto tokens = string::Split(line, " "); tokens.size() == N + 1) {
-			std::array<T, N> data{};
-			for (std::uint8_t i = 0; i < N; ++i) {
-				data[i] = ParseToken<T>(tokens[i + 1]);
+			if constexpr (N == 2) {
+				return glm::tvec2<T>{
+					ParseToken<T>(tokens[1]),
+					ParseToken<T>(tokens[2])};
 			}
-			return data;
+			if constexpr (N == 3) {
+				return glm::tvec3<T>{
+					ParseToken<T>(tokens[1]),
+					ParseToken<T>(tokens[2]),
+					ParseToken<T>(tokens[3])};
+			}
 		}
 		std::ostringstream oss;
 		oss << "Unsupported format " << line;

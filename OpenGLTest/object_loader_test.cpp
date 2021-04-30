@@ -11,7 +11,7 @@ protected:
 	}
 
 	template <typename T, std::size_t N>
-	std::array<T, N> ParseLine(const std::string_view line) const {
+	auto ParseLine(const std::string_view line) const {
 		return ObjectLoader::ParseLine<T, N>(line);
 	}
 
@@ -43,15 +43,20 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseEmptyLine) {
-		ASSERT_THROW((ParseLine<GLfloat, 0>("")), std::invalid_argument);
+		ASSERT_THROW((ParseLine<GLfloat, 3>("")), std::invalid_argument);
 	}
 
-	TEST_F(ObjectLoaderTest, TestParseLineWithInvalidSizeParameter) {
-		ASSERT_THROW((ParseLine<GLfloat, 4>("vt 0.707 0.395 0.684")), std::invalid_argument);
+	TEST_F(ObjectLoaderTest, TestParseLineWithInvalidSizeTemplateArgument) {
+		ASSERT_THROW((ParseLine<GLfloat, 2>("vt 0.707 0.395 0.684")), std::invalid_argument);
 	}
 
-	TEST_F(ObjectLoaderTest, TestParseLineWithCorrectSizeParameter) {
-		ASSERT_EQ((std::array<GLfloat, 3>{0.707f, 0.395f, 0.684f}), (ParseLine<GLfloat, 3>("vt 0.707 0.395 0.684")));
+	TEST_F(ObjectLoaderTest, TestParseLineWithTwoInts) {
+		ASSERT_EQ((glm::ivec2{0, 1}), (ParseLine<GLint, 2>("vt 0 1")));
+	}
+
+
+	TEST_F(ObjectLoaderTest, TestParseLineWithThreeFloats) {
+		ASSERT_EQ((glm::vec3{0.707f, 0.395f, 0.684f}), (ParseLine<GLfloat, 3>("vt 0.707 0.395 0.684")));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionIndex) {
