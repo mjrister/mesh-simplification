@@ -69,20 +69,13 @@ public:
 
 private:
 	template <typename T, std::uint8_t N>
-	static auto ParseLine(const std::string_view line) {
-		static_assert(2 <= N && N <= 3);
+	static glm::vec<N,T> ParseLine(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " "); tokens.size() == N + 1) {
-			if constexpr (N == 2) {
-				return glm::tvec2<T>{
-					ParseToken<T>(tokens[1]),
-					ParseToken<T>(tokens[2])};
+			glm::vec<N, T> vec{};
+			for (std::uint8_t i = 0; i < N; ++i) {
+				vec[i] = ParseToken<T>(tokens[i + 1]);
 			}
-			if constexpr (N == 3) {
-				return glm::tvec3<T>{
-					ParseToken<T>(tokens[1]),
-					ParseToken<T>(tokens[2]),
-					ParseToken<T>(tokens[3])};
-			}
+			return vec;
 		}
 		std::ostringstream oss;
 		oss << "Unsupported format " << line;
