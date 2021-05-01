@@ -32,6 +32,10 @@ protected:
 		return ObjectLoader::Flatten(tuples);
 	}
 
+	static auto GetPositionIndices(const std::vector<std::array<glm::uvec3, 3>>& faces) {
+		return ObjectLoader::GetPositionIndices(faces);
+	}
+
 	static constexpr GLuint npos_index = ObjectLoader::npos_index_;
 };
 
@@ -54,20 +58,20 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseEmptyLine) {
-		ASSERT_THROW((ParseLine<GLfloat, 3>("")), std::invalid_argument);
+		ASSERT_THROW((ParseLine<GLfloat, 3u>("")), std::invalid_argument);
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseLineWithInvalidSizeTemplateArgument) {
-		ASSERT_THROW((ParseLine<GLfloat, 2>("vt 0.707 0.395 0.684")), std::invalid_argument);
+		ASSERT_THROW((ParseLine<GLfloat, 2u>("vt 0.707 0.395 0.684")), std::invalid_argument);
 	}
 
-	TEST_F(ObjectLoaderTest, TestParseLineWithTwoInts) {
-		ASSERT_EQ((glm::uvec2{0u, 1u}), (ParseLine<GLuint, 2>("vt 0 1")));
+	TEST_F(ObjectLoaderTest, TestParseLineWithThreeInts) {
+		ASSERT_EQ((glm::uvec3{0u, 1u, 2u}), (ParseLine<GLuint, 3>("f 0 1 2")));
 	}
 
 
-	TEST_F(ObjectLoaderTest, TestParseLineWithThreeFloats) {
-		ASSERT_EQ((glm::vec3{0.707f, 0.395f, 0.684f}), (ParseLine<GLfloat, 3>("vt 0.707 0.395 0.684")));
+	TEST_F(ObjectLoaderTest, TestParseLineWithFourFloats) {
+		ASSERT_EQ((glm::vec4{0.707f, 0.395f, 0.684f, 0.967f}), (ParseLine<GLfloat, 4>("vt 0.707 0.395 0.684 0.967f")));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionIndex) {
@@ -120,7 +124,7 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestFlattenVec3) {
-		const std::vector<GLfloat> expected{0., 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f};
+		const std::vector expected{0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f};
 		const auto actual = Flatten(std::vector<glm::vec3>{
 			{0.f, 1.f, 2.f},
 			{3.f, 4.f, 5.f},
@@ -130,12 +134,36 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestFlattenVec2) {
-		const std::vector<GLfloat> expected{0., 1.f, 2.f, 3.f, 4.f, 5.f};
+		const std::vector expected{0.f, 1.f, 2.f, 3.f, 4.f, 5.f};
 		const auto actual = Flatten(std::vector<glm::vec2>{
 			{0.f, 1.f},
 			{2.f, 3.f},
 			{4.f, 5.f}
 		});
+		ASSERT_EQ(expected, actual);
+	}
+
+	TEST_F(ObjectLoaderTest, TestGetPositionIndices) {
+
+		constexpr std::array<glm::uvec3, 3> face0{
+			glm::uvec3{0u, npos_index, npos_index},
+			glm::uvec3{1u, npos_index, npos_index},
+			glm::uvec3{2u, npos_index, npos_index}
+		};
+		constexpr std::array<glm::uvec3, 3> face1{
+			glm::uvec3{3u, npos_index, npos_index},
+			glm::uvec3{4u, npos_index, npos_index},
+			glm::uvec3{5u, npos_index, npos_index}
+		};
+		constexpr std::array<glm::uvec3, 3> face2{
+			glm::uvec3{6u, npos_index, npos_index},
+			glm::uvec3{7u, npos_index, npos_index},
+			glm::uvec3{8u, npos_index, npos_index}
+		};
+
+		const std::vector expected{0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u};
+		const auto actual = GetPositionIndices({face0, face1, face2});
+
 		ASSERT_EQ(expected, actual);
 	}
 }
