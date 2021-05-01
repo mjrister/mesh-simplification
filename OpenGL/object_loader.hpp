@@ -30,7 +30,7 @@ public:
 	static Mesh LoadMesh(std::istream& is) {
 		std::vector<glm::vec3> positions, normals;
 		std::vector<glm::vec2> texture_coordinates;
-		std::vector<std::array<glm::ivec3, 3>> faces;
+		std::vector<std::array<glm::uvec3, 3>> faces;
 
 		for (std::string line; std::getline(is, line);) {
 			if (line.empty() || string::StartsWith(line, "#")) continue;
@@ -64,7 +64,7 @@ public:
 			}
 		}
 
-		return Mesh{{}, {}};
+		return Mesh{Flatten(positions), Flatten(texture_coordinates), Flatten(normals), GetPositionIndices(faces)};
 	}
 
 private:
@@ -94,7 +94,7 @@ private:
 		return value;
 	}
 
-	static std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
+	static std::array<glm::uvec3, 3> ParseFace(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " "); tokens.size() == 4) {
 			return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
 		}
@@ -103,7 +103,7 @@ private:
 		throw std::invalid_argument{oss.str()};
 	}
 
-	static glm::ivec3 ParseIndexGroup(const std::string_view line) {
+	static glm::uvec3 ParseIndexGroup(const std::string_view line) {
 		static constexpr auto delimiter = "/";
 		const auto tokens = string::Split(line, delimiter);
 		const auto count = std::count(line.cbegin(), line.cend(), *delimiter);
@@ -135,18 +135,31 @@ private:
 	}
 
 	template <typename T, std::uint8_t N>
-	static std::vector<T> Flatten(const std::vector<glm::vec<N, T>>& list) {
+	static std::vector<T> Flatten(const std::vector<glm::vec<N, T>>& tuples) {
 		std::vector<T> data;
-		data.reserve(list.size() * N);
+		data.reserve(tuples.size() * N);
 
-		for (const auto& item : list) {
+		for (const auto& tuple : tuples) {
 			for (std::uint8_t i = 0; i < N; ++i) {
-				data.push_back(item[i]);
+				data.push_back(tuple[i]);
 			}
 		}
 
 		return data;
 	}
 
-	static constexpr GLint npos_index_ = -1;
+	static std::vector<GLuint> GetPositionIndices(const std::vector<std::array<glm::uvec3, 3>>& faces) {
+		std::vector<GLuint> position_indices;
+		position_indices.reserve(faces.size() * 3);
+
+		for (const auto& face : faces) {
+			for (const auto& index_group : face) {
+				position_indices.push_back(index_group[0]);
+			}
+		}
+
+		return position_indices;
+	}
+
+	static constexpr GLuint npos_index_ = std::numeric_limits<GLuint>::max();
 };
