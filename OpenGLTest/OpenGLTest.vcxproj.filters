@@ -5,9 +5,7 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="graphics\object_loader_test.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
+    <ClCompile Include="graphics\object_loader_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
