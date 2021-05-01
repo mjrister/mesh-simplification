@@ -1,9 +1,9 @@
 #pragma once
 
 #include <fstream>
+#include <sstream>
+#include <stdexcept>
 #include <string_view>
-
-#include "exception/file_not_found_exception.hpp"
 
 namespace file {
 
@@ -18,6 +18,8 @@ namespace file {
 			return source;
 		}
 
-		throw FileNotFoundException{filepath};
+		std::ostringstream oss;
+		oss << "Unable to open " << filepath;
+		throw std::invalid_argument{oss.str()};
 	}
 }
