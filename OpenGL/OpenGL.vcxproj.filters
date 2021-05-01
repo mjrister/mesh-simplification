@@ -22,6 +22,9 @@
     <ClInclude Include="object_loader.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="exception\file_not_found_exception.hpp">
+      <Filter>exception</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -40,6 +43,9 @@
     </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{e2a2d935-f222-40b4-b7c5-da80e71d06b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="exception">
+      <UniqueIdentifier>{5f82ecdc-86d7-41c3-8d86-43fac2e22732}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@
 #include <GL/gl3w.h>
 #include <glm/glm.hpp>
 
+#include "exception/file_not_found_exception.hpp"
 #include "graphics/mesh.hpp"
 #include "utils/string.hpp"
 
@@ -22,9 +23,7 @@ public:
 		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
 			return LoadMesh(ifs);
 		}
-		std::ostringstream oss;
-		oss << "Unable to open " << filepath;
-		throw std::invalid_argument{oss.str()};
+		throw FileNotFoundException{filepath};
 	}
 
 	static Mesh LoadMesh(std::istream& is) {
