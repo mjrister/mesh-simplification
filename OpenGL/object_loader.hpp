@@ -30,7 +30,7 @@ public:
 	static Mesh LoadMesh(std::istream& is) {
 		std::vector<glm::vec3> positions, normals;
 		std::vector<glm::vec2> texture_coordinates;
-		std::vector<std::array<glm::uvec3, 3>> faces;
+		std::vector<std::array<glm::ivec3, 3>> faces;
 
 		for (std::string line; std::getline(is, line);) {
 			if (line.empty() || string::StartsWith(line, "#")) continue;
@@ -94,7 +94,7 @@ private:
 		return value;
 	}
 
-	static std::array<glm::uvec3, 3> ParseFace(const std::string_view line) {
+	static std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " "); tokens.size() == 4) {
 			return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
 		}
@@ -103,7 +103,7 @@ private:
 		throw std::invalid_argument{oss.str()};
 	}
 
-	static glm::uvec3 ParseIndexGroup(const std::string_view line) {
+	static glm::ivec3 ParseIndexGroup(const std::string_view line) {
 		static constexpr auto delimiter = "/";
 		const auto tokens = string::Split(line, delimiter);
 		const auto count = std::count(line.cbegin(), line.cend(), *delimiter);
@@ -148,7 +148,7 @@ private:
 		return data;
 	}
 
-	static std::vector<GLuint> GetPositionIndices(const std::vector<std::array<glm::uvec3, 3>>& faces) {
+	static std::vector<GLuint> GetPositionIndices(const std::vector<std::array<glm::ivec3, 3>>& faces) {
 		std::vector<GLuint> position_indices;
 		position_indices.reserve(faces.size() * 3);
 
@@ -161,5 +161,5 @@ private:
 		return position_indices;
 	}
 
-	static constexpr GLuint npos_index_ = std::numeric_limits<GLuint>::max();
+	static constexpr GLint npos_index_ = -1;
 };

@@ -32,21 +32,21 @@ protected:
 		return ObjectLoader::Flatten(tuples);
 	}
 
-	static auto GetPositionIndices(const std::vector<std::array<glm::uvec3, 3>>& faces) {
+	static auto GetPositionIndices(const std::vector<std::array<glm::ivec3, 3>>& faces) {
 		return ObjectLoader::GetPositionIndices(faces);
 	}
 
-	static constexpr GLuint npos_index = ObjectLoader::npos_index_;
+	static constexpr auto npos_index = ObjectLoader::npos_index_;
 };
 
 namespace {
 
 	TEST_F(ObjectLoaderTest, TestParseEmptyStringToken) {
-		ASSERT_THROW(ParseToken<GLuint>(""), std::invalid_argument);
+		ASSERT_THROW(ParseToken<GLint>(""), std::invalid_argument);
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIntToken) {
-		ASSERT_EQ(42, ParseToken<GLuint>("42"));
+		ASSERT_EQ(42, ParseToken<GLint>("42"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFloatToken) {
@@ -66,7 +66,7 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseLineWithThreeInts) {
-		ASSERT_EQ((glm::uvec3{0, 1, 2}), (ParseLine<GLuint, 3>("f 0 1 2")));
+		ASSERT_EQ((glm::ivec3{0, 1, 2}), (ParseLine<GLint, 3>("f 0 1 2")));
 	}
 
 
@@ -75,19 +75,19 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionIndex) {
-		ASSERT_EQ((glm::uvec3{1, npos_index, npos_index}), ParseIndexGroup("1"));
+		ASSERT_EQ((glm::ivec3{1, npos_index, npos_index}), ParseIndexGroup("1"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndTextureCoordinatesIndices) {
-		ASSERT_EQ((glm::uvec3{1, 2, npos_index}), ParseIndexGroup("1/2"));
+		ASSERT_EQ((glm::ivec3{1, 2, npos_index}), ParseIndexGroup("1/2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndNormalIndices) {
-		ASSERT_EQ((glm::uvec3{1, npos_index, 2}), ParseIndexGroup("1//2"));
+		ASSERT_EQ((glm::ivec3{1, npos_index, 2}), ParseIndexGroup("1//2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionTextureCoordinateAndNormalIndices) {
-		ASSERT_EQ((glm::uvec3{1, 2, 3}), ParseIndexGroup("1/2/3"));
+		ASSERT_EQ((glm::ivec3{1, 2, 3}), ParseIndexGroup("1/2/3"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithInvalidFormat) {
@@ -102,10 +102,10 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFaceWithCorrectNumberOfIndexGroups) {
-		constexpr std::array<glm::uvec3, 3> expected{
-			glm::uvec3{0, 1, 2},
-			glm::uvec3{3, 4, 5},
-			glm::uvec3{6, 7, 8}
+		constexpr std::array<glm::ivec3, 3> expected{
+			glm::ivec3{0, 1, 2},
+			glm::ivec3{3, 4, 5},
+			glm::ivec3{6, 7, 8}
 		};
 		const auto actual = ParseFace("f 0/1/2 3/4/5 6/7/8");
 		ASSERT_EQ(expected, actual);
@@ -145,20 +145,20 @@ namespace {
 
 	TEST_F(ObjectLoaderTest, TestGetPositionIndices) {
 
-		constexpr std::array<glm::uvec3, 3> face0{
-			glm::uvec3{0, npos_index, npos_index},
-			glm::uvec3{1, npos_index, npos_index},
-			glm::uvec3{2, npos_index, npos_index}
+		constexpr std::array<glm::ivec3, 3> face0{
+			glm::ivec3{0, npos_index, npos_index},
+			glm::ivec3{1, npos_index, npos_index},
+			glm::ivec3{2, npos_index, npos_index}
 		};
-		constexpr std::array<glm::uvec3, 3> face1{
-			glm::uvec3{3, npos_index, npos_index},
-			glm::uvec3{4, npos_index, npos_index},
-			glm::uvec3{5, npos_index, npos_index}
+		constexpr std::array<glm::ivec3, 3> face1{
+			glm::ivec3{3, npos_index, npos_index},
+			glm::ivec3{4, npos_index, npos_index},
+			glm::ivec3{5, npos_index, npos_index}
 		};
-		constexpr std::array<glm::uvec3, 3> face2{
-			glm::uvec3{6, npos_index, npos_index},
-			glm::uvec3{7, npos_index, npos_index},
-			glm::uvec3{8, npos_index, npos_index}
+		constexpr std::array<glm::ivec3, 3> face2{
+			glm::ivec3{6, npos_index, npos_index},
+			glm::ivec3{7, npos_index, npos_index},
+			glm::ivec3{8, npos_index, npos_index}
 		};
 
 		const std::vector expected{0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u};
