@@ -5,11 +5,16 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="object_loader_test.cpp" />
+    <ClCompile Include="graphics\object_loader_test.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
       <UniqueIdentifier>{f96d5c31-664b-4b54-a68a-5152be897c41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{358dd437-5550-496d-9676-902602cd7ec3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
