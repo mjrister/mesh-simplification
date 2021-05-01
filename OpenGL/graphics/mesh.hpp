@@ -7,6 +7,15 @@
 class Mesh {
 
 public:
+	Mesh(std::vector<GLfloat> positions,
+	     std::vector<GLfloat> texture_coordinates,
+	     std::vector<GLfloat> normals,
+	     std::vector<GLuint> indices) noexcept
+		: positions_{std::move(positions)},
+		  texture_coordinates_{std::move(texture_coordinates)},
+		  normals_{std::move(normals)},
+		  indices_{std::move(indices)} {}
+
 	Mesh(std::vector<GLfloat> positions, std::vector<GLuint> indices) noexcept
 		: positions_{std::move(positions)}, indices_{std::move(indices)} {
 
@@ -43,6 +52,6 @@ public:
 
 private:
 	GLuint vao_id_{0}, vbo_id_{0}, ebo_id_{0};
-	std::vector<GLfloat> positions_;
+	std::vector<GLfloat> positions_, texture_coordinates_, normals_;
 	std::vector<GLuint> indices_;
 };
