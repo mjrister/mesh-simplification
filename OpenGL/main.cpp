@@ -62,13 +62,13 @@ static void InitializeGl3w() {
 
 Mesh CreateTriangle() {
 
-	const std::vector<GLfloat> vertices{
+	const std::vector vertices{
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
 		0.0f, 0.5f, 0.0f
 	};
 
-	const std::vector<GLuint> indices{
+	const std::vector indices{
 		0u, 1u, 2u
 	};
 
