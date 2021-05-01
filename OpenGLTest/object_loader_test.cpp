@@ -6,25 +6,30 @@
 class ObjectLoaderTest : public testing::Test {
 protected:
 	template <typename T>
-	T ParseToken(const std::string_view token) const {
+	static auto ParseToken(const std::string_view token) {
 		return ObjectLoader::ParseToken<T>(token);
 	}
 
-	template <typename T, std::size_t N>
-	auto ParseLine(const std::string_view line) const {
+	template <typename T, std::uint8_t N>
+	static auto ParseLine(const std::string_view line) {
 		return ObjectLoader::ParseLine<T, N>(line);
 	}
 
-	glm::uvec3 ParseIndexGroup(const std::string_view line) const {
+	static auto ParseIndexGroup(const std::string_view line) {
 		return ObjectLoader::ParseIndexGroup(line);
 	}
 
-	std::array<glm::uvec3, 3> ParseFace(const std::string_view line) const {
+	static auto ParseFace(const std::string_view line) {
 		return ObjectLoader::ParseFace(line);
 	}
 
-	void ValidateIndex(const GLint index, const GLint max_value) const {
-		return ObjectLoader::ValidateIndex(index, max_value);
+	static void ValidateIndex(const GLint index, const GLint max_value) {
+		ObjectLoader::ValidateIndex(index, max_value);
+	}
+
+	template <typename T, std::uint8_t N>
+	static auto Flatten(const std::vector<glm::vec<N, T>>& tuples) {
+		return ObjectLoader::Flatten(tuples);
 	}
 
 	static constexpr GLuint npos_index = ObjectLoader::npos_index_;
@@ -37,7 +42,7 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIntToken) {
-		ASSERT_EQ(42, ParseToken<GLuint>("42"));
+		ASSERT_EQ(42u, ParseToken<GLuint>("42"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFloatToken) {
@@ -57,7 +62,7 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseLineWithTwoInts) {
-		ASSERT_EQ((glm::uvec2{0, 1}), (ParseLine<GLuint, 2>("vt 0 1")));
+		ASSERT_EQ((glm::uvec2{0u, 1u}), (ParseLine<GLuint, 2>("vt 0 1")));
 	}
 
 
@@ -70,15 +75,15 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndTextureCoordinatesIndices) {
-		ASSERT_EQ((glm::uvec3{1, 2, npos_index}), ParseIndexGroup("1/2"));
+		ASSERT_EQ((glm::uvec3{1u, 2u, npos_index}), ParseIndexGroup("1/2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndNormalIndices) {
-		ASSERT_EQ((glm::uvec3{1, npos_index, 2}), ParseIndexGroup("1//2"));
+		ASSERT_EQ((glm::uvec3{1u, npos_index, 2u}), ParseIndexGroup("1//2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionTextureCoordinateAndNormalIndices) {
-		ASSERT_EQ((glm::uvec3{1, 2, 3}), ParseIndexGroup("1/2/3"));
+		ASSERT_EQ((glm::uvec3{1u, 2u, 3u}), ParseIndexGroup("1/2/3"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithInvalidFormat) {
@@ -93,11 +98,13 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFaceWithCorrectNumberOfIndexGroups) {
-		ASSERT_EQ((std::array<glm::uvec3, 3>{
-			glm::uvec3{0, 1, 2},
-			glm::uvec3{3, 4, 5},
-			glm::uvec3{6, 7, 8}
-		}), ParseFace("f 0/1/2 3/4/5 6/7/8"));
+		constexpr std::array<glm::uvec3, 3> expected{
+			glm::uvec3{0u, 1u, 2u},
+			glm::uvec3{3u, 4u, 5u},
+			glm::uvec3{6u, 7u, 8u}
+		};
+		const auto actual = ParseFace("f 0/1/2 3/4/5 6/7/8");
+		ASSERT_EQ(expected, actual);
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFaceWithIncorrectNumberOfIndexGroups) {
@@ -105,10 +112,30 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestValidateIndex) {
-		constexpr auto min_value = 0, max_value = 42;
-		ASSERT_NO_THROW(ValidateIndex(min_value, max_value));
-		ASSERT_NO_THROW(ValidateIndex(max_value, max_value));
-		ASSERT_THROW(ValidateIndex(min_value - 1, max_value), std::invalid_argument);
-		ASSERT_THROW(ValidateIndex(max_value + 1, max_value), std::invalid_argument);
+		constexpr auto max_value = 42;
+		ASSERT_NO_THROW(ValidateIndex(0, max_value));
+		ASSERT_NO_THROW(ValidateIndex(42, max_value));
+		ASSERT_THROW(ValidateIndex(-1, max_value), std::invalid_argument);
+		ASSERT_THROW(ValidateIndex(43, max_value), std::invalid_argument);
+	}
+
+	TEST_F(ObjectLoaderTest, TestFlattenVec3) {
+		const std::vector<GLfloat> expected{0., 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f};
+		const auto actual = Flatten(std::vector<glm::vec3>{
+			{0.f, 1.f, 2.f},
+			{3.f, 4.f, 5.f},
+			{6.f, 7.f, 8.f}
+		});
+		ASSERT_EQ(expected, actual);
+	}
+
+	TEST_F(ObjectLoaderTest, TestFlattenVec2) {
+		const std::vector<GLfloat> expected{0., 1.f, 2.f, 3.f, 4.f, 5.f};
+		const auto actual = Flatten(std::vector<glm::vec2>{
+			{0.f, 1.f},
+			{2.f, 3.f},
+			{4.f, 5.f}
+		});
+		ASSERT_EQ(expected, actual);
 	}
 }
