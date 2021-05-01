@@ -10,7 +10,6 @@
     <ClInclude Include="utils\file.hpp">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="object_loader.hpp" />
     <ClInclude Include="graphics\shader.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -18,6 +17,9 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\mesh.hpp">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="object_loader.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
