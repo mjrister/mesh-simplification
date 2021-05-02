@@ -191,15 +191,22 @@ namespace {
 
 		const auto mesh = ObjectLoader::LoadMesh(ss);
 
-		/*const auto positions = mesh.Positions();
-		ASSERT_EQ(positions.size(), 6);
+		const auto& positions = mesh.Positions();
 		ASSERT_EQ(positions, (std::vector<GLfloat>{
-			0.0, 1.0, 0.0,
-			0.5, 1.0, 0.0,
-			1.0, 1.0, 0.0,
+			0.00, 1.0, 0.0,
+			0.50, 1.0, 0.0,
+			1.00, 1.0, 0.0,
 			0.75, 0.5, 0.0,
-			0.5, 0.0, 0.0,
+			0.50, 0.0, 0.0,
 			0.25, 0.5, 0.0
-		}));*/
+		}));
+
+		const auto& indices = mesh.Indices();
+		ASSERT_EQ(indices, (std::vector<GLuint>{
+			0, 1, 5,
+			1, 2, 3,
+			1, 3, 5,
+			5, 3, 4
+		}));
 	}
 }
