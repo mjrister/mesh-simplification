@@ -36,7 +36,7 @@ protected:
 		return ObjectLoader::GetPositionIndices(faces);
 	}
 
-	static constexpr auto npos_index = ObjectLoader::npos_index_;
+	static constexpr auto npos = ObjectLoader::npos_index_;
 };
 
 namespace {
@@ -75,15 +75,15 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionIndex) {
-		ASSERT_EQ((glm::ivec3{1, npos_index, npos_index}), ParseIndexGroup("1"));
+		ASSERT_EQ((glm::ivec3{1, npos, npos}), ParseIndexGroup("1"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndTextureCoordinatesIndices) {
-		ASSERT_EQ((glm::ivec3{1, 2, npos_index}), ParseIndexGroup("1/2"));
+		ASSERT_EQ((glm::ivec3{1, 2, npos}), ParseIndexGroup("1/2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndNormalIndices) {
-		ASSERT_EQ((glm::ivec3{1, npos_index, 2}), ParseIndexGroup("1//2"));
+		ASSERT_EQ((glm::ivec3{1, npos, 2}), ParseIndexGroup("1//2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionTextureCoordinateAndNormalIndices) {
@@ -144,25 +144,12 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestGetPositionIndices) {
-
-		constexpr std::array<glm::ivec3, 3> face0{
-			glm::ivec3{0, npos_index, npos_index},
-			glm::ivec3{1, npos_index, npos_index},
-			glm::ivec3{2, npos_index, npos_index}
-		};
-		constexpr std::array<glm::ivec3, 3> face1{
-			glm::ivec3{3, npos_index, npos_index},
-			glm::ivec3{4, npos_index, npos_index},
-			glm::ivec3{5, npos_index, npos_index}
-		};
-		constexpr std::array<glm::ivec3, 3> face2{
-			glm::ivec3{6, npos_index, npos_index},
-			glm::ivec3{7, npos_index, npos_index},
-			glm::ivec3{8, npos_index, npos_index}
-		};
-
 		const std::vector expected{0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u};
-		const auto actual = GetPositionIndices({face0, face1, face2});
+		const auto actual = GetPositionIndices({
+			{glm::ivec3{0, npos, npos}, glm::ivec3{1, npos, npos}, glm::ivec3{2, npos, npos}},
+			{glm::ivec3{3, npos, npos}, glm::ivec3{4, npos, npos}, glm::ivec3{5, npos, npos}},
+			{glm::ivec3{6, npos, npos}, glm::ivec3{7, npos, npos}, glm::ivec3{8, npos, npos}}
+		});
 
 		ASSERT_EQ(expected, actual);
 	}
