@@ -10,6 +10,12 @@ namespace string {
 		return prefix.size() <= string.size() && string.compare(0, prefix.size(), prefix.data()) == 0;
 	}
 
+	static constexpr std::string_view Trim(std::string_view string) {
+		string.remove_prefix(std::min(string.find_first_not_of(' '), string.size()));
+		string.remove_suffix(string.size() - string.find_last_not_of(' ') - 1);
+		return string;
+	}
+
 	static std::vector<std::string_view> Split(const std::string_view string, const std::string_view delimiter) {
 
 		if (string.empty()) return {};
