@@ -141,13 +141,13 @@ private:
 	}
 
 	template <typename T, std::uint8_t N>
-	static std::vector<T> Flatten(const std::vector<glm::vec<N, T>>& tuples) {
+	static std::vector<T> Flatten(const std::vector<glm::vec<N, T>>& ntuples_t) {
 		std::vector<T> data;
-		data.reserve(tuples.size() * N);
+		data.reserve(ntuples_t.size() * N);
 
-		for (const auto& tuple : tuples) {
+		for (const auto& ntuple_t : ntuples_t) {
 			for (std::uint8_t i = 0; i < N; ++i) {
-				data.push_back(tuple[i]);
+				data.push_back(ntuple_t[i]);
 			}
 		}
 
