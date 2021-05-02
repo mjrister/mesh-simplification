@@ -11,7 +11,7 @@ public:
 	Shader(const GLenum shader_type, const GLchar* const shader_source) : id_{glCreateShader(shader_type)} {
 		glShaderSource(id_, 1, &shader_source, nullptr);
 		glCompileShader(id_);
-		VerifyCompileStatus();
+		VerifyStatus();
 	}
 
 	Shader(const Shader&) = delete;
@@ -28,7 +28,7 @@ public:
 	}
 
 private:
-	void VerifyCompileStatus() const {
+	void VerifyStatus() const {
 		GLint success;
 		glGetShaderiv(id_, GL_COMPILE_STATUS, &success);
 
