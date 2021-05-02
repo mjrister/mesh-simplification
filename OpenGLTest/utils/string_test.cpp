@@ -46,9 +46,9 @@ namespace {
 		ASSERT_EQ((std::vector<std::string_view>{"Hello"}), tokens);
 	}
 
-	TEST(String, TestSplitStringOnWhitespace) {
-		constexpr auto* delimiter = " ";
-		const auto tokens = string::Split("  vt 0.707  0.395 0.684  ", delimiter);
+	TEST(String, TestSplitStringOnWhitespaceAndTab) {
+		constexpr auto* delimiter = " \t";
+		const auto tokens = string::Split("\t vt 0.707 0.395 0.684 ", delimiter);
 		ASSERT_EQ((std::vector<std::string_view>{"vt", "0.707", "0.395", "0.684"}), tokens);
 	}
 }

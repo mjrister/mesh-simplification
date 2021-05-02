@@ -70,7 +70,7 @@ public:
 private:
 	template <typename T, std::uint8_t N>
 	static glm::vec<N,T> ParseLine(const std::string_view line) {
-		if (const auto tokens = string::Split(line, " "); tokens.size() == N + 1) {
+		if (const auto tokens = string::Split(line, " \t"); tokens.size() == N + 1) {
 			glm::vec<N, T> vec{};
 			for (std::uint8_t i = 0; i < N; ++i) {
 				vec[i] = ParseToken<T>(tokens[i + 1]);
@@ -95,7 +95,7 @@ private:
 	}
 
 	static std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
-		if (const auto tokens = string::Split(line, " "); tokens.size() == 4) {
+		if (const auto tokens = string::Split(line, " \t"); tokens.size() == 4) {
 			return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
 		}
 		std::ostringstream oss;
