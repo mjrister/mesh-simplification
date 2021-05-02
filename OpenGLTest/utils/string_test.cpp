@@ -28,10 +28,14 @@ namespace {
 		ASSERT_FALSE(string::StartsWith(line, prefix));
 	}
 
-	TEST(String, TestTrimOnWhitespaceAndTab) {
-		constexpr auto* line = "\t\t Hello, World! \t\t";
-		constexpr auto delimiter = " \t";
-		ASSERT_EQ("Hello, World!", string::Trim(line, delimiter));
+	TEST(String, TestTrimWhitespaceString) {
+		constexpr auto* line = "     ";
+		ASSERT_TRUE(string::Trim(line).empty());
+	}
+
+	TEST(String, TestTrimString) {
+		constexpr auto line = "\t  Hello, World!  \t\r\n";
+		ASSERT_EQ("Hello, World!", string::Trim(line));
 	}
 
 	TEST(String, TestSplitEmptyString) {
