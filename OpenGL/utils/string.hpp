@@ -26,6 +26,7 @@ namespace string {
 			tokens.push_back(string.substr(i, j - i));
 			i = string.find_first_not_of(delimiter, j);
 		}
+
 		return tokens;
 	}
 }
