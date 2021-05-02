@@ -1,4 +1,4 @@
-#include "object_loader.hpp"
+#include "graphics/object_loader.hpp"
 
 #include <glm/glm.hpp>
 #include <gtest/gtest.h>
