@@ -45,7 +45,12 @@ public:
 		glDeleteVertexArrays(1, &vao_id_);
 	}
 
-	void Draw() const noexcept {
+	[[nodiscard]] const auto& Positions() const noexcept { return positions_; }
+	[[nodiscard]] const auto& TextureCoordinates() const noexcept { return texture_coordinates_; }
+	[[nodiscard]] const auto& Normals() const noexcept { return normals_; }
+	[[nodiscard]] const auto& Indices() const noexcept { return indices_; }
+
+	void Render() const noexcept {
 		glBindVertexArray(vao_id_);
 		glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, nullptr);
 	}
