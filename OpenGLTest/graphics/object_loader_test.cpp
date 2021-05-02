@@ -153,4 +153,53 @@ namespace {
 
 		ASSERT_EQ(expected, actual);
 	}
+
+	TEST_F(ObjectLoaderTest, TestLoadMesh) {
+
+		/**
+		 * 0.0 |     4     | 1.0 (tex)
+		 *     |    / \    |
+		 *     |   5 - 3   |
+		 *     |  / \ / \  |
+		 * 1.0 | 0 - 1 - 2 | 0.0 (tex)
+		 *     ------------
+		 *     0.0      1.0
+		 */
+		std::istringstream ss{R"(
+			# positions
+			v 0.0  1.0 0.0
+			v 0.5  1.0 0.0
+			v 1.0  1.0 0.0
+			v 0.75 0.5 0.0
+			v 0.5  0.0 0.0
+			v 0.25 0.5 0.0
+			# texture coordinates
+			vt 0.0  0.0
+			vt 0.5  0.0
+			vt 1.0  0.0
+			vt 0.25 0.5
+			vt 0.75 0.0
+			vt 0.5  1.0
+			# normals
+			vn 0.0 0.0 1.0
+			# faces
+			f 0 1 5
+			f 1 2 3
+			f 1 3 5
+			f 5 3 4
+		)"};
+
+		const auto mesh = ObjectLoader::LoadMesh(ss);
+
+		const auto positions = mesh.Positions();
+		ASSERT_EQ(positions.size(), 6);
+		ASSERT_EQ(positions, (std::vector<GLfloat>{
+			0.0, 1.0, 0.0,
+			0.5, 1.0, 0.0,
+			1.0, 1.0, 0.0,
+			0.75, 0.5, 0.0,
+			0.5, 0.0, 0.0,
+			0.25, 0.5, 0.0
+		}));
+	}
 }
