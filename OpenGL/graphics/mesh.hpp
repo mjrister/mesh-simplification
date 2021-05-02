@@ -40,9 +40,9 @@ public:
 	Mesh& operator=(Mesh&&) noexcept = delete;
 
 	~Mesh() {
-		glDeleteBuffers(1, &ebo_id_);
-		glDeleteBuffers(1, &vbo_id_);
-		glDeleteVertexArrays(1, &vao_id_);
+		if (ebo_id_) glDeleteBuffers(1, &ebo_id_);
+		if (vbo_id_) glDeleteBuffers(1, &vbo_id_);
+		if (vao_id_) glDeleteVertexArrays(1, &vao_id_);
 	}
 
 	[[nodiscard]] const auto& Positions() const noexcept { return positions_; }
