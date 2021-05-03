@@ -28,6 +28,16 @@ namespace {
 		ASSERT_FALSE(string::StartsWith(line, prefix));
 	}
 
+	TEST(String, TestTrimWhitespaceString) {
+		constexpr auto* line = "     ";
+		ASSERT_TRUE(string::Trim(line).empty());
+	}
+
+	TEST(String, TestTrimString) {
+		constexpr auto line = "\t  Hello, World!  \t\r\n";
+		ASSERT_EQ("Hello, World!", string::Trim(line));
+	}
+
 	TEST(String, TestSplitEmptyString) {
 		constexpr auto* delimiter = " ";
 		const auto tokens = string::Split("", delimiter);
@@ -46,9 +56,9 @@ namespace {
 		ASSERT_EQ((std::vector<std::string_view>{"Hello"}), tokens);
 	}
 
-	TEST(String, TestSplitStringOnWhitespace) {
-		constexpr auto* delimiter = " ";
-		const auto tokens = string::Split("  vt 0.707  0.395 0.684  ", delimiter);
+	TEST(String, TestSplitStringOnWhitespaceAndTab) {
+		constexpr auto* delimiter = " \t";
+		const auto tokens = string::Split("\t vt 0.707 0.395 0.684 ", delimiter);
 		ASSERT_EQ((std::vector<std::string_view>{"vt", "0.707", "0.395", "0.684"}), tokens);
 	}
 }

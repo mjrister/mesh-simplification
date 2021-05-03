@@ -33,15 +33,16 @@ public:
 		std::vector<std::array<glm::ivec3, 3>> faces;
 
 		for (std::string line; std::getline(is, line);) {
-			if (line.empty() || string::StartsWith(line, "#")) continue;
-			if (string::StartsWith(line, "v ")) {
-				positions.push_back(ParseLine<GLfloat, 3>(line));
-			} else if (string::StartsWith(line, "vn ")) {
-				normals.push_back(ParseLine<GLfloat, 3>(line));
-			} else if (string::StartsWith(line, "vt ")) {
-				texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
-			} else if (string::StartsWith(line, "f ")) {
-				faces.push_back(ParseFace(line));
+			if (line = string::Trim(line); !line.empty() && !string::StartsWith(line, "#")) {
+				if (string::StartsWith(line, "v ")) {
+					positions.push_back(ParseLine<GLfloat, 3>(line));
+				} else if (string::StartsWith(line, "vn ")) {
+					normals.push_back(ParseLine<GLfloat, 3>(line));
+				} else if (string::StartsWith(line, "vt ")) {
+					texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
+				} else if (string::StartsWith(line, "f ")) {
+					faces.push_back(ParseFace(line));
+				}
 			}
 		}
 
@@ -64,13 +65,17 @@ public:
 			}
 		}
 
-		return Mesh{Flatten(positions), Flatten(texture_coordinates), Flatten(normals), GetPositionIndices(faces)};
+		return Mesh{
+			Flatten(positions),
+			Flatten(ordered_texture_coordinates),
+			Flatten(ordered_normals),
+			GetPositionIndices(faces)};
 	}
 
 private:
 	template <typename T, std::uint8_t N>
 	static glm::vec<N,T> ParseLine(const std::string_view line) {
-		if (const auto tokens = string::Split(line, " "); tokens.size() == N + 1) {
+		if (const auto tokens = string::Split(line, " \t"); tokens.size() == N + 1) {
 			glm::vec<N, T> vec{};
 			for (std::uint8_t i = 0; i < N; ++i) {
 				vec[i] = ParseToken<T>(tokens[i + 1]);
@@ -83,19 +88,19 @@ private:
 	}
 
 	template <typename T>
-	static T ParseToken(const std::string_view token) {
+	static T ParseToken(const std::string_view token_t) {
 		T value;
-		if (const auto [_, error_code] = std::from_chars(token.data(), token.data() + token.size(), value);
+		if (const auto [_, error_code] = std::from_chars(token_t.data(), token_t.data() + token_t.size(), value);
 			error_code == std::errc::invalid_argument) {
 			std::ostringstream oss;
-			oss << "Unable to convert " << token << " to type '" << typeid(T).name();
+			oss << "Unable to convert " << token_t << " to type '" << typeid(T).name();
 			throw std::invalid_argument{oss.str()};
 		}
 		return value;
 	}
 
 	static std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
-		if (const auto tokens = string::Split(line, " "); tokens.size() == 4) {
+		if (const auto tokens = string::Split(line, " \t"); tokens.size() == 4) {
 			return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
 		}
 		std::ostringstream oss;
@@ -105,26 +110,20 @@ private:
 
 	static glm::ivec3 ParseIndexGroup(const std::string_view line) {
 		static constexpr auto delimiter = "/";
+		const auto tokens = string::Split(line, delimiter);
+		const auto count = std::count(line.begin(), line.end(), *delimiter);
 
-		switch (const auto tokens = string::Split(line, delimiter); std::count(line.begin(), line.end(), *delimiter)) {
-			case 0:
-				if (tokens.size() == 1) {
-					return {ParseToken<GLint>(tokens[0]), npos_index_, npos_index_};
-				}
-				break;
-			case 1:
-				if (tokens.size() == 2) {
-					return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), npos_index_};
-				}
-				break;
-			case 2:
-				if (tokens.size() == 2 && *line.cbegin() != '/' && *(line.cend() - 1) != '/') {
-					return {ParseToken<GLint>(tokens[0]), npos_index_, ParseToken<GLint>(tokens[1])};
-				}
-				if (tokens.size() == 3) {
-					return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), ParseToken<GLint>(tokens[2])};
-				}
-				break;
+		if (count == 0 && tokens.size() == 1) {
+			return {ParseToken<GLint>(tokens[0]), npos_index_, npos_index_};
+		}
+		if (count == 1 && tokens.size() == 2) {
+			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), npos_index_};
+		}
+		if (count == 2 && tokens.size() == 2 && *line.cbegin() != '/' && *(line.cend() - 1) != '/') {
+			return {ParseToken<GLint>(tokens[0]), npos_index_, ParseToken<GLint>(tokens[1])};
+		}
+		if (count == 2 && tokens.size() == 3) {
+			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), ParseToken<GLint>(tokens[2])};
 		}
 
 		std::ostringstream oss;
@@ -141,13 +140,13 @@ private:
 	}
 
 	template <typename T, std::uint8_t N>
-	static std::vector<T> Flatten(const std::vector<glm::vec<N, T>>& tuples) {
+	static std::vector<T> Flatten(const std::vector<glm::vec<N, T>>& tuples_t) {
 		std::vector<T> data;
-		data.reserve(tuples.size() * N);
+		data.reserve(tuples_t.size() * N);
 
-		for (const auto& tuple : tuples) {
+		for (const auto& tuple_t : tuples_t) {
 			for (std::uint8_t i = 0; i < N; ++i) {
-				data.push_back(tuple[i]);
+				data.push_back(tuple_t[i]);
 			}
 		}
 

@@ -77,7 +77,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\cpp_core_guidelines.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -168,7 +168,7 @@
   <ItemGroup>
     <ClInclude Include="utils\file.hpp" />
     <ClInclude Include="graphics\mesh.hpp" />
-    <ClInclude Include="object_loader.hpp" />
+    <ClInclude Include="graphics\object_loader.hpp" />
     <ClInclude Include="graphics\shader.hpp" />
     <ClInclude Include="graphics\shader_program.hpp" />
     <ClInclude Include="utils\string.hpp" />
