@@ -156,15 +156,6 @@ namespace {
 
 	TEST_F(ObjectLoaderTest, TestLoadMesh) {
 
-		/**
-		 * 0.0 |     4     | 1.0 (tex)
-		 *     |    / \    |
-		 *     |   5 - 3   |
-		 *     |  / \ / \  |
-		 * 1.0 | 0 - 1 - 2 | 0.0 (tex)
-		 *     ------------
-		 *     0.0      1.0
-		 */
 		std::istringstream ss{R"(
 			# positions
 			v 0.0  1.0 0.0
@@ -178,27 +169,29 @@ namespace {
 			vt 0.5  0.0
 			vt 1.0  0.0
 			vt 0.25 0.5
-			vt 0.75 0.0
+			vt 0.75 0.5
 			vt 0.5  1.0
 			# normals
-			vn 0.0 0.0 1.0
+			vn 0.0 0.1 0.2
+			vn 1.0 1.1 1.2
+			vn 2.0 2.1 2.2
 			# faces
-			f 0 1 5
-			f 1 2 3
-			f 1 3 5
-			f 5 3 4
+			f 0/0/2 1/1/1 5/3/0
+			f 1/1/1 2/2/0 3/4/1
+			f 1/1/1 3/4/1 5/3/0
+			f 5/3/0 3/4/1 4/5/2
 		)"};
 
 		const auto mesh = ObjectLoader::LoadMesh(ss);
 
 		const auto& positions = mesh.Positions();
 		ASSERT_EQ(positions, (std::vector<GLfloat>{
-			0.00, 1.0, 0.0,
-			0.50, 1.0, 0.0,
-			1.00, 1.0, 0.0,
-			0.75, 0.5, 0.0,
-			0.50, 0.0, 0.0,
-			0.25, 0.5, 0.0
+			0.0f,  1.0f, 0.0f,
+			0.5f,  1.0f, 0.0f,
+			1.0f,  1.0f, 0.0f,
+			0.75f, 0.5f, 0.0f,
+			0.5f,  0.0f, 0.0f,
+			0.25f, 0.5f, 0.0f
 		}));
 
 		const auto& indices = mesh.Indices();
@@ -207,6 +200,26 @@ namespace {
 			1, 2, 3,
 			1, 3, 5,
 			5, 3, 4
+		}));
+
+		const auto& textureCoordinates = mesh.TextureCoordinates();
+		ASSERT_EQ(textureCoordinates, (std::vector<GLfloat>{
+			0.0f,  0.0f,
+			0.5f,  0.0f,
+			1.0f,  0.0f,
+			0.75f, 0.5f,
+			0.5f,  1.0f,
+			0.25,  0.5f
+		}));
+
+		const auto& normals = mesh.Normals();
+		ASSERT_EQ(normals, (std::vector<GLfloat>{
+			2.0f, 2.1f, 2.2f,
+			1.0f, 1.1f, 1.2f,
+			0.0f, 0.1f, 0.2f,
+			1.0f, 1.1f, 1.2f,
+			2.0f, 2.1f, 2.2f,
+			0.0f, 0.1f, 0.2f
 		}));
 	}
 }
