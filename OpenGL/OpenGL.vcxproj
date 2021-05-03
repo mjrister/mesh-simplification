@@ -172,6 +172,7 @@
     <ClInclude Include="graphics\shader.hpp" />
     <ClInclude Include="graphics\shader_program.hpp" />
     <ClInclude Include="utils\string.hpp" />
+    <ClInclude Include="graphics\window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl" />
