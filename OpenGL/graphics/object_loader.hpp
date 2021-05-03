@@ -110,26 +110,20 @@ private:
 
 	static glm::ivec3 ParseIndexGroup(const std::string_view line) {
 		static constexpr auto delimiter = "/";
+		const auto tokens = string::Split(line, delimiter);
+		const auto count = std::count(line.begin(), line.end(), *delimiter);
 
-		switch (const auto tokens = string::Split(line, delimiter); std::count(line.begin(), line.end(), *delimiter)) {
-			case 0:
-				if (tokens.size() == 1) {
-					return {ParseToken<GLint>(tokens[0]), npos_index_, npos_index_};
-				}
-				break;
-			case 1:
-				if (tokens.size() == 2) {
-					return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), npos_index_};
-				}
-				break;
-			case 2:
-				if (tokens.size() == 2 && *line.cbegin() != '/' && *(line.cend() - 1) != '/') {
-					return {ParseToken<GLint>(tokens[0]), npos_index_, ParseToken<GLint>(tokens[1])};
-				}
-				if (tokens.size() == 3) {
-					return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), ParseToken<GLint>(tokens[2])};
-				}
-				break;
+		if (count == 0 && tokens.size() == 1) {
+			return {ParseToken<GLint>(tokens[0]), npos_index_, npos_index_};
+		}
+		if (count == 1 && tokens.size() == 2) {
+			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), npos_index_};
+		}
+		if (count == 2 && tokens.size() == 2 && *line.cbegin() != '/' && *(line.cend() - 1) != '/') {
+			return {ParseToken<GLint>(tokens[0]), npos_index_, ParseToken<GLint>(tokens[1])};
+		}
+		if (count == 2 && tokens.size() == 3) {
+			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), ParseToken<GLint>(tokens[2])};
 		}
 
 		std::ostringstream oss;
