@@ -102,13 +102,11 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFaceWithCorrectNumberOfIndexGroups) {
-		constexpr std::array<glm::ivec3, 3> expected{
+		ASSERT_EQ((std::array<glm::ivec3, 3>{
 			glm::ivec3{0, 1, 2},
 			glm::ivec3{3, 4, 5},
 			glm::ivec3{6, 7, 8}
-		};
-		const auto actual = ParseFace("f 0/1/2 3/4/5 6/7/8");
-		ASSERT_EQ(expected, actual);
+		}), ParseFace("f 0/1/2 3/4/5 6/7/8"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseFaceWithIncorrectNumberOfIndexGroups) {
@@ -116,11 +114,12 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestValidateIndex) {
+		constexpr auto min_value = 0;
 		constexpr auto max_value = 42;
-		ASSERT_NO_THROW(ValidateIndex(0, max_value));
-		ASSERT_NO_THROW(ValidateIndex(42, max_value));
-		ASSERT_THROW(ValidateIndex(-1, max_value), std::invalid_argument);
-		ASSERT_THROW(ValidateIndex(43, max_value), std::invalid_argument);
+		ASSERT_NO_THROW(ValidateIndex(min_value, max_value));
+		ASSERT_NO_THROW(ValidateIndex(max_value, max_value));
+		ASSERT_THROW(ValidateIndex(min_value - 1, max_value), std::invalid_argument);
+		ASSERT_THROW(ValidateIndex(max_value + 1, max_value), std::invalid_argument);
 	}
 
 	TEST_F(ObjectLoaderTest, TestFlattenVec3) {
@@ -184,42 +183,38 @@ namespace {
 
 		const auto mesh = ObjectLoader::LoadMesh(ss);
 
-		const auto& positions = mesh.Positions();
-		ASSERT_EQ(positions, (std::vector<GLfloat>{
+		ASSERT_EQ((std::vector{
 			0.0f,  1.0f, 0.0f,
 			0.5f,  1.0f, 0.0f,
 			1.0f,  1.0f, 0.0f,
 			0.75f, 0.5f, 0.0f,
 			0.5f,  0.0f, 0.0f,
 			0.25f, 0.5f, 0.0f
-		}));
+		}), mesh.Positions());
 
-		const auto& indices = mesh.Indices();
-		ASSERT_EQ(indices, (std::vector<GLuint>{
-			0, 1, 5,
-			1, 2, 3,
-			1, 3, 5,
-			5, 3, 4
-		}));
+		ASSERT_EQ((std::vector{
+			0u, 1u, 5u,
+			1u, 2u, 3u,
+			1u, 3u, 5u,
+			5u, 3u, 4u
+		}), mesh.Indices());
 
-		const auto& textureCoordinates = mesh.TextureCoordinates();
-		ASSERT_EQ(textureCoordinates, (std::vector<GLfloat>{
+		ASSERT_EQ((std::vector{
 			0.0f,  0.0f,
 			0.5f,  0.0f,
 			1.0f,  0.0f,
 			0.75f, 0.5f,
 			0.5f,  1.0f,
-			0.25,  0.5f
-		}));
+			0.25f, 0.5f
+		}), mesh.TextureCoordinates());
 
-		const auto& normals = mesh.Normals();
-		ASSERT_EQ(normals, (std::vector<GLfloat>{
+		ASSERT_EQ((std::vector{
 			2.0f, 2.1f, 2.2f,
 			1.0f, 1.1f, 1.2f,
 			0.0f, 0.1f, 0.2f,
 			1.0f, 1.1f, 1.2f,
 			2.0f, 2.1f, 2.2f,
 			0.0f, 0.1f, 0.2f
-		}));
+		}), mesh.Normals());
 	}
 }
