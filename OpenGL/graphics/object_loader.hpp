@@ -65,7 +65,11 @@ public:
 			}
 		}
 
-		return Mesh{Flatten(positions), Flatten(texture_coordinates), Flatten(normals), GetPositionIndices(faces)};
+		return Mesh{
+			Flatten(positions),
+			Flatten(ordered_texture_coordinates),
+			Flatten(ordered_normals),
+			GetPositionIndices(faces)};
 	}
 
 private:
