@@ -95,10 +95,14 @@ private:
 		const GLenum severity,
 		const GLsizei length,
 		const GLchar* message,
-		const void* user_param) noexcept {
-		fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-			(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-			type, severity, message);
+		const void* user_param) {
+
+		if (type == GL_DEBUG_TYPE_ERROR) {
+			std::cerr << "GL ERROR: "
+			<< "type: 0x" << type << ", "
+			<< "severity: 0x" << severity << ", "
+			<< "message: " << message << std::endl;
+		}
 	}
 
 	static constexpr int32_t opengl_major_version_{4}, opengl_minor_version_{6};
