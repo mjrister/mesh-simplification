@@ -72,6 +72,9 @@ private:
 		GLint max_vertex_attributes;
 		glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max_vertex_attributes);
 		std::cout << "Maximum vertex attributes supported: " << max_vertex_attributes << std::endl;
+
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(PrintDebugMessage, nullptr);
 #endif
 	}
 
@@ -84,6 +87,18 @@ private:
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, true);
 		}
+	}
+
+	static void GLAPIENTRY PrintDebugMessage(GLenum source,
+		const GLenum type,
+		const GLuint id,
+		const GLenum severity,
+		const GLsizei length,
+		const GLchar* message,
+		const void* user_param) noexcept {
+		fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+			(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+			type, severity, message);
 	}
 
 	static constexpr int32_t opengl_major_version_{4}, opengl_minor_version_{6};
