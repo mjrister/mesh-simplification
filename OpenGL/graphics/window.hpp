@@ -74,7 +74,7 @@ private:
 		std::cout << "Maximum vertex attributes supported: " << max_vertex_attributes << std::endl;
 
 		glEnable(GL_DEBUG_OUTPUT);
-		glDebugMessageCallback(PrintDebugMessage, nullptr);
+		glDebugMessageCallback(PrintDebugErrorMessage, nullptr);
 #endif
 	}
 
@@ -89,7 +89,7 @@ private:
 		}
 	}
 
-	static void GLAPIENTRY PrintDebugMessage(GLenum source,
+	static void GLAPIENTRY PrintDebugErrorMessage(GLenum source,
 		const GLenum type,
 		const GLuint id,
 		const GLenum severity,
