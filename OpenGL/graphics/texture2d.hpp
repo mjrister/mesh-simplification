@@ -53,7 +53,7 @@ public:
 
 	void Bind() const noexcept {
 		glActiveTexture(GL_TEXTURE0 + texture_unit_);
-		glBindTexture(GL_TEXTURE0, id_);
+		glBindTexture(GL_TEXTURE_2D, id_);
 	}
 
 private:
