@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <GL/gl3w.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "shader.hpp"
 #include "utils/file.hpp"
@@ -43,6 +44,11 @@ public:
 
 	void Enable() const noexcept {
 		glUseProgram(id_);
+	}
+
+	void SetUniform(const std::string_view name, const glm::mat4& value) const {
+		const auto location = glGetUniformLocation(id_, name.data());
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 private:
