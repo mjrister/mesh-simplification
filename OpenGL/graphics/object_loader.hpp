@@ -156,5 +156,5 @@ private:
 		return data;
 	}
 
-	static constexpr GLint npos_index_ = -1;
+	static constexpr GLint npos_index_{-1};
 };

@@ -22,8 +22,8 @@ namespace string {
 		if (string.empty()) return {};
 
 		std::vector<std::string_view> tokens;
-		for (std::size_t i = 0, j = 0; i < string.size();) {
-			j = std::min<std::size_t>(string.find_first_of(delimiter, i), string.size());
+		for (std::size_t i = 0; i < string.size();) {
+			const auto j = std::min<std::size_t>(string.find_first_of(delimiter, i), string.size());
 			tokens.push_back(string.substr(i, j - i));
 			i = string.find_first_not_of(delimiter, j);
 		}
