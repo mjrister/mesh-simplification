@@ -89,7 +89,8 @@ private:
 		}
 	}
 
-	static void GLAPIENTRY PrintDebugErrorMessage(GLenum source,
+	static void GLAPIENTRY PrintDebugErrorMessage(
+		const GLenum source,
 		const GLenum type,
 		const GLuint id,
 		const GLenum severity,
