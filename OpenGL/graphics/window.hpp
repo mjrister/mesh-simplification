@@ -23,7 +23,6 @@ public:
 		glfwSetKeyCallback(window_, OnKeyPress);
 
 		InitializeGl3w();
-		glEnable(GL_DEPTH_TEST);
 	}
 
 	Window(const Window&) = delete;
