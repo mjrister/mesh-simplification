@@ -9,9 +9,13 @@ class Shader {
 
 public:
 	Shader(const GLenum shader_type, const GLchar* const shader_source) : id_{glCreateShader(shader_type)} {
-		glShaderSource(id_, 1, &shader_source, nullptr);
-		glCompileShader(id_);
-		VerifyStatus();
+		if (id_) {
+			glShaderSource(id_, 1, &shader_source, nullptr);
+			glCompileShader(id_);
+			VerifyStatus();
+		} else {
+			throw std::runtime_error{"Shader creation failed"};
+		}
 	}
 
 	Shader(const Shader&) = delete;
