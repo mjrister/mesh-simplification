@@ -41,5 +41,5 @@ private:
 		}
 	}
 
-	GLuint id_{0};
+	GLuint id_;
 };

@@ -57,6 +57,6 @@ private:
 		}
 	}
 
-	GLuint id_{0};
+	GLuint id_;
 	Shader vertex_shader_, fragment_shader_;
 };

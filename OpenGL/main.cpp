@@ -5,21 +5,28 @@
 
 #include "graphics/mesh.hpp"
 #include "graphics/shader_program.hpp"
+#include "graphics/texture2d.hpp"
 #include "graphics/window.hpp"
 
 Mesh CreateTriangle() {
 
-	const std::vector vertices{
+	const std::vector<GLfloat> vertices{
 		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f
+		 0.5f, -0.5f, 0.0f,
+		 0.0f,  0.5f, 0.0f
 	};
 
-	const std::vector indices{
+	const std::vector<GLfloat> texture_coordinates{
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.5f, 1.0f
+	};
+
+	const std::vector<GLuint> indices{
 		0u, 1u, 2u
 	};
 
-	return Mesh{vertices, indices};
+	return Mesh{vertices, texture_coordinates, indices};
 }
 
 int main() {
@@ -27,7 +34,10 @@ int main() {
 	try {
 		const Window window{"OpenGL", 640, 480};
 		const ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
+		const Texture2d texture2d{"resources/textures/container.jpg"};
+
 		shader_program.Enable();
+		texture2d.Bind();
 
 		const auto triangle = CreateTriangle();
 

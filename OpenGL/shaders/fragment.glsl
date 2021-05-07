@@ -1,6 +1,13 @@
 #version 460 core
+
+uniform sampler2D image;
+
+in Vertex {
+	vec2 texture_coordinates;
+} vertex;
+
 out vec4 color;
 
 void main() {
-	color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+	color = texture(image, vertex.texture_coordinates);
 }
