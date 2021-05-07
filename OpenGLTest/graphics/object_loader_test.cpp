@@ -32,10 +32,6 @@ protected:
 		return ObjectLoader::Flatten(tuples);
 	}
 
-	static auto GetPositionIndices(const std::vector<std::array<glm::ivec3, 3>>& faces) {
-		return ObjectLoader::GetPositionIndices(faces);
-	}
-
 	static constexpr auto npos = ObjectLoader::npos_index_;
 };
 
@@ -139,17 +135,6 @@ namespace {
 			{2.f, 3.f},
 			{4.f, 5.f}
 		});
-		ASSERT_EQ(expected, actual);
-	}
-
-	TEST_F(ObjectLoaderTest, TestGetPositionIndices) {
-		const std::vector expected{0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u};
-		const auto actual = GetPositionIndices({
-			{glm::ivec3{0, npos, npos}, glm::ivec3{1, npos, npos}, glm::ivec3{2, npos, npos}},
-			{glm::ivec3{3, npos, npos}, glm::ivec3{4, npos, npos}, glm::ivec3{5, npos, npos}},
-			{glm::ivec3{6, npos, npos}, glm::ivec3{7, npos, npos}, glm::ivec3{8, npos, npos}}
-		});
-
 		ASSERT_EQ(expected, actual);
 	}
 

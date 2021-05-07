@@ -48,11 +48,14 @@ public:
 
 		std::vector<glm::vec3> ordered_normals(positions.size());
 		std::vector<glm::vec2> ordered_texture_coordinates(positions.size());
+		std::vector<GLuint> position_indices;
+		position_indices.reserve(faces.size() * 3);
 
 		for (const auto& face : faces) {
 			for (const auto& index_group : face) {
 				const auto position_index = index_group[0];
 				ValidateIndex(position_index, positions.size() - 1);
+				position_indices.push_back(position_index);
 
 				if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index_) {
 					ValidateIndex(texture_coordinate_index, texture_coordinates.size() - 1);
@@ -69,7 +72,7 @@ public:
 			Flatten(positions),
 			Flatten(ordered_texture_coordinates),
 			Flatten(ordered_normals),
-			GetPositionIndices(faces)};
+			position_indices};
 	}
 
 private:
@@ -151,19 +154,6 @@ private:
 		}
 
 		return data;
-	}
-
-	static std::vector<GLuint> GetPositionIndices(const std::vector<std::array<glm::ivec3, 3>>& faces) {
-		std::vector<GLuint> position_indices;
-		position_indices.reserve(faces.size() * 3);
-
-		for (const auto& face : faces) {
-			for (const auto& index_group : face) {
-				position_indices.push_back(index_group[0]);
-			}
-		}
-
-		return position_indices;
 	}
 
 	static constexpr GLint npos_index_ = -1;
