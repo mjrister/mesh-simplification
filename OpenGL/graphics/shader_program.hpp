@@ -17,6 +17,8 @@ public:
 		  vertex_shader_{GL_VERTEX_SHADER, file::Read(vertex_shader_filepath).c_str()},
 		  fragment_shader_{GL_FRAGMENT_SHADER, file::Read(fragment_shader_filepath).c_str()} {
 
+		if (!id_) throw std::runtime_error{"Shader program creation failed"};
+
 		glAttachShader(id_, vertex_shader_.Id());
 		glAttachShader(id_, fragment_shader_.Id());
 
