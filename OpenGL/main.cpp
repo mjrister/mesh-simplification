@@ -37,7 +37,7 @@ int main() {
 	try {
 		const Window window{"OpenGL", 640, 480};
 		const ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
-		const Texture2d texture2d{"resources/textures/container.jpg"};
+		const Texture2d texture2d{"resources/textures/container.jpg", GL_TEXTURE0};
 
 		shader_program.Enable();
 		texture2d.Bind();

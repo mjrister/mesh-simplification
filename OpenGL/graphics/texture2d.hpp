@@ -12,17 +12,12 @@
 class Texture2d {
 
 public:
-	explicit Texture2d(const std::string_view filepath)
-		: texture_unit_{instance_count_++} {
+	explicit Texture2d(const std::string_view filepath, const GLenum texture_unit)
+		: texture_unit_{texture_unit} {
 
-		if (texture_unit_ >= GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS) {
-			std::ostringstream oss;
-			oss << "Texture exceeds the maximum number of allowed texture units " << GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1;
-			throw std::invalid_argument{oss.str()};
-		}
 
 		glGenTextures(1, &id_);
-		glActiveTexture(GL_TEXTURE0 + texture_unit_);
+		glActiveTexture(texture_unit);
 		glBindTexture(GL_TEXTURE_2D, id_);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -52,12 +47,11 @@ public:
 	}
 
 	void Bind() const noexcept {
-		glActiveTexture(GL_TEXTURE0 + texture_unit_);
+		glActiveTexture(texture_unit_);
 		glBindTexture(GL_TEXTURE_2D, id_);
 	}
 
 private:
-	inline static GLuint instance_count_{0};
 	GLuint id_{0};
-	GLuint texture_unit_{0};
+	GLenum texture_unit_{0};
 };
