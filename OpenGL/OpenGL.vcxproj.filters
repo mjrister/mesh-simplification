@@ -25,6 +25,12 @@
     <ClInclude Include="graphics\window.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="lib\stb_image.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\texture2d.hpp">
+      <Filter>graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -44,5 +50,19 @@
     <Filter Include="graphics">
       <UniqueIdentifier>{e2a2d935-f222-40b4-b7c5-da80e71d06b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{e17358ae-0753-43d3-946f-fd53390ebb40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{c0c42f84-5304-4eaa-b6db-1fc9a9b75653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\textures">
+      <UniqueIdentifier>{9defc858-045e-4698-8eb8-c3edd1b35fb8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\container.jpg">
+      <Filter>resources\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
