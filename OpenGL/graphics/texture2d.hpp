@@ -53,5 +53,5 @@ public:
 
 private:
 	GLuint id_{0};
-	GLenum texture_unit_{0};
+	GLenum texture_unit_;
 };
