@@ -22,6 +22,9 @@
     <ClInclude Include="graphics\object_loader.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\window.hpp">
+      <Filter>graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">

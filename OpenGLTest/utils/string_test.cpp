@@ -7,35 +7,35 @@ namespace {
 	TEST(String, TestEmptyStringStartsWithPrefix) {
 		constexpr auto* line = "";
 		constexpr auto* prefix = "Hello";
-		ASSERT_FALSE(string::StartsWith(line, prefix));
+		static_assert(!string::StartsWith(line, prefix));
 	}
 
 	TEST(String, TestStringStartsWithPrefix) {
 		constexpr auto* line = "Hello, World!";
 		constexpr auto* prefix = "Hello";
-		ASSERT_TRUE(string::StartsWith(line, prefix));
+		static_assert(string::StartsWith(line, prefix));
 	}
 
 	TEST(String, TestStringDoesNotStartWithPrefix) {
 		constexpr auto* line = "Hello, World!";
 		constexpr auto* prefix = "World!";
-		ASSERT_FALSE(string::StartsWith(line, prefix));
+		static_assert(!string::StartsWith(line, prefix));
 	}
 
 	TEST(String, TestShortStringDoesNotStartWithLongPrefix) {
 		constexpr auto* line = "Hello";
 		constexpr auto* prefix = "Hello, World!";
-		ASSERT_FALSE(string::StartsWith(line, prefix));
+		static_assert(!string::StartsWith(line, prefix));
 	}
 
 	TEST(String, TestTrimWhitespaceString) {
 		constexpr auto* line = "     ";
-		ASSERT_TRUE(string::Trim(line).empty());
+		static_assert(string::Trim(line).empty());
 	}
 
 	TEST(String, TestTrimString) {
 		constexpr auto line = "\t  Hello, World!  \t\r\n";
-		ASSERT_EQ("Hello, World!", string::Trim(line));
+		static_assert("Hello, World!" == string::Trim(line));
 	}
 
 	TEST(String, TestSplitEmptyString) {
