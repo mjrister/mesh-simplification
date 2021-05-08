@@ -117,16 +117,16 @@ private:
 		const auto count = std::count(line.begin(), line.end(), *delimiter);
 
 		if (count == 0 && tokens.size() == 1) {
-			return {ParseToken<GLint>(tokens[0]), npos_index_, npos_index_};
+			return {ParseToken<GLint>(tokens[0]) - 1, npos_index_, npos_index_};
 		}
 		if (count == 1 && tokens.size() == 2) {
-			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), npos_index_};
+			return {ParseToken<GLint>(tokens[0]) - 1, ParseToken<GLint>(tokens[1]) - 1, npos_index_};
 		}
 		if (count == 2 && tokens.size() == 2 && *line.cbegin() != '/' && *(line.cend() - 1) != '/') {
-			return {ParseToken<GLint>(tokens[0]), npos_index_, ParseToken<GLint>(tokens[1])};
+			return {ParseToken<GLint>(tokens[0]) - 1, npos_index_, ParseToken<GLint>(tokens[1]) - 1};
 		}
 		if (count == 2 && tokens.size() == 3) {
-			return {ParseToken<GLint>(tokens[0]), ParseToken<GLint>(tokens[1]), ParseToken<GLint>(tokens[2])};
+			return {ParseToken<GLint>(tokens[0]) - 1, ParseToken<GLint>(tokens[1]) - 1, ParseToken<GLint>(tokens[2]) - 1};
 		}
 
 		std::ostringstream oss;
