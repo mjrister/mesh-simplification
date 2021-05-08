@@ -75,7 +75,7 @@ public:
 
 	void Render() const noexcept {
 		glBindVertexArray(vao_);
-		if (!indices_.empty()) {
+		if (ebo_) {
 			glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, nullptr);
 		} else {
 			glDrawArrays(GL_TRIANGLES, 0, positions_.size() / 3);
@@ -104,7 +104,9 @@ private:
 		}
 	}
 
-	GLuint vao_{0}, positions_vbo_{0}, texture_coordinates_vbo_{0}, normals_vbo_{0}, ebo_{0};
+	GLuint vao_{0};
+	GLuint positions_vbo_{0}, texture_coordinates_vbo_{0}, normals_vbo_{0};
+	GLuint ebo_{0};
 	std::vector<GLfloat> positions_, texture_coordinates_, normals_;
 	std::vector<GLuint> indices_;
 };
