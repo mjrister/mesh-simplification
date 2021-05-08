@@ -58,6 +58,6 @@ TEST(Mesh, TestCreateMeshWithMissingNormals) {
 
 TEST(Mesh, TestCreateMeshWithExtraNormals) {
 	const std::vector positions3d{0.0f, 0.1f, 0.2f};
-	const std::vector normals3d{ 0.0f, 0.1f, 0.2f, 1.0f, 1.1f, 1.2f};
+	const std::vector normals3d{0.0f, 0.1f, 0.2f, 1.0f, 1.1f, 1.2f};
 	ASSERT_THROW((Mesh{positions3d, {}, normals3d}), std::invalid_argument);
 }
