@@ -185,7 +185,13 @@
     <None Include="shaders\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\textures\bob.png" />
     <Image Include="resources\textures\container.jpg" />
+    <Image Include="resources\textures\spot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="resources\models\bob.obj" />
+    <Object Include="resources\models\spot.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

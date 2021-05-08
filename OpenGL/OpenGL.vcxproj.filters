@@ -59,10 +59,27 @@
     <Filter Include="resources\textures">
       <UniqueIdentifier>{9defc858-045e-4698-8eb8-c3edd1b35fb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\models">
+      <UniqueIdentifier>{72540917-fab2-49b9-bf65-600687120d37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\container.jpg">
       <Filter>resources\textures</Filter>
     </Image>
+    <Image Include="resources\textures\bob.png">
+      <Filter>resources\textures</Filter>
+    </Image>
+    <Image Include="resources\textures\spot.png">
+      <Filter>resources\textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="resources\models\bob.obj">
+      <Filter>resources\models</Filter>
+    </Object>
+    <Object Include="resources\models\spot.obj">
+      <Filter>resources\models</Filter>
+    </Object>
   </ItemGroup>
 </Project>
