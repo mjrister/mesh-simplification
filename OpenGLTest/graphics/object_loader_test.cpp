@@ -3,34 +3,39 @@
 #include <glm/glm.hpp>
 #include <gtest/gtest.h>
 
-class ObjectLoaderTest : public testing::Test {
-protected:
-	template <typename T>
-	static auto ParseToken(const std::string_view token) {
-		return ObjectLoader::ParseToken<T>(token);
-	}
+namespace gfx {
 
-	template <typename T, std::uint8_t N>
-	static auto ParseLine(const std::string_view line) {
-		return ObjectLoader::ParseLine<T, N>(line);
-	}
+	class ObjectLoaderTest : public testing::Test {
 
-	static auto ParseIndexGroup(const std::string_view line) {
-		return ObjectLoader::ParseIndexGroup(line);
-	}
+	protected:
+		template <typename T>
+		static auto ParseToken(const std::string_view token) {
+			return ObjectLoader::ParseToken<T>(token);
+		}
 
-	static auto ParseFace(const std::string_view line) {
-		return ObjectLoader::ParseFace(line);
-	}
+		template <typename T, std::uint8_t N>
+		static auto ParseLine(const std::string_view line) {
+			return ObjectLoader::ParseLine<T, N>(line);
+		}
 
-	static void ValidateIndex(const GLint index, const GLint max_value) {
-		ObjectLoader::ValidateIndex(index, max_value);
-	}
+		static auto ParseIndexGroup(const std::string_view line) {
+			return ObjectLoader::ParseIndexGroup(line);
+		}
 
-	static constexpr auto npos = ObjectLoader::npos_index_;
-};
+		static auto ParseFace(const std::string_view line) {
+			return ObjectLoader::ParseFace(line);
+		}
+
+		static void ValidateIndex(const GLint index, const GLint max_value) {
+			ObjectLoader::ValidateIndex(index, max_value);
+		}
+
+		static constexpr auto npos_index_ = ObjectLoader::npos_index_;
+	};
+}
 
 namespace {
+	using namespace gfx;
 
 	TEST_F(ObjectLoaderTest, TestParseEmptyStringToken) {
 		ASSERT_THROW(ParseToken<GLint>(""), std::invalid_argument);
@@ -66,15 +71,15 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionIndex) {
-		ASSERT_EQ((glm::ivec3{0, npos, npos}), ParseIndexGroup("1"));
+		ASSERT_EQ((glm::ivec3{0, npos_index_, npos_index_}), ParseIndexGroup("1"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndTextureCoordinatesIndices) {
-		ASSERT_EQ((glm::ivec3{0, 1, npos}), ParseIndexGroup("1/2"));
+		ASSERT_EQ((glm::ivec3{0, 1, npos_index_}), ParseIndexGroup("1/2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionAndNormalIndices) {
-		ASSERT_EQ((glm::ivec3{0, npos, 1}), ParseIndexGroup("1//2"));
+		ASSERT_EQ((glm::ivec3{0, npos_index_, 1}), ParseIndexGroup("1//2"));
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithPositionTextureCoordinateAndNormalIndices) {
