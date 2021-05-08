@@ -36,10 +36,10 @@ public:
 			if (line = string::Trim(line); !line.empty() && !string::StartsWith(line, "#")) {
 				if (string::StartsWith(line, "v ")) {
 					positions.push_back(ParseLine<GLfloat, 3>(line));
-				} else if (string::StartsWith(line, "vn ")) {
-					normals.push_back(ParseLine<GLfloat, 3>(line));
 				} else if (string::StartsWith(line, "vt ")) {
 					texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
+				} else if (string::StartsWith(line, "vn ")) {
+					normals.push_back(ParseLine<GLfloat, 3>(line));
 				} else if (string::StartsWith(line, "f ")) {
 					faces.push_back(ParseFace(line));
 				}
@@ -48,14 +48,14 @@ public:
 
 		std::vector<glm::vec3> ordered_normals(positions.size());
 		std::vector<glm::vec2> ordered_texture_coordinates(positions.size());
-		std::vector<GLuint> position_indices;
-		position_indices.reserve(faces.size() * 3);
+		std::vector<GLuint> indices;
+		indices.reserve(faces.size() * 3);
 
 		for (const auto& face : faces) {
 			for (const auto& index_group : face) {
 				const auto position_index = index_group[0];
 				ValidateIndex(position_index, positions.size() - 1);
-				position_indices.push_back(position_index);
+				indices.push_back(position_index);
 
 				if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index_) {
 					ValidateIndex(texture_coordinate_index, texture_coordinates.size() - 1);
@@ -68,7 +68,7 @@ public:
 			}
 		}
 
-		return Mesh{positions, ordered_texture_coordinates, ordered_normals, position_indices};
+		return Mesh{positions, ordered_texture_coordinates, ordered_normals, indices};
 	}
 
 private:
@@ -92,7 +92,7 @@ private:
 		if (const auto [_, error_code] = std::from_chars(token_t.data(), token_t.data() + token_t.size(), value);
 			error_code == std::errc::invalid_argument) {
 			std::ostringstream oss;
-			oss << "Unable to convert " << token_t << " to type '" << typeid(T).name();
+			oss << "Unable to convert " << token_t << " to type " << typeid(T).name();
 			throw std::invalid_argument{oss.str()};
 		}
 		return value;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <stdexcept>
 #include <string_view>
 #include <vector>
@@ -47,8 +48,9 @@ public:
 	}
 
 	void SetUniform(const std::string_view name, const glm::mat4& value) const {
-		const auto location = glGetUniformLocation(id_, name.data());
-		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+		if (const auto location = glGetUniformLocation(id_, name.data()); location != -1) {
+			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+		}
 	}
 
 private:

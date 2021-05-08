@@ -14,7 +14,7 @@
 int main() {
 
 	try {
-		const auto width = 640, height = 480;
+		constexpr auto width = 640, height = 480;
 		const Window window{"OpenGL", width, height};
 		const ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		const Texture2d texture2d{"resources/textures/bob.png", GL_TEXTURE0};
