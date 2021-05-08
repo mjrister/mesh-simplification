@@ -64,13 +64,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\textures\container.jpg">
-      <Filter>resources\textures</Filter>
-    </Image>
     <Image Include="resources\textures\bob.png">
       <Filter>resources\textures</Filter>
     </Image>
     <Image Include="resources\textures\spot.png">
+      <Filter>resources\textures</Filter>
+    </Image>
+    <Image Include="resources\textures\blub.png">
       <Filter>resources\textures</Filter>
     </Image>
   </ItemGroup>
@@ -81,5 +81,6 @@
     <Object Include="resources\models\spot.obj">
       <Filter>resources\models</Filter>
     </Object>
+    <Object Include="resources\models\blub.obj" />
   </ItemGroup>
 </Project>
