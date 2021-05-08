@@ -68,11 +68,7 @@ public:
 			}
 		}
 
-		return Mesh{
-			Flatten(positions),
-			Flatten(ordered_texture_coordinates),
-			Flatten(ordered_normals),
-			position_indices};
+		return Mesh{positions, ordered_texture_coordinates, ordered_normals, position_indices};
 	}
 
 private:
@@ -140,20 +136,6 @@ private:
 			oss << "Index out of bounds: " << index;
 			throw std::invalid_argument{oss.str()};
 		}
-	}
-
-	template <typename T, std::uint8_t N>
-	static std::vector<T> Flatten(const std::vector<glm::vec<N, T>>& tuples_t) {
-		std::vector<T> data;
-		data.reserve(tuples_t.size() * N);
-
-		for (const auto& tuple_t : tuples_t) {
-			for (std::uint8_t i = 0; i < N; ++i) {
-				data.push_back(tuple_t[i]);
-			}
-		}
-
-		return data;
 	}
 
 	static constexpr GLint npos_index_{-1};
