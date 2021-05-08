@@ -12,7 +12,7 @@
 
 Mesh CreateContainer() {
 
-	const std::vector<GLfloat> vertices{
+	const std::vector<GLfloat> positions{
 		-0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f,  0.5f, -0.5f, 0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
 		-0.5f, -0.5f,  0.5f, 0.5f, -0.5f,  0.5f, 0.5f,  0.5f,  0.5f, 0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
 		-0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
@@ -29,7 +29,7 @@ Mesh CreateContainer() {
 		0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
 	};
 
-	return Mesh{vertices, texture_coordinates};
+	return Mesh{positions, texture_coordinates};
 }
 
 int main() {
@@ -43,7 +43,8 @@ int main() {
 		shader_program.Enable();
 		texture2d.Bind();
 
-		const auto container = CreateContainer();
+		auto container = CreateContainer();
+		container.Initialize();
 
 		const auto projection = glm::perspective(glm::radians(45.0f), static_cast<GLfloat>(width) / height, 0.1f, 100.0f);
 		const auto view = glm::translate(glm::mat4{1.0f}, glm::vec3{0.0f, 0.0f, -3.0f});
