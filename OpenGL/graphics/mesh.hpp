@@ -17,6 +17,8 @@ public:
 		  texture_coordinates_{std::move(texture_coordinates)},
 		  normals_{std::move(normals)},
 		  indices_{std::move(indices)} {
+
+		Validate(positions_, texture_coordinates_, normals_, indices_);
 	}
 
 	Mesh(const Mesh&) = delete;
@@ -92,10 +94,10 @@ private:
 		if (indices.size() % 3 != 0) throw std::invalid_argument{"Object must be a triangle mesh"};
 
 		if (!texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
-			throw std::invalid_argument{"Texture coordinates must align with position data."};
+			throw std::invalid_argument{"Texture coordinates must align with position data"};
 		}
 		if (!normals.empty() && positions.size() != normals.size()) {
-			throw std::invalid_argument{"Vertex normals must align with position data."};
+			throw std::invalid_argument{"Vertex normals must align with position data"};
 		}
 	}
 
