@@ -15,7 +15,6 @@ public:
 	explicit Texture2d(const std::string_view filepath, const GLenum texture_unit)
 		: texture_unit_{texture_unit} {
 
-
 		glGenTextures(1, &id_);
 		glActiveTexture(texture_unit);
 		glBindTexture(GL_TEXTURE_2D, id_);
