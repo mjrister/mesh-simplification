@@ -34,9 +34,7 @@ namespace gfx {
 		Window& operator=(Window&&) noexcept = delete;
 
 		~Window() {
-			if (window_) {
-				glfwDestroyWindow(window_);
-			}
+			if (window_) glfwDestroyWindow(window_);
 			glfwTerminate();
 		}
 
