@@ -75,25 +75,30 @@ namespace gfx {
 	#endif
 		}
 
-		static void OnWindowResize(GLFWwindow*, const int32_t width, const int32_t height) noexcept {
+		static void OnWindowResize(GLFWwindow* /*window*/, const int32_t width, const int32_t height) noexcept {
 			glViewport(0, 0, width, height);
 		}
 
 		static void OnKeyPress(
-			GLFWwindow* window, const int32_t key, const int32_t, const int32_t action, const int32_t) noexcept {
+			GLFWwindow* window,
+			const int32_t key,
+			const int32_t /*scancode*/,
+			const int32_t action,
+			const int32_t /*modifiers*/) noexcept {
+
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 				glfwSetWindowShouldClose(window, true);
 			}
 		}
 
 		static void GLAPIENTRY PrintDebugErrorMessage(
-			const GLenum source,
+			const GLenum /*source*/,
 			const GLenum type,
-			const GLuint id,
+			const GLuint /*id*/,
 			const GLenum severity,
-			const GLsizei length,
+			const GLsizei /*length*/,
 			const GLchar* message,
-			const void* user_param) {
+			const void* /*user_param*/) {
 
 			if (type == GL_DEBUG_TYPE_ERROR) {
 				std::cerr << "GL ERROR: "
