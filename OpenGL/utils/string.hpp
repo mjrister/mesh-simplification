@@ -16,18 +16,16 @@ namespace string {
 		return string;
 	}
 
-	static std::vector<std::string_view> Split(std::string_view string, const std::string_view delimiter) {
-
-		string = Trim(string, delimiter);
-		if (string.empty()) return {};
-
+	static std::vector<std::string_view> Split(const std::string_view string, const std::string_view delimiter) {
 		std::vector<std::string_view> tokens;
-		for (std::size_t i = 0; i < string.size();) {
-			const auto j = std::min<std::size_t>(string.find_first_of(delimiter, i), string.size());
-			tokens.push_back(string.substr(i, j - i));
-			i = string.find_first_not_of(delimiter, j);
-		}
+		if (auto i = string.find_first_not_of(delimiter); i != std::string_view::npos) {
+			while (i < string.size()) {
+				const auto j = std::min<std::size_t>(string.find_first_of(delimiter, i), string.size());
+				tokens.push_back(string.substr(i, j - i));
+				i = string.find_first_not_of(delimiter, j);
+			}
 
+		}
 		return tokens;
 	}
 }
