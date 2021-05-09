@@ -72,10 +72,6 @@ namespace gfx {
 			std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl
 				<< "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-			GLint max_vertex_attributes;
-			glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max_vertex_attributes);
-			std::cout << "Maximum vertex attributes supported: " << max_vertex_attributes << std::endl;
-
 			glEnable(GL_DEBUG_OUTPUT);
 			glDebugMessageCallback(PrintDebugErrorMessage, nullptr);
 	#endif
