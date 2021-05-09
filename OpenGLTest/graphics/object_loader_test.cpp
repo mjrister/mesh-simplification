@@ -145,23 +145,39 @@ namespace {
 			f 2/2/2 4/5/2 6/6/1
 		)"};
 
+		constexpr glm::vec3 v0{0.0f, 1.0f, 0.0f};
+		constexpr glm::vec3 v1{0.5f, 1.0f, 0.0f};
+		constexpr glm::vec3 v2{1.0f, 1.0f, 0.0f};
+		constexpr glm::vec3 v3{0.75f, 0.5f, 0.0f};
+		constexpr glm::vec3 v4{0.5f, 0.0f, 0.0f};
+		constexpr glm::vec3 v5{0.25f, 0.5f, 0.0f};
+
+		constexpr glm::vec2 vt0{0.0f, 0.0f};
+		constexpr glm::vec2 vt1{0.5f, 0.0f};
+		constexpr glm::vec2 vt2{1.0f, 0.0f};
+		constexpr glm::vec2 vt3{0.25f, 0.5f};
+		constexpr glm::vec2 vt4{0.75f, 0.5f};
+		constexpr glm::vec2 vt5{0.5f, 1.0f};
+
+		constexpr glm::vec3 vn0{0.0f, 0.1f, 0.2f};
+		constexpr glm::vec3 vn1{1.0f, 1.1f, 1.2f};
+		constexpr glm::vec3 vn2{2.0f, 2.1f, 2.2f};
+
 		const auto mesh = ObjectLoader::LoadMesh(ss);
 
-		glm::vec3 v0{0.0f, 1.0f, 0.0f}, v1{0.5f, 1.0f, 0.0f}, v2{1.0f, 1.0f, 0.0f}, v3{0.75f, 0.5f, 0.0f}, v4{0.5f, 0.0f, 0.0f}, v5{0.25f, 0.5f, 0.0f};
 		ASSERT_EQ((std::vector{
 			v0, v1, v5,
 			v1, v2, v4,
 			v1, v3, v5
 		}), mesh.Positions());
 
-		glm::vec2 vt0{0.0f, 0.0f}, vt1{0.5f, 0.0f}, vt2{1.0f, 0.0f}, vt3{0.25f, 0.5f}, vt4{0.75f, 0.5f}, vt5{0.5f, 1.0f};
+
 		ASSERT_EQ((std::vector{
 			vt0, vt1, vt3,
 			vt1, vt2, vt4,
 			vt1, vt4, vt5
 		}), mesh.TextureCoordinates());
 
-		glm::vec3 vn0{0.0f, 0.1f, 0.2f}, vn1{1.0f, 1.1f, 1.2f}, vn2{2.0f, 2.1f, 2.2f};
 		ASSERT_EQ((std::vector{
 			vn2, vn1, vn0,
 			vn1, vn0, vn1,
