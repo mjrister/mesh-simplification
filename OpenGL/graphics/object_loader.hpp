@@ -48,14 +48,15 @@ namespace gfx {
 				}
 			}
 
-			std::vector<glm::vec3> ordered_positions;
-			std::vector<glm::vec3> ordered_normals;
-			std::vector<glm::vec2> ordered_texture_coordinates;
-
 			const std::size_t indices = faces.size() * 3;
+			std::vector<glm::vec3> ordered_positions;
 			ordered_positions.reserve(indices);
-			ordered_normals.reserve(indices);
+
+			std::vector<glm::vec2> ordered_texture_coordinates;
 			ordered_texture_coordinates.reserve(indices);
+
+			std::vector<glm::vec3> ordered_normals;
+			ordered_normals.reserve(indices);
 
 			for (const auto& face : faces) {
 				for (const auto& index_group : face) {
