@@ -141,45 +141,31 @@ namespace {
 			vn 2.0 2.1 2.2
 			# faces
 			f 1/1/3 2/2/2 6/4/1
-			f 2/2/2 3/3/1 4/5/2
-			f 2/2/2 4/5/2 6/4/1
-			f 6/4/1 4/5/2 5/6/3
+			f 2/2/2 3/3/1 5/5/2
+			f 2/2/2 4/5/2 6/6/1
 		)"};
 
 		const auto mesh = ObjectLoader::LoadMesh(ss);
 
-		//ASSERT_EQ((std::vector<glm::vec3>{
-		//	{0.0f,  1.0f, 0.0f},
-		//	{0.5f,  1.0f, 0.0f},
-		//	{1.0f,  1.0f, 0.0f},
-		//	{0.75f, 0.5f, 0.0f},
-		//	{0.5f,  0.0f, 0.0f},
-		//	{0.25f, 0.5f, 0.0f}
-		//}), mesh.Positions());
+		glm::vec3 v0{0.0f, 1.0f, 0.0f}, v1{0.5f, 1.0f, 0.0f}, v2{1.0f, 1.0f, 0.0f}, v3{0.75f, 0.5f, 0.0f}, v4{0.5f, 0.0f, 0.0f}, v5{0.25f, 0.5f, 0.0f};
+		ASSERT_EQ((std::vector{
+			v0, v1, v5,
+			v1, v2, v4,
+			v1, v3, v5
+		}), mesh.Positions());
 
-		//ASSERT_EQ((std::vector{
-		//	0u, 1u, 5u,
-		//	1u, 2u, 3u,
-		//	1u, 3u, 5u,
-		//	5u, 3u, 4u
-		//}), mesh.Indices());
+		glm::vec2 vt0{0.0f, 0.0f}, vt1{0.5f, 0.0f}, vt2{1.0f, 0.0f}, vt3{0.25f, 0.5f}, vt4{0.75f, 0.5f}, vt5{0.5f, 1.0f};
+		ASSERT_EQ((std::vector{
+			vt0, vt1, vt3,
+			vt1, vt2, vt4,
+			vt1, vt4, vt5
+		}), mesh.TextureCoordinates());
 
-		//ASSERT_EQ((std::vector<glm::vec2>{
-		//	{0.0f,  0.0f},
-		//	{0.5f,  0.0f},
-		//	{1.0f,  0.0f},
-		//	{0.75f, 0.5f},
-		//	{0.5f,  1.0f},
-		//	{0.25f, 0.5f}
-		//}), mesh.TextureCoordinates());
-
-		//ASSERT_EQ((std::vector<glm::vec3>{
-		//	{2.0f, 2.1f, 2.2f},
-		//	{1.0f, 1.1f, 1.2f},
-		//	{0.0f, 0.1f, 0.2f},
-		//	{1.0f, 1.1f, 1.2f},
-		//	{2.0f, 2.1f, 2.2f},
-		//	{0.0f, 0.1f, 0.2f}
-		//}), mesh.Normals());
+		glm::vec3 vn0{0.0f, 0.1f, 0.2f}, vn1{1.0f, 1.1f, 1.2f}, vn2{2.0f, 2.1f, 2.2f};
+		ASSERT_EQ((std::vector{
+			vn2, vn1, vn0,
+			vn1, vn0, vn1,
+			vn1, vn1, vn0
+		}), mesh.Normals());
 	}
 }
