@@ -29,11 +29,9 @@ namespace gfx {
 		Mesh& operator=(Mesh&&) noexcept = delete;
 
 		~Mesh() {
-			if (ebo_) glDeleteBuffers(1, &ebo_);
-			if (positions_vbo_) glDeleteBuffers(1, &positions_vbo_);
-			if (texture_coordinates_vbo_) glDeleteBuffers(1, &texture_coordinates_vbo_);
-			if (normals_vbo_) glDeleteBuffers(1, &normals_vbo_);
-			if (vao_) glDeleteVertexArrays(1, &vao_);
+			if (element_buffer_) glDeleteBuffers(1, &element_buffer_);
+			if (vertex_buffer_) glDeleteBuffers(1, &vertex_buffer_);
+			if (vertex_array_) glDeleteVertexArrays(1, &vertex_array_);
 		}
 
 		[[nodiscard]] const auto& Positions() const noexcept { return positions_; }
@@ -43,44 +41,48 @@ namespace gfx {
 
 		void Initialize() noexcept {
 
-			glGenVertexArrays(1, &vao_);
-			glBindVertexArray(vao_);
+			glGenVertexArrays(1, &vertex_array_);
+			glBindVertexArray(vertex_array_);
 
-			glGenBuffers(1, &positions_vbo_);
-			glBindBuffer(GL_ARRAY_BUFFER, positions_vbo_);
-			glBufferData(GL_ARRAY_BUFFER, sizeof glm::vec3 * positions_.size(), positions_.data(), GL_STATIC_DRAW);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glGenBuffers(1, &vertex_buffer_);
+			glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+
+			const std::size_t positions_size = sizeof(glm::vec3) * positions_.size();
+			const std::size_t texture_coordinates_size = sizeof(glm::vec2) * texture_coordinates_.size();
+			const std::size_t normals_size = sizeof(glm::vec3) * normals_.size();
+			const std::size_t buffer_size = positions_size + texture_coordinates_size + normals_size;
+			glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
+
+			glBufferSubData(GL_ARRAY_BUFFER, 0, positions_size, positions_.data());
+;			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(0));
 			glEnableVertexAttribArray(0);
 
 			if (!texture_coordinates_.empty()) {
-				glGenBuffers(1, &texture_coordinates_vbo_);
-				glBindBuffer(GL_ARRAY_BUFFER, texture_coordinates_vbo_);
-				glBufferData(GL_ARRAY_BUFFER, sizeof glm::vec2 * texture_coordinates_.size(), texture_coordinates_.data(), GL_STATIC_DRAW);
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+				glBufferSubData(GL_ARRAY_BUFFER, positions_size, texture_coordinates_size, texture_coordinates_.data());
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(positions_size));
 				glEnableVertexAttribArray(1);
 			}
 
 			if (!normals_.empty()) {
-				glGenBuffers(1, &normals_vbo_);
-				glBindBuffer(GL_ARRAY_BUFFER, normals_vbo_);
-				glBufferData(GL_ARRAY_BUFFER, sizeof glm::vec3 * normals_.size(), normals_.data(), GL_STATIC_DRAW);
-				glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+				const size_t offset = positions_size + texture_coordinates_size;
+				glBufferSubData(GL_ARRAY_BUFFER, offset, normals_size, normals_.data());
+				glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(offset));
 				glEnableVertexAttribArray(2);
 			}
 
 			if (!indices_.empty()) {
-				glGenBuffers(1, &ebo_);
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof GLuint * indices_.size(), indices_.data(), GL_STATIC_DRAW);
+				glGenBuffers(1, &element_buffer_);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices_.size(), indices_.data(), GL_STATIC_DRAW);
 			}
 		}
 
 		void Render() const noexcept {
-			glBindVertexArray(vao_);
-			if (ebo_) {
+			glBindVertexArray(vertex_array_);
+			if (element_buffer_) {
 				glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, nullptr);
 			} else {
-				glDrawArrays(GL_TRIANGLES, 0, positions_.size() * 3);
+				glDrawArrays(GL_TRIANGLES, 0, positions_.size());
 			}
 			glBindVertexArray(0);
 		}
@@ -103,9 +105,7 @@ namespace gfx {
 			}
 		}
 
-		GLuint vao_{0};
-		GLuint positions_vbo_{0}, texture_coordinates_vbo_{0}, normals_vbo_{0};
-		GLuint ebo_{0};
+		GLuint vertex_array_{0}, vertex_buffer_{0}, element_buffer_{0};
 		std::vector<glm::vec3> positions_;
 		std::vector<glm::vec2> texture_coordinates_;
 		std::vector<glm::vec3> normals_;
