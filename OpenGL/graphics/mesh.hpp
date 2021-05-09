@@ -54,7 +54,7 @@ namespace gfx {
 			glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
 
 			glBufferSubData(GL_ARRAY_BUFFER, 0, positions_size, positions_.data());
-;			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(0));
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(0));
 			glEnableVertexAttribArray(0);
 
 			if (!texture_coordinates_.empty()) {
@@ -71,9 +71,10 @@ namespace gfx {
 			}
 
 			if (!indices_.empty()) {
+				const std::size_t indices_size = sizeof(GLuint) * indices_.size();
 				glGenBuffers(1, &element_buffer_);
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices_.size(), indices_.data(), GL_STATIC_DRAW);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size, indices_.data(), GL_STATIC_DRAW);
 			}
 		}
 
@@ -94,9 +95,12 @@ namespace gfx {
 			const std::vector<glm::vec3>& normals,
 			const std::vector<GLuint>& indices) {
 
-			if (positions.empty()) throw std::invalid_argument{"Vertex positions must be specified"};
-			if (indices.size() % 3 != 0) throw std::invalid_argument{"Object must be a triangle mesh"};
-
+			if (positions.empty()) {
+				throw std::invalid_argument{"Vertex positions must be specified"};
+			}
+			if (indices.size() % 3 != 0) {
+				throw std::invalid_argument{"Object must be a triangle mesh"};
+			}
 			if (!texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
 				throw std::invalid_argument{"Texture coordinates must align with position data"};
 			}
@@ -106,9 +110,9 @@ namespace gfx {
 		}
 
 		GLuint vertex_array_{0}, vertex_buffer_{0}, element_buffer_{0};
-		std::vector<glm::vec3> positions_;
-		std::vector<glm::vec2> texture_coordinates_;
-		std::vector<glm::vec3> normals_;
-		std::vector<GLuint> indices_;
+		const std::vector<glm::vec3> positions_;
+		const std::vector<glm::vec2> texture_coordinates_;
+		const std::vector<glm::vec3> normals_;
+		const std::vector<GLuint> indices_;
 	};
 }

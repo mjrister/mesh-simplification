@@ -69,7 +69,7 @@ namespace gfx {
 			}
 		}
 
-		GLuint id_;
-		Shader vertex_shader_, fragment_shader_;
+		const GLuint id_;
+		const Shader vertex_shader_, fragment_shader_;
 	};
 }

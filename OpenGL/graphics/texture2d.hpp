@@ -14,7 +14,8 @@ namespace gfx {
 	class Texture2d {
 
 	public:
-		explicit Texture2d(const std::string_view filepath, const GLenum texture_unit) : texture_unit_{texture_unit} {
+		explicit Texture2d(const std::string_view filepath, const GLenum texture_unit)
+			: texture_unit_{texture_unit} {
 
 			glGenTextures(1, &id_);
 			glActiveTexture(texture_unit);
@@ -53,6 +54,6 @@ namespace gfx {
 
 	private:
 		GLuint id_{0};
-		GLenum texture_unit_;
+		const GLenum texture_unit_;
 	};
 }

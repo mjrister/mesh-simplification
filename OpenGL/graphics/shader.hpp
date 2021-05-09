@@ -44,6 +44,6 @@ namespace gfx {
 			}
 		}
 
-		GLuint id_;
+		const GLuint id_;
 	};
 }
