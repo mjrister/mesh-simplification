@@ -48,42 +48,34 @@ namespace gfx {
 				}
 			}
 
-			std::vector<glm::vec2> ordered_texture_coordinates(positions.size());
-			std::vector<glm::vec3> ordered_normals(positions.size());
-			std::vector<GLuint> indices;
-			indices.reserve(faces.size() * 3);
+			const std::size_t indices = faces.size() * 3;
+			std::vector<glm::vec3> ordered_positions;
+			ordered_positions.reserve(indices);
+
+			std::vector<glm::vec2> ordered_texture_coordinates;
+			ordered_texture_coordinates.reserve(indices);
+
+			std::vector<glm::vec3> ordered_normals;
+			ordered_normals.reserve(indices);
 
 			for (const auto& face : faces) {
 				for (const auto& index_group : face) {
-					auto position_index = index_group[0];
+					const auto position_index = index_group[0];
 					ValidateIndex(position_index, positions.size() - 1);
+					ordered_positions.push_back(positions[position_index]);
 
 					if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index_) {
 						ValidateIndex(texture_coordinate_index, texture_coordinates.size() - 1);
-						if (ordered_texture_coordinates[position_index] != glm::vec2{}) {
-							positions.push_back(positions[position_index]);
-							ordered_texture_coordinates.emplace_back();
-							ordered_normals.emplace_back();
-							position_index = positions.size() - 1;
-						}
-						ordered_texture_coordinates[position_index] = texture_coordinates[texture_coordinate_index];
+						ordered_texture_coordinates.push_back(texture_coordinates[texture_coordinate_index]);
 					}
 					if (const auto normal_index = index_group[2]; normal_index != npos_index_) {
 						ValidateIndex(normal_index, normals.size() - 1);
-						if (ordered_normals[position_index] != glm::vec3{}) {
-							positions.push_back(positions[position_index]);
-							ordered_texture_coordinates.emplace_back();
-							ordered_normals.emplace_back();
-							position_index = positions.size() - 1;
-						}
-						ordered_normals[position_index] = normals[normal_index];
+						ordered_normals.push_back(normals[normal_index]);
 					}
-
-					indices.push_back(position_index);
 				}
 			}
 
-			return Mesh{positions, ordered_texture_coordinates, ordered_normals, indices};
+			return Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals};
 		}
 
 	private:
