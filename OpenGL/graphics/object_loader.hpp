@@ -48,33 +48,33 @@ namespace gfx {
 				}
 			}
 
-			const std::size_t size = faces.size() * 3;
-			std::vector<glm::vec3> ordered_vertices(size);
-			std::vector<glm::vec3> ordered_normals(size);
-			std::vector<glm::vec2> ordered_texture_coordinates(size);
-			std::vector<GLuint> indices;
-			indices.reserve(size);
+			std::vector<glm::vec3> ordered_positions;
+			std::vector<glm::vec3> ordered_normals;
+			std::vector<glm::vec2> ordered_texture_coordinates;
 
-			std::size_t i = 0;
+			const std::size_t indices = faces.size() * 3;
+			ordered_positions.reserve(indices);
+			ordered_normals.reserve(indices);
+			ordered_texture_coordinates.reserve(indices);
+
 			for (const auto& face : faces) {
 				for (const auto& index_group : face) {
 					const auto position_index = index_group[0];
 					ValidateIndex(position_index, positions.size() - 1);
-					ordered_vertices[i] = positions[position_index];
+					ordered_positions.push_back(positions[position_index]);
 
 					if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index_) {
 						ValidateIndex(texture_coordinate_index, texture_coordinates.size() - 1);
-						ordered_texture_coordinates[i] = texture_coordinates[texture_coordinate_index];
+						ordered_texture_coordinates.push_back(texture_coordinates[texture_coordinate_index]);
 					}
 					if (const auto normal_index = index_group[2]; normal_index != npos_index_) {
 						ValidateIndex(normal_index, normals.size() - 1);
-						ordered_normals[i] = normals[normal_index];
+						ordered_normals.push_back(normals[normal_index]);
 					}
-					indices.push_back(i++);
 				}
 			}
 
-			return Mesh{ordered_vertices, ordered_texture_coordinates, ordered_normals};
+			return Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals};
 		}
 
 	private:

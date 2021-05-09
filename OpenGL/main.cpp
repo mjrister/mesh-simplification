@@ -14,22 +14,21 @@
 int main() {
 
 	try {
-		constexpr auto width = 640, height = 480;
+		constexpr auto width = 1280, height = 960;
 		const gfx::Window window{"OpenGL", width, height};
 		const gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
-		const gfx::Texture2d texture2d{"resources/textures/bob.png", GL_TEXTURE0};
+		const gfx::Texture2d texture2d{"resources/textures/blub.png", GL_TEXTURE0};
 
 		shader_program.Enable();
 		texture2d.Bind();
 
-		auto container = gfx::ObjectLoader::LoadMesh("resources/models/bob.obj");
+		auto container = gfx::ObjectLoader::LoadMesh("resources/models/blub.obj");
 		container.Initialize();
 
 		const auto projection = glm::perspective(glm::radians(45.0f), static_cast<GLfloat>(width) / height, 0.1f, 100.0f);
 		const auto view = glm::translate(glm::mat4{1.0f}, glm::vec3{0.0f, 0.0f, -3.0f});
 
 		while (!window.Closed()) {
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			const auto model = glm::rotate(
 				glm::scale(glm::mat4{1.0f}, glm::vec3{0.5f}),

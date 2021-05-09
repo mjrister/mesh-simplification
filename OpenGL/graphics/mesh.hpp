@@ -80,7 +80,7 @@ namespace gfx {
 			if (ebo_) {
 				glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, nullptr);
 			} else {
-				glDrawArrays(GL_TRIANGLES, 0, positions_.size());
+				glDrawArrays(GL_TRIANGLES, 0, positions_.size() * 3);
 			}
 			glBindVertexArray(0);
 		}
