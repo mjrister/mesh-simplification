@@ -3,8 +3,7 @@
 #include <stdexcept>
 
 namespace {
-
-	void Validate(
+	void ValidateMesh(
 		const std::vector<glm::vec3>& positions,
 		const std::vector<glm::vec2>& texture_coordinates,
 		const std::vector<glm::vec3>& normals,
@@ -35,7 +34,7 @@ gfx::Mesh::Mesh(
 	  normals_{std::move(normals)},
 	  indices_{std::move(indices)} {
 
-	Validate(positions_, texture_coordinates_, normals_, indices_);
+	ValidateMesh(positions_, texture_coordinates_, normals_, indices_);
 }
 
 gfx::Mesh::~Mesh() {

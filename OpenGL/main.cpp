@@ -9,13 +9,14 @@
 #include "graphics/object_loader.hpp"
 #include "graphics/shader_program.h"
 #include "graphics/texture2d.h"
-#include "graphics/window.hpp"
+#include "graphics/window.h"
 
 int main() {
 
 	try {
-		constexpr std::int32_t width = 1280, height = 960;
-		const gfx::Window window{"OpenGL", width, height};
+		constexpr std::int32_t width{1280}, height{960};
+		constexpr std::int32_t major_version{4}, minor_version{6};
+		const gfx::Window window{"OpenGL", std::make_pair(width, height), std::make_pair(major_version, minor_version)};
 
 		const gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
