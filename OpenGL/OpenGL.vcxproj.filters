@@ -2,6 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="graphics\shader_program.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.hpp">
@@ -10,10 +13,7 @@
     <ClInclude Include="utils\file.hpp">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\shader.hpp">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\shader_program.hpp">
+    <ClInclude Include="graphics\shader_program.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\mesh.hpp">
