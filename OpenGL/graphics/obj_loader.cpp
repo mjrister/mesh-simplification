@@ -31,7 +31,7 @@ namespace {
 		if (const auto tokens = string::Split(line, " \t"); tokens.size() == N + 1) {
 			glm::vec<N, T> vec{};
 			for (std::uint8_t i = 0; i < N; ++i) {
-				vec[i] = ParseToken<T>(tokens[i + static_cast<std::uint8_t>(1)]);
+				vec[i] = ParseToken<T>(tokens[i + 1]);
 			}
 			return vec;
 		}
