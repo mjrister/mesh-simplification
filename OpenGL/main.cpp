@@ -2,12 +2,14 @@
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
+
+#define GLM_FORCE_SILENT_WARNINGS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/mesh.hpp"
 #include "graphics/object_loader.hpp"
-#include "graphics/shader_program.h"
+#include "graphics/shader_program.hpp"
 #include "graphics/texture2d.hpp"
 #include "graphics/window.hpp"
 
@@ -20,10 +22,10 @@ int main() {
 		const gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 
-		const gfx::Texture2d texture2d{"resources/textures/spot.png", GL_TEXTURE0};
+		const gfx::Texture2d texture2d{"resources/textures/bob.png", GL_TEXTURE0};
 		texture2d.Bind();
 
-		auto container = gfx::ObjectLoader::LoadMesh("resources/models/spot.obj");
+		auto container = gfx::ObjectLoader::LoadMesh("resources/models/bob.obj");
 		container.Initialize();
 
 		const auto projection = glm::perspective(glm::radians(45.0f), static_cast<GLfloat>(width) / height, 0.1f, 100.0f);
