@@ -31,7 +31,7 @@ namespace gfx {
 		void Render() const noexcept;
 
 	private:
-		GLuint vertex_array_{0}, vertex_buffer_{0}, element_buffer_{0};
+		GLuint vertex_array_{}, vertex_buffer_{}, element_buffer_{};
 		const std::vector<glm::vec3> positions_;
 		const std::vector<glm::vec2> texture_coordinates_;
 		const std::vector<glm::vec3> normals_;
