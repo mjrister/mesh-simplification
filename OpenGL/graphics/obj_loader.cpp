@@ -116,6 +116,8 @@ gfx::Mesh gfx::obj_loader::LoadMesh(std::istream& is) {
 		}
 	}
 
+	if (faces.empty()) return Mesh{positions, texture_coordinates, normals};
+
 	std::vector<glm::vec3> ordered_positions;
 	std::vector<glm::vec2> ordered_texture_coordinates;
 	std::vector<glm::vec3> ordered_normals;
