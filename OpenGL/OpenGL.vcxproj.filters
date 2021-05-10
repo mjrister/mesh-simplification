@@ -8,6 +8,9 @@
     <ClCompile Include="graphics\texture2d.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\mesh.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.hpp">
@@ -19,7 +22,7 @@
     <ClInclude Include="graphics\shader_program.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\mesh.hpp">
+    <ClInclude Include="graphics\mesh.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\object_loader.hpp">
