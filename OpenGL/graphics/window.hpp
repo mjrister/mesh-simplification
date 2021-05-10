@@ -109,6 +109,6 @@ namespace gfx {
 		}
 
 		static constexpr int32_t opengl_major_version_{4}, opengl_minor_version_{6};
-		GLFWwindow* window_{nullptr};
+		GLFWwindow* window_{};
 	};
 }

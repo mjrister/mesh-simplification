@@ -17,23 +17,23 @@ namespace gfx {
 
 	public:
 		ShaderProgram(const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
-			: id_{glCreateProgram()},
+			: name_{glCreateProgram()},
 			  vertex_shader_{GL_VERTEX_SHADER, file::Read(vertex_shader_filepath).c_str()},
 			  fragment_shader_{GL_FRAGMENT_SHADER, file::Read(fragment_shader_filepath).c_str()} {
 
-			if (!id_) throw std::runtime_error{"Shader program creation failed"};
+			if (!name_) throw std::runtime_error{"Shader program creation failed"};
 
-			glAttachShader(id_, vertex_shader_.Id());
-			glAttachShader(id_, fragment_shader_.Id());
+			glAttachShader(name_, vertex_shader_.Name());
+			glAttachShader(name_, fragment_shader_.Name());
 
-			glLinkProgram(id_);
+			glLinkProgram(name_);
 			VerifyStatus(GL_LINK_STATUS);
 
-			glValidateProgram(id_);
+			glValidateProgram(name_);
 			VerifyStatus(GL_VALIDATE_STATUS);
 
-			glDetachShader(id_, vertex_shader_.Id());
-			glDetachShader(id_, fragment_shader_.Id());
+			glDetachShader(name_, vertex_shader_.Name());
+			glDetachShader(name_, fragment_shader_.Name());
 		}
 
 		ShaderProgram(const ShaderProgram&) = delete;
@@ -42,15 +42,15 @@ namespace gfx {
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
 		~ShaderProgram() {
-			glDeleteProgram(id_);
+			glDeleteProgram(name_);
 		}
 
 		void Enable() const noexcept {
-			glUseProgram(id_);
+			glUseProgram(name_);
 		}
 
 		void SetUniform(const std::string_view name, const glm::mat4& value) const {
-			if (const auto location = glGetUniformLocation(id_, name.data()); location != -1) {
+			if (const auto location = glGetUniformLocation(name_, name.data()); location != -1) {
 				glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 			}
 		}
@@ -58,18 +58,18 @@ namespace gfx {
 	private:
 		void VerifyStatus(const GLenum status_type) const {
 			GLint success;
-			glGetProgramiv(id_, status_type, &success);
+			glGetProgramiv(name_, status_type, &success);
 
 			if (!success) {
 				GLsizei log_length;
-				glGetProgramiv(id_, GL_INFO_LOG_LENGTH, &log_length);
+				glGetProgramiv(name_, GL_INFO_LOG_LENGTH, &log_length);
 				std::vector<GLchar> info_log(log_length);
-				glGetProgramInfoLog(id_, log_length, &log_length, info_log.data());
+				glGetProgramInfoLog(name_, log_length, &log_length, info_log.data());
 				throw std::runtime_error{info_log.data()};
 			}
 		}
 
-		const GLuint id_;
+		const GLuint name_;
 		const Shader vertex_shader_, fragment_shader_;
 	};
 }
