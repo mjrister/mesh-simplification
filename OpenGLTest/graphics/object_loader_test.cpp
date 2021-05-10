@@ -26,10 +26,6 @@ namespace gfx {
 			return ObjectLoader::ParseFace(line);
 		}
 
-		static void ValidateIndex(const GLint index, const GLint max_value) {
-			ObjectLoader::ValidateIndex(index, max_value);
-		}
-
 		static constexpr auto npos_index_ = ObjectLoader::npos_index_;
 	};
 }
@@ -107,15 +103,6 @@ namespace {
 
 	TEST_F(ObjectLoaderTest, TestParseFaceWithIncorrectNumberOfIndexGroups) {
 		ASSERT_THROW(ParseFace("f 1/2/3 4/5/6"), std::invalid_argument);
-	}
-
-	TEST_F(ObjectLoaderTest, TestValidateIndex) {
-		constexpr auto min_value = 0;
-		constexpr auto max_value = 42;
-		ASSERT_NO_THROW(ValidateIndex(min_value, max_value));
-		ASSERT_NO_THROW(ValidateIndex(max_value, max_value));
-		ASSERT_THROW(ValidateIndex(min_value - 1, max_value), std::invalid_argument);
-		ASSERT_THROW(ValidateIndex(max_value + 1, max_value), std::invalid_argument);
 	}
 
 	TEST_F(ObjectLoaderTest, TestLoadMesh) {

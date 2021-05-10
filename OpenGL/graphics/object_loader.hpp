@@ -61,16 +61,13 @@ namespace gfx {
 			for (const auto& face : faces) {
 				for (const auto& index_group : face) {
 					const auto position_index = index_group[0];
-					ValidateIndex(position_index, positions.size() - 1);
-					ordered_positions.push_back(positions[position_index]);
+					ordered_positions.push_back(positions.at(position_index));
 
 					if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index_) {
-						ValidateIndex(texture_coordinate_index, texture_coordinates.size() - 1);
-						ordered_texture_coordinates.push_back(texture_coordinates[texture_coordinate_index]);
+						ordered_texture_coordinates.push_back(texture_coordinates.at(texture_coordinate_index));
 					}
 					if (const auto normal_index = index_group[2]; normal_index != npos_index_) {
-						ValidateIndex(normal_index, normals.size() - 1);
-						ordered_normals.push_back(normals[normal_index]);
+						ordered_normals.push_back(normals.at(normal_index));
 					}
 				}
 			}
@@ -150,14 +147,6 @@ namespace gfx {
 			std::ostringstream oss;
 			oss << "Unsupported format " << line;
 			throw std::invalid_argument{oss.str()};
-		}
-
-		static void ValidateIndex(const GLint index, const GLint max_value) {
-			if (index != std::clamp(index, 0, max_value)) {
-				std::ostringstream oss;
-				oss << "Index out of bounds: " << index;
-				throw std::invalid_argument{oss.str()};
-			}
 		}
 
 		static constexpr GLint npos_index_{-1};
