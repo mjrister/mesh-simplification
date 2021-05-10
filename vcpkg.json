@@ -1,0 +1,10 @@
+{
+    "name": "opengl",
+    "version-string": "0.1.0",
+    "dependencies": [
+        "gl3w",
+        "glfw3",
+        "glm",
+        "gtest"
+    ]
+}
