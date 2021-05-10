@@ -205,7 +205,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="graphics\mesh.cpp" />
     <ClCompile Include="graphics\texture2d.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="graphics\shader_program.cpp" />
@@ -214,7 +213,7 @@
     <ClInclude Include="graphics\texture2d.h" />
     <ClInclude Include="lib\stb_image.h" />
     <ClInclude Include="utils\file.hpp" />
-    <ClInclude Include="graphics\mesh.h" />
+    <ClInclude Include="graphics\mesh.hpp" />
     <ClInclude Include="graphics\object_loader.hpp" />
     <ClInclude Include="graphics\shader_program.h" />
     <ClInclude Include="utils\string.hpp" />
