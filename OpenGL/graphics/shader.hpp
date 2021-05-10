@@ -10,8 +10,11 @@ namespace gfx {
 	class Shader {
 
 	public:
-		Shader(const GLenum shader_type, const GLchar* const shader_source) : name_{glCreateShader(shader_type)} {
+		Shader(const GLenum shader_type, const GLchar* const shader_source)
+			: name_{glCreateShader(shader_type)} {
+
 			if (!name_) throw std::runtime_error{"Shader creation failed"};
+
 			glShaderSource(name_, 1, &shader_source, nullptr);
 			glCompileShader(name_);
 			VerifyStatus();
