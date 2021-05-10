@@ -22,6 +22,7 @@ namespace gfx {
 		Mesh& operator=(const Mesh&) = delete;
 		Mesh& operator=(Mesh&&) noexcept = delete;
 
+
 		[[nodiscard]] const auto& Positions() const noexcept { return positions_; }
 		[[nodiscard]] const auto& TextureCoordinates() const noexcept { return texture_coordinates_; }
 		[[nodiscard]] const auto& Normals() const noexcept { return normals_; }

@@ -11,9 +11,6 @@
     <ClCompile Include="graphics\mesh.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\window.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.hpp">
@@ -31,7 +28,7 @@
     <ClInclude Include="graphics\object_loader.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\window.h">
+    <ClInclude Include="graphics\window.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="lib\stb_image.h">
