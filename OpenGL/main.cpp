@@ -16,7 +16,7 @@
 int main() {
 
 	try {
-		constexpr auto width = 1280, height = 960;
+		constexpr std::int32_t width = 1280, height = 960;
 		const gfx::Window window{"OpenGL", width, height};
 
 		const gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
