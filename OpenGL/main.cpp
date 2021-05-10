@@ -20,13 +20,13 @@ int main() {
 		constexpr std::int32_t major_version{4}, minor_version{6};
 		const gfx::Window window{"OpenGL", std::make_pair(width, height), std::make_pair(major_version, minor_version)};
 
-		const gfx::ShaderProgram shader_program{"shaders/spot.glsl", "shaders/spot.glsl"};
+		const gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 
-		const gfx::Texture2d texture2d{"resources/textures/bob.png", GL_TEXTURE0};
+		const gfx::Texture2d texture2d{"resources/textures/spot.png", GL_TEXTURE0};
 		texture2d.Bind();
 
-		auto container = gfx::ObjectLoader::LoadMesh("resources/models/bob.obj");
+		auto container = gfx::ObjectLoader::LoadMesh("resources/models/spot`.obj");
 		container.Initialize();
 
 		const auto projection = glm::perspective(glm::radians(45.0f), static_cast<GLfloat>(width) / height, 0.1f, 100.0f);
