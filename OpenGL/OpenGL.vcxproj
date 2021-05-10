@@ -205,11 +205,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="graphics\texture2d.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="graphics\shader_program.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics\texture2d.hpp" />
+    <ClInclude Include="graphics\texture2d.h" />
     <ClInclude Include="lib\stb_image.h" />
     <ClInclude Include="utils\file.hpp" />
     <ClInclude Include="graphics\mesh.hpp" />
