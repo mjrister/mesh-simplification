@@ -8,7 +8,7 @@
 #include "graphics/mesh.hpp"
 #include "graphics/object_loader.hpp"
 #include "graphics/shader_program.h"
-#include "graphics/texture2d.h"
+#include "graphics/texture2d.hpp"
 #include "graphics/window.hpp"
 
 int main() {
