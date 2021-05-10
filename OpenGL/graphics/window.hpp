@@ -26,8 +26,8 @@ namespace gfx {
 			if (!window_) throw std::runtime_error{"Window creation failed"};
 
 			glfwMakeContextCurrent(window_);
-			glfwSetFramebufferSizeCallback(window_, OnWindowResize);
-			glfwSetKeyCallback(window_, OnKeyPress);
+			glfwSetFramebufferSizeCallback(window_, HandleWindowResize);
+			glfwSetKeyCallback(window_, HandleKeyEvent);
 
 			InitializeGl3w(opengl_major_version, opengl_minor_version);
 			glEnable(GL_DEPTH_TEST);
@@ -76,15 +76,15 @@ namespace gfx {
 				<< "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
 			glEnable(GL_DEBUG_OUTPUT);
-			glDebugMessageCallback(PrintDebugErrorMessage, nullptr);
+			glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
 	#endif
 		}
 
-		static void OnWindowResize(GLFWwindow* /*window*/, const int32_t width, const int32_t height) noexcept {
+		static void HandleWindowResize(GLFWwindow* /*window*/, const int32_t width, const int32_t height) noexcept {
 			glViewport(0, 0, width, height);
 		}
 
-		static void OnKeyPress(
+		static void HandleKeyEvent(
 			GLFWwindow* window,
 			const int32_t key,
 			const int32_t /*scancode*/,
@@ -96,8 +96,8 @@ namespace gfx {
 			}
 		}
 
-		static void GLAPIENTRY PrintDebugErrorMessage(
-			const GLenum /*source*/,
+		static void GLAPIENTRY HandleDebugMessageReceived(
+			const GLenum source,
 			const GLenum type,
 			const GLuint /*id*/,
 			const GLenum severity,
@@ -108,8 +108,9 @@ namespace gfx {
 			if (type == GL_DEBUG_TYPE_ERROR) {
 				std::cerr << "GL ERROR: "
 					<< "type: 0x" << type << ", "
-					<< "severity: 0x" << severity << ", "
-					<< "message: " << message << std::endl;
+					<< "severity: 0x" << severity << std::endl
+					<< "message: " << message << std::endl
+					<< "source: " << source;
 			}
 		}
 
