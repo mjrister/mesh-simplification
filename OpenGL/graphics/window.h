@@ -25,6 +25,6 @@ namespace gfx {
 		void SwapBuffers() const noexcept;
 
 	private:
-		GLFWwindow* window_{};
+		GLFWwindow* window_{nullptr};
 	};
 }

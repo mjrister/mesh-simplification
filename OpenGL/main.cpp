@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/mesh.h"
-#include "graphics/obj_loader.h"
+#include "graphics/object_loader.hpp"
 #include "graphics/shader_program.h"
 #include "graphics/texture2d.h"
 #include "graphics/window.h"
@@ -24,7 +24,7 @@ int main() {
 		const gfx::Texture2d texture2d{"resources/textures/spot.png", GL_TEXTURE0};
 		texture2d.Bind();
 
-		auto container = gfx::obj_loader::LoadMesh("resources/models/spot.obj");
+		auto container = gfx::ObjectLoader::LoadMesh("resources/models/spot.obj");
 		container.Initialize();
 
 		const auto projection = glm::perspective(glm::radians(45.0f), static_cast<GLfloat>(width) / height, 0.1f, 100.0f);
