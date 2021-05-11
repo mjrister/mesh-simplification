@@ -53,7 +53,8 @@ namespace {
 	}
 
 	TEST(String, TestSplitStringOnWhitespaceAndTab) {
-		const auto tokens = string::Split("\t vt 0.707 0.395 0.684 ", " \t");
+		constexpr auto* line = "\t vt 0.707 0.395 0.684 ";
+		const auto tokens = string::Split(line, " \t");
 		ASSERT_EQ((std::vector<std::string_view>{"vt", "0.707", "0.395", "0.684"}), tokens);
 	}
 }
