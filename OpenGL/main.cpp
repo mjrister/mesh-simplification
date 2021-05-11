@@ -29,8 +29,9 @@ int main() {
 		auto container = gfx::ObjectLoader::LoadMesh("resources/models/spot.obj");
 		container.Initialize();
 
-		const auto projection = glm::perspective(glm::radians(45.0f), static_cast<GLfloat>(width) / height, 0.1f, 100.0f);
-		const auto view = glm::translate(glm::mat4{1.0f}, glm::vec3{0.0f, 0.0f, -3.0f});
+		const auto aspect_ratio = static_cast<GLfloat>(width) / height;
+		const auto projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
+		const auto view = glm::lookAt(glm::vec3{0.0f, 0.0f, 3.0f}, glm::vec3{0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
