@@ -48,6 +48,7 @@ namespace gfx {
 				}
 			}
 
+			if (faces.empty()) return Mesh{positions, texture_coordinates, normals};
 
 			std::vector<glm::vec3> ordered_positions;
 			std::vector<glm::vec2> ordered_texture_coordinates;
