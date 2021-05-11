@@ -5,9 +5,8 @@
 
 #include "graphics/mesh.hpp"
 
-using namespace gfx;
-
 namespace {
+	using namespace gfx;
 
 	TEST(Mesh, TestCreateMeshWithNoVertexPositions) {
 		const std::vector<glm::vec3> positions;
