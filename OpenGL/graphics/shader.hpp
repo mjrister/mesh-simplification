@@ -17,7 +17,7 @@ namespace gfx {
 
 			glShaderSource(name_, 1, &shader_source, nullptr);
 			glCompileShader(name_);
-			VerifyStatus();
+			VerifyStatus(GL_COMPILE_STATUS);
 		}
 
 		Shader(const Shader&) = delete;
@@ -34,9 +34,9 @@ namespace gfx {
 		}
 
 	private:
-		void VerifyStatus() const {
+		void VerifyStatus(const GLenum status_type) const {
 			GLint success;
-			glGetShaderiv(name_, GL_COMPILE_STATUS, &success);
+			glGetShaderiv(name_, status_type, &success);
 
 			if (!success) {
 				GLsizei log_length;
