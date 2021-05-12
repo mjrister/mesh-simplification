@@ -15,8 +15,8 @@ namespace gfx {
 
 	public:
 		Window(const std::string_view title,
-		       const std::pair<std::int32_t, std::int32_t>& width_and_height,
-		       const std::pair<std::int32_t, std::int32_t>& opengl_major_and_minor_version) {
+		       const std::pair<const std::int32_t, const std::int32_t>& width_and_height,
+		       const std::pair<const std::int32_t, const std::int32_t>& opengl_major_and_minor_version) {
 
 			const auto [opengl_major_version, opengl_minor_version] = opengl_major_and_minor_version;
 			InitializeGlfw(opengl_major_version, opengl_minor_version);
@@ -84,16 +84,20 @@ namespace gfx {
 #endif
 		}
 
-		static void HandleWindowResize(GLFWwindow* /*window*/, const int32_t width, const int32_t height) noexcept {
+		static void HandleWindowResize(
+			GLFWwindow* const /*window*/,
+			const std::int32_t width,
+			const std::int32_t height) noexcept {
+
 			glViewport(0, 0, width, height);
 		}
 
 		static void HandleKeyEvent(
-			GLFWwindow* window,
-			const int32_t key,
-			const int32_t /*scancode*/,
-			const int32_t action,
-			const int32_t /*modifiers*/) noexcept {
+			GLFWwindow* const window,
+			const std::int32_t key,
+			const std::int32_t /*scancode*/,
+			const std::int32_t action,
+			const std::int32_t /*modifiers*/) noexcept {
 
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 				glfwSetWindowShouldClose(window, true);
@@ -106,7 +110,7 @@ namespace gfx {
 			const GLuint message_id,
 			const GLenum message_severity,
 			const GLsizei /*message_length*/,
-			const GLchar* message,
+			const GLchar* const message,
 			const void* /*user_param*/) {
 
 			if (message_id == 131185) return;
