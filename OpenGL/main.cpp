@@ -26,8 +26,8 @@ int main() {
 		const gfx::Texture2d texture2d{"resources/textures/spot.png", GL_TEXTURE0};
 		texture2d.Bind();
 
-		auto container = gfx::ObjectLoader::LoadMesh("resources/models/spot.obj");
-		container.Initialize();
+		auto mesh = gfx::ObjectLoader::LoadMesh("resources/models/spot.obj");
+		mesh.Initialize();
 
 		const auto aspect_ratio = static_cast<GLfloat>(width) / height;
 		const auto projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
@@ -38,7 +38,7 @@ int main() {
 			auto model = glm::scale(glm::mat4{1.0f}, glm::vec3{0.5f});
 			model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) / 1.5f, glm::vec3{0.0f, 1.0f, 0.0f});
 			shader_program.SetUniform("model_view_projection", projection * view * model);
-			container.Render();
+			mesh.Render();
 			window.SwapBuffers();
 			glfwPollEvents();
 		}
