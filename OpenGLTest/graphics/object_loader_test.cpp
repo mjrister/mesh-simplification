@@ -83,9 +83,11 @@ namespace {
 	}
 
 	TEST_F(ObjectLoaderTest, TestParseIndexGroupWithInvalidFormat) {
+		ASSERT_THROW(ParseIndexGroup(""), std::invalid_argument);
 		ASSERT_THROW(ParseIndexGroup("/"), std::invalid_argument);
 		ASSERT_THROW(ParseIndexGroup("//"), std::invalid_argument);
 		ASSERT_THROW(ParseIndexGroup("1/"), std::invalid_argument);
+		ASSERT_THROW(ParseIndexGroup("/2"), std::invalid_argument);
 		ASSERT_THROW(ParseIndexGroup("1//"), std::invalid_argument);
 		ASSERT_THROW(ParseIndexGroup("/2/"), std::invalid_argument);
 		ASSERT_THROW(ParseIndexGroup("//3"), std::invalid_argument);
@@ -103,9 +105,47 @@ namespace {
 
 	TEST_F(ObjectLoaderTest, TestParseFaceWithIncorrectNumberOfIndexGroups) {
 		ASSERT_THROW(ParseFace("f 1/2/3 4/5/6"), std::invalid_argument);
+		ASSERT_THROW(ParseFace("f 1/2/3 4/5/6 7/8/9 10/11/12"), std::invalid_argument);
 	}
 
-	TEST_F(ObjectLoaderTest, TestLoadMesh) {
+	TEST_F(ObjectLoaderTest, TestLoadMeshWithoutFaces) {
+
+		std::istringstream ss{R"(
+			# positions
+			v 0.0  1.0 0.0
+			v 0.5  1.0 0.0
+			v 1.0  1.0 0.0
+			# texture coordinates
+			vt 0.0  0.0
+			vt 0.5  0.0
+			vt 1.0  0.0
+			# normals
+			vn 0.0 0.1 0.2
+			vn 1.0 1.1 1.2
+			vn 2.0 2.1 2.2
+		)"};
+
+		constexpr glm::vec3 v0{0.0f, 1.0f, 0.0f};
+		constexpr glm::vec3 v1{0.5f, 1.0f, 0.0f};
+		constexpr glm::vec3 v2{1.0f, 1.0f, 0.0f};
+
+		constexpr glm::vec2 vt0{0.0f, 0.0f};
+		constexpr glm::vec2 vt1{0.5f, 0.0f};
+		constexpr glm::vec2 vt2{1.0f, 0.0f};
+
+		constexpr glm::vec3 vn0{0.0f, 0.1f, 0.2f};
+		constexpr glm::vec3 vn1{1.0f, 1.1f, 1.2f};
+		constexpr glm::vec3 vn2{2.0f, 2.1f, 2.2f};
+
+		const auto mesh = ObjectLoader::LoadMesh(ss);
+
+		ASSERT_EQ((std::vector{v0, v1, v2}), mesh.Positions());
+		ASSERT_EQ((std::vector{vt0, vt1, vt2}), mesh.TextureCoordinates());
+		ASSERT_EQ((std::vector{vn0, vn1, vn2}), mesh.Normals());
+		ASSERT_TRUE(mesh.Indices().empty());
+	}
+
+	TEST_F(ObjectLoaderTest, TestLoadMeshWithFaces) {
 
 		std::istringstream ss{R"(
 			# positions
@@ -152,23 +192,9 @@ namespace {
 
 		const auto mesh = ObjectLoader::LoadMesh(ss);
 
-		ASSERT_EQ((std::vector{
-			v0, v1, v5,
-			v1, v2, v4,
-			v1, v3, v5
-		}), mesh.Positions());
-
-
-		ASSERT_EQ((std::vector{
-			vt0, vt1, vt3,
-			vt1, vt2, vt4,
-			vt1, vt4, vt5
-		}), mesh.TextureCoordinates());
-
-		ASSERT_EQ((std::vector{
-			vn2, vn1, vn0,
-			vn1, vn0, vn1,
-			vn1, vn1, vn0
-		}), mesh.Normals());
+		ASSERT_EQ((std::vector{v0, v1, v5, v1, v2, v4, v1, v3, v5 }), mesh.Positions());
+		ASSERT_EQ((std::vector{vt0, vt1, vt3, vt1, vt2, vt4, vt1, vt4, vt5}), mesh.TextureCoordinates());
+		ASSERT_EQ((std::vector{vn2, vn1, vn0, vn1, vn0, vn1, vn1, vn1, vn0}), mesh.Normals());
+		ASSERT_TRUE(mesh.Indices().empty());
 	}
 }
