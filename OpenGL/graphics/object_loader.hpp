@@ -35,14 +35,14 @@ namespace gfx {
 			std::vector<std::array<glm::ivec3, 3>> faces;
 
 			for (std::string line; std::getline(is, line);) {
-				if (line = string::Trim(line); !line.empty() && !line.starts_with("#")) {
-					if (line.starts_with("v ")) {
+				if (const auto line_view = string::Trim(line); !line_view.empty() && !line_view.starts_with("#")) {
+					if (line_view.starts_with("v ")) {
 						positions.push_back(ParseLine<GLfloat, 3>(line));
-					} else if (line.starts_with("vt ")) {
+					} else if (line_view.starts_with("vt ")) {
 						texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
-					} else if (line.starts_with("vn ")) {
+					} else if (line_view.starts_with("vn ")) {
 						normals.push_back(ParseLine<GLfloat, 3>(line));
-					} else if (line.starts_with("f ")) {
+					} else if (line_view.starts_with("f ")) {
 						faces.push_back(ParseFace(line));
 					}
 				}
@@ -116,7 +116,7 @@ namespace gfx {
 			static constexpr auto delimiter = "/";
 			const auto tokens = string::Split(line, delimiter);
 
-			switch (std::count(line.begin(), line.end(), *delimiter)) {
+			switch (std::ranges::count(line, *delimiter)) {
 				case 0:
 					if (tokens.size() == 1) {
 						const auto x = ParseToken<GLint>(tokens[0]) - 1;
