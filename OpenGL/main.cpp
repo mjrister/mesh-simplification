@@ -25,17 +25,17 @@ void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_m
 	shader_program.SetUniform("ambient_light.intensity", ambient_light.intensity);
 
 	constexpr PointLight point_light{
-			.position = glm::vec3{0.0f, 1.0f, 0.0f},
-			.color = glm::vec3{1.0f},
-			.intensity = 1.0f,
-			.attenuation = {
-				.constant = 0.0f,
-				.linear = 0.0f,
-				.exponent = 1.0f
-			}
+		.position = glm::vec3{0.0f, 1.0f, 0.0f},
+		.color = glm::vec3{1.0f},
+		.intensity = 1.0f,
+		.attenuation = {
+			.constant = 0.0f,
+			.linear = 0.0f,
+			.exponent = 1.0f
+		}
 	};
 
-	shader_program.SetUniform("point_light.position", glm::mat3{ view_matrix } *point_light.position);
+	shader_program.SetUniform("point_light.position", glm::mat3{view_matrix} * point_light.position);
 	shader_program.SetUniform("point_light.color", point_light.color);
 	shader_program.SetUniform("point_light.intensity", point_light.intensity);
 	shader_program.SetUniform("point_light.attenuation.constant", point_light.attenuation.constant);
@@ -63,8 +63,8 @@ int main() {
 		const auto projection_matrix = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
 		shader_program.SetUniform("projection_matrix", projection_matrix);
 
-		const auto view_matrix = glm::lookAt(glm::vec3{0.0f, 0.0f, 3.0f}, glm::vec3{0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
-		const auto scale_matrix = glm::scale(glm::mat4{1.0f}, glm::vec3{0.75f});
+		const auto view_matrix = lookAt(glm::vec3{0.0f, 0.0f, 3.0f}, glm::vec3{0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
+		const auto scale_matrix = scale(glm::mat4{1.0f}, glm::vec3{0.75f});
 
 		InitializeLights(shader_program, view_matrix);
 
@@ -72,11 +72,11 @@ int main() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			const auto time = static_cast<GLfloat>(glfwGetTime());
-			const auto model = glm::rotate(scale_matrix, time, glm::vec3{0.0f, 1.0f, 0.0f});
-			const auto model_view_matrix = view_matrix * model;
+			const auto model_matrix = rotate(scale_matrix, time, glm::vec3{0.0f, 1.0f, 0.0f});
+			const auto model_view_matrix = view_matrix * model_matrix;
 			shader_program.SetUniform("model_view_matrix", model_view_matrix);
 
-			const auto normal_matrix = glm::inverse(glm::transpose(glm::mat3{model_view_matrix}));
+			const auto normal_matrix = inverse(transpose(glm::mat3{model_view_matrix}));
 			shader_program.SetUniform("normal_matrix", normal_matrix);
 
 			mesh.Render();
