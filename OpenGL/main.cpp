@@ -76,7 +76,7 @@ int main() {
 			const auto model_view_matrix = view_matrix * model_matrix;
 			shader_program.SetUniform("model_view_matrix", model_view_matrix);
 
-			const auto normal_matrix = inverse(transpose(glm::mat3{model_view_matrix}));
+			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_matrix}));
 			shader_program.SetUniform("normal_matrix", normal_matrix);
 
 			mesh.Render();
