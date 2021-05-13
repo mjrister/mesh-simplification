@@ -62,6 +62,7 @@ namespace gfx {
 
 #ifdef _DEBUG
 			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+			glfwSetErrorCallback(HandleGlfwError);
 #endif
 		}
 
@@ -82,6 +83,10 @@ namespace gfx {
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
 #endif
+		}
+
+		static void HandleGlfwError(const int error_code, const char* const description) {
+			std::cerr << "GLFW Error " << error_code << ": " << description << std::endl;
 		}
 
 		static void HandleWindowResize(
