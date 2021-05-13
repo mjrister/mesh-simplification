@@ -16,7 +16,7 @@
 
 void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_matrix) {
 
-	constexpr glm::vec3 ambient_color{0.3f};
+	constexpr glm::vec3 ambient_color{0.2f};
 	shader_program.SetUniform("ambient_color", ambient_color);
 
 	constexpr PointLight point_light{
