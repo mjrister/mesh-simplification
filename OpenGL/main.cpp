@@ -14,6 +14,35 @@
 #include "graphics/texture2d.hpp"
 #include "graphics/window.hpp"
 
+void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_matrix) {
+
+	constexpr AmbientLight ambient_light{
+		.color = glm::vec3{0.3f},
+		.intensity = 1.0f
+	};
+
+	shader_program.SetUniform("ambient_light.color", ambient_light.color);
+	shader_program.SetUniform("ambient_light.intensity", ambient_light.intensity);
+
+	constexpr PointLight point_light{
+			.position = glm::vec3{0.0f, 1.0f, 0.0f},
+			.color = glm::vec3{1.0f},
+			.intensity = 1.0f,
+			.attenuation = {
+				.constant = 0.0f,
+				.linear = 0.0f,
+				.exponent = 1.0f
+			}
+	};
+
+	shader_program.SetUniform("point_light.position", glm::mat3{ view_matrix } *point_light.position);
+	shader_program.SetUniform("point_light.color", point_light.color);
+	shader_program.SetUniform("point_light.intensity", point_light.intensity);
+	shader_program.SetUniform("point_light.attenuation.constant", point_light.attenuation.constant);
+	shader_program.SetUniform("point_light.attenuation.linear", point_light.attenuation.linear);
+	shader_program.SetUniform("point_light.attenuation.exponent", point_light.attenuation.exponent);
+}
+
 int main() {
 
 	try {
@@ -37,23 +66,7 @@ int main() {
 		const auto view_matrix = glm::lookAt(glm::vec3{0.0f, 0.0f, 3.0f}, glm::vec3{0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
 		const auto scale_matrix = glm::scale(glm::mat4{1.0f}, glm::vec3{0.75f});
 
-		constexpr PointLight point_light{
-			.position = glm::vec3{0.0f, 1.0f, 0.0f},
-			.color = glm::vec3{1.0f},
-			.intensity = 1.0f,
-			.attenuation = {
-				.constant = 0.0f,
-				.linear = 0.0f,
-				.exponent = 1.0f
-			}
-		};
-
-		shader_program.SetUniform("point_light.position", glm::mat3{view_matrix} * point_light.position);
-		shader_program.SetUniform("point_light.color", point_light.color);
-		shader_program.SetUniform("point_light.intensity", point_light.intensity);
-		shader_program.SetUniform("point_light.attenuation.constant", point_light.attenuation.constant);
-		shader_program.SetUniform("point_light.attenuation.linear", point_light.attenuation.linear);
-		shader_program.SetUniform("point_light.attenuation.exponent", point_light.attenuation.exponent);
+		InitializeLights(shader_program, view_matrix);
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
