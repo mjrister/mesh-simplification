@@ -210,6 +210,7 @@
   <ItemGroup>
     <ClInclude Include="graphics\texture2d.hpp" />
     <ClInclude Include="lib\stb_image.h" />
+    <ClInclude Include="graphics\point_light.hpp" />
     <ClInclude Include="utils\file.hpp" />
     <ClInclude Include="graphics\mesh.hpp" />
     <ClInclude Include="graphics\object_loader.hpp" />

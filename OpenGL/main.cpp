@@ -9,6 +9,7 @@
 
 #include "graphics/mesh.hpp"
 #include "graphics/object_loader.hpp"
+#include "graphics/point_light.hpp"
 #include "graphics/shader_program.hpp"
 #include "graphics/texture2d.hpp"
 #include "graphics/window.hpp"
@@ -35,6 +36,17 @@ int main() {
 
 		const auto view = glm::lookAt(glm::vec3{0.0f, 0.0f, 3.0f}, glm::vec3{0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
 		const auto scale = glm::scale(glm::mat4{1.0f}, glm::vec3{0.5f});
+
+		constexpr PointLight point_light{
+			.position = glm::vec3{0.0, 1.0f, 0.0f},
+			.color = glm::vec3{1.0f, 1.0f, 1.0f},
+			.intensity = 1.0f,
+			.attenuation = {
+				.constant = 0.0f,
+				.linear = 0.0f,
+				.exponent = 1.0f
+			}
+		};
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
