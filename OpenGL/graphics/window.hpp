@@ -26,7 +26,10 @@ namespace gfx {
 			if (!window_) throw std::runtime_error{"Window creation failed"};
 
 			glfwMakeContextCurrent(window_);
-			glfwSetFramebufferSizeCallback(window_, HandleWindowResize);
+			glfwSetFramebufferSizeCallback(window_,
+				[](GLFWwindow* const /*window*/, const std::int32_t width, const std::int32_t height) noexcept {
+					glViewport(0, 0, width, height);
+				});
 			glfwSetKeyCallback(window_, HandleKeyEvent);
 
 			InitializeGl3w(opengl_major_version, opengl_minor_version);
@@ -62,7 +65,9 @@ namespace gfx {
 
 #ifdef _DEBUG
 			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-			glfwSetErrorCallback(HandleGlfwError);
+			glfwSetErrorCallback([](const int error_code, const char* const description) {
+				std::cerr << "GLFW Error " << error_code << ": " << description << std::endl;
+			});
 #endif
 		}
 
@@ -83,18 +88,6 @@ namespace gfx {
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
 #endif
-		}
-
-		static void HandleGlfwError(const int error_code, const char* const description) {
-			std::cerr << "GLFW Error " << error_code << ": " << description << std::endl;
-		}
-
-		static void HandleWindowResize(
-			GLFWwindow* const /*window*/,
-			const std::int32_t width,
-			const std::int32_t height) noexcept {
-
-			glViewport(0, 0, width, height);
 		}
 
 		static void HandleKeyEvent(
