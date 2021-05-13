@@ -90,7 +90,7 @@ namespace gfx {
 
 		struct string_hash {
 			using is_transparent = void;
-			size_t operator()(const std::string_view value) const { return  std::hash<std::string_view>{}(value); }
+			size_t operator()(const std::string_view value) const { return std::hash<std::string_view>{}(value); }
 		};
 		std::unordered_map<std::string, GLint, string_hash, std::equal_to<>> uniform_locations_;
 	};
