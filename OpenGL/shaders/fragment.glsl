@@ -11,7 +11,7 @@ uniform struct AmbientLight {
 	float intensity;
 } ambient_light;
 
-uniform struct Attenuation {
+struct Attenuation {
 	float constant;
 	float linear;
 	float exponent;
