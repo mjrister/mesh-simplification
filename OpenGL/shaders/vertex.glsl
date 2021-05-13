@@ -16,7 +16,7 @@ out Vertex {
 
 void main() {
 	vertex.position = model_view_matrix * vec4(position, 1.0f);
-	vertex.normal = normal_matrix * normal;
 	vertex.texture_coordinates = texture_coordinates;
+	vertex.normal = normalize(normal_matrix * normal);
 	gl_Position = projection_matrix * vertex.position;
 }

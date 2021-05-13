@@ -50,6 +50,16 @@ namespace gfx {
 			glUseProgram(id_);
 		}
 
+		void SetUniform(const std::string_view name, const GLfloat value) {
+			const auto location = GetUniformLocation(name);
+			glUniform1f(location, value);
+		}
+
+		void SetUniform(const std::string_view name, const glm::vec3& value) {
+			const auto location = GetUniformLocation(name);
+			glUniform3fv(location, 1, glm::value_ptr(value));
+		}
+
 		void SetUniform(const std::string_view name, const glm::mat3& value) {
 			const auto location = GetUniformLocation(name);
 			glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
@@ -88,10 +98,11 @@ namespace gfx {
 		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
 
-		struct string_hash {
+		struct string_view_hash {
 			using is_transparent = void;
+
 			size_t operator()(const std::string_view value) const { return std::hash<std::string_view>{}(value); }
 		};
-		std::unordered_map<std::string, GLint, string_hash, std::equal_to<>> uniform_locations_;
+		std::unordered_map<std::string, GLint, string_view_hash, std::equal_to<>> uniform_locations_;
 	};
 }
