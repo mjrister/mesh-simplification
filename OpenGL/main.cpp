@@ -29,16 +29,25 @@ int main() {
 		auto mesh = gfx::ObjectLoader::LoadMesh("resources/models/spot.obj");
 		mesh.Initialize();
 
-		const auto aspect_ratio = static_cast<GLfloat>(width) / height;
+		constexpr auto aspect_ratio = static_cast<GLfloat>(width) / height;
 		const auto projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
 		const auto view = glm::lookAt(glm::vec3{0.0f, 0.0f, 3.0f}, glm::vec3{0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 			auto model = glm::scale(glm::mat4{1.0f}, glm::vec3{0.5f});
 			model = glm::rotate(model, static_cast<GLfloat>(glfwGetTime()) / 1.5f, glm::vec3{0.0f, 1.0f, 0.0f});
-			shader_program.SetUniform("model_view_projection", projection * view * model);
+
+			const auto model_view = view * model;
+			shader_program.SetUniform("model_view_matrix", model_view);
+			shader_program.SetUniform("projection_matrix", projection);
+
+			const auto normal_matrix = glm::inverse(glm::transpose(glm::mat3{model_view}));
+			shader_program.SetUniform("normal_matrix", normal_matrix);
+
 			mesh.Render();
+
 			window.SwapBuffers();
 			glfwPollEvents();
 		}

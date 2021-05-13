@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #include <GL/gl3w.h>
@@ -17,23 +18,23 @@ namespace gfx {
 
 	public:
 		ShaderProgram(const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
-			: name_{glCreateProgram()},
+			: id_{glCreateProgram()},
 			  vertex_shader_{GL_VERTEX_SHADER, file::Read(vertex_shader_filepath).c_str()},
 			  fragment_shader_{GL_FRAGMENT_SHADER, file::Read(fragment_shader_filepath).c_str()} {
 
-			if (!name_) throw std::runtime_error{"Shader program creation failed"};
+			if (!id_) throw std::runtime_error{"Shader program creation failed"};
 
-			glAttachShader(name_, vertex_shader_.Name());
-			glAttachShader(name_, fragment_shader_.Name());
+			glAttachShader(id_, vertex_shader_.Name());
+			glAttachShader(id_, fragment_shader_.Name());
 
-			glLinkProgram(name_);
+			glLinkProgram(id_);
 			VerifyStatus(GL_LINK_STATUS);
 
-			glValidateProgram(name_);
+			glValidateProgram(id_);
 			VerifyStatus(GL_VALIDATE_STATUS);
 
-			glDetachShader(name_, vertex_shader_.Name());
-			glDetachShader(name_, fragment_shader_.Name());
+			glDetachShader(id_, vertex_shader_.Name());
+			glDetachShader(id_, fragment_shader_.Name());
 		}
 
 		ShaderProgram(const ShaderProgram&) = delete;
@@ -42,34 +43,46 @@ namespace gfx {
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
 		~ShaderProgram() {
-			glDeleteProgram(name_);
+			glDeleteProgram(id_);
 		}
 
 		void Enable() const noexcept {
-			glUseProgram(name_);
+			glUseProgram(id_);
+		}
+
+		void SetUniform(const std::string_view name, const glm::mat3& value) const {
+			const auto location = GetUniformLocation(name);
+			glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 		}
 
 		void SetUniform(const std::string_view name, const glm::mat4& value) const {
-			if (const auto location = glGetUniformLocation(name_, name.data()); location != -1) {
-				glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
-			}
+			const auto location = GetUniformLocation(name);
+			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 		}
 
 	private:
+		[[nodiscard]] GLint GetUniformLocation(const std::string_view name) const {
+			const auto location = glGetUniformLocation(id_, name.data());
+			if (location == -1) {
+				std::cerr << name << " is not an active uniform variable";
+			}
+			return location;
+		}
+
 		void VerifyStatus(const GLenum status_type) const {
 			GLint success;
-			glGetProgramiv(name_, status_type, &success);
+			glGetProgramiv(id_, status_type, &success);
 
 			if (!success) {
 				GLsizei log_length;
-				glGetProgramiv(name_, GL_INFO_LOG_LENGTH, &log_length);
+				glGetProgramiv(id_, GL_INFO_LOG_LENGTH, &log_length);
 				std::vector<GLchar> info_log(log_length);
-				glGetProgramInfoLog(name_, log_length, &log_length, info_log.data());
+				glGetProgramInfoLog(id_, log_length, &log_length, info_log.data());
 				throw std::runtime_error{info_log.data()};
 			}
 		}
 
-		const GLuint name_;
+		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
 	};
 }

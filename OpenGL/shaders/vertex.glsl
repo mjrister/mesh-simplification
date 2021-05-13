@@ -2,14 +2,21 @@
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 texture_coordinates;
+layout (location = 2) in vec3 normal;
 
-uniform mat4 model_view_projection;
+uniform mat4 model_view_matrix;
+uniform mat4 projection_matrix;
+uniform mat3 normal_matrix;
 
 out Vertex {
+	vec4 position;
 	vec2 texture_coordinates;
+	vec3 normal;
 } vertex;
 
 void main() {
-	gl_Position = model_view_projection * vec4(position, 1.0f);
+	vertex.position = model_view_matrix * vec4(position, 1.0f);
+	vertex.normal = normal_matrix * normal;
 	vertex.texture_coordinates = texture_coordinates;
+	gl_Position = projection_matrix * vertex.position;
 }

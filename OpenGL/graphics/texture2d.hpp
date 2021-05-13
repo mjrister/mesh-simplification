@@ -17,9 +17,9 @@ namespace gfx {
 		explicit Texture2d(const std::string_view filepath, const GLenum texture_unit)
 			: texture_unit_{texture_unit} {
 
-			glGenTextures(1, &name_);
+			glGenTextures(1, &id_);
 			glActiveTexture(texture_unit);
-			glBindTexture(GL_TEXTURE_2D, name_);
+			glBindTexture(GL_TEXTURE_2D, id_);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -44,16 +44,16 @@ namespace gfx {
 		Texture2d& operator=(Texture2d&&) noexcept = delete;
 
 		~Texture2d() {
-			glDeleteTextures(1, &name_);
+			glDeleteTextures(1, &id_);
 		}
 
 		void Bind() const noexcept {
 			glActiveTexture(texture_unit_);
-			glBindTexture(GL_TEXTURE_2D, name_);
+			glBindTexture(GL_TEXTURE_2D, id_);
 		}
 
 	private:
-		GLuint name_{};
+		GLuint id_{};
 		const GLenum texture_unit_;
 	};
 }

@@ -11,12 +11,12 @@ namespace gfx {
 
 	public:
 		Shader(const GLenum shader_type, const GLchar* const shader_source)
-			: name_{glCreateShader(shader_type)} {
+			: id_{glCreateShader(shader_type)} {
 
-			if (!name_) throw std::runtime_error{"Shader creation failed"};
+			if (!id_) throw std::runtime_error{"Shader creation failed"};
 
-			glShaderSource(name_, 1, &shader_source, nullptr);
-			glCompileShader(name_);
+			glShaderSource(id_, 1, &shader_source, nullptr);
+			glCompileShader(id_);
 			VerifyStatus(GL_COMPILE_STATUS);
 		}
 
@@ -26,27 +26,27 @@ namespace gfx {
 		Shader& operator=(Shader&&) noexcept = delete;
 
 		~Shader() {
-			glDeleteShader(name_);
+			glDeleteShader(id_);
 		}
 
 		[[nodiscard]] GLuint Name() const noexcept {
-			return name_;
+			return id_;
 		}
 
 	private:
 		void VerifyStatus(const GLenum status_type) const {
 			GLint success;
-			glGetShaderiv(name_, status_type, &success);
+			glGetShaderiv(id_, status_type, &success);
 
 			if (!success) {
 				GLsizei log_length;
-				glGetShaderiv(name_, GL_INFO_LOG_LENGTH, &log_length);
+				glGetShaderiv(id_, GL_INFO_LOG_LENGTH, &log_length);
 				std::vector<GLchar> info_log(log_length);
-				glGetShaderInfoLog(name_, log_length, &log_length, info_log.data());
+				glGetShaderInfoLog(id_, log_length, &log_length, info_log.data());
 				throw std::runtime_error{info_log.data()};
 			}
 		}
 
-		const GLuint name_;
+		const GLuint id_;
 	};
 }
