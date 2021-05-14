@@ -11,7 +11,7 @@
 #include "graphics/object_loader.hpp"
 #include "graphics/point_light.hpp"
 #include "graphics/shader_program.hpp"
-#include "graphics/texture2d.hpp"
+#include "graphics/texture2d.h"
 #include "graphics/window.hpp"
 
 void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_matrix) {
@@ -60,24 +60,24 @@ int main() {
 		mesh.Initialize();
 
 		constexpr auto aspect_ratio = static_cast<GLfloat>(width) / height;
-		const auto projection_matrix = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
-		shader_program.SetUniform("projection_matrix", projection_matrix);
+		const auto projection_transform = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
+		shader_program.SetUniform("projection_transform", projection_transform);
 
-		const auto view_matrix = glm::lookAt(glm::vec3{0.0f, 0.0f, 3.0f}, glm::vec3{0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
-		const auto scale_matrix = glm::scale(glm::mat4{1.0f}, glm::vec3{0.75f});
+		constexpr glm::vec3 eye{0.0f, 0.0f, 3.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
+		const auto view_transform = glm::lookAt(eye, center, up);
 
-		InitializeLights(shader_program, view_matrix);
+		InitializeLights(shader_program, view_transform);
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			const auto time = static_cast<GLfloat>(glfwGetTime());
-			const auto model_matrix = glm::rotate(scale_matrix, time, glm::vec3{0.0f, 1.0f, 0.0f});
-			const auto model_view_matrix = view_matrix * model_matrix;
-			shader_program.SetUniform("model_view_matrix", model_view_matrix);
+			const auto model_transform = glm::rotate(glm::mat4{1.0f}, time, glm::vec3{0.0f, 1.0f, 0.0f});
+			const auto model_view_transform = view_transform * model_transform;
+			shader_program.SetUniform("model_view_transform", model_view_transform);
 
-			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_matrix}));
-			shader_program.SetUniform("normal_matrix", normal_matrix);
+			const auto normal_transform = glm::inverse(transpose(glm::mat3{model_view_transform}));
+			shader_program.SetUniform("normal_transform", normal_transform);
 
 			mesh.Render();
 
