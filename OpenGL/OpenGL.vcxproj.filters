@@ -19,10 +19,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils\string.hpp">
+    <ClInclude Include="utils\string.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\file.hpp">
+    <ClInclude Include="utils\file.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="graphics\shader_program.h">

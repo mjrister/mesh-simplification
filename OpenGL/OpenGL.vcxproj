@@ -216,11 +216,11 @@
     <ClInclude Include="graphics\texture2d.h" />
     <ClInclude Include="lib\stb_image.h" />
     <ClInclude Include="graphics\point_light.h" />
-    <ClInclude Include="utils\file.hpp" />
+    <ClInclude Include="utils\file.h" />
     <ClInclude Include="graphics\mesh.h" />
     <ClInclude Include="graphics\obj_loader.h" />
     <ClInclude Include="graphics\shader_program.h" />
-    <ClInclude Include="utils\string.hpp" />
+    <ClInclude Include="utils\string.h" />
     <ClInclude Include="graphics\window.h" />
   </ItemGroup>
   <ItemGroup>
