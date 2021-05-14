@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 
 #include "graphics/mesh.h"
-#include "utils/string.hpp"
+#include "utils/string.h"
 
 namespace {
 	constexpr GLint npos_index{-1};

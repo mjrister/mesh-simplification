@@ -7,7 +7,7 @@
 #include <GL/gl3w.h>
 #include <glm/fwd.hpp>
 
-#include "utils/string.hpp"
+#include "utils/string.h"
 
 namespace gfx {
 

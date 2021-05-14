@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "utils/file.hpp"
+#include "utils/file.h"
 
 namespace {
 	void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
