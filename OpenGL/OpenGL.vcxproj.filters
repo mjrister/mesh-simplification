@@ -6,6 +6,7 @@
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphics\texture2d.cpp" />
+    <ClCompile Include="graphics\shader_program.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.hpp">
@@ -17,7 +18,7 @@
     <ClInclude Include="graphics\shader.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\shader_program.hpp">
+    <ClInclude Include="graphics\shader_program.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\mesh.h">

@@ -3,14 +3,13 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
-#define GLM_FORCE_SILENT_WARNINGS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/mesh.h"
 #include "graphics/object_loader.hpp"
 #include "graphics/point_light.hpp"
-#include "graphics/shader_program.hpp"
+#include "graphics/shader_program.h"
 #include "graphics/texture2d.h"
 #include "graphics/window.hpp"
 
