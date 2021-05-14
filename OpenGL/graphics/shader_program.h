@@ -7,11 +7,23 @@
 #include <GL/gl3w.h>
 #include <glm/fwd.hpp>
 
-#include "shader.hpp"
-
 namespace gfx {
 
 	class ShaderProgram {
+
+		class Shader {
+
+		public:
+			Shader(GLenum shader_type, const GLchar* shader_source);
+			~Shader();
+
+			Shader(const Shader&) = delete;
+			Shader(Shader&&) noexcept = delete;
+			Shader& operator=(const Shader&) = delete;
+			Shader& operator=(Shader&&) noexcept = delete;
+
+			const GLuint id;
+		};
 
 	public:
 		ShaderProgram(std::string_view vertex_shader_filepath, std::string_view fragment_shader_filepath);

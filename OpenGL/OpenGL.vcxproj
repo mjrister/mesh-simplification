@@ -217,7 +217,6 @@
     <ClInclude Include="utils\file.hpp" />
     <ClInclude Include="graphics\mesh.h" />
     <ClInclude Include="graphics\object_loader.hpp" />
-    <ClInclude Include="graphics\shader.hpp" />
     <ClInclude Include="graphics\shader_program.h" />
     <ClInclude Include="utils\string.hpp" />
     <ClInclude Include="graphics\window.hpp" />

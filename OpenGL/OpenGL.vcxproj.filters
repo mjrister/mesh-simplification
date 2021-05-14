@@ -5,8 +5,12 @@
     <ClCompile Include="graphics\mesh.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\texture2d.cpp" />
-    <ClCompile Include="graphics\shader_program.cpp" />
+    <ClCompile Include="graphics\shader_program.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\texture2d.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.hpp">
@@ -14,9 +18,6 @@
     </ClInclude>
     <ClInclude Include="utils\file.hpp">
       <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\shader.hpp">
-      <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\shader_program.h">
       <Filter>graphics</Filter>
