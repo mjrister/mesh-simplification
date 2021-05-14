@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 namespace {
-	void GLAPIENTRY HandleDebugMessageReceived(
+	void HandleDebugMessageReceived(
 		const GLenum message_source,
 		const GLenum message_type,
 		const GLuint message_id,
@@ -43,8 +43,9 @@ namespace {
 			default: severity = "OTHER"; break;
 		}
 
-		std::cout << "OpenGL Debug (" << message_id << "): " << message << std::endl
-			<< "Source: " << source << ", Type: " << type << ", Severity: " << severity << std::endl;
+		std::cout << "OpenGL Debug (" << message_id << "): "
+			<< "Source: " << source << ", Type: " << type << ", Severity: " << severity << std::endl
+			<< message << std::endl;
 	}
 
 	void InitializeGlfw(const std::int32_t opengl_major_version, const std::int32_t opengl_minor_version) {
