@@ -14,6 +14,9 @@
     <ClCompile Include="graphics\window.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\obj_loader.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.hpp">
@@ -28,7 +31,7 @@
     <ClInclude Include="graphics\mesh.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\object_loader.hpp">
+    <ClInclude Include="graphics\obj_loader.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\window.h">

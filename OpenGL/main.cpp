@@ -7,7 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/mesh.h"
-#include "graphics/object_loader.hpp"
+#include "graphics/obj_loader.h"
 #include "graphics/point_light.hpp"
 #include "graphics/shader_program.h"
 #include "graphics/texture2d.h"
@@ -44,7 +44,7 @@ int main() {
 		const gfx::Texture2d texture2d{"resources/textures/bob.png", GL_TEXTURE0};
 		texture2d.Bind();
 
-		auto mesh = gfx::ObjectLoader::LoadMesh("resources/models/bob.obj");
+		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bob.obj");
 		mesh.Initialize();
 
 		constexpr auto aspect_ratio = static_cast<GLfloat>(width) / height;
