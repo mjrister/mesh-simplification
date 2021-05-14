@@ -10,7 +10,7 @@ namespace gfx {
 
 	public:
 		Texture2d(std::string_view filepath, GLenum texture_unit);
-		~Texture2d();
+		~Texture2d() { glDeleteTextures(1, &id_); }
 
 		Texture2d(const Texture2d&) = delete;
 		Texture2d(Texture2d&&) noexcept = delete;

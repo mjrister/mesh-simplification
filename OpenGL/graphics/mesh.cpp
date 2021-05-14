@@ -40,9 +40,9 @@ gfx::Mesh::Mesh(
 }
 
 gfx::Mesh::~Mesh() {
-	if (element_buffer_) glDeleteBuffers(1, &element_buffer_);
-	if (vertex_buffer_) glDeleteBuffers(1, &vertex_buffer_);
-	if (vertex_array_) glDeleteVertexArrays(1, &vertex_array_);
+	glDeleteBuffers(1, &element_buffer_);
+	glDeleteBuffers(1, &vertex_buffer_);
+	glDeleteVertexArrays(1, &vertex_array_);
 }
 
 void gfx::Mesh::Initialize() noexcept {

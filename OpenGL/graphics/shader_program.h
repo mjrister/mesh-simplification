@@ -15,7 +15,7 @@ namespace gfx {
 
 		public:
 			Shader(GLenum shader_type, const GLchar* shader_source);
-			~Shader();
+			~Shader() { glDeleteShader(id); }
 
 			Shader(const Shader&) = delete;
 			Shader(Shader&&) noexcept = delete;
@@ -27,14 +27,14 @@ namespace gfx {
 
 	public:
 		ShaderProgram(std::string_view vertex_shader_filepath, std::string_view fragment_shader_filepath);
-		~ShaderProgram();
+		~ShaderProgram() { glDeleteProgram(id_); }
 
 		ShaderProgram(const ShaderProgram&) = delete;
 		ShaderProgram(ShaderProgram&&) noexcept = delete;
 		ShaderProgram& operator=(const ShaderProgram&) = delete;
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
-		void Enable() const noexcept;
+		void Enable() const noexcept { glUseProgram(id_); }
 
 		void SetUniform(std::string_view name, GLfloat value);
 		void SetUniform(std::string_view name, const glm::vec3& value);

@@ -6,7 +6,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-gfx::Texture2d::Texture2d(const std::string_view filepath, const GLenum texture_unit) : texture_unit_{texture_unit} {
+gfx::Texture2d::Texture2d(const std::string_view filepath, const GLenum texture_unit)
+	: texture_unit_{texture_unit} {
 
 	glGenTextures(1, &id_);
 	glActiveTexture(texture_unit);
@@ -26,12 +27,6 @@ gfx::Texture2d::Texture2d(const std::string_view filepath, const GLenum texture_
 		std::ostringstream oss;
 		oss << "Failed to open " << filepath;
 		throw std::invalid_argument{oss.str()};
-	}
-}
-
-gfx::Texture2d::~Texture2d() {
-	if (id_) {
-		glDeleteTextures(1, &id_);
 	}
 }
 

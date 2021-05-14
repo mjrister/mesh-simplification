@@ -46,10 +46,6 @@ gfx::ShaderProgram::Shader::Shader(const GLenum shader_type, const GLchar* const
 	VerifyShaderStatus(id, GL_COMPILE_STATUS);
 }
 
-gfx::ShaderProgram::Shader::~Shader() {
-	if (id) glDeleteShader(id);
-}
-
 gfx::ShaderProgram::ShaderProgram(
 	const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
 	: id_{glCreateProgram()},
@@ -69,14 +65,6 @@ gfx::ShaderProgram::ShaderProgram(
 
 	glDetachShader(id_, vertex_shader_.id);
 	glDetachShader(id_, fragment_shader_.id);
-}
-
-gfx::ShaderProgram::~ShaderProgram() {
-	if (id_) glDeleteProgram(id_);
-}
-
-void gfx::ShaderProgram::Enable() const noexcept {
-	glUseProgram(id_);
 }
 
 void gfx::ShaderProgram::SetUniform(const std::string_view name, const GLfloat value) {
