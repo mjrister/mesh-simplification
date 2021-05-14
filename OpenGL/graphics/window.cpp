@@ -66,7 +66,7 @@ namespace {
 
 		if (!gl3wIsSupported(opengl_major_version, opengl_minor_version)) {
 			std::ostringstream oss;
-			oss << "OpenGL " << opengl_major_version << "." << opengl_minor_version << "not supported";
+			oss << "OpenGL " << opengl_major_version << "." << opengl_minor_version << " not supported";
 			throw std::runtime_error{oss.str()};
 		}
 
