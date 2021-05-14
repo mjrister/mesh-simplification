@@ -21,8 +21,7 @@ namespace {
 			case GL_DEBUG_SOURCE_SHADER_COMPILER: source = "SHADER COMPILER"; break;
 			case GL_DEBUG_SOURCE_THIRD_PARTY: source = "THIRD PARTY"; break;
 			case GL_DEBUG_SOURCE_APPLICATION: source = "APPLICATION"; break;
-			case GL_DEBUG_SOURCE_OTHER: source = "OTHER"; break;
-			default: source = "UNKNOWN"; break;
+			default: source = "OTHER"; break;
 		}
 
 		std::string type;
@@ -32,11 +31,7 @@ namespace {
 			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: type = "UNDEFINED BEHAVIOR"; break;
 			case GL_DEBUG_TYPE_PORTABILITY: type = "PORTABILITY"; break;
 			case GL_DEBUG_TYPE_PERFORMANCE: type = "PERFORMANCE"; break;
-			case GL_DEBUG_TYPE_MARKER: type = "MARKER"; break;
-			case GL_DEBUG_TYPE_PUSH_GROUP: type = "PUSH GROUP"; break;
-			case GL_DEBUG_TYPE_POP_GROUP: type = "POP GROUP"; break;
-			case GL_DEBUG_TYPE_OTHER: type = "OTHER"; break;
-			default: type = "UNKNOWN"; break;
+			default: type = "OTHER"; break;
 		}
 
 		std::string severity;
@@ -45,7 +40,7 @@ namespace {
 			case GL_DEBUG_SEVERITY_MEDIUM: severity = "MEDIUM"; break;
 			case GL_DEBUG_SEVERITY_LOW: severity = "LOW"; break;
 			case GL_DEBUG_SEVERITY_NOTIFICATION: severity = "NOTIFICATION"; break;
-			default: severity = "UNKNOWN"; break;
+			default: severity = "OTHER"; break;
 		}
 
 		std::cout << "OpenGL Debug (" << message_id << "): " << message << std::endl
