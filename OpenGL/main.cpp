@@ -11,36 +11,25 @@
 #include "graphics/object_loader.hpp"
 #include "graphics/point_light.hpp"
 #include "graphics/shader_program.hpp"
-#include "graphics/texture2d.h"
+#include "graphics/texture2d.hpp"
 #include "graphics/window.hpp"
 
 void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_matrix) {
 
-	constexpr AmbientLight ambient_light{
-		.color = glm::vec3{0.3f},
-		.intensity = 1.0f
-	};
-
-	shader_program.SetUniform("ambient_light.color", ambient_light.color);
-	shader_program.SetUniform("ambient_light.intensity", ambient_light.intensity);
+	constexpr glm::vec3 ambient_color{0.2f};
+	shader_program.SetUniform("ambient_color", ambient_color);
 
 	constexpr PointLight point_light{
-		.position = glm::vec3{0.0f, 1.0f, 0.0f},
+		.position = glm::vec3{0.0f, 1.0f, -2.0f},
 		.color = glm::vec3{1.0f},
 		.intensity = 1.0f,
-		.attenuation = {
-			.constant = 0.0f,
-			.linear = 0.0f,
-			.exponent = 1.0f
-		}
+		.attenuation = glm::vec3{0.0f, 0.0f, 1.0f}
 	};
 
 	shader_program.SetUniform("point_light.position", glm::mat3{view_matrix} * point_light.position);
 	shader_program.SetUniform("point_light.color", point_light.color);
 	shader_program.SetUniform("point_light.intensity", point_light.intensity);
-	shader_program.SetUniform("point_light.attenuation.constant", point_light.attenuation.constant);
-	shader_program.SetUniform("point_light.attenuation.linear", point_light.attenuation.linear);
-	shader_program.SetUniform("point_light.attenuation.exponent", point_light.attenuation.exponent);
+	shader_program.SetUniform("point_light.attenuation", point_light.attenuation);
 }
 
 int main() {
@@ -63,8 +52,12 @@ int main() {
 		const auto projection_transform = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
-		constexpr glm::vec3 eye{0.0f, 0.0f, 3.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
+		constexpr glm::vec3 eye{0.0f, 0.0f, 2.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
 		const auto view_transform = glm::lookAt(eye, center, up);
+
+		constexpr glm::mat4 identity{1.0f};
+		constexpr glm::vec3 scale{0.5}, rotation_axis{0.0f, 1.0f, 0.0f};
+		const auto model_base_transform = glm::scale(identity, scale);
 
 		InitializeLights(shader_program, view_transform);
 
@@ -72,12 +65,12 @@ int main() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			const auto time = static_cast<GLfloat>(glfwGetTime());
-			const auto model_transform = glm::rotate(glm::mat4{1.0f}, time, glm::vec3{0.0f, 1.0f, 0.0f});
+			const auto model_transform = glm::rotate(model_base_transform, time, rotation_axis);
 			const auto model_view_transform = view_transform * model_transform;
 			shader_program.SetUniform("model_view_transform", model_view_transform);
 
-			const auto normal_transform = glm::inverse(transpose(glm::mat3{model_view_transform}));
-			shader_program.SetUniform("normal_transform", normal_transform);
+			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_transform}));
+			shader_program.SetUniform("normal_transform", normal_matrix);
 
 			mesh.Render();
 
