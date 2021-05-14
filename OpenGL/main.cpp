@@ -8,7 +8,7 @@
 
 #include "graphics/mesh.h"
 #include "graphics/obj_loader.h"
-#include "graphics/point_light.hpp"
+#include "graphics/point_light.h"
 #include "graphics/shader_program.h"
 #include "graphics/texture2d.h"
 #include "graphics/window.h"
