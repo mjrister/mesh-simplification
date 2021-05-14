@@ -11,7 +11,7 @@
 #include <GL/gl3w.h>
 #include <glm/glm.hpp>
 
-#include "graphics/mesh.hpp"
+#include "graphics/mesh.h"
 #include "utils/string.hpp"
 
 namespace gfx {

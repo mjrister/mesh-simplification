@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "graphics/mesh.hpp"
+#include "graphics/mesh.h"
 #include "graphics/object_loader.hpp"
 #include "graphics/point_light.hpp"
 #include "graphics/shader_program.hpp"
@@ -19,7 +19,7 @@ void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_m
 	constexpr glm::vec3 ambient_color{0.2f};
 	shader_program.SetUniform("ambient_color", ambient_color);
 
-	constexpr PointLight point_light{
+	constexpr gfx::PointLight point_light{
 		.position = glm::vec3{0.0f, 1.0f, -2.0f},
 		.color = glm::vec3{1.0f},
 		.intensity = 1.0f,
