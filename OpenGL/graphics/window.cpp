@@ -5,6 +5,52 @@
 #include <stdexcept>
 
 namespace {
+	void GLAPIENTRY HandleDebugMessageReceived(
+		const GLenum message_source,
+		const GLenum message_type,
+		const GLuint message_id,
+		const GLenum message_severity,
+		const GLsizei /*message_length*/,
+		const GLchar* const message,
+		const void* /*user_param*/) {
+
+		std::string source;
+		switch (message_source) {
+			case GL_DEBUG_SOURCE_API: source = "API"; break;
+			case GL_DEBUG_SOURCE_WINDOW_SYSTEM: source = "WINDOW SYSTEM"; break;
+			case GL_DEBUG_SOURCE_SHADER_COMPILER: source = "SHADER COMPILER"; break;
+			case GL_DEBUG_SOURCE_THIRD_PARTY: source = "THIRD PARTY"; break;
+			case GL_DEBUG_SOURCE_APPLICATION: source = "APPLICATION"; break;
+			case GL_DEBUG_SOURCE_OTHER: source = "OTHER"; break;
+			default: source = "UNKNOWN"; break;
+		}
+
+		std::string type;
+		switch (message_type) {
+			case GL_DEBUG_TYPE_ERROR: type = "ERROR"; break;
+			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: type = "DEPRECATED BEHAVIOR"; break;
+			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: type = "UNDEFINED BEHAVIOR"; break;
+			case GL_DEBUG_TYPE_PORTABILITY: type = "PORTABILITY"; break;
+			case GL_DEBUG_TYPE_PERFORMANCE: type = "PERFORMANCE"; break;
+			case GL_DEBUG_TYPE_MARKER: type = "MARKER"; break;
+			case GL_DEBUG_TYPE_PUSH_GROUP: type = "PUSH GROUP"; break;
+			case GL_DEBUG_TYPE_POP_GROUP: type = "POP GROUP"; break;
+			case GL_DEBUG_TYPE_OTHER: type = "OTHER"; break;
+			default: type = "UNKNOWN"; break;
+		}
+
+		std::string severity;
+		switch (message_severity) {
+			case GL_DEBUG_SEVERITY_HIGH: severity = "HIGH"; break;
+			case GL_DEBUG_SEVERITY_MEDIUM: severity = "MEDIUM"; break;
+			case GL_DEBUG_SEVERITY_LOW: severity = "LOW"; break;
+			case GL_DEBUG_SEVERITY_NOTIFICATION: severity = "NOTIFICATION"; break;
+			default: severity = "UNKNOWN"; break;
+		}
+
+		std::cout << "OpenGL Debug (" << message_id << "): " << message << std::endl
+			<< "Source: " << source << ", Type: " << type << ", Severity: " << severity << std::endl;
+	}
 
 	void InitializeGlfw(const std::int32_t opengl_major_version, const std::int32_t opengl_minor_version) {
 
@@ -32,6 +78,9 @@ namespace {
 #if _DEBUG
 		std::cout << "OpenGL version: " << glGetString(GL_VERSION) << ", "
 			<< "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
 #endif
 	}
 }
