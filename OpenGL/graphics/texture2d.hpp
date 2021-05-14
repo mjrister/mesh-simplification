@@ -14,7 +14,7 @@ namespace gfx {
 	class Texture2d {
 
 	public:
-		explicit Texture2d(const std::string_view filepath, const GLenum texture_unit)
+		Texture2d(const std::string_view filepath, const GLenum texture_unit)
 			: texture_unit_{texture_unit} {
 
 			glGenTextures(1, &id_);
@@ -38,14 +38,14 @@ namespace gfx {
 			}
 		}
 
+		~Texture2d() {
+			if (id_) glDeleteTextures(1, &id_);
+		}
+
 		Texture2d(const Texture2d&) = delete;
 		Texture2d(Texture2d&&) noexcept = delete;
 		Texture2d& operator=(const Texture2d&) = delete;
 		Texture2d& operator=(Texture2d&&) noexcept = delete;
-
-		~Texture2d() {
-			glDeleteTextures(1, &id_);
-		}
 
 		void Bind() const noexcept {
 			glActiveTexture(texture_unit_);
