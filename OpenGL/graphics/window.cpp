@@ -68,12 +68,3 @@ gfx::Window::Window(
 	InitializeGl3w(opengl_major_version, opengl_minor_version);
 	glEnable(GL_DEPTH_TEST);
 }
-
-bool gfx::Window::Closed() const noexcept {
-	return glfwWindowShouldClose(window_);
-}
-
-void gfx::Window::Update() const noexcept {
-	glfwSwapBuffers(window_);
-	glfwPollEvents();
-}

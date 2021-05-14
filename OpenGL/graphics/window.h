@@ -21,8 +21,15 @@ namespace gfx {
 		Window& operator=(const Window&) = delete;
 		Window& operator=(Window&&) noexcept = delete;
 
-		[[nodiscard]] bool Closed() const noexcept;
-		void Update() const noexcept;
+		[[nodiscard]] bool Closed() const noexcept {
+			return glfwWindowShouldClose(window_);
+
+		}
+
+		void Update() const noexcept {
+			glfwSwapBuffers(window_);
+			glfwPollEvents();
+		}
 
 	private:
 		GLFWwindow* window_{};
