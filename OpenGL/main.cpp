@@ -36,8 +36,8 @@ int main() {
 
 	try {
 		constexpr std::int32_t width{1280}, height{960};
-		constexpr std::int32_t major_version{4}, minor_version{6};
-		const gfx::Window window{"OpenGL", std::make_pair(width, height), std::make_pair(major_version, minor_version)};
+		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
+		const gfx::Window window{"OpenGL", width, height, opengl_major_version, opengl_minor_version};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
