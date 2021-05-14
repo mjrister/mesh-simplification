@@ -7,6 +7,8 @@
 #include <GL/gl3w.h>
 #include <glm/fwd.hpp>
 
+#include "utils/string.hpp"
+
 namespace gfx {
 
 	class ShaderProgram {
@@ -46,11 +48,6 @@ namespace gfx {
 
 		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
-
-		struct string_hash {
-			using is_transparent = void;
-			size_t operator()(const std::string_view value) const { return std::hash<std::string_view>{}(value); }
-		};
-		std::unordered_map<std::string, GLint, string_hash, std::equal_to<>> uniform_locations_;
+		std::unordered_map<std::string, GLint, string::string_hash, std::equal_to<>> uniform_locations_;
 	};
 }
