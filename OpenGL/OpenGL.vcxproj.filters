@@ -5,6 +5,7 @@
     <ClCompile Include="graphics\mesh.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\texture2d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.hpp">
@@ -31,7 +32,7 @@
     <ClInclude Include="lib\stb_image.h">
       <Filter>lib</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\texture2d.hpp">
+    <ClInclude Include="graphics\texture2d.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\point_light.hpp">

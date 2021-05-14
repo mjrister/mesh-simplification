@@ -206,10 +206,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="graphics\mesh.cpp" />
+    <ClCompile Include="graphics\texture2d.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics\texture2d.hpp" />
+    <ClInclude Include="graphics\texture2d.h" />
     <ClInclude Include="lib\stb_image.h" />
     <ClInclude Include="graphics\point_light.hpp" />
     <ClInclude Include="utils\file.hpp" />

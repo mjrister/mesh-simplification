@@ -11,7 +11,7 @@
 #include "graphics/object_loader.hpp"
 #include "graphics/point_light.hpp"
 #include "graphics/shader_program.hpp"
-#include "graphics/texture2d.hpp"
+#include "graphics/texture2d.h"
 #include "graphics/window.hpp"
 
 void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_matrix) {
