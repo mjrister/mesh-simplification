@@ -11,6 +11,9 @@
     <ClCompile Include="graphics\texture2d.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\window.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.hpp">
@@ -28,7 +31,7 @@
     <ClInclude Include="graphics\object_loader.hpp">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\window.hpp">
+    <ClInclude Include="graphics\window.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="lib\stb_image.h">

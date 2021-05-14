@@ -11,7 +11,7 @@
 #include "graphics/point_light.hpp"
 #include "graphics/shader_program.h"
 #include "graphics/texture2d.h"
-#include "graphics/window.hpp"
+#include "graphics/window.h"
 
 void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_matrix) {
 
@@ -35,8 +35,8 @@ int main() {
 
 	try {
 		constexpr std::int32_t width{1280}, height{960};
-		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
-		const gfx::Window window{"OpenGL", width, height, opengl_major_version, opengl_minor_version};
+		constexpr std::int32_t major_version{4}, minor_version{6};
+		const gfx::Window window{"OpenGL", std::make_pair(width, height), std::make_pair(major_version, minor_version)};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
@@ -72,9 +72,7 @@ int main() {
 			shader_program.SetUniform("normal_transform", normal_matrix);
 
 			mesh.Render();
-
-			window.SwapBuffers();
-			glfwPollEvents();
+			window.Update();
 		}
 	} catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;

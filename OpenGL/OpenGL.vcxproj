@@ -208,6 +208,7 @@
     <ClCompile Include="graphics\mesh.cpp" />
     <ClCompile Include="graphics\shader_program.cpp" />
     <ClCompile Include="graphics\texture2d.cpp" />
+    <ClCompile Include="graphics\window.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -219,7 +220,7 @@
     <ClInclude Include="graphics\object_loader.hpp" />
     <ClInclude Include="graphics\shader_program.h" />
     <ClInclude Include="utils\string.hpp" />
-    <ClInclude Include="graphics\window.hpp" />
+    <ClInclude Include="graphics\window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl" />
