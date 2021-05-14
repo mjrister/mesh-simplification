@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include <glm/glm.hpp>
+
 namespace {
 	void Validate(
 		const std::vector<glm::vec3>& positions,
