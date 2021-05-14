@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "utils/string.hpp"
+#include "utils/string.h"
 
 namespace {
 	using namespace string;

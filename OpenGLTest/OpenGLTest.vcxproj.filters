@@ -5,11 +5,17 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="graphics\object_loader_test.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="graphics\mesh_test.cpp">
-      <Filter>graphics</Filter>
+      <Filter>graphics\test</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\object_loader_test.cpp">
+      <Filter>graphics\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenGL\graphics\mesh.cpp">
+      <Filter>graphics\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenGL\graphics\obj_loader.cpp">
+      <Filter>graphics\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -18,6 +24,12 @@
     </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{358dd437-5550-496d-9676-902602cd7ec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\test">
+      <UniqueIdentifier>{fd869c21-b648-4126-9410-ac5f997d17ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\src">
+      <UniqueIdentifier>{f4139ae4-c98c-4596-a761-204d45b69bc5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
