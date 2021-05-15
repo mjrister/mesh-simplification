@@ -14,13 +14,15 @@ namespace {
 	}
 
 	TEST(Mesh, TestCreateTriangleMeshWithMissingIndices) {
-		const std::vector<glm::vec3> positions{ {0.0f, 0.1f, 0.2f} };
-		ASSERT_THROW((Mesh{positions, {}, {}, {0, 1}}), std::invalid_argument);
+		const std::vector<glm::vec3> positions{{0.0f, 0.1f, 0.2f}};
+		const std::vector<GLuint> indices{0, 1};
+		ASSERT_THROW((Mesh{positions, {}, {}, indices}), std::invalid_argument);
 	}
 
 	TEST(Mesh, TestCreateTriangleMeshWithExtraIndices) {
 		const std::vector<glm::vec3> positions{{0.0f, 0.1f, 0.2f}};
-		ASSERT_THROW((Mesh{positions, {}, {}, {0, 1, 2, 3}}), std::invalid_argument);
+		const std::vector<GLuint> indices{0, 1, 2, 3};
+		ASSERT_THROW((Mesh{positions, {}, {}, indices}), std::invalid_argument);
 	}
 
 	TEST(Mesh, TestCreateMeshWithMissingTextureCoordinates) {
