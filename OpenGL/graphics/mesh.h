@@ -3,7 +3,7 @@
 #include <vector>
 
 #include <GL/gl3w.h>
-#include <glm/fwd.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace gfx {
 
@@ -30,11 +30,16 @@ namespace gfx {
 		void Initialize() noexcept;
 		void Render() const noexcept;
 
+		void Scale(const glm::vec3 xyz) { model_ = glm::scale(model_, xyz); }
+		void Rotate(const GLfloat angle, const glm::vec3 axis) { model_ = glm::rotate(model_, angle, axis); }
+		void Translate(const glm::vec3 xyz) { model_ = glm::translate(model_, xyz); }
+
 	private:
 		GLuint vertex_array_{}, vertex_buffer_{}, element_buffer_{};
 		const std::vector<glm::vec3> positions_;
 		const std::vector<glm::vec2> texture_coordinates_;
 		const std::vector<glm::vec3> normals_;
 		const std::vector<GLuint> indices_;
+		glm::mat4 model_{1.0f};
 	};
 }
