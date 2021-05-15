@@ -39,7 +39,7 @@
     <ClCompile Include="..\OpenGL\graphics\mesh.cpp" />
     <ClCompile Include="..\OpenGL\graphics\obj_loader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="graphics\object_loader_test.cpp" />
+    <ClCompile Include="graphics\obj_loader_test.cpp" />
     <ClCompile Include="graphics\mesh_test.cpp" />
     <ClCompile Include="utils\string_test.cpp" />
   </ItemGroup>

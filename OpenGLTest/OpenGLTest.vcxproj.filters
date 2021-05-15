@@ -8,7 +8,7 @@
     <ClCompile Include="graphics\mesh_test.cpp">
       <Filter>graphics\test</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\object_loader_test.cpp">
+    <ClCompile Include="graphics\obj_loader_test.cpp">
       <Filter>graphics\test</Filter>
     </ClCompile>
     <ClCompile Include="..\OpenGL\graphics\mesh.cpp">

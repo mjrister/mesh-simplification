@@ -7,8 +7,8 @@
 namespace {
 	using namespace gfx;
 
-	void AssertLoadMeshThrowsWithInvalidArgument(const std::string_view mesh) {
-		std::istringstream ss{mesh.data()};
+	void AssertLoadMeshThrowsWithInvalidArgument(const std::string_view obj_source) {
+		std::istringstream ss{obj_source.data()};
 		ASSERT_THROW(obj_loader::LoadMesh(ss), std::invalid_argument);
 	}
 
