@@ -70,7 +70,7 @@ void gfx::Mesh::Initialize() noexcept {
 	}
 
 	if (!normals_.empty()) {
-		const size_t offset = positions_size + texture_coordinates_size;
+		const std::size_t offset = positions_size + texture_coordinates_size;
 		glBufferSubData(GL_ARRAY_BUFFER, offset, normals_size, normals_.data());
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(offset));
 		glEnableVertexAttribArray(2);
