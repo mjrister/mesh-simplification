@@ -83,13 +83,13 @@ namespace {
 
 gfx::Window::Window(
 	const std::string_view title,
-	const std::pair<const std::int32_t, const std::int32_t>& width_and_height,
-	const std::pair<const std::int32_t, const std::int32_t>& opengl_major_and_minor_version) {
+	const std::int32_t width,
+	const std::int32_t height,
+	const std::int32_t opengl_major_version,
+	const std::int32_t opengl_minor_version) {
 
-	const auto [opengl_major_version, opengl_minor_version] = opengl_major_and_minor_version;
 	InitializeGlfw(opengl_major_version, opengl_minor_version);
 
-	const auto [width, height] = width_and_height;
 	window_ = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 	if (!window_) throw std::runtime_error{"Window creation failed"};
 

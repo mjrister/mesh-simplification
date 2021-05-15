@@ -12,8 +12,10 @@ namespace gfx {
 	public:
 		Window(
 			std::string_view title,
-			const std::pair<const std::int32_t, const std::int32_t>& width_and_height,
-			const std::pair<const std::int32_t, const std::int32_t>& opengl_major_and_minor_version);
+			std::int32_t width,
+			std::int32_t height,
+			std::int32_t opengl_major_version,
+			std::int32_t opengl_minor_version);
 		~Window() { glfwTerminate(); }
 
 		Window(const Window&) = delete;

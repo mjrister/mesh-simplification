@@ -13,30 +13,12 @@
 #include "graphics/texture2d.h"
 #include "graphics/window.h"
 
-void InitializeLights(gfx::ShaderProgram& shader_program, const glm::mat4 view_matrix) {
-
-	constexpr glm::vec3 ambient_color{0.2f};
-	shader_program.SetUniform("ambient_color", ambient_color);
-
-	constexpr gfx::PointLight point_light{
-		.position = glm::vec3{0.0f, 1.0f, -2.0f},
-		.color = glm::vec3{1.0f},
-		.intensity = 1.0f,
-		.attenuation = glm::vec3{0.0f, 0.0f, 1.0f}
-	};
-
-	shader_program.SetUniform("point_light.position", glm::mat3{view_matrix} * point_light.position);
-	shader_program.SetUniform("point_light.color", point_light.color);
-	shader_program.SetUniform("point_light.intensity", point_light.intensity);
-	shader_program.SetUniform("point_light.attenuation", point_light.attenuation);
-}
-
 int main() {
 
 	try {
-		constexpr std::int32_t width{1280}, height{960};
-		constexpr std::int32_t major_version{4}, minor_version{6};
-		const gfx::Window window{"OpenGL", std::make_pair(width, height), std::make_pair(major_version, minor_version)};
+		constexpr std::int32_t window_width{1280}, window_height{960};
+		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
+		const gfx::Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
@@ -47,7 +29,7 @@ int main() {
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bob.obj");
 		mesh.Initialize();
 
-		constexpr auto aspect_ratio = static_cast<GLfloat>(width) / height;
+		constexpr auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
 		const auto projection_transform = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
@@ -58,7 +40,20 @@ int main() {
 		constexpr glm::vec3 scale{0.5}, rotation_axis{0.0f, 1.0f, 0.0f};
 		const auto model_base_transform = glm::scale(identity, scale);
 
-		InitializeLights(shader_program, view_transform);
+		constexpr glm::vec3 ambient_color{0.2f};
+		shader_program.SetUniform("ambient_color", ambient_color);
+
+		constexpr gfx::PointLight point_light{
+			.position = glm::vec3{0.0f, 1.0f, -2.0f},
+			.color = glm::vec3{1.0f},
+			.intensity = 1.0f,
+			.attenuation = glm::vec3{0.0f, 0.0f, 1.0f}
+		};
+
+		shader_program.SetUniform("point_light.position", glm::mat3{view_transform} * point_light.position);
+		shader_program.SetUniform("point_light.color", point_light.color);
+		shader_program.SetUniform("point_light.intensity", point_light.intensity);
+		shader_program.SetUniform("point_light.attenuation", point_light.attenuation);
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
