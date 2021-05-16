@@ -103,13 +103,13 @@ gfx::Window::Window(
 	glfwSetKeyCallback(
 		window_,
 		[](GLFWwindow* const window,
-			const std::int32_t key,
-			const std::int32_t /*scancode*/,
-			const std::int32_t action,
-			const std::int32_t /*modifiers*/) noexcept {
-				if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-					glfwSetWindowShouldClose(window, true);
-				}
+		   const std::int32_t key,
+		   const std::int32_t /*scancode*/,
+		   const std::int32_t action,
+		   const std::int32_t /*modifiers*/) noexcept {
+			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+				glfwSetWindowShouldClose(window, true);
+			}
 		});
 	InitializeGl3w(opengl_major_version, opengl_minor_version);
 	glEnable(GL_DEPTH_TEST);
