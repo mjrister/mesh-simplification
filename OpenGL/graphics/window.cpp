@@ -100,28 +100,45 @@ gfx::Window::Window(
 		[](GLFWwindow* const /*window*/, const std::int32_t width, const std::int32_t height) noexcept {
 			glViewport(0, 0, width, height);
 		});
-
+	glfwSetKeyCallback(window_,
+		[](GLFWwindow* const window,
+			const std::int32_t key,
+			const std::int32_t /*scancode*/,
+			const std::int32_t action,
+			const std::int32_t /*modifiers*/) noexcept {
+				if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+					glfwSetWindowShouldClose(window, true);
+				}
+		});
 	InitializeGl3w(opengl_major_version, opengl_minor_version);
 	glEnable(GL_DEPTH_TEST);
 }
 
 void gfx::Window::HandleKeyboardInput(Mesh& mesh) const {
+	static constexpr GLfloat translate_step{0.01f};
+	static constexpr GLfloat scale_step{0.01f};
 
-	if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window_, true);
+	if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
+		static constexpr glm::vec3 translate{0.0f, translate_step, 0.0f};
+		mesh.Translate(translate);
+	} else if (glfwGetKey(window_, GLFW_KEY_X) == GLFW_PRESS) {
+		static constexpr glm::vec3 translate{0.0f, -translate_step, 0.0f};
+		mesh.Translate(translate);
 	}
 
-	if (static constexpr GLfloat delta{0.01f}; glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
-		static constexpr glm::vec3 translation{0.0f, delta, 0.0f};
-		mesh.Translate(translation);
-	} else if (glfwGetKey(window_, GLFW_KEY_X) == GLFW_PRESS) {
-		static constexpr glm::vec3 translation{0.0f, -delta, 0.0f};
-		mesh.Translate(translation);
-	} else if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
-		static constexpr glm::vec3 translation{-delta, 0.0f, 0.0f};
-		mesh.Translate(translation);
+	if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
+		static constexpr glm::vec3 translate{-translate_step, 0.0f, 0.0f};
+		mesh.Translate(translate);
 	} else if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS) {
-		static constexpr glm::vec3 translation{delta, 0.0f, 0.0f};
-		mesh.Translate(translation);
+		static constexpr glm::vec3 translate{translate_step, 0.0f, 0.0f};
+		mesh.Translate(translate);
+	}
+
+	if (glfwGetKey(window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window_, GLFW_KEY_EQUAL) == GLFW_PRESS) {
+		static constexpr GLfloat scale{1.0f + scale_step};
+		mesh.Scale(glm::vec3{scale});
+	} else if (glfwGetKey(window_, GLFW_KEY_MINUS)) {
+		static constexpr GLfloat scale{1.0f - scale_step};
+		mesh.Scale(glm::vec3{scale});
 	}
 }
