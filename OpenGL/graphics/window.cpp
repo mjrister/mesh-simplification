@@ -97,12 +97,10 @@ gfx::Window::Window(
 	if (!window_) throw std::runtime_error{"Window creation failed"};
 
 	glfwMakeContextCurrent(window_);
-
 	glfwSetFramebufferSizeCallback(
 		window_, [](GLFWwindow* const /*window*/, const std::int32_t width, const std::int32_t height) noexcept {
 			glViewport(0, 0, width, height);
 		});
-
 	glfwSetKeyCallback(
 		window_,
 		[](GLFWwindow* const window,
@@ -113,19 +111,6 @@ gfx::Window::Window(
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 				glfwSetWindowShouldClose(window, true);
 			}
-		});
-
-	glfwSetCursorPosCallback(window_, [](GLFWwindow* window, const double x, const double y) {
-
-	});
-
-	glfwSetMouseButtonCallback(
-		window_,
-		[](GLFWwindow* window,
-			const std::int32_t button,
-			const std::int32_t action,
-			const std::int32_t modifiers) {
-
 		});
 
 	InitializeGl3w(opengl_major_version, opengl_minor_version);
