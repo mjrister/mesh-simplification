@@ -106,24 +106,22 @@ gfx::Window::Window(
 }
 
 void gfx::Window::HandleKeyboardInput(Mesh& mesh) const {
-	static constexpr auto x_axis = glm::vec3{1.0f, 0.0f, 0.0f};
-	static constexpr auto y_axis = glm::vec3{0.0f, 1.0f, 0.0f};
-	static constexpr auto z_axis = glm::vec3{0.0f, 0.0f, 1.0f};
-	static constexpr auto angle_increment = 0.01f;
 
 	if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window_, true);
-	} else if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
-		mesh.Rotate(-angle_increment, x_axis);
+	}
+
+	if (static constexpr GLfloat delta{0.01f}; glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
+		static constexpr glm::vec3 translation{0.0f, delta, 0.0f};
+		mesh.Translate(translation);
 	} else if (glfwGetKey(window_, GLFW_KEY_X) == GLFW_PRESS) {
-		mesh.Rotate(angle_increment, x_axis);
+		static constexpr glm::vec3 translation{0.0f, -delta, 0.0f};
+		mesh.Translate(translation);
 	} else if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
-		mesh.Rotate(-angle_increment, y_axis);
+		static constexpr glm::vec3 translation{-delta, 0.0f, 0.0f};
+		mesh.Translate(translation);
 	} else if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS) {
-		mesh.Rotate(angle_increment, y_axis);
-	} else if (glfwGetKey(window_, GLFW_KEY_Q) == GLFW_PRESS) {
-		mesh.Rotate(angle_increment, z_axis);
-	} else if (glfwGetKey(window_, GLFW_KEY_E) == GLFW_PRESS) {
-		mesh.Rotate(-angle_increment, z_axis);
+		static constexpr glm::vec3 translation{delta, 0.0f, 0.0f};
+		mesh.Translate(translation);
 	}
 }
