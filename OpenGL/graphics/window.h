@@ -25,10 +25,6 @@ namespace gfx {
 		Window& operator=(const Window&) = delete;
 		Window& operator=(Window&&) noexcept = delete;
 
-		[[nodiscard]] glm::vec2& CursorPosition() {
-			return cursor_position_;
-		}
-
 		[[nodiscard]] bool Closed() const noexcept {
 			return glfwWindowShouldClose(window_);
 		}

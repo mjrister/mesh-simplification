@@ -133,25 +133,9 @@ gfx::Window::Window(
 }
 
 void gfx::Window::HandleInput(Mesh& mesh) {
-
-
-	if (const auto response = glfwGetMouseButton(window_, GLFW_MOUSE_BUTTON_LEFT); response == GLFW_PRESS) {
-
-		double x, y;
-		glfwGetCursorPos(window_, &x, &y);
-		cursor_position_ = glm::vec2{x, y};
-
-		if (static constexpr auto cursor_npos = glm::vec2{-1.0f}; prev_cursor_position_ != cursor_npos) {
-			if (const auto cursor_delta = cursor_position_ - prev_cursor_position_; glm::length(cursor_delta) > 0.0f) {
-				mesh.Rotate(glm::vec3{cursor_delta.y, cursor_delta.x, 0.0f}, 0.025f);
-			}
-		}
-
-		prev_cursor_position_ = cursor_position_;
-	}
-
 	static constexpr GLfloat translate_step{0.01f};
 	static constexpr GLfloat scale_step{0.01f};
+	static constexpr GLfloat rotation_step{0.025f};
 
 	if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
 		static constexpr glm::vec3 translate{0.0f, translate_step, 0.0f};
@@ -175,5 +159,19 @@ void gfx::Window::HandleInput(Mesh& mesh) {
 	} else if (glfwGetKey(window_, GLFW_KEY_MINUS)) {
 		static constexpr GLfloat scale{1.0f - scale_step};
 		mesh.Scale(glm::vec3{scale});
+	}
+
+	if (glfwGetMouseButton(window_, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+		double x, y;
+		glfwGetCursorPos(window_, &x, &y);
+		cursor_position_ = glm::vec2{x, y};
+
+		if (prev_cursor_position_ != glm::vec2{-1.0f}) {
+			if (const auto cursor_delta = cursor_position_ - prev_cursor_position_; glm::length(cursor_delta) > 0.0f) {
+				mesh.Rotate(glm::vec3{cursor_delta.y, cursor_delta.x, 0.0f}, rotation_step);
+			}
+		}
+
+		prev_cursor_position_ = cursor_position_;
 	}
 }
