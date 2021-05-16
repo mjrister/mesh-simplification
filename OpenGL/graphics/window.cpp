@@ -96,11 +96,12 @@ gfx::Window::Window(
 	if (!window_) throw std::runtime_error{"Window creation failed"};
 
 	glfwMakeContextCurrent(window_);
-	glfwSetFramebufferSizeCallback(window_,
-		[](GLFWwindow* const /*window*/, const std::int32_t width, const std::int32_t height) noexcept {
+	glfwSetFramebufferSizeCallback(
+		window_, [](GLFWwindow* const /*window*/, const std::int32_t width, const std::int32_t height) noexcept {
 			glViewport(0, 0, width, height);
 		});
-	glfwSetKeyCallback(window_,
+	glfwSetKeyCallback(
+		window_,
 		[](GLFWwindow* const window,
 			const std::int32_t key,
 			const std::int32_t /*scancode*/,
