@@ -44,7 +44,7 @@ int main() {
 			.position = glm::vec3{-1.0f, 1.0f, 1.0f},
 			.color = glm::vec3{1.0f},
 			.intensity = 1.0f,
-			.attenuation = glm::vec3{0.0f, 0.0f, 1.0f}
+			.attenuation = glm::vec3{0.0f, 1.0f, 0.0f}
 		};
 
 		shader_program.SetUniform("point_light.position", glm::mat3{view_transform} * point_light.position);
