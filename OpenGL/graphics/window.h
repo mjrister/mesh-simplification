@@ -4,6 +4,7 @@
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
+#include <glm/vec2.hpp>
 
 namespace gfx {
 	class Mesh;
@@ -24,6 +25,10 @@ namespace gfx {
 		Window& operator=(const Window&) = delete;
 		Window& operator=(Window&&) noexcept = delete;
 
+		[[nodiscard]] glm::vec2& CursorPosition() {
+			return cursor_position_;
+		}
+
 		[[nodiscard]] bool Closed() const noexcept {
 			return glfwWindowShouldClose(window_);
 		}
@@ -33,9 +38,10 @@ namespace gfx {
 			glfwPollEvents();
 		}
 
-		void HandleKeyboardInput(Mesh& mesh) const;
+		void HandleInput(Mesh& mesh);
 
 	private:
 		GLFWwindow* window_{};
+		glm::vec2 prev_cursor_position_{-1.0f}, cursor_position_{};
 	};
 }

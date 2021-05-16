@@ -18,7 +18,7 @@ int main() {
 	try {
 		constexpr std::int32_t window_width{1280}, window_height{960};
 		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
-		const gfx::Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
+		gfx::Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
@@ -54,7 +54,7 @@ int main() {
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			window.HandleKeyboardInput(mesh);
+			window.HandleInput(mesh);
 
 			const auto model_view_transform = view_transform * mesh.Model();
 			shader_program.SetUniform("model_view_transform", model_view_transform);

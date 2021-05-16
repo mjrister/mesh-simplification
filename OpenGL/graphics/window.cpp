@@ -97,10 +97,12 @@ gfx::Window::Window(
 	if (!window_) throw std::runtime_error{"Window creation failed"};
 
 	glfwMakeContextCurrent(window_);
+
 	glfwSetFramebufferSizeCallback(
 		window_, [](GLFWwindow* const /*window*/, const std::int32_t width, const std::int32_t height) noexcept {
 			glViewport(0, 0, width, height);
 		});
+
 	glfwSetKeyCallback(
 		window_,
 		[](GLFWwindow* const window,
@@ -112,11 +114,42 @@ gfx::Window::Window(
 				glfwSetWindowShouldClose(window, true);
 			}
 		});
+
+	glfwSetCursorPosCallback(window_, [](GLFWwindow* window, const double x, const double y) {
+
+	});
+
+	glfwSetMouseButtonCallback(
+		window_,
+		[](GLFWwindow* window,
+			const std::int32_t button,
+			const std::int32_t action,
+			const std::int32_t modifiers) {
+
+		});
+
 	InitializeGl3w(opengl_major_version, opengl_minor_version);
 	glEnable(GL_DEPTH_TEST);
 }
 
-void gfx::Window::HandleKeyboardInput(Mesh& mesh) const {
+void gfx::Window::HandleInput(Mesh& mesh) {
+
+
+	if (const auto response = glfwGetMouseButton(window_, GLFW_MOUSE_BUTTON_LEFT); response == GLFW_PRESS) {
+
+		double x, y;
+		glfwGetCursorPos(window_, &x, &y);
+		cursor_position_ = glm::vec2{x, y};
+
+		if (static constexpr auto cursor_npos = glm::vec2{-1.0f}; prev_cursor_position_ != cursor_npos) {
+			if (const auto cursor_delta = cursor_position_ - prev_cursor_position_; glm::length(cursor_delta) > 0.0f) {
+				mesh.Rotate(glm::vec3{cursor_delta.y, cursor_delta.x, 0.0f}, 0.025f);
+			}
+		}
+
+		prev_cursor_position_ = cursor_position_;
+	}
+
 	static constexpr GLfloat translate_step{0.01f};
 	static constexpr GLfloat scale_step{0.01f};
 
