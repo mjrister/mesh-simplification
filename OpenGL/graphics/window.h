@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 namespace gfx {
+	class Mesh;
 
 	class Window {
 
@@ -25,13 +26,14 @@ namespace gfx {
 
 		[[nodiscard]] bool Closed() const noexcept {
 			return glfwWindowShouldClose(window_);
-
 		}
 
 		void Update() const noexcept {
 			glfwSwapBuffers(window_);
 			glfwPollEvents();
 		}
+
+		void HandleKeyboardInput(Mesh& mesh) const;
 
 	private:
 		GLFWwindow* window_{};

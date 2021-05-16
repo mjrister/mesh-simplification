@@ -26,6 +26,7 @@ namespace gfx {
 		[[nodiscard]] const auto& TextureCoordinates() const noexcept { return texture_coordinates_; }
 		[[nodiscard]] const auto& Normals() const noexcept { return normals_; }
 		[[nodiscard]] const auto& Indices() const noexcept { return indices_; }
+		[[nodiscard]] const auto& Model() const noexcept { return model_; }
 
 		void Initialize() noexcept;
 		void Render() const noexcept;

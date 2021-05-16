@@ -28,6 +28,7 @@ int main() {
 
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bob.obj");
 		mesh.Initialize();
+		mesh.Scale(glm::vec3{0.5f});
 
 		constexpr auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
 		const auto projection_transform = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
@@ -36,15 +37,11 @@ int main() {
 		constexpr glm::vec3 eye{0.0f, 0.0f, 2.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
 		const auto view_transform = glm::lookAt(eye, center, up);
 
-		constexpr glm::mat4 identity{1.0f};
-		constexpr glm::vec3 scale{0.5}, rotation_axis{0.0f, 1.0f, 0.0f};
-		const auto model_base_transform = glm::scale(identity, scale);
-
-		constexpr glm::vec3 ambient_color{0.2f};
+		constexpr glm::vec3 ambient_color{0.3f};
 		shader_program.SetUniform("ambient_color", ambient_color);
 
 		constexpr gfx::PointLight point_light{
-			.position = glm::vec3{0.0f, 1.0f, -2.0f},
+			.position = glm::vec3{-1.0f, 1.0f, 1.0f},
 			.color = glm::vec3{1.0f},
 			.intensity = 1.0f,
 			.attenuation = glm::vec3{0.0f, 0.0f, 1.0f}
@@ -57,10 +54,9 @@ int main() {
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			window.HandleKeyboardInput(mesh);
 
-			const auto time = static_cast<GLfloat>(glfwGetTime());
-			const auto model_transform = glm::rotate(model_base_transform, time, rotation_axis);
-			const auto model_view_transform = view_transform * model_transform;
+			const auto model_view_transform = view_transform * mesh.Model();
 			shader_program.SetUniform("model_view_transform", model_view_transform);
 
 			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_transform}));

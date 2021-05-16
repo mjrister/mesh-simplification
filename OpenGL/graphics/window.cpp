@@ -4,6 +4,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "graphics/mesh.h"
+
 namespace {
 	void HandleDebugMessageReceived(
 		const GLenum message_source,
@@ -98,18 +100,30 @@ gfx::Window::Window(
 		[](GLFWwindow* const /*window*/, const std::int32_t width, const std::int32_t height) noexcept {
 			glViewport(0, 0, width, height);
 		});
-	glfwSetKeyCallback(window_,
-		[](GLFWwindow* const window,
-		   const std::int32_t key,
-		   const std::int32_t /*scancode*/,
-		   const std::int32_t action,
-		   const std::int32_t /*modifiers*/) noexcept {
-
-			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-				glfwSetWindowShouldClose(window, true);
-			}
-		});
 
 	InitializeGl3w(opengl_major_version, opengl_minor_version);
 	glEnable(GL_DEPTH_TEST);
+}
+
+void gfx::Window::HandleKeyboardInput(Mesh& mesh) const {
+	static constexpr auto x_axis = glm::vec3{1.0f, 0.0f, 0.0f};
+	static constexpr auto y_axis = glm::vec3{0.0f, 1.0f, 0.0f};
+	static constexpr auto z_axis = glm::vec3{0.0f, 0.0f, 1.0f};
+	static constexpr auto angle_increment = 0.01f;
+
+	if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window_, true);
+	} else if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
+		mesh.Rotate(-angle_increment, x_axis);
+	} else if (glfwGetKey(window_, GLFW_KEY_X) == GLFW_PRESS) {
+		mesh.Rotate(angle_increment, x_axis);
+	} else if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
+		mesh.Rotate(-angle_increment, y_axis);
+	} else if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS) {
+		mesh.Rotate(angle_increment, y_axis);
+	} else if (glfwGetKey(window_, GLFW_KEY_Q) == GLFW_PRESS) {
+		mesh.Rotate(angle_increment, z_axis);
+	} else if (glfwGetKey(window_, GLFW_KEY_E) == GLFW_PRESS) {
+		mesh.Rotate(-angle_increment, z_axis);
+	}
 }
