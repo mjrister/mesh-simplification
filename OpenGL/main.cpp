@@ -1,9 +1,12 @@
+#include <algorithm>
 #include <iostream>
+#include <optional>
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/io.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/mesh.h"
@@ -14,7 +17,18 @@
 #include "graphics/window.h"
 
 namespace {
-	void HandleInput(gfx::Window& window, gfx::Mesh& mesh) {
+	std::optional<glm::vec2> prev_cursor_position;
+
+	glm::vec3 GetArcBallPosition(
+		const glm::vec2 cursor_position, const std::int32_t width, const std::int32_t height) {
+		constexpr auto min = -1.0f, max = 1.0f;
+		const auto x = std::clamp(cursor_position.x * 2.0f / static_cast<GLfloat>(width) - 1.0f, min, max);
+		const auto y = -std::clamp(cursor_position.y * 2.0f / static_cast<GLfloat>(height) - 1.0f, min, max);
+		const auto z = sqrt(1.0f - x * x + y * y);
+		return glm::vec3{x, y, z};
+	}
+
+	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh, const glm::mat4& model_view_transform) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
 
@@ -40,6 +54,27 @@ namespace {
 		} else if (window.IsKeyPressed(GLFW_KEY_MINUS)) {
 			static constexpr glm::vec3 scale{1.0f - scale_step};
 			mesh.Scale(scale);
+		}
+
+		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+			const auto cursor_position = window.GetCursorPosition();
+
+			if (!prev_cursor_position.has_value()) {
+				prev_cursor_position = cursor_position;
+			} else if (cursor_position != prev_cursor_position) {
+				const auto width = window.Width();
+				const auto height = window.Height();
+				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
+				const auto b = GetArcBallPosition(cursor_position, width, height);
+				const auto a_dot_b = std::min<>(1.0f, glm::dot(a, b));
+				const auto angle = std::acos(a_dot_b);
+				const auto axis_view = glm::cross(a, b);
+				const auto view_model_inv = glm::inverse(model_view_transform);
+				const auto axis_model = glm::mat3{ view_model_inv } *axis_view;
+				mesh.Rotate(axis_model, angle);
+			}
+		} else if (prev_cursor_position.has_value()) {
+			prev_cursor_position = std::nullopt;
 		}
 	}
 }
@@ -85,13 +120,14 @@ int main() {
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			HandleInput(window, mesh);
 
 			const auto model_view_transform = view_transform * mesh.Model();
 			shader_program.SetUniform("model_view_transform", model_view_transform);
 
 			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_transform}));
 			shader_program.SetUniform("normal_transform", normal_matrix);
+
+			HandleInput(window, mesh, model_view_transform);
 
 			mesh.Render();
 			window.Update();
