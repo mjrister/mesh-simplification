@@ -29,12 +29,14 @@ namespace gfx {
 			return glfwWindowShouldClose(window_);
 		}
 
+		[[nodiscard]] bool IsKeyPressed(const std::int32_t key) const noexcept {
+			return glfwGetKey(window_, key) == GLFW_PRESS;
+		}
+
 		void Update() const noexcept {
 			glfwSwapBuffers(window_);
 			glfwPollEvents();
 		}
-
-		void HandleInput(Mesh& mesh);
 
 	private:
 		GLFWwindow* window_{};

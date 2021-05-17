@@ -13,6 +13,37 @@
 #include "graphics/texture2d.h"
 #include "graphics/window.h"
 
+namespace {
+	void HandleInput(gfx::Window& window, gfx::Mesh& mesh) {
+		static constexpr GLfloat translate_step{0.01f};
+		static constexpr GLfloat scale_step{0.01f};
+
+		if (window.IsKeyPressed(GLFW_KEY_W)) {
+			static constexpr glm::vec3 translate{0.0f, translate_step, 0.0f};
+			mesh.Translate(translate);
+		} else if (window.IsKeyPressed(GLFW_KEY_X)) {
+			static constexpr glm::vec3 translate{0.0f, -translate_step, 0.0f};
+			mesh.Translate(translate);
+		}
+
+		if (window.IsKeyPressed(GLFW_KEY_A)) {
+			static constexpr glm::vec3 translate{-translate_step, 0.0f, 0.0f};
+			mesh.Translate(translate);
+		} else if (window.IsKeyPressed(GLFW_KEY_D)) {
+			static constexpr glm::vec3 translate{translate_step, 0.0f, 0.0f};
+			mesh.Translate(translate);
+		}
+
+		if (window.IsKeyPressed(GLFW_KEY_LEFT_SHIFT) && window.IsKeyPressed(GLFW_KEY_EQUAL)) {
+			static constexpr glm::vec3 scale{1.0f + scale_step};
+			mesh.Scale(scale);
+		} else if (window.IsKeyPressed(GLFW_KEY_MINUS)) {
+			static constexpr glm::vec3 scale{1.0f - scale_step};
+			mesh.Scale(scale);
+		}
+	}
+}
+
 int main() {
 
 	try {
@@ -54,7 +85,7 @@ int main() {
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			window.HandleInput(mesh);
+			HandleInput(window, mesh);
 
 			const auto model_view_transform = view_transform * mesh.Model();
 			shader_program.SetUniform("model_view_transform", model_view_transform);

@@ -117,46 +117,46 @@ gfx::Window::Window(
 	glEnable(GL_DEPTH_TEST);
 }
 
-void gfx::Window::HandleInput(Mesh& mesh) {
-	static constexpr GLfloat translate_step{0.01f};
-	static constexpr GLfloat scale_step{0.01f};
-	static constexpr GLfloat rotation_step{0.025f};
-
-	if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
-		static constexpr glm::vec3 translate{0.0f, translate_step, 0.0f};
-		mesh.Translate(translate);
-	} else if (glfwGetKey(window_, GLFW_KEY_X) == GLFW_PRESS) {
-		static constexpr glm::vec3 translate{0.0f, -translate_step, 0.0f};
-		mesh.Translate(translate);
-	}
-
-	if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
-		static constexpr glm::vec3 translate{-translate_step, 0.0f, 0.0f};
-		mesh.Translate(translate);
-	} else if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS) {
-		static constexpr glm::vec3 translate{translate_step, 0.0f, 0.0f};
-		mesh.Translate(translate);
-	}
-
-	if (glfwGetKey(window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window_, GLFW_KEY_EQUAL) == GLFW_PRESS) {
-		static constexpr glm::vec3 scale{1.0f + scale_step};
-		mesh.Scale(scale);
-	} else if (glfwGetKey(window_, GLFW_KEY_MINUS)) {
-		static constexpr glm::vec3 scale{1.0f - scale_step};
-		mesh.Scale(scale);
-	}
-
-	if (glfwGetMouseButton(window_, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		double x, y;
-		glfwGetCursorPos(window_, &x, &y);
-		cursor_position_ = glm::vec2{x, y};
-
-		if (prev_cursor_position_ != glm::vec2{-1.0f}) {
-			if (const auto cursor_delta = cursor_position_ - prev_cursor_position_; glm::length(cursor_delta) > 0.0f) {
-				mesh.Rotate(glm::vec3{cursor_delta.y, cursor_delta.x, 0.0f}, rotation_step);
-			}
-		}
-
-		prev_cursor_position_ = cursor_position_;
-	}
-}
+//void gfx::Window::HandleInput(Mesh& mesh) {
+//	static constexpr GLfloat translate_step{0.01f};
+//	static constexpr GLfloat scale_step{0.01f};
+//	static constexpr GLfloat rotation_step{0.025f};
+//
+//	if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
+//		static constexpr glm::vec3 translate{0.0f, translate_step, 0.0f};
+//		mesh.Translate(translate);
+//	} else if (glfwGetKey(window_, GLFW_KEY_X) == GLFW_PRESS) {
+//		static constexpr glm::vec3 translate{0.0f, -translate_step, 0.0f};
+//		mesh.Translate(translate);
+//	}
+//
+//	if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
+//		static constexpr glm::vec3 translate{-translate_step, 0.0f, 0.0f};
+//		mesh.Translate(translate);
+//	} else if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS) {
+//		static constexpr glm::vec3 translate{translate_step, 0.0f, 0.0f};
+//		mesh.Translate(translate);
+//	}
+//
+//	if (glfwGetKey(window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window_, GLFW_KEY_EQUAL) == GLFW_PRESS) {
+//		static constexpr glm::vec3 scale{1.0f + scale_step};
+//		mesh.Scale(scale);
+//	} else if (glfwGetKey(window_, GLFW_KEY_MINUS)) {
+//		static constexpr glm::vec3 scale{1.0f - scale_step};
+//		mesh.Scale(scale);
+//	}
+//
+//	if (glfwGetMouseButton(window_, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+//		double x, y;
+//		glfwGetCursorPos(window_, &x, &y);
+//		cursor_position_ = glm::vec2{x, y};
+//
+//		if (prev_cursor_position_ != glm::vec2{-1.0f}) {
+//			if (const auto cursor_delta = cursor_position_ - prev_cursor_position_; glm::length(cursor_delta) > 0.0f) {
+//				mesh.Rotate(glm::vec3{cursor_delta.y, cursor_delta.x, 0.0f}, rotation_step);
+//			}
+//		}
+//
+//		prev_cursor_position_ = cursor_position_;
+//	}
+//}
