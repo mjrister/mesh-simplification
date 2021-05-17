@@ -45,9 +45,8 @@ namespace {
 
 	glm::ivec3 ParseIndexGroup(const std::string_view line) {
 		static constexpr auto delimiter = "/";
-		const auto tokens = string::Split(line, delimiter);
 
-		switch (std::ranges::count(line, *delimiter)) {
+		switch (const auto tokens = string::Split(line, delimiter); std::ranges::count(line, *delimiter)) {
 			case 0:
 				if (tokens.size() == 1) {
 					const auto x = ParseToken<GLint>(tokens[0]) - 1;
