@@ -139,11 +139,11 @@ void gfx::Window::HandleInput(Mesh& mesh) {
 	}
 
 	if (glfwGetKey(window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window_, GLFW_KEY_EQUAL) == GLFW_PRESS) {
-		static constexpr GLfloat scale{1.0f + scale_step};
-		mesh.Scale(glm::vec3{scale});
+		static constexpr glm::vec3 scale{1.0f + scale_step};
+		mesh.Scale(scale);
 	} else if (glfwGetKey(window_, GLFW_KEY_MINUS)) {
-		static constexpr GLfloat scale{1.0f - scale_step};
-		mesh.Scale(glm::vec3{scale});
+		static constexpr glm::vec3 scale{1.0f - scale_step};
+		mesh.Scale(scale);
 	}
 
 	if (glfwGetMouseButton(window_, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
