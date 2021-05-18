@@ -37,15 +37,6 @@ gfx::Mesh::Mesh(
 	  indices_{std::move(indices)} {
 
 	Validate(positions_, texture_coordinates_, normals_, indices_);
-}
-
-gfx::Mesh::~Mesh() {
-	if (element_buffer_) glDeleteBuffers(1, &element_buffer_);
-	if (vertex_buffer_) glDeleteBuffers(1, &vertex_buffer_);
-	if (vertex_array_) glDeleteVertexArrays(1, &vertex_array_);
-}
-
-void gfx::Mesh::Initialize() noexcept {
 
 	glGenVertexArrays(1, &vertex_array_);
 	glBindVertexArray(vertex_array_);
@@ -84,12 +75,8 @@ void gfx::Mesh::Initialize() noexcept {
 	}
 }
 
-void gfx::Mesh::Render() const noexcept {
-	glBindVertexArray(vertex_array_);
-	if (element_buffer_) {
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_.size()), GL_UNSIGNED_INT, nullptr);
-	} else {
-		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(positions_.size()));
-	}
-	glBindVertexArray(0);
+gfx::Mesh::~Mesh() {
+	if (element_buffer_) glDeleteBuffers(1, &element_buffer_);
+	if (vertex_buffer_) glDeleteBuffers(1, &vertex_buffer_);
+	if (vertex_array_) glDeleteVertexArrays(1, &vertex_array_);
 }

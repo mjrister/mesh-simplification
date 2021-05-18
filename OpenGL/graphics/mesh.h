@@ -28,8 +28,16 @@ namespace gfx {
 		[[nodiscard]] const auto& Indices() const noexcept { return indices_; }
 		[[nodiscard]] const auto& Model() const noexcept { return model_; }
 
-		void Initialize() noexcept;
-		void Render() const noexcept;
+		void Render() const noexcept {
+			glBindVertexArray(vertex_array_);
+			if (element_buffer_) {
+				glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_.size()), GL_UNSIGNED_INT, nullptr);
+			}
+			else {
+				glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(positions_.size()));
+			}
+			glBindVertexArray(0);
+		}
 
 		void Scale(const glm::vec3 xyz) { model_ = glm::scale(model_, xyz); }
 		void Rotate(const glm::vec3 axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
