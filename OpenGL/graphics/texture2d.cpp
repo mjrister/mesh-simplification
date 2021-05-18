@@ -46,6 +46,12 @@ gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t te
 	}
 }
 
+gfx::Texture2d::~Texture2d() {
+	if (id_) {
+		glDeleteTextures(1, &id_);
+	}
+}
+
 void gfx::Texture2d::Bind() const noexcept {
 	glActiveTexture(GetTextureUnit(texture_unit_index_));
 	glBindTexture(GL_TEXTURE_2D, id_);
