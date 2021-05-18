@@ -23,11 +23,10 @@ namespace {
 		const auto x = std::clamp(cursor_position.x * 2.0f / static_cast<GLfloat>(width) - 1.0f, min, max);
 		const auto y = -std::clamp(cursor_position.y * 2.0f / static_cast<GLfloat>(height) - 1.0f, min, max);
 
-		if (const auto z = x * x + y * y; z <= 1.0f) {
-			return glm::vec3{x, y, std::sqrt(1.0f - z)};
+		if (const auto c = x * x + y * y; c <= 1.0f) {
+			return glm::vec3{x, y, std::sqrt(1.0f - c)};
 		}
-
-		return glm::normalize(glm::vec3{ x, y, 0.0f });
+		return glm::normalize(glm::vec3{x, y, 0.0f});
 	}
 
 	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh, const glm::mat4& view_model_transform) {
@@ -74,13 +73,14 @@ namespace {
 
 				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); std::abs(angle) > epsilon) {
 					const auto view_rotation_axis = glm::cross(a, b);
-					const auto view_model_inv = glm::inverse(view_model_transform);
-					const auto model_rotation_axis = glm::mat3{view_model_inv} * view_rotation_axis;
+					const auto view_model_inverse_transform = glm::inverse(view_model_transform);
+					const auto model_rotation_axis = glm::mat3{view_model_inverse_transform} * view_rotation_axis;
 					mesh.Rotate(model_rotation_axis, angle);
 				}
 			}
 
 			prev_cursor_position = cursor_position;
+
 		} else if (prev_cursor_position.has_value()) {
 			prev_cursor_position = std::nullopt;
 		}
