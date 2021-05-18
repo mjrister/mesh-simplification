@@ -30,7 +30,7 @@ namespace {
 		return glm::normalize(glm::vec3{ x, y, 0.0f });
 	}
 
-	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh, const glm::mat4& model_view_transform) {
+	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh, const glm::mat4& view_model_transform) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
 
@@ -69,9 +69,9 @@ namespace {
 				const auto [width, height] = window.Dimensions();
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
-				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b)))) {
+				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); angle >= 0.0f) {
 					const auto view_rotation_axis = glm::cross(a, b);
-					const auto view_model_inv = glm::inverse(model_view_transform);
+					const auto view_model_inv = glm::inverse(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_inv} * view_rotation_axis;
 					mesh.Rotate(model_rotation_axis, angle);
 				}
@@ -125,7 +125,7 @@ int main() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			const auto model_view_transform = view_transform * mesh.Model();
-			shader_program.SetUniform("model_view_transform", model_view_transform);
+			shader_program.SetUniform("view_model_transform", model_view_transform);
 
 			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_transform}));
 			shader_program.SetUniform("normal_transform", normal_matrix);
