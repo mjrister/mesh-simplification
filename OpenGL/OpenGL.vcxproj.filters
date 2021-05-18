@@ -43,9 +43,6 @@
     <ClInclude Include="graphics\texture2d.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\point_light.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">

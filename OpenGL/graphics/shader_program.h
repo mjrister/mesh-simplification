@@ -2,7 +2,7 @@
 
 
 #include <string_view>
-#include <unordered_map>
+#include <map>
 
 #include <GL/gl3w.h>
 #include <glm/fwd.hpp>
@@ -48,6 +48,6 @@ namespace gfx {
 
 		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
-		std::unordered_map<std::string, GLint, string::string_hash, std::equal_to<>> uniform_locations_;
+		std::map<std::string, GLint, std::less<>> uniform_locations_;
 	};
 }

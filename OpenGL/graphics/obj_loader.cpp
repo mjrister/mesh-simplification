@@ -45,8 +45,9 @@ namespace {
 
 	glm::ivec3 ParseIndexGroup(const std::string_view line) {
 		static constexpr auto delimiter = "/";
+		const auto tokens = string::Split(line, delimiter);
 
-		switch (const auto tokens = string::Split(line, delimiter); std::ranges::count(line, *delimiter)) {
+		switch (std::count(line.cbegin(), line.cend(), *delimiter)) {
 			case 0:
 				if (tokens.size() == 1) {
 					const auto x = ParseToken<GLint>(tokens[0]) - 1;
@@ -105,14 +106,14 @@ gfx::Mesh gfx::obj_loader::LoadMesh(std::istream& is) {
 	std::vector<std::array<glm::ivec3, 3>> faces;
 
 	for (std::string line; std::getline(is, line);) {
-		if (const auto line_view = string::Trim(line); !line_view.empty() && !line_view.starts_with("#")) {
-			if (line_view.starts_with("v ")) {
+		if (const auto line_view = string::Trim(line); !line_view.empty() && !string::StartsWith(line_view, "#")) {
+			if (string::StartsWith(line_view, "v ")) {
 				positions.push_back(ParseLine<GLfloat, 3>(line));
-			} else if (line_view.starts_with("vt ")) {
+			} else if (string::StartsWith(line_view, "vt ")) {
 				texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
-			} else if (line_view.starts_with("vn ")) {
+			} else if (string::StartsWith(line_view, "vn ")) {
 				normals.push_back(ParseLine<GLfloat, 3>(line));
-			} else if (line_view.starts_with("f ")) {
+			} else if (string::StartsWith(line_view, "f ")) {
 				faces.push_back(ParseFace(line));
 			}
 		}

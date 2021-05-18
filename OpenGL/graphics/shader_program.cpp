@@ -88,7 +88,7 @@ void gfx::ShaderProgram::SetUniform(const std::string_view name, const glm::mat4
 }
 
 GLint gfx::ShaderProgram::GetUniformLocation(const std::string_view name) {
-	if (!uniform_locations_.contains(name)) {
+	if (!uniform_locations_.count(name)) {
 		const auto location = glGetUniformLocation(id_, name.data());
 		if (location == -1) {
 			std::cerr << name << " is not an active uniform variable" << std::endl;

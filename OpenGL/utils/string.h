@@ -1,17 +1,15 @@
 #pragma once
 
 #include <algorithm>
-#include <functional>
 #include <string_view>
 #include <vector>
 
 
 namespace string {
 
-	struct string_hash {
-		using is_transparent = void;
-		size_t operator()(const std::string_view value) const { return std::hash<std::string_view>{}(value); }
-	};
+	static constexpr bool StartsWith(const std::string_view string, const std::string_view prefix) {
+		return prefix.size() <= string.size() && string.compare(0, prefix.size(), prefix.data()) == 0;
+	}
 
 	static constexpr std::string_view Trim(std::string_view string, const std::string_view delimiter = " \t\r\n") {
 		string.remove_prefix(std::min<>(string.find_first_not_of(delimiter), string.size()));

@@ -6,12 +6,10 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtx/io.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/mesh.h"
 #include "graphics/obj_loader.h"
-#include "graphics/point_light.h"
 #include "graphics/shader_program.h"
 #include "graphics/texture2d.h"
 #include "graphics/window.h"
@@ -115,17 +113,14 @@ int main() {
 		constexpr glm::vec3 ambient_color{0.3f};
 		shader_program.SetUniform("ambient_color", ambient_color);
 
-		constexpr gfx::PointLight point_light{
-			.position = glm::vec3{-1.0f, 1.0f, 1.0f},
-			.color = glm::vec3{1.0f},
-			.intensity = 1.0f,
-			.attenuation = glm::vec3{0.0f, 1.0f, 0.0f}
-		};
-
-		shader_program.SetUniform("point_light.position", glm::mat3{view_transform} * point_light.position);
-		shader_program.SetUniform("point_light.color", point_light.color);
-		shader_program.SetUniform("point_light.intensity", point_light.intensity);
-		shader_program.SetUniform("point_light.attenuation", point_light.attenuation);
+		constexpr glm::vec3 position{-1.0f, 1.0f, 1.0f};
+		constexpr glm::vec3 color{1.0f};
+		constexpr GLfloat intensity{1.0f};
+		constexpr glm::vec3 attenuation{0.0f, 1.0f, 0.0f};
+		shader_program.SetUniform("point_light.position", glm::mat3{view_transform} * position);
+		shader_program.SetUniform("point_light.color", color);
+		shader_program.SetUniform("point_light.intensity", intensity);
+		shader_program.SetUniform("point_light.attenuation", attenuation);
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -5,6 +5,26 @@
 namespace {
 	using namespace string;
 
+	TEST(String, TestEmptyStringStartsWithPrefix) {
+		constexpr auto* line = "";
+		static_assert(!StartsWith(line, "Hello"));
+	}
+
+	TEST(String, TestStringStartsWithPrefix) {
+		constexpr auto* line = "Hello, World!";
+		static_assert(StartsWith(line, "Hello"));
+	}
+
+	TEST(String, TestStringDoesNotStartWithPrefix) {
+		constexpr auto* line = "Hello, World!";
+		static_assert(!StartsWith(line, "World!"));
+	}
+
+	TEST(String, TestShortStringDoesNotStartWithLongPrefix) {
+		constexpr auto* line = "Hello";
+		static_assert(!StartsWith(line, "Hello, World!"));
+	}
+
 	TEST(String, TestTrimWhitespaceString) {
 		constexpr auto* line = "     ";
 		static_assert(Trim(line).empty());
