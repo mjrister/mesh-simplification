@@ -63,7 +63,7 @@ namespace {
 
 			if (prev_cursor_position.has_value() && *prev_cursor_position != cursor_position) {
 
-				const auto [width, height] = window.Dimensions();
+				const auto [width, height] = window.Size();
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
 

@@ -26,12 +26,6 @@ namespace gfx {
 		Window& operator=(const Window&) = delete;
 		Window& operator=(Window&&) noexcept = delete;
 
-		[[nodiscard]] std::pair<std::int32_t, std::int32_t> Dimensions() const noexcept {
-			std::int32_t width, height;
-			glfwGetWindowSize(window_, &width, &height);
-			return {width, height};
-		}
-
 		[[nodiscard]] bool Closed() const noexcept {
 			return glfwWindowShouldClose(window_);
 		}
@@ -42,6 +36,12 @@ namespace gfx {
 
 		[[nodiscard]] bool IsMouseButtonPressed(const std::int32_t button) const noexcept {
 			return glfwGetMouseButton(window_, button);
+		}
+
+		[[nodiscard]] std::pair<std::int32_t, std::int32_t> Size() const noexcept {
+			std::int32_t width, height;
+			glfwGetWindowSize(window_, &width, &height);
+			return { width, height };
 		}
 
 		[[nodiscard]] glm::vec2 GetCursorPosition() const noexcept {
