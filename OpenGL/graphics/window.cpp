@@ -90,7 +90,8 @@ gfx::Window::Window(
 	const std::int32_t height,
 	const std::int32_t opengl_major_version,
 	const std::int32_t opengl_minor_version)
-	: width_{width}, height_{height} {
+	: width_{width},
+	  height_{height} {
 
 	InitializeGlfw(opengl_major_version, opengl_minor_version);
 
