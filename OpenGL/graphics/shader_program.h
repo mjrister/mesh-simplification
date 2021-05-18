@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat3x3.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
 
 namespace gfx {
 
@@ -58,7 +59,7 @@ namespace gfx {
 				if (location == -1) {
 					std::cerr << name << " is not an active uniform variable" << std::endl;
 				}
-				uniform_locations_[std::string{ name }] = location;
+				uniform_locations_[std::string{name}] = location;
 			}
 			return uniform_locations_.find(name)->second;
 		}
