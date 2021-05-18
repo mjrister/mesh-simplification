@@ -1,13 +1,10 @@
 #pragma once
 
-
-#include <string_view>
 #include <map>
+#include <string_view>
 
 #include <GL/gl3w.h>
 #include <glm/fwd.hpp>
-
-#include "utils/string.h"
 
 namespace gfx {
 
