@@ -6,11 +6,27 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-gfx::Texture2d::Texture2d(const std::string_view filepath, const GLenum texture_unit)
-	: texture_unit_{texture_unit} {
+namespace {
+	GLint GetMaxTextureImageUnits() noexcept {
+		static GLint max_texture_image_units = 0;
+		if (!max_texture_image_units) {
+			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_image_units);
+		}
+		return max_texture_image_units;
+	}
 
+	GLenum GetTextureUnit(const std::uint8_t texture_unit_index) noexcept {
+		return GL_TEXTURE0 + texture_unit_index;
+	}
+}
+
+gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t texture_unit_index)
+	: texture_unit_index_{texture_unit_index} {
+
+	if (texture_unit_index >= GetMaxTextureImageUnits()) throw std::out_of_range{"Texture unit index out of range"};
+
+	glActiveTexture(GetTextureUnit(texture_unit_index_));
 	glGenTextures(1, &id_);
-	glActiveTexture(texture_unit);
 	glBindTexture(GL_TEXTURE_2D, id_);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -31,6 +47,6 @@ gfx::Texture2d::Texture2d(const std::string_view filepath, const GLenum texture_
 }
 
 void gfx::Texture2d::Bind() const noexcept {
-	glActiveTexture(texture_unit_);
+	glActiveTexture(GetTextureUnit(texture_unit_index_));
 	glBindTexture(GL_TEXTURE_2D, id_);
 }

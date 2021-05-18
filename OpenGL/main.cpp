@@ -96,7 +96,7 @@ int main() {
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 
-		const gfx::Texture2d texture2d{"resources/textures/bob.png", GL_TEXTURE0};
+		const gfx::Texture2d texture2d{"resources/textures/bob.png"};
 		texture2d.Bind();
 
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bob.obj");
