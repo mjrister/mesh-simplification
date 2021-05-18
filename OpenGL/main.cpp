@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <limits>
 #include <optional>
 
 #include <GL/gl3w.h>
