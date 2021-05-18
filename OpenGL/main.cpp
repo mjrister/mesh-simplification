@@ -4,8 +4,8 @@
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
-
 #include <glm/glm.hpp>
+#include <glm/gtc/epsilon.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/mesh.h"
@@ -65,11 +65,14 @@ namespace {
 				prev_cursor_position = cursor_position;
 			}
 
-			if (prev_cursor_position != cursor_position) {
+			if (static constexpr auto epsilon = std::numeric_limits<GLfloat>::epsilon();
+				glm::all(glm::epsilonNotEqual(*prev_cursor_position, cursor_position, epsilon))) {
+
 				const auto [width, height] = window.Dimensions();
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
-				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); angle >= 0.0f) {
+
+				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); std::abs(angle) > epsilon) {
 					const auto view_rotation_axis = glm::cross(a, b);
 					const auto view_model_inv = glm::inverse(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_inv} * view_rotation_axis;
@@ -78,7 +81,6 @@ namespace {
 			}
 
 			prev_cursor_position = cursor_position;
-
 		} else if (prev_cursor_position.has_value()) {
 			prev_cursor_position = std::nullopt;
 		}
