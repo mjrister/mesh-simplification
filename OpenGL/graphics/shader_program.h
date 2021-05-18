@@ -54,14 +54,15 @@ namespace gfx {
 
 	private:
 		[[nodiscard]] GLint GetUniformLocation(const std::string_view name) {
-			if (!uniform_locations_.count(name)) {
+			if (const auto iterator = uniform_locations_.find(name); iterator == uniform_locations_.cend()) {
 				const auto location = glGetUniformLocation(id_, name.data());
 				if (location == -1) {
 					std::cerr << name << " is not an active uniform variable" << std::endl;
 				}
-				uniform_locations_[std::string{name}] = location;
+				return uniform_locations_[std::string{name}] = location;
+			} else {
+				return iterator->second;
 			}
-			return uniform_locations_.find(name)->second;
 		}
 
 		const GLuint id_;
