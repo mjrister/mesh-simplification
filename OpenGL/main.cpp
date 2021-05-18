@@ -20,7 +20,7 @@ namespace {
 
 	glm::vec3 GetArcBallPosition(
 		const glm::vec2 cursor_position, const std::int32_t width, const std::int32_t height) {
-		constexpr auto min = -1.0f, max = 1.0f;
+		static constexpr GLfloat min{-1.0f}, max{1.0f};
 		const auto x = std::clamp(cursor_position.x * 2.0f / static_cast<GLfloat>(width) - 1.0f, min, max);
 		const auto y = -std::clamp(cursor_position.y * 2.0f / static_cast<GLfloat>(height) - 1.0f, min, max);
 
