@@ -98,8 +98,8 @@ int main() {
 		texture2d.Bind();
 
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bob.obj");
-		mesh.Initialize();
 		mesh.Scale(glm::vec3{0.5f});
+		mesh.Rotate(glm::vec3{0.0f, 1.0f, 0.0f}, glm::radians(45.0f));
 
 		constexpr auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
 		const auto projection_transform = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);

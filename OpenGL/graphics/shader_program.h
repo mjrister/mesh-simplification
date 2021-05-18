@@ -1,10 +1,13 @@
 #pragma once
 
+#include <iostream>
 #include <map>
 #include <string_view>
 
 #include <GL/gl3w.h>
-#include <glm/fwd.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat3x3.hpp>
+#include <glm/mat4x4.hpp>
 
 namespace gfx {
 
@@ -35,13 +38,30 @@ namespace gfx {
 
 		void Enable() const noexcept { glUseProgram(id_); }
 
-		void SetUniform(std::string_view name, GLfloat value);
-		void SetUniform(std::string_view name, const glm::vec3& value);
-		void SetUniform(std::string_view name, const glm::mat3& value);
-		void SetUniform(std::string_view name, const glm::mat4& value);
+		template <typename T>
+		void SetUniform(const std::string_view name, const T& value) {
+			if constexpr (const auto location = GetUniformLocation(name); std::is_same<T, GLfloat>::value) {
+				glUniform1f(location, value);
+			} else if constexpr (std::is_same<T, glm::vec3>::value) {
+				glUniform3fv(location, 1, glm::value_ptr(value));
+			} else if constexpr (std::is_same<T, glm::mat3>::value) {
+				glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+			} else if constexpr (std::is_same<T, glm::mat4>::value) {
+				glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+			}
+		}
 
 	private:
-		[[nodiscard]] GLint GetUniformLocation(std::string_view name);
+		[[nodiscard]] GLint GetUniformLocation(const std::string_view name) {
+			if (!uniform_locations_.count(name)) {
+				const auto location = glGetUniformLocation(id_, name.data());
+				if (location == -1) {
+					std::cerr << name << " is not an active uniform variable" << std::endl;
+				}
+				uniform_locations_[std::string{ name }] = location;
+			}
+			return uniform_locations_.find(name)->second;
+		}
 
 		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
