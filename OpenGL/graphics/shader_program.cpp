@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
