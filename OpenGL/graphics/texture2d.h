@@ -9,7 +9,7 @@ namespace gfx {
 	class Texture2d {
 
 	public:
-		Texture2d(std::string_view filepath, std::uint8_t texture_unit_index = 0);
+		explicit Texture2d(std::string_view filepath, std::uint8_t texture_unit_index = 0);
 		~Texture2d() { glDeleteTextures(1, &id_); }
 
 		Texture2d(const Texture2d&) = delete;
