@@ -66,8 +66,7 @@ namespace {
 			}
 
 			if (prev_cursor_position != cursor_position) {
-				const auto width = window.Width();
-				const auto height = window.Height();
+				const auto [width, height] = window.Dimensions();
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
 				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b)))) {

@@ -25,8 +25,11 @@ namespace gfx {
 		Window& operator=(const Window&) = delete;
 		Window& operator=(Window&&) noexcept = delete;
 
-		[[nodiscard]] std::int32_t Width() const noexcept { return width_;  }
-		[[nodiscard]] std::int32_t Height() const noexcept { return height_; }
+		[[nodiscard]] std::pair<std::int32_t, std::int32_t> Dimensions() const noexcept {
+			std::int32_t width, height;
+			glfwGetWindowSize(window_, &width, &height);
+			return {width, height};
+		}
 
 		[[nodiscard]] bool Closed() const noexcept {
 			return glfwWindowShouldClose(window_);
@@ -53,6 +56,5 @@ namespace gfx {
 
 	private:
 		GLFWwindow* window_{};
-		std::int32_t width_, height_;
 	};
 }
