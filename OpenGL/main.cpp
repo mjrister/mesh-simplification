@@ -61,18 +61,14 @@ namespace {
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
 
-			if (!prev_cursor_position.has_value()) {
-				prev_cursor_position = cursor_position;
-			}
-
-			if (static constexpr auto epsilon = std::numeric_limits<GLfloat>::epsilon();
-				glm::all(glm::epsilonNotEqual(*prev_cursor_position, cursor_position, epsilon))) {
+			if (prev_cursor_position.has_value() && *prev_cursor_position != cursor_position) {
 
 				const auto [width, height] = window.Dimensions();
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
 
-				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); std::abs(angle) > epsilon) {
+				static constexpr GLfloat epsilon{1e-3f};
+				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); angle > epsilon) {
 					const auto view_rotation_axis = glm::cross(a, b);
 					const auto view_model_inverse_transform = glm::inverse(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_inverse_transform} * view_rotation_axis;
