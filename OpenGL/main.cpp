@@ -24,8 +24,12 @@ namespace {
 		constexpr auto min = -1.0f, max = 1.0f;
 		const auto x = std::clamp(cursor_position.x * 2.0f / static_cast<GLfloat>(width) - 1.0f, min, max);
 		const auto y = -std::clamp(cursor_position.y * 2.0f / static_cast<GLfloat>(height) - 1.0f, min, max);
-		const auto z = sqrt(1.0f - x * x + y * y);
-		return glm::vec3{x, y, z};
+
+		if (const auto z = x * x + y * y; z <= 1.0f) {
+			return glm::vec3{x, y, std::sqrt(1.0f - z)};
+		}
+
+		return glm::normalize(glm::vec3{ x, y, 0.0f });
 	}
 
 	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh, const glm::mat4& model_view_transform) {
@@ -61,18 +65,24 @@ namespace {
 
 			if (!prev_cursor_position.has_value()) {
 				prev_cursor_position = cursor_position;
-			} else if (cursor_position != prev_cursor_position) {
+			}
+
+			if (prev_cursor_position != cursor_position) {
 				const auto width = window.Width();
 				const auto height = window.Height();
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
-				const auto a_dot_b = std::min<>(1.0f, glm::dot(a, b));
+				const auto a_dot_b =  std::min<>(1.0f, glm::dot(a, b));
 				const auto angle = std::acos(a_dot_b);
 				const auto axis_view = glm::cross(a, b);
 				const auto view_model_inv = glm::inverse(model_view_transform);
 				const auto axis_model = glm::mat3{ view_model_inv } *axis_view;
+				std::cout << glm::length(axis_model) << std::endl;
 				mesh.Rotate(axis_model, angle);
 			}
+
+			prev_cursor_position = cursor_position;
+
 		} else if (prev_cursor_position.has_value()) {
 			prev_cursor_position = std::nullopt;
 		}
