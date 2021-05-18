@@ -14,10 +14,6 @@ namespace {
 		}
 		return max_texture_image_units;
 	}
-
-	GLenum GetTextureUnit(const std::uint8_t texture_unit_index) noexcept {
-		return GL_TEXTURE0 + texture_unit_index;
-	}
 }
 
 gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t texture_unit_index)
@@ -25,7 +21,7 @@ gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t te
 
 	if (texture_unit_index >= GetMaxTextureImageUnits()) throw std::out_of_range{"Texture unit index out of range"};
 
-	glActiveTexture(GetTextureUnit(texture_unit_index_));
+	glActiveTexture(GL_TEXTURE0 + texture_unit_index_);
 	glGenTextures(1, &id_);
 	glBindTexture(GL_TEXTURE_2D, id_);
 
@@ -44,9 +40,4 @@ gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t te
 		oss << "Failed to open " << filepath;
 		throw std::invalid_argument{oss.str()};
 	}
-}
-
-void gfx::Texture2d::Bind() const noexcept {
-	glActiveTexture(GetTextureUnit(texture_unit_index_));
-	glBindTexture(GL_TEXTURE_2D, id_);
 }

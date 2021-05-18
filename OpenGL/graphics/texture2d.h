@@ -17,7 +17,10 @@ namespace gfx {
 		Texture2d& operator=(const Texture2d&) = delete;
 		Texture2d& operator=(Texture2d&&) noexcept = delete;
 
-		void Bind() const noexcept;
+		void Bind() const noexcept {
+			glActiveTexture(GL_TEXTURE0 + texture_unit_index_);
+			glBindTexture(GL_TEXTURE_2D, id_);
+		}
 
 	private:
 		GLuint id_{};
