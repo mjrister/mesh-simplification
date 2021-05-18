@@ -72,13 +72,12 @@ namespace {
 				const auto height = window.Height();
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
-				const auto a_dot_b =  std::min<>(1.0f, glm::dot(a, b));
-				const auto angle = std::acos(a_dot_b);
-				const auto axis_view = glm::cross(a, b);
-				const auto view_model_inv = glm::inverse(model_view_transform);
-				const auto axis_model = glm::mat3{ view_model_inv } *axis_view;
-				std::cout << glm::length(axis_model) << std::endl;
-				mesh.Rotate(axis_model, angle);
+				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b)))) {
+					const auto view_rotation_axis = glm::cross(a, b);
+					const auto view_model_inv = glm::inverse(model_view_transform);
+					const auto model_rotation_axis = glm::mat3{view_model_inv} * view_rotation_axis;
+					mesh.Rotate(model_rotation_axis, angle);
+				}
 			}
 
 			prev_cursor_position = cursor_position;
