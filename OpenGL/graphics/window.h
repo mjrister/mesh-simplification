@@ -30,7 +30,7 @@ namespace gfx {
 		[[nodiscard]] std::pair<std::int32_t, std::int32_t> Size() const noexcept {
 			std::int32_t width, height;
 			glfwGetWindowSize(window_, &width, &height);
-			return { width, height };
+			return {width, height};
 		}
 
 		[[nodiscard]] bool Closed() const noexcept {
