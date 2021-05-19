@@ -50,7 +50,7 @@ namespace {
 
 	void InitializeGlfw(const std::int32_t opengl_major_version, const std::int32_t opengl_minor_version) {
 
-		if (!glfwInit()) throw std::runtime_error{"GLFW initialization failed"};
+		if (!glfwInit()) throw std::runtime_error{ "GLFW initialization failed" };
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, opengl_major_version);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, opengl_minor_version);
@@ -59,6 +59,9 @@ namespace {
 
 #ifdef _DEBUG
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+		glfwSetErrorCallback([](const std::int32_t error_code, const char* const description) {
+			std::cerr << "GLFW Error (" << error_code << "): " << description << std::endl;
+		});
 #endif
 	}
 
