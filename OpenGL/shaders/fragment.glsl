@@ -19,10 +19,9 @@ uniform sampler2D image;
 out vec4 fragment_color;
 
 void main() {
-
 	vec3 light_direction = point_light.position - vertex.position.xyz;
 	float light_distance = length(light_direction);
-	float attenuation = dot(point_light.attenuation, vec3(1.0, light_distance, pow(light_distance, 2.0f)));
+	float attenuation = 1.0f / dot(point_light.attenuation, vec3(1.0, light_distance, pow(light_distance, 2.0f)));
 
 	light_direction = normalize(light_direction);
 	float diffuse_intensity = max(dot(light_direction, vertex.normal), 0.0f);
@@ -35,5 +34,5 @@ void main() {
 
 	vec3 texture_color = texture(image, vertex.texture_coordinates).rgb;
 	vec3 light_color = texture_color * (ambient_color + diffuse_color) + specular_color;
-	fragment_color = vec4(light_color / attenuation, 1.0f);
+	fragment_color = vec4(light_color * attenuation, 1.0f);
 }

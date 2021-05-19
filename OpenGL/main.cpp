@@ -62,7 +62,6 @@ namespace {
 			const auto cursor_position = window.GetCursorPosition();
 
 			if (prev_cursor_position.has_value() && *prev_cursor_position != cursor_position) {
-
 				const auto [width, height] = window.Size();
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
@@ -77,7 +76,6 @@ namespace {
 			}
 
 			prev_cursor_position = cursor_position;
-
 		} else if (prev_cursor_position.has_value()) {
 			prev_cursor_position = std::nullopt;
 		}
@@ -130,7 +128,6 @@ int main() {
 			shader_program.SetUniform("normal_transform", normal_matrix);
 
 			HandleInput(window, mesh, model_view_transform);
-
 			mesh.Render();
 			window.Update();
 		}
