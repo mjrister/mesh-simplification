@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <iostream>
+
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
@@ -35,7 +37,7 @@ int main(int argc, char** argv) {
 		glfwTerminate();
 		return exit_code;
 	} catch (const std::exception& e) {
-		std::cerr << e.what();
+		std::cerr << e.what() << std::endl;
 		return EXIT_FAILURE;
 	}
 }
