@@ -65,16 +65,15 @@ namespace {
 				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
 				const auto b = GetArcBallPosition(cursor_position, width, height);
 
-				static constexpr GLfloat epsilon{1e-3f};
-				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); angle > epsilon) {
+				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); angle > 1e-3f) {
 					const auto view_rotation_axis = glm::cross(a, b);
 					const auto view_model_inverse_transform = glm::inverse(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_inverse_transform} * view_rotation_axis;
 					mesh.Rotate(model_rotation_axis, angle);
 				}
 			}
-
 			prev_cursor_position = cursor_position;
+
 		} else if (prev_cursor_position.has_value()) {
 			prev_cursor_position = std::nullopt;
 		}
