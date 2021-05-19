@@ -13,8 +13,9 @@ namespace gfx {
 		~Texture2d() { glDeleteTextures(1, &id_); }
 
 		Texture2d(const Texture2d&) = delete;
-		Texture2d(Texture2d&&) noexcept = delete;
 		Texture2d& operator=(const Texture2d&) = delete;
+
+		Texture2d(Texture2d&&) noexcept = delete;
 		Texture2d& operator=(Texture2d&&) noexcept = delete;
 
 		void Bind() const noexcept {

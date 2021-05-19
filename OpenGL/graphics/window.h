@@ -22,8 +22,9 @@ namespace gfx {
 		~Window() { glfwTerminate(); }
 
 		Window(const Window&) = delete;
-		Window(Window&&) noexcept = delete;
 		Window& operator=(const Window&) = delete;
+
+		Window(Window&&) noexcept = delete;
 		Window& operator=(Window&&) noexcept = delete;
 
 		[[nodiscard]] bool Closed() const noexcept {

@@ -21,8 +21,9 @@ namespace gfx {
 			~Shader() { glDeleteShader(id); }
 
 			Shader(const Shader&) = delete;
-			Shader(Shader&&) noexcept = delete;
 			Shader& operator=(const Shader&) = delete;
+
+			Shader(Shader&&) noexcept = delete;
 			Shader& operator=(Shader&&) noexcept = delete;
 
 			const GLuint id;
@@ -33,8 +34,9 @@ namespace gfx {
 		~ShaderProgram() { glDeleteProgram(id_); }
 
 		ShaderProgram(const ShaderProgram&) = delete;
-		ShaderProgram(ShaderProgram&&) noexcept = delete;
 		ShaderProgram& operator=(const ShaderProgram&) = delete;
+
+		ShaderProgram(ShaderProgram&&) noexcept = delete;
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
 		void Enable() const noexcept { glUseProgram(id_); }

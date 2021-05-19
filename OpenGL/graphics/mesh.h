@@ -20,8 +20,9 @@ namespace gfx {
 		~Mesh();
 
 		Mesh(const Mesh&) = delete;
-		Mesh(Mesh&&) noexcept = delete;
 		Mesh& operator=(const Mesh&) = delete;
+
+		Mesh(Mesh&&) noexcept = delete;
 		Mesh& operator=(Mesh&&) noexcept = delete;
 
 		[[nodiscard]] const auto& Positions() const noexcept { return positions_; }
@@ -34,8 +35,7 @@ namespace gfx {
 			glBindVertexArray(vertex_array_);
 			if (element_buffer_) {
 				glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_.size()), GL_UNSIGNED_INT, nullptr);
-			}
-			else {
+			} else {
 				glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(positions_.size()));
 			}
 			glBindVertexArray(0);
