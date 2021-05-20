@@ -8,7 +8,6 @@
 #include <glm/vec2.hpp>
 
 namespace gfx {
-	class Mesh;
 
 	class Window {
 
