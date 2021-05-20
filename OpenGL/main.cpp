@@ -16,16 +16,22 @@
 #include "engine/window.h"
 
 namespace {
-	std::optional<glm::vec2> prev_cursor_position;
+	std::optional<glm::dvec2> prev_cursor_position;
+
+	glm::vec2 GetNormalizedCursorPosition(
+		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
+		const auto x = static_cast<GLfloat>(cursor_position.x * 2.0 / window_width - 1.0);
+		const auto y = static_cast<GLfloat>(cursor_position.y * 2.0 / window_height - 1.0);
+		return {std::clamp(x, -1.0f, 1.0f), std::clamp(-y, -1.0f, 1.0f)};
+	}
 
 	glm::vec3 GetArcBallPosition(
-		const glm::vec2 cursor_position, const std::int32_t width, const std::int32_t height) {
-		static constexpr GLfloat min{-1.0f}, max{1.0f};
-		const auto x = std::clamp(cursor_position.x * 2.0f / static_cast<GLfloat>(width) - 1.0f, min, max);
-		const auto y = -std::clamp(cursor_position.y * 2.0f / static_cast<GLfloat>(height) - 1.0f, min, max);
-
-		if (const auto c = x * x + y * y; c <= 1.0f) {
-			return glm::vec3{x, y, std::sqrt(1.0f - c)};
+		const glm::dvec2 cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
+		const auto cursor_position_norm = GetNormalizedCursorPosition(cursor_position, window_width, window_height);
+		const auto x = cursor_position_norm.x;
+		const auto y = cursor_position_norm.y;
+		if (const auto z = x * x + y * y; z <= 1.0f) {
+			return glm::vec3{x, y, std::sqrt(1.0f - z)};
 		}
 		return glm::normalize(glm::vec3{x, y, 0.0f});
 	}

@@ -53,7 +53,7 @@ namespace gfx {
 			return glfwGetMouseButton(window_, button);
 		}
 
-		[[nodiscard]] glm::vec2 GetCursorPosition() const noexcept {
+		[[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
 			double x, y;
 			glfwGetCursorPos(window_, &x, &y);
 			return {x, y};
