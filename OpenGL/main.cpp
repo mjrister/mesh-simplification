@@ -4,10 +4,8 @@
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
-
-#define GLM_FORCE_SILENT_WARNINGS
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "engine/graphics/mesh.h"
 #include "engine/graphics/obj_loader.h"
@@ -16,7 +14,7 @@
 #include "engine/window.h"
 
 namespace {
-	std::optional<glm::dvec2> prev_cursor_position;
+	std::optional<glm::dvec2> prev_cursor_position_;
 
 	glm::vec2 GetNormalizedCursorPosition(
 		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
@@ -25,7 +23,7 @@ namespace {
 		return {std::clamp(x_norm, -1.0f, 1.0f), std::clamp(-y_norm, -1.0f, 1.0f)};
 	}
 
-	glm::vec3 GetArcBallPosition(
+	glm::vec3 GetArcballPosition(
 		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
 		const auto cursor_position_norm = GetNormalizedCursorPosition(cursor_position, window_width, window_height);
 		const auto x = cursor_position_norm.x;
@@ -36,7 +34,22 @@ namespace {
 		return glm::normalize(glm::vec3{x, y, 0.0f});
 	}
 
-	void HandleInput(const gfx::Window& window, const glm::mat4& view_model_transform, gfx::Mesh& mesh) {
+	std::optional<glm::quat> GetArcballRotation(
+		const gfx::Window& window, const glm::dvec2& cursor_position, const glm::dvec2 prev_cursor_position) {
+		const auto [width, height] = window.Size();
+		const auto prev_arcball_position = GetArcballPosition(prev_cursor_position, width, height);
+		const auto arcball_position = GetArcballPosition(cursor_position, width, height);
+		const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
+
+		if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
+			const auto axis = glm::cross(prev_arcball_position, arcball_position);
+			return glm::angleAxis(angle, glm::normalize(axis));
+		}
+
+		return std::nullopt;
+	}
+
+	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
 
@@ -66,24 +79,14 @@ namespace {
 
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
-
-			if (prev_cursor_position.has_value() && *prev_cursor_position != cursor_position) {
-				const auto [width, height] = window.Size();
-				const auto prev_arcball_position = GetArcBallPosition(*prev_cursor_position, width, height);
-				const auto arcball_position = GetArcBallPosition(cursor_position, width, height);
-				const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
-
-				if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
-					const auto view_rotation_axis = glm::cross(prev_arcball_position, arcball_position);
-					const auto view_model_inverse_transform = glm::inverse(view_model_transform);
-					const auto model_rotation_axis = glm::mat3{view_model_inverse_transform} * view_rotation_axis;
-					mesh.Rotate(model_rotation_axis, angle);
+			if (prev_cursor_position_.has_value()) {
+				if (const auto quaternion = GetArcballRotation(window, cursor_position, *prev_cursor_position_)) {
+					mesh.Rotate(*quaternion);
 				}
 			}
-			prev_cursor_position = cursor_position;
-
-		} else if (prev_cursor_position.has_value()) {
-			prev_cursor_position = std::nullopt;
+			prev_cursor_position_ = cursor_position;
+		} else if (prev_cursor_position_.has_value()) {
+			prev_cursor_position_ = std::nullopt;
 		}
 	}
 }
@@ -103,7 +106,6 @@ int main() {
 
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bob.obj");
 		mesh.Scale(glm::vec3{0.5f});
-		mesh.Rotate(glm::vec3{0.0f, 1.0f, 0.0f}, glm::radians(45.0f));
 
 		constexpr GLfloat field_of_view{glm::radians(45.0f)}, z_near{0.1f}, z_far{100.0f};
 		constexpr auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
@@ -139,7 +141,7 @@ int main() {
 			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_transform}));
 			shader_program.SetUniform("normal_transform", normal_matrix);
 
-			HandleInput(window, model_view_transform, mesh);
+			HandleInput(window, mesh);
 			mesh.Render();
 			window.Update();
 		}

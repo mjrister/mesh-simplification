@@ -4,6 +4,7 @@
 
 #include <GL/gl3w.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
@@ -42,7 +43,7 @@ namespace gfx {
 		}
 
 		void Scale(const glm::vec3& xyz) { model_ = glm::scale(model_, xyz); }
-		void Rotate(const glm::vec3& axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
+		void Rotate(const glm::quat& quaternion) { model_ = glm::mat4_cast(quaternion) * model_; }
 		void Translate(const glm::vec3& xyz) { model_ = glm::translate(model_, xyz); }
 
 	private:
