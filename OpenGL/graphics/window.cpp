@@ -117,4 +117,5 @@ gfx::Window::Window(
 
 	InitializeGl3w(opengl_major_version, opengl_minor_version);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 }
