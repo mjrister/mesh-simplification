@@ -79,7 +79,7 @@ namespace {
 
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
-			if (prev_cursor_position_.has_value()) {
+			if (prev_cursor_position_) {
 				if (const auto quaternion = GetArcballRotation(window, cursor_position, *prev_cursor_position_)) {
 					mesh.Rotate(*quaternion);
 				}
