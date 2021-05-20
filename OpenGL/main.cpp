@@ -14,7 +14,7 @@
 #include "engine/window.h"
 
 namespace {
-	std::optional<glm::dvec2> prev_cursor_position_;
+	std::optional<glm::dvec2> prev_cursor_position;
 
 	glm::vec2 GetNormalizedCursorPosition(
 		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
@@ -35,9 +35,9 @@ namespace {
 	}
 
 	std::optional<glm::quat> GetArcballRotation(
-		const gfx::Window& window, const glm::dvec2& cursor_position, const glm::dvec2 prev_cursor_position) {
+		const gfx::Window& window, const glm::dvec2& cursor_position) {
 		const auto [width, height] = window.Size();
-		const auto prev_arcball_position = GetArcballPosition(prev_cursor_position, width, height);
+		const auto prev_arcball_position = GetArcballPosition(*prev_cursor_position, width, height);
 		const auto arcball_position = GetArcballPosition(cursor_position, width, height);
 		const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
 
@@ -79,14 +79,14 @@ namespace {
 
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
-			if (prev_cursor_position_) {
-				if (const auto quaternion = GetArcballRotation(window, cursor_position, *prev_cursor_position_)) {
+			if (prev_cursor_position) {
+				if (const auto quaternion = GetArcballRotation(window, cursor_position)) {
 					mesh.Rotate(*quaternion);
 				}
 			}
-			prev_cursor_position_ = cursor_position;
-		} else if (prev_cursor_position_.has_value()) {
-			prev_cursor_position_ = std::nullopt;
+			prev_cursor_position = cursor_position;
+		} else if (prev_cursor_position.has_value()) {
+			prev_cursor_position = std::nullopt;
 		}
 	}
 }
