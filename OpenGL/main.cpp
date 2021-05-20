@@ -14,8 +14,6 @@
 #include "engine/window.h"
 
 namespace {
-	std::optional<glm::dvec2> prev_cursor_position;
-
 	glm::vec2 GetNormalizedCursorPosition(
 		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
 		const auto x_norm = static_cast<GLfloat>(cursor_position.x * 2.0 / window_width - 1.0);
@@ -35,9 +33,9 @@ namespace {
 	}
 
 	std::optional<glm::quat> GetArcballRotation(
-		const gfx::Window& window, const glm::dvec2& cursor_position) {
-		const auto [width, height] = window.Size();
-		const auto prev_arcball_position = GetArcballPosition(*prev_cursor_position, width, height);
+		const gfx::Window& window, const glm::dvec2& cursor_position, const glm::dvec2& prev_cursor_position) {
+		const auto& [width, height] = window.Size();
+		const auto prev_arcball_position = GetArcballPosition(prev_cursor_position, width, height);
 		const auto arcball_position = GetArcballPosition(cursor_position, width, height);
 		const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
 
@@ -52,6 +50,7 @@ namespace {
 	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
+		static std::optional<glm::dvec2> prev_cursor_position{};
 
 		if (window.IsKeyPressed(GLFW_KEY_W)) {
 			static constexpr glm::vec3 translate{0.0f, translate_step, 0.0f};
@@ -80,7 +79,7 @@ namespace {
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
 			if (prev_cursor_position) {
-				if (const auto quaternion = GetArcballRotation(window, cursor_position)) {
+				if (const auto quaternion = GetArcballRotation(window, cursor_position, *prev_cursor_position)) {
 					mesh.Rotate(*quaternion);
 				}
 			}
@@ -108,8 +107,8 @@ int main() {
 		mesh.Scale(glm::vec3{0.5f});
 
 		constexpr GLfloat field_of_view{glm::radians(45.0f)}, z_near{0.1f}, z_far{100.0f};
-		constexpr auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
-		auto projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
+		constexpr auto original_aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
+		auto projection_transform = glm::perspective(field_of_view, original_aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
 		constexpr glm::vec3 eye{0.0f, 0.0f, 2.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
@@ -130,8 +129,9 @@ int main() {
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
-				projection_transform = glm::perspective(field_of_view, window.AspectRatio(), z_near, z_far);
+			if (const auto& [width, height] = window.Size(); width != window_width || height != window_height) {
+				const auto aspect_ratio = static_cast<GLfloat>(width) / height;
+				projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
 				shader_program.SetUniform("projection_transform", projection_transform);
 			}
 

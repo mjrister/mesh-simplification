@@ -36,11 +36,6 @@ namespace gfx {
 			return {width, height};
 		}
 
-		[[nodiscard]] GLfloat AspectRatio() const noexcept {
-			const auto [width, height] = Size();
-			return static_cast<GLfloat>(width) / height;
-		}
-
 		[[nodiscard]] bool Closed() const noexcept {
 			return glfwWindowShouldClose(window_);
 		}
