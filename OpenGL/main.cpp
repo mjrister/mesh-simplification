@@ -26,7 +26,7 @@ namespace {
 	}
 
 	glm::vec3 GetArcBallPosition(
-		const glm::dvec2 cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
+		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
 		const auto cursor_position_norm = GetNormalizedCursorPosition(cursor_position, window_width, window_height);
 		const auto x = cursor_position_norm.x;
 		const auto y = cursor_position_norm.y;
