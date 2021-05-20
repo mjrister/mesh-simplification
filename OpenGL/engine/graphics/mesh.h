@@ -41,9 +41,9 @@ namespace gfx {
 			glBindVertexArray(0);
 		}
 
-		void Scale(const glm::vec3 xyz) { model_ = glm::scale(model_, xyz); }
-		void Rotate(const glm::vec3 axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
-		void Translate(const glm::vec3 xyz) { model_ = glm::translate(model_, xyz); }
+		void Scale(const glm::vec3& xyz) { model_ = glm::scale(model_, xyz); }
+		void Rotate(const glm::vec3& axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
+		void Translate(const glm::vec3& xyz) { model_ = glm::translate(model_, xyz); }
 
 	private:
 		GLuint vertex_array_{}, vertex_buffer_{}, element_buffer_{};
