@@ -56,6 +56,7 @@ namespace {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, opengl_minor_version);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwSwapInterval(1);
+		glfwWindowHint(GLFW_SAMPLES, 4);
 
 #ifdef _DEBUG
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
