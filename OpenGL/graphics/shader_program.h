@@ -4,10 +4,9 @@
 #include <string_view>
 
 #include <GL/gl3w.h>
+
+#define GLM_FORCE_SILENT_WARNINGS
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/mat3x3.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
 
 namespace gfx {
 

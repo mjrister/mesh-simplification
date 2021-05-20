@@ -4,9 +4,10 @@
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/epsilon.hpp>
+
+#define GLM_FORCE_SILENT_WARNINGS
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
 
 #include "graphics/mesh.h"
 #include "graphics/obj_loader.h"
