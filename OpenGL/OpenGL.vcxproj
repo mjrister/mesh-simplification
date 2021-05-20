@@ -205,22 +205,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="graphics\mesh.cpp" />
-    <ClCompile Include="graphics\obj_loader.cpp" />
-    <ClCompile Include="graphics\shader_program.cpp" />
-    <ClCompile Include="graphics\texture2d.cpp" />
-    <ClCompile Include="graphics\window.cpp" />
+    <ClCompile Include="engine\graphics\mesh.cpp" />
+    <ClCompile Include="engine\graphics\obj_loader.cpp" />
+    <ClCompile Include="engine\graphics\shader_program.cpp" />
+    <ClCompile Include="engine\graphics\texture2d.cpp" />
+    <ClCompile Include="engine\window.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics\texture2d.h" />
+    <ClInclude Include="engine\graphics\texture2d.h" />
     <ClInclude Include="lib\stb_image.h" />
     <ClInclude Include="utils\file.h" />
-    <ClInclude Include="graphics\mesh.h" />
-    <ClInclude Include="graphics\obj_loader.h" />
-    <ClInclude Include="graphics\shader_program.h" />
+    <ClInclude Include="engine\graphics\mesh.h" />
+    <ClInclude Include="engine\graphics\obj_loader.h" />
+    <ClInclude Include="engine\graphics\shader_program.h" />
     <ClInclude Include="utils\string.h" />
-    <ClInclude Include="graphics\window.h" />
+    <ClInclude Include="engine\window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl" />

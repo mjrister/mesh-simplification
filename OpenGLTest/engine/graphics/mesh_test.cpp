@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <gtest/gtest.h>
 
-#include "graphics/mesh.h"
+#include "engine/graphics/mesh.h"
 
 namespace {
 	using namespace gfx;

@@ -9,11 +9,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
 
-#include "graphics/mesh.h"
-#include "graphics/obj_loader.h"
-#include "graphics/shader_program.h"
-#include "graphics/texture2d.h"
-#include "graphics/window.h"
+#include "engine/graphics/mesh.h"
+#include "engine/graphics/obj_loader.h"
+#include "engine/graphics/shader_program.h"
+#include "engine/graphics/texture2d.h"
+#include "engine/window.h"
 
 namespace {
 	std::optional<glm::vec2> prev_cursor_position;

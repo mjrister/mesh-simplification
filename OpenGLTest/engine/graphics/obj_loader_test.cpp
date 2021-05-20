@@ -1,8 +1,8 @@
 #include <glm/glm.hpp>
 #include <gtest/gtest.h>
 
-#include "graphics/mesh.h"
-#include "graphics/obj_loader.h"
+#include "engine/graphics/mesh.h"
+#include "engine/graphics/obj_loader.h"
 
 namespace {
 	using namespace gfx;
