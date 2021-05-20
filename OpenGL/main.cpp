@@ -30,8 +30,8 @@ namespace {
 		const auto cursor_position_norm = GetNormalizedCursorPosition(cursor_position, window_width, window_height);
 		const auto x = cursor_position_norm.x;
 		const auto y = cursor_position_norm.y;
-		if (const auto z = x * x + y * y; z <= 1.0f) {
-			return glm::vec3{x, y, std::sqrt(1.0f - z)};
+		if (const auto c = x * x + y * y; c <= 1.0f) {
+			return glm::vec3{x, y, std::sqrt(1.0f - c)};
 		}
 		return glm::normalize(glm::vec3{x, y, 0.0f});
 	}
