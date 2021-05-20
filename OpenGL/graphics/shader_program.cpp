@@ -3,8 +3,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include <glm/glm.hpp>
-
 #include "utils/file.h"
 
 namespace {
