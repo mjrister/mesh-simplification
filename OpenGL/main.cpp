@@ -98,8 +98,9 @@ int main() {
 		mesh.Scale(glm::vec3{0.5f});
 		mesh.Rotate(glm::vec3{0.0f, 1.0f, 0.0f}, glm::radians(45.0f));
 
+		constexpr GLfloat field_of_view{glm::radians(45.0f)}, z_near{0.1f}, z_far{100.0f};
 		constexpr auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
-		const auto projection_transform = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 100.0f);
+		auto projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
 		constexpr glm::vec3 eye{0.0f, 0.0f, 2.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
@@ -119,6 +120,11 @@ int main() {
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
+				projection_transform = glm::perspective(field_of_view, window.AspectRatio(), z_near, z_far);
+				shader_program.SetUniform("projection_transform", projection_transform);
+			}
 
 			const auto model_view_transform = view_transform * mesh.Model();
 			shader_program.SetUniform("view_model_transform", model_view_transform);
