@@ -20,9 +20,9 @@ namespace {
 
 	glm::vec2 GetNormalizedCursorPosition(
 		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
-		const auto x = static_cast<GLfloat>(cursor_position.x * 2.0 / window_width - 1.0);
-		const auto y = static_cast<GLfloat>(cursor_position.y * 2.0 / window_height - 1.0);
-		return {std::clamp(x, -1.0f, 1.0f), std::clamp(-y, -1.0f, 1.0f)};
+		const auto x_norm = static_cast<GLfloat>(cursor_position.x * 2.0 / window_width - 1.0);
+		const auto y_norm = static_cast<GLfloat>(cursor_position.y * 2.0 / window_height - 1.0);
+		return {std::clamp(x_norm, -1.0f, 1.0f), std::clamp(-y_norm, -1.0f, 1.0f)};
 	}
 
 	glm::vec3 GetArcBallPosition(
@@ -36,7 +36,7 @@ namespace {
 		return glm::normalize(glm::vec3{x, y, 0.0f});
 	}
 
-	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh, const glm::mat4& view_model_transform) {
+	void HandleInput(const gfx::Window& window, const glm::mat4& view_model_transform, gfx::Mesh& mesh) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
 
@@ -69,11 +69,12 @@ namespace {
 
 			if (prev_cursor_position.has_value() && *prev_cursor_position != cursor_position) {
 				const auto [width, height] = window.Size();
-				const auto a = GetArcBallPosition(*prev_cursor_position, width, height);
-				const auto b = GetArcBallPosition(cursor_position, width, height);
+				const auto prev_arcball_position = GetArcBallPosition(*prev_cursor_position, width, height);
+				const auto arcball_position = GetArcBallPosition(cursor_position, width, height);
+				const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
 
-				if (const auto angle = std::acos(std::min<>(1.0f, glm::dot(a, b))); angle > 1e-3f) {
-					const auto view_rotation_axis = glm::cross(a, b);
+				if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
+					const auto view_rotation_axis = glm::cross(prev_arcball_position, arcball_position);
 					const auto view_model_inverse_transform = glm::inverse(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_inverse_transform} * view_rotation_axis;
 					mesh.Rotate(model_rotation_axis, angle);
@@ -138,7 +139,7 @@ int main() {
 			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_transform}));
 			shader_program.SetUniform("normal_transform", normal_matrix);
 
-			HandleInput(window, mesh, model_view_transform);
+			HandleInput(window, model_view_transform, mesh);
 			mesh.Render();
 			window.Update();
 		}
