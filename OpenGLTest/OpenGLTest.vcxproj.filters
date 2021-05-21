@@ -11,12 +11,6 @@
     <ClCompile Include="engine\graphics\mesh_test.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\OpenGL\engine\graphics\mesh.cpp">
-      <Filter>engine\graphics\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\OpenGL\engine\graphics\obj_loader.cpp">
-      <Filter>engine\graphics\src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
@@ -27,9 +21,6 @@
     </Filter>
     <Filter Include="engine\graphics">
       <UniqueIdentifier>{358dd437-5550-496d-9676-902602cd7ec3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine\graphics\src">
-      <UniqueIdentifier>{f4139ae4-c98c-4596-a761-204d45b69bc5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
