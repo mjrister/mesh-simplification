@@ -13,12 +13,6 @@ namespace {
 		ASSERT_THROW(Validate(positions, {}, {}, {}), std::invalid_argument);
 	}
 
-	TEST(Mesh, TestValidateMeshWithInvalidIndices) {
-		const std::vector<glm::vec3> positions{{0.0f, 0.1f, 0.2f}};
-		ASSERT_THROW(Validate(positions, {}, {}, {0, 1}), std::invalid_argument);
-		ASSERT_THROW(Validate(positions, {}, {}, {0, 1, 2, 3}), std::invalid_argument);
-	}
-
 	TEST(Mesh, TestValidateMeshWithInvalidTextureCoordinates) {
 		const std::vector<glm::vec3> positions{{0.0f, 0.1f, 0.2f}, {1.0f, 1.1f, 1.2f}};
 		ASSERT_THROW(Validate(positions, {{0.0f, 0.1f}}, {}, {}), std::invalid_argument);
@@ -29,6 +23,12 @@ namespace {
 		const std::vector<glm::vec3> positions{{0.0f, 0.1f, 0.2f}, {1.0f, 1.1f, 1.2f}};
 		ASSERT_THROW(Validate(positions, {}, {{0.0f, 0.1f, 0.2f}}, {}), std::invalid_argument);
 		ASSERT_THROW((Mesh{positions, {}, {{0.0f, 0.1f, 0.2f}, {1.0f, 1.1f, 1.2f}, {2.0f, 2.1f, 2.2f}}}), std::invalid_argument);
+	}
+
+	TEST(Mesh, TestValidateMeshWithInvalidIndices) {
+		const std::vector<glm::vec3> positions{{0.0f, 0.1f, 0.2f}};
+		ASSERT_THROW(Validate(positions, {}, {}, {0, 1}), std::invalid_argument);
+		ASSERT_THROW(Validate(positions, {}, {}, {0, 1, 2, 3}), std::invalid_argument);
 	}
 
 	TEST(Mesh, TestValidateMeshWithPositionsTextureCoordinatesNormalsAndIndices) {
