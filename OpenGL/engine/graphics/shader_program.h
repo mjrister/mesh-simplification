@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <map>
 #include <string_view>
 
@@ -52,11 +53,15 @@ namespace gfx {
 
 	private:
 		[[nodiscard]] GLint GetUniformLocation(const std::string_view name) {
-			if (const auto iterator = uniform_locations_.find(name); iterator != uniform_locations_.end()) {
+			if (const auto iterator = uniform_locations_.find(name); iterator == uniform_locations_.end()) {
+				const auto location = glGetUniformLocation(id_, name.data());
+				if (location == -1) {
+					std::cerr << name << " is not an active uniform variable" << std::endl;
+				}
+				return uniform_locations_[std::string{name}] = location;
+			} else {
 				return iterator->second;
 			}
-			const auto location = glGetUniformLocation(id_, name.data());
-			return uniform_locations_[std::string{name}] = location;
 		}
 
 		const GLuint id_;
