@@ -14,8 +14,8 @@
     <ClCompile Include="engine\graphics\obj_loader.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="engine\window.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\graphics\window.cpp">
+      <Filter>engine\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -40,8 +40,8 @@
     <ClInclude Include="engine\graphics\texture2d.h">
       <Filter>engine\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="engine\window.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\graphics\window.h">
+      <Filter>engine\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

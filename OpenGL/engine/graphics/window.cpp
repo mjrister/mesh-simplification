@@ -86,7 +86,7 @@ namespace {
 	}
 }
 
-Window::Window(
+gfx::Window::Window(
 	const std::string_view title,
 	const std::int32_t width,
 	const std::int32_t height,

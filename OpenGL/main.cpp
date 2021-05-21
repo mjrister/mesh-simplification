@@ -11,7 +11,7 @@
 #include "engine/graphics/obj_loader.h"
 #include "engine/graphics/shader_program.h"
 #include "engine/graphics/texture2d.h"
-#include "engine/window.h"
+#include "engine/graphics/window.h"
 
 namespace {
 	glm::vec2 GetNormalizedCursorPosition(
@@ -32,7 +32,7 @@ namespace {
 		return glm::normalize(glm::vec3{x, y, 0.0f});
 	}
 
-	void HandleInput(const Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
+	void HandleInput(const gfx::Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
 		static std::optional<glm::dvec2> prev_cursor_position{};
@@ -88,7 +88,7 @@ int main() {
 	try {
 		constexpr std::int32_t window_width{1280}, window_height{960};
 		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
-		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
+		gfx::Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
@@ -104,7 +104,7 @@ int main() {
 		auto projection_transform = glm::perspective(field_of_view, original_aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
-		constexpr glm::vec3 eye{-2.0f, 0.0f, 0.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
+		constexpr glm::vec3 eye{-1.0f, 1.0f, 1.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
 		const auto view_transform = glm::lookAt(eye, center, up);
 
 		constexpr glm::vec3 ambient_color{0.3f};
