@@ -5,17 +5,17 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\OpenGL\graphics\mesh.cpp">
-      <Filter>engine\graphics\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\OpenGL\graphics\obj_loader.cpp">
-      <Filter>engine\graphics\src</Filter>
-    </ClCompile>
     <ClCompile Include="engine\graphics\obj_loader_test.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
     <ClCompile Include="engine\graphics\mesh_test.cpp">
       <Filter>engine\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenGL\engine\graphics\mesh.cpp">
+      <Filter>engine\graphics\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\OpenGL\engine\graphics\obj_loader.cpp">
+      <Filter>engine\graphics\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
