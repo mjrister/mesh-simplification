@@ -37,7 +37,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\OpenGL\engine\graphics\mesh.cpp" />
-    <ClCompile Include="..\OpenGL\engine\graphics\obj_loader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\graphics\obj_loader_test.cpp" />
     <ClCompile Include="engine\graphics\mesh_test.cpp" />

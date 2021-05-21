@@ -14,9 +14,6 @@
     <ClCompile Include="..\OpenGL\engine\graphics\mesh.cpp">
       <Filter>engine\graphics\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\OpenGL\engine\graphics\obj_loader.cpp">
-      <Filter>engine\graphics\src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
