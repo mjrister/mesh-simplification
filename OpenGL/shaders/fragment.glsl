@@ -13,8 +13,12 @@ uniform struct PointLight {
 	vec3 attenuation;
 } point_light;
 
-uniform vec3 ambient_color;
-uniform sampler2D image;
+uniform struct Material {
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	float shininess;
+} material;
 
 out vec4 fragment_color;
 
@@ -23,16 +27,16 @@ void main() {
 	float light_distance = length(light_direction);
 	float attenuation = 1.0f / dot(point_light.attenuation, vec3(1.0, light_distance, light_distance * light_distance));
 
+	vec3 ambient_color = point_light.intensity * material.ambient;
+
 	light_direction = normalize(light_direction);
 	float diffuse_intensity = max(dot(light_direction, vertex.normal), 0.0f);
-	vec3 diffuse_color = point_light.color * point_light.intensity * diffuse_intensity;
+	vec3 diffuse_color = point_light.color * point_light.intensity * diffuse_intensity * material.diffuse;
 
 	vec3 view_direction = normalize(-vertex.position.xyz);
 	vec3 reflect_direction = normalize(reflect(-light_direction, vertex.normal));
-	float specular_intensity = pow(max(dot(view_direction, reflect_direction), 0.0f), 100.0f);
-	vec3 specular_color =  point_light.color * point_light.intensity * specular_intensity;
+	float specular_intensity = pow(max(dot(view_direction, reflect_direction), 0.0f), material.shininess);
+	vec3 specular_color =  point_light.color * point_light.intensity * specular_intensity * material.specular;
 
-	vec3 texture_color = texture(image, vertex.texture_coordinates).rgb;
-	vec3 light_color = texture_color * (ambient_color + diffuse_color) + specular_color;
-	fragment_color = vec4(light_color * attenuation, 1.0f);
+	fragment_color = vec4(ambient_color + diffuse_color + specular_color, 1.0f) * attenuation;
 }

@@ -10,6 +10,7 @@
 #include "engine/arcball.h"
 #include "engine/window.h"
 
+#include "engine/graphics/material.h"
 #include "engine/graphics/mesh.h"
 #include "engine/graphics/obj_loader.h"
 #include "engine/graphics/shader_program.h"
@@ -72,22 +73,17 @@ int main() {
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 
-		//const gfx::Texture2d texture2d{"resources/textures/bob.png"};
-		//texture2d.Bind();
-
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bunny.obj");
-		mesh.Scale(glm::vec3{0.5f});
+		mesh.Scale(glm::vec3{0.25f});
+		mesh.Translate(glm::vec3{0.25f, -0.75f, 0.0f});
 
 		constexpr GLfloat field_of_view{glm::radians(45.0f)}, z_near{0.1f}, z_far{100.0f};
 		constexpr auto original_aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
 		auto projection_transform = glm::perspective(field_of_view, original_aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
-		constexpr glm::vec3 eye{-1.0f, 1.0f, 1.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
+		constexpr glm::vec3 eye{0.f, 0.0f, 2.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
 		const auto view_transform = glm::lookAt(eye, center, up);
-
-		constexpr glm::vec3 ambient_color{0.3f};
-		shader_program.SetUniform("ambient_color", ambient_color);
 
 		constexpr glm::vec3 position{-1.0f, 1.0f, 1.0f};
 		constexpr glm::vec3 color{1.0f};
@@ -97,6 +93,12 @@ int main() {
 		shader_program.SetUniform("point_light.color", color);
 		shader_program.SetUniform("point_light.intensity", intensity);
 		shader_program.SetUniform("point_light.attenuation", attenuation);
+
+		constexpr auto material = gfx::Material::Jade();
+		shader_program.SetUniform("material.ambient", material.Ambient());
+		shader_program.SetUniform("material.diffuse", material.Diffuse());
+		shader_program.SetUniform("material.specular", material.Specular());
+		shader_program.SetUniform("material.shininess", material.Shininess() * 128.0f);
 
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
