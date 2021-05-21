@@ -20,7 +20,6 @@
     <ClCompile Include="engine\arcball.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="utils\file.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.h">

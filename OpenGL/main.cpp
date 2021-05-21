@@ -72,10 +72,10 @@ int main() {
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 
-		const gfx::Texture2d texture2d{"resources/textures/bob.png"};
-		texture2d.Bind();
+		//const gfx::Texture2d texture2d{"resources/textures/bob.png"};
+		//texture2d.Bind();
 
-		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bob.obj");
+		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bunny.obj");
 		mesh.Scale(glm::vec3{0.5f});
 
 		constexpr GLfloat field_of_view{glm::radians(45.0f)}, z_near{0.1f}, z_far{100.0f};
