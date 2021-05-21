@@ -122,28 +122,24 @@ gfx::Mesh gfx::obj_loader::LoadMesh(std::istream& is) {
 
 	if (faces.empty()) return Mesh{positions, texture_coordinates, normals};
 
-	std::vector<glm::vec3> ordered_positions;
-	std::vector<glm::vec2> ordered_texture_coordinates;
-	std::vector<glm::vec3> ordered_normals;
-
-	const std::size_t indices = faces.size() * 3;
-	ordered_positions.reserve(indices);
-	ordered_texture_coordinates.reserve(texture_coordinates.empty() ? 0 : indices);
-	ordered_normals.reserve(normals.empty() ? 0 : indices);
+	std::vector<glm::vec2> ordered_texture_coordinates(texture_coordinates.empty() ? 0 : positions.size());
+	std::vector<glm::vec3> ordered_normals(normals.empty() ? 0 : positions.size());
+	std::vector<GLuint> indices;
+	indices.reserve(faces.size() * 3);
 
 	for (const auto& face : faces) {
 		for (const auto& index_group : face) {
 			const auto position_index = index_group[0];
-			ordered_positions.push_back(positions.at(position_index));
+			indices.push_back(position_index);
 
 			if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index) {
-				ordered_texture_coordinates.push_back(texture_coordinates.at(texture_coordinate_index));
+				ordered_texture_coordinates.at(position_index) = texture_coordinates.at(texture_coordinate_index);
 			}
 			if (const auto normal_index = index_group[2]; normal_index != npos_index) {
-				ordered_normals.push_back(normals.at(normal_index));
+				ordered_normals.at(position_index) = normals.at(normal_index);
 			}
 		}
 	}
 
-	return Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals};
+	return Mesh{positions, ordered_texture_coordinates, ordered_normals, indices};
 }
