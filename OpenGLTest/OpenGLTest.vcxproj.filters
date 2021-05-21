@@ -11,6 +11,9 @@
     <ClCompile Include="engine\graphics\mesh_test.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="file_test.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">

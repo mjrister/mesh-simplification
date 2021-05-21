@@ -216,6 +216,7 @@
     <ClCompile Include="engine\graphics\texture2d.cpp" />
     <ClCompile Include="engine\window.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="utils\file.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\arcball.h" />
