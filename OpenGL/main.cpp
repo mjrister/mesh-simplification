@@ -32,7 +32,7 @@ namespace {
 		return glm::normalize(glm::vec3{x, y, 0.0f});
 	}
 
-	void HandleInput(const gfx::Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
+	void HandleInput(const Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
 		static std::optional<glm::dvec2> prev_cursor_position{};
@@ -88,7 +88,7 @@ int main() {
 	try {
 		constexpr std::int32_t window_width{1280}, window_height{960};
 		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
-		gfx::Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
+		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
