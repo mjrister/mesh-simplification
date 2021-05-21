@@ -8,42 +8,46 @@ namespace {
 	void HandleDebugMessageReceived(
 		const GLenum source,
 		const GLenum type,
-		const GLuint /*id*/,
+		const GLuint id,
 		const GLenum severity,
 		const GLsizei /*length*/,
 		const GLchar* const message,
 		const void* /*user_param*/) {
 
-		std::cout << "[OpenGL Debug] Source: ";
+		std::string message_source;
 		switch (source) {
-			case GL_DEBUG_SOURCE_API: std::cout << "API"; break;
-			case GL_DEBUG_SOURCE_WINDOW_SYSTEM: std::cout << "WINDOW SYSTEM"; break;
-			case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "SHADER COMPILER"; break;
-			case GL_DEBUG_SOURCE_THIRD_PARTY: std::cout << "THIRD PARTY"; break;
-			case GL_DEBUG_SOURCE_APPLICATION: std::cout << "APPLICATION"; break;
-			default: std::cout << "OTHER"; break;
-		} std::cout << ", ";
+			case GL_DEBUG_SOURCE_API: message_source = "API"; break;
+			case GL_DEBUG_SOURCE_WINDOW_SYSTEM: message_source = "WINDOW SYSTEM"; break;
+			case GL_DEBUG_SOURCE_SHADER_COMPILER: message_source = "SHADER COMPILER"; break;
+			case GL_DEBUG_SOURCE_THIRD_PARTY: message_source = "THIRD PARTY"; break;
+			case GL_DEBUG_SOURCE_APPLICATION: message_source = "APPLICATION"; break;
+			default: message_source = "OTHER"; break;
+		}
 
-		std::cout << "Type: ";
+		std::string message_type;
 		switch (type) {
-			case GL_DEBUG_TYPE_ERROR: std::cout << "ERROR"; break;
-			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "DEPRECATED BEHAVIOR"; break;
-			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: std::cout << "UNDEFINED BEHAVIOR"; break;
-			case GL_DEBUG_TYPE_PORTABILITY: std::cout << "PORTABILITY"; break;
-			case GL_DEBUG_TYPE_PERFORMANCE: std::cout << "PERFORMANCE"; break;
-			default: std::cout << "OTHER"; break;
-		} std::cout << ", ";
+			case GL_DEBUG_TYPE_ERROR: message_type = "ERROR"; break;
+			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: message_type = "DEPRECATED BEHAVIOR"; break;
+			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: message_type = "UNDEFINED BEHAVIOR"; break;
+			case GL_DEBUG_TYPE_PORTABILITY: message_type = "PORTABILITY"; break;
+			case GL_DEBUG_TYPE_PERFORMANCE: message_type = "PERFORMANCE"; break;
+			default: message_type = "OTHER"; break;
+		}
 
-		std::cout << "Severity: ";
+		std::string message_severity;
 		switch (severity) {
-			case GL_DEBUG_SEVERITY_HIGH: std::cout <<  "HIGH"; break;
-			case GL_DEBUG_SEVERITY_MEDIUM: std::cout <<  "MEDIUM"; break;
-			case GL_DEBUG_SEVERITY_LOW: std::cout <<  "LOW"; break;
-			case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout <<  "NOTIFICATION"; break;
-			default: std::cout <<  "OTHER"; break;
-		} std::cout << std::endl;
+			case GL_DEBUG_SEVERITY_HIGH: message_severity = "HIGH"; break;
+			case GL_DEBUG_SEVERITY_MEDIUM: message_severity = "MEDIUM"; break;
+			case GL_DEBUG_SEVERITY_LOW: message_severity = "LOW"; break;
+			case GL_DEBUG_SEVERITY_NOTIFICATION: message_severity = "NOTIFICATION"; break;
+			default: message_severity = "OTHER"; break;
+		}
 
-		std::cout << message << std::endl;
+		std::cout << "OpenGL Debug (" << id << "): "
+			<< "Source: " << message_source << ", "
+			<< "Type: " << message_type << ", "
+			<< "Severity: " << message_severity
+			<< std::endl << message << std::endl;
 	}
 
 	void InitializeGlfw(const std::int32_t opengl_major_version, const std::int32_t opengl_minor_version) {
