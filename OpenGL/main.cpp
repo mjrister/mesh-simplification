@@ -7,53 +7,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "engine/arcball.h"
+#include "engine/window.h"
+
 #include "engine/graphics/mesh.h"
 #include "engine/graphics/obj_loader.h"
 #include "engine/graphics/shader_program.h"
 #include "engine/graphics/texture2d.h"
-#include "engine/graphics/window.h"
 
 namespace {
-	glm::vec2 GetNormalizedCursorPosition(
-		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
-
-		const auto x_norm = static_cast<GLfloat>(cursor_position.x * 2.0 / window_width - 1.0);
-		const auto y_norm = static_cast<GLfloat>(cursor_position.y * 2.0 / window_height - 1.0);
-
-		return {std::clamp(x_norm, -1.0f, 1.0f), std::clamp(-y_norm, -1.0f, 1.0f)};
-	}
-
-	glm::vec3 GetArcballPosition(
-		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
-
-		const auto cursor_position_norm = GetNormalizedCursorPosition(cursor_position, window_width, window_height);
-		const auto x = cursor_position_norm.x;
-		const auto y = cursor_position_norm.y;
-
-		if (const auto c = x * x + y * y; c <= 1.0f) {
-			return glm::vec3{x, y, std::sqrt(1.0f - c)};
-		}
-
-		return glm::normalize(glm::vec3{x, y, 0.0f});
-	}
-
-	std::optional<const std::pair<const glm::vec3, const GLfloat>> GetArcballRotation(
-		const gfx::Window& window, const glm::dvec2& cursor_position, const glm::dvec2& prev_cursor_position) {
-
-		const auto [width, height] = window.Size();
-		const auto prev_arcball_position = GetArcballPosition(prev_cursor_position, width, height);
-		const auto arcball_position = GetArcballPosition(cursor_position, width, height);
-		const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
-
-		if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
-			const auto axis = glm::cross(prev_arcball_position, arcball_position);
-			return std::make_pair(axis, angle);
-		}
-
-		return std::nullopt;
-	}
-
-	void HandleInput(const gfx::Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
+	void HandleInput(const Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
 		static std::optional<glm::dvec2> prev_cursor_position{};
@@ -85,7 +48,7 @@ namespace {
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
 			if (prev_cursor_position) {
-				if (const auto axis_and_angle = GetArcballRotation(window, cursor_position, *prev_cursor_position)) {
+				if (const auto axis_and_angle = arcball::GetRotation(window, cursor_position, *prev_cursor_position)) {
 					const auto& [view_rotation_axis, angle] = *axis_and_angle;
 					const auto view_model_transform_inv = glm::inverse(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_transform_inv} * view_rotation_axis;
@@ -104,7 +67,7 @@ int main() {
 	try {
 		constexpr std::int32_t window_width{1280}, window_height{960};
 		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
-		gfx::Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
+		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
