@@ -20,6 +20,9 @@
     <ClCompile Include="engine\arcball.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="material.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.h">
@@ -48,6 +51,9 @@
     </ClInclude>
     <ClInclude Include="engine\arcball.h">
       <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>engine\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

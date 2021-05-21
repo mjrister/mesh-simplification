@@ -216,11 +216,13 @@
     <ClCompile Include="engine\graphics\texture2d.cpp" />
     <ClCompile Include="engine\window.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\arcball.h" />
     <ClInclude Include="engine\graphics\texture2d.h" />
     <ClInclude Include="lib\stb_image.h" />
+    <ClInclude Include="material.h" />
     <ClInclude Include="utils\file.h" />
     <ClInclude Include="engine\graphics\mesh.h" />
     <ClInclude Include="engine\graphics\obj_loader.h" />
