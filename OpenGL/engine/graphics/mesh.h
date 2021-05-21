@@ -42,7 +42,7 @@ namespace gfx {
 		}
 
 		void Scale(const glm::vec3& xyz) { model_ = glm::scale(model_, xyz); }
-		void Rotate(const glm::vec3 axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
+		void Rotate(const glm::vec3& axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
 		void Translate(const glm::vec3& xyz) { model_ = glm::translate(model_, xyz); }
 
 	private:

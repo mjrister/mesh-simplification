@@ -16,20 +16,41 @@
 namespace {
 	glm::vec2 GetNormalizedCursorPosition(
 		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
+
 		const auto x_norm = static_cast<GLfloat>(cursor_position.x * 2.0 / window_width - 1.0);
 		const auto y_norm = static_cast<GLfloat>(cursor_position.y * 2.0 / window_height - 1.0);
+
 		return {std::clamp(x_norm, -1.0f, 1.0f), std::clamp(-y_norm, -1.0f, 1.0f)};
 	}
 
 	glm::vec3 GetArcballPosition(
 		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
+
 		const auto cursor_position_norm = GetNormalizedCursorPosition(cursor_position, window_width, window_height);
 		const auto x = cursor_position_norm.x;
 		const auto y = cursor_position_norm.y;
+
 		if (const auto c = x * x + y * y; c <= 1.0f) {
 			return glm::vec3{x, y, std::sqrt(1.0f - c)};
 		}
+
 		return glm::normalize(glm::vec3{x, y, 0.0f});
+	}
+
+	std::optional<const std::pair<const glm::vec3, const GLfloat>> GetArcballRotation(
+		const gfx::Window& window, const glm::dvec2& cursor_position, const glm::dvec2& prev_cursor_position) {
+
+		const auto [width, height] = window.Size();
+		const auto prev_arcball_position = GetArcballPosition(prev_cursor_position, width, height);
+		const auto arcball_position = GetArcballPosition(cursor_position, width, height);
+		const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
+
+		if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
+			const auto axis = glm::cross(prev_arcball_position, arcball_position);
+			return std::make_pair(axis, angle);
+		}
+
+		return std::nullopt;
 	}
 
 	void HandleInput(const gfx::Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
@@ -64,13 +85,8 @@ namespace {
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
 			if (prev_cursor_position) {
-				const auto& [width, height] = window.Size();
-				const auto prev_arcball_position = GetArcballPosition(*prev_cursor_position, width, height);
-				const auto arcball_position = GetArcballPosition(cursor_position, width, height);
-				const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
-
-				if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
-					const auto view_rotation_axis = glm::cross(prev_arcball_position, arcball_position);
+				if (const auto axis_and_angle = GetArcballRotation(window, cursor_position, *prev_cursor_position)) {
+					const auto& [view_rotation_axis, angle] = *axis_and_angle;
 					const auto view_model_transform_inv = glm::inverse(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_transform_inv} * view_rotation_axis;
 					mesh.Rotate(model_rotation_axis, angle);
@@ -122,7 +138,7 @@ int main() {
 		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			if (const auto& [width, height] = window.Size(); width != window_width || height != window_height) {
+			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
 				const auto aspect_ratio = static_cast<GLfloat>(width) / height;
 				projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
 				shader_program.SetUniform("projection_transform", projection_transform);
