@@ -19,12 +19,12 @@ namespace {
 	constexpr GLint npos_index{-1};
 
 	template <typename T>
-	T ParseToken(const std::string_view token_t) {
+	T ParseToken(const std::string_view token) {
 		T value;
-		if (const auto [_, error_code] = std::from_chars(token_t.data(), token_t.data() + token_t.size(), value);
+		if (const auto [_, error_code] = std::from_chars(token.data(), token.data() + token.size(), value);
 			error_code == std::errc::invalid_argument) {
 			std::ostringstream oss;
-			oss << "Unable to convert " << token_t << " to type " << typeid(T).name();
+			oss << "Unable to convert " << token << " to type " << typeid(T).name();
 			throw std::invalid_argument{oss.str()};
 		}
 		return value;
