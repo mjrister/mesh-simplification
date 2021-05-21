@@ -32,22 +32,7 @@ namespace {
 		return glm::normalize(glm::vec3{x, y, 0.0f});
 	}
 
-	std::optional<glm::quat> GetArcballRotation(
-		const gfx::Window& window, const glm::dvec2& cursor_position, const glm::dvec2& prev_cursor_position) {
-		const auto& [width, height] = window.Size();
-		const auto prev_arcball_position = GetArcballPosition(prev_cursor_position, width, height);
-		const auto arcball_position = GetArcballPosition(cursor_position, width, height);
-		const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
-
-		if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
-			const auto axis = glm::cross(prev_arcball_position, arcball_position);
-			return glm::angleAxis(angle, glm::normalize(axis));
-		}
-
-		return std::nullopt;
-	}
-
-	void HandleInput(const gfx::Window& window, gfx::Mesh& mesh) {
+	void HandleInput(const gfx::Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
 		static constexpr GLfloat translate_step{0.01f};
 		static constexpr GLfloat scale_step{0.01f};
 		static std::optional<glm::dvec2> prev_cursor_position{};
@@ -79,8 +64,16 @@ namespace {
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
 			if (prev_cursor_position) {
-				if (const auto quaternion = GetArcballRotation(window, cursor_position, *prev_cursor_position)) {
-					mesh.Rotate(*quaternion);
+				const auto& [width, height] = window.Size();
+				const auto prev_arcball_position = GetArcballPosition(*prev_cursor_position, width, height);
+				const auto arcball_position = GetArcballPosition(cursor_position, width, height);
+				const auto angle = std::acos(std::min<>(1.0f, glm::dot(prev_arcball_position, arcball_position)));
+
+				if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
+					const auto view_rotation_axis = glm::cross(prev_arcball_position, arcball_position);
+					const auto view_model_transform_inv = glm::inverse(view_model_transform);
+					const auto model_rotation_axis = glm::mat3{view_model_transform_inv} * view_rotation_axis;
+					mesh.Rotate(model_rotation_axis, angle);
 				}
 			}
 			prev_cursor_position = cursor_position;
@@ -111,7 +104,7 @@ int main() {
 		auto projection_transform = glm::perspective(field_of_view, original_aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
-		constexpr glm::vec3 eye{0.0f, 0.0f, 2.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
+		constexpr glm::vec3 eye{-2.0f, 0.0f, 0.0f}, center{0.0f}, up{0.0f, 1.0f, 0.0f};
 		const auto view_transform = glm::lookAt(eye, center, up);
 
 		constexpr glm::vec3 ambient_color{0.3f};
@@ -135,13 +128,13 @@ int main() {
 				shader_program.SetUniform("projection_transform", projection_transform);
 			}
 
-			const auto model_view_transform = view_transform * mesh.Model();
-			shader_program.SetUniform("view_model_transform", model_view_transform);
+			const auto view_model_transform = view_transform * mesh.Model();
+			shader_program.SetUniform("view_model_transform", view_model_transform);
 
-			const auto normal_matrix = glm::inverse(transpose(glm::mat3{model_view_transform}));
-			shader_program.SetUniform("normal_transform", normal_matrix);
+			const auto normal_transform = glm::inverse(transpose(glm::mat3{view_model_transform}));
+			shader_program.SetUniform("normal_transform", normal_transform);
 
-			HandleInput(window, mesh);
+			HandleInput(window, view_model_transform, mesh);
 			mesh.Render();
 			window.Update();
 		}
