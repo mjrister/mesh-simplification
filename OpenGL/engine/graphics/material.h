@@ -214,9 +214,9 @@ namespace gfx {
 		}
 
 	private:
-		glm::vec3 ambient_;
-		glm::vec3 diffuse_;
-		glm::vec3 specular_;
-		GLfloat shininess_;
+		const glm::vec3 ambient_;
+		const glm::vec3 diffuse_;
+		const glm::vec3 specular_;
+		const GLfloat shininess_;
 	};
 }
