@@ -105,5 +105,7 @@
     <Object Include="resources\models\blub.obj">
       <Filter>resources\models</Filter>
     </Object>
+    <Object Include="resources\models\monkey.obj" />
+    <Object Include="resources\models\bunny.obj" />
   </ItemGroup>
 </Project>
