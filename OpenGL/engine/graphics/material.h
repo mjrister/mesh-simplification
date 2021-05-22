@@ -2,8 +2,6 @@
 #include <GL/gl3w.h>
 #include <glm/vec3.hpp>
 
-// http://devernay.free.fr/cours/opengl/materials.html
-
 namespace gfx {
 
 	class Material {
@@ -114,102 +112,6 @@ namespace gfx {
 			constexpr glm::vec3 diffuse{.50754f, .50754f, .50754f};
 			constexpr glm::vec3 specular{.508273f, .508273f, .508273f};
 			constexpr GLfloat shininess{.4f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material BlackPlastic() {
-			constexpr glm::vec3 ambient{0.f, 0.f, 0.f};
-			constexpr glm::vec3 diffuse{.01f, .01f, .01f};
-			constexpr glm::vec3 specular{.50f, .50f, .50f};
-			constexpr GLfloat shininess{.25f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material CyanPlastic() {
-			constexpr glm::vec3 ambient{0.f, .1f, .06f};
-			constexpr glm::vec3 diffuse{0.f, .50980392f, .50980392f};
-			constexpr glm::vec3 specular{.50196078f, .50196078f, .50196078f};
-			constexpr GLfloat shininess{.25f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material GreenPlastic() {
-			constexpr glm::vec3 ambient{0.f, 0.f, 0.f};
-			constexpr glm::vec3 diffuse{.1f, .35f, .1f};
-			constexpr glm::vec3 specular{.45f, .55f, .45f};
-			constexpr GLfloat shininess{.25f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material RedPlastic() {
-			constexpr glm::vec3 ambient{0.f, 0.f, 0.f};
-			constexpr glm::vec3 diffuse{.5f, 0.f, 0.f};
-			constexpr glm::vec3 specular{.7f, .6f, .6f};
-			constexpr GLfloat shininess{.25f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material WhitePlastic() {
-			constexpr glm::vec3 ambient{0.f, 0.f, 0.f};
-			constexpr glm::vec3 diffuse{.55f, .55f, .55f};
-			constexpr glm::vec3 specular{.7f, .7f, .7f};
-			constexpr GLfloat shininess{.25f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material YellowPlastic() {
-			constexpr glm::vec3 ambient{0.f, 0.f, 0.f};
-			constexpr glm::vec3 diffuse{.5f, .5f, 0.f};
-			constexpr glm::vec3 specular{.6f, .6f, .5f};
-			constexpr GLfloat shininess{.25f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material BlackRubber() {
-			constexpr glm::vec3 ambient{.02f, .02f, .02f};
-			constexpr glm::vec3 diffuse{.01f, .01f, .01f};
-			constexpr glm::vec3 specular{.4f, .4f, .4f};
-			constexpr GLfloat shininess{.078125f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material CyanRubber() {
-			constexpr glm::vec3 ambient{0.f, .05f, .05f};
-			constexpr glm::vec3 diffuse{.4f, .5f, .5f};
-			constexpr glm::vec3 specular{.04f, .7f, .7f};
-			constexpr GLfloat shininess{.078125f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material GreenRubber() {
-			constexpr glm::vec3 ambient{0.f, .05f, 0.f};
-			constexpr glm::vec3 diffuse{.4f, .5f, .4f};
-			constexpr glm::vec3 specular{.04f, .7f, .4f};
-			constexpr GLfloat shininess{.078125f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material RedRubber() {
-			constexpr glm::vec3 ambient{.05f, 0.f, 0.f};
-			constexpr glm::vec3 diffuse{.5f, .4f, .4f};
-			constexpr glm::vec3 specular{.7f, .04f, .04f};
-			constexpr GLfloat shininess{.078125f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material WhiteRubber() {
-			constexpr glm::vec3 ambient{.05f, .05f, .05f};
-			constexpr glm::vec3 diffuse{.5f, .5f, .5f};
-			constexpr glm::vec3 specular{.7f, .7f, .7f};
-			constexpr GLfloat shininess{.078125f};
-			return Material{ambient, diffuse, specular, shininess};
-		}
-
-		static constexpr Material YellowRubber() {
-			constexpr glm::vec3 ambient{.05f, .05f, 0.f};
-			constexpr glm::vec3 diffuse{.5f, .5f, .4f};
-			constexpr glm::vec3 specular{.7f, .7f, .04f};
-			constexpr GLfloat shininess{.078125f};
 			return Material{ambient, diffuse, specular, shininess};
 		}
 
