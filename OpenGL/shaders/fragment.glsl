@@ -54,5 +54,5 @@ void main() {
 	for (int i = 0; i < point_lights.length(); ++i) {
 		light_color += GetPointLightColor(i);
 	}
-	fragment_color += vec4(light_color, 1.0f);
+	fragment_color = vec4(light_color, 1.0f);
 }
