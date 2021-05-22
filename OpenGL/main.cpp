@@ -125,7 +125,7 @@ int main() {
 
 			HandleInput(window, view_model_transform, mesh);
 
-			point_light1_angle -= .01f;
+			point_light1_angle -= .0025f;
 			if (point_light1_angle < 0.f) {
 				point_light1_angle = glm::pi<GLfloat>();
 			}
