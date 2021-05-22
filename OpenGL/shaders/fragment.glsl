@@ -30,19 +30,20 @@ vec3 GetPointLightColor(const int index) {
 	PointLight point_light = point_lights[index];
 
 	vec3 light_direction = point_light.position - vertex.position.xyz;
-	float diffuse_intensity = max(dot(normalize(light_direction), vertex.normal), 0.0f);
+	float light_distance = length(light_direction);
+	light_direction = normalize(light_direction);
+
+	float diffuse_intensity = max(dot(light_direction, vertex.normal), 0.0f);
 	vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
 	if (diffuse_intensity > 0.0f) {
 
 		vec3 view_direction = normalize(-vertex.position.xyz);
-		vec3 reflect_direction = normalize(reflect(-normalize(light_direction), vertex.normal));
+		vec3 reflect_direction = normalize(reflect(-light_direction, vertex.normal));
 		float specular_intensity = pow(max(dot(view_direction, reflect_direction), 0.0f), material.shininess);
 		vec3 specular_color = specular_intensity * material.specular;
 
-		float light_distance = length(light_direction);
 		float attenuation = dot(point_light.attenuation, vec3(1.0, light_distance, light_distance * light_distance));
-
 		return point_light.color * point_light.intensity * (diffuse_color + specular_color) / attenuation;
 	}
 
