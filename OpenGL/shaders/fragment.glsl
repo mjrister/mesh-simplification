@@ -6,28 +6,25 @@ in Vertex {
 	vec3 normal;
 } vertex;
 
-struct PointLight {
+uniform struct PointLight {
 	vec3 position;
 	vec3 color;
 	float intensity;
 	vec3 attenuation;
-};
+} point_light;
 
-struct Material {
+uniform struct Material {
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
 	float shininess;
-};
-
-uniform PointLight point_lights[2];
-uniform Material material;
+} material;
 
 out vec4 fragment_color;
 
-vec3 GetPointLightColor(const int index) {
+void main() {
 
-	PointLight point_light = point_lights[index];
+	vec3 light_color = material.ambient;
 
 	vec3 light_direction = point_light.position - vertex.position.xyz;
 	float light_distance = length(light_direction);
@@ -44,16 +41,8 @@ vec3 GetPointLightColor(const int index) {
 		vec3 specular_color = specular_intensity * material.specular;
 
 		float attenuation = dot(point_light.attenuation, vec3(1.0, light_distance, light_distance * light_distance));
-		return point_light.color * point_light.intensity * (diffuse_color + specular_color) / attenuation;
+		light_color += point_light.color * point_light.intensity * (diffuse_color + specular_color) / attenuation;
 	}
 
-	return vec3(0.0f);
-}
-
-void main() {
-	vec3 light_color = material.ambient;
-	for (int i = 0; i < point_lights.length(); ++i) {
-		light_color += GetPointLightColor(i);
-	}
 	fragment_color = vec4(light_color, 1.0f);
 }
