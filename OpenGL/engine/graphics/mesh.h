@@ -51,6 +51,6 @@ namespace gfx {
 		const std::vector<glm::vec2> texture_coordinates_;
 		const std::vector<glm::vec3> normals_;
 		const std::vector<GLuint> indices_;
-		glm::mat4 model_{1.0f};
+		glm::mat4 model_{1.f};
 	};
 }
