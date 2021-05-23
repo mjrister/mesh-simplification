@@ -85,13 +85,10 @@ int main() {
 		constexpr glm::vec3 eye{0.f, 0.f, 2.f}, center{0.f}, up{0.f, 1.f, 0.f};
 		const auto view_transform = glm::lookAt(eye, center, up);
 
-		GLfloat point_light_angle{0.f};
-		constexpr glm::vec3 point_light_color{1.f};
-		constexpr GLfloat point_light_intensity{1.f};
-		constexpr glm::vec3 point_light_attenuation{0.f, 0.f, 1.f};
-		shader_program.SetUniform("point_light.color", point_light_color);
-		shader_program.SetUniform("point_light.intensity", point_light_intensity);
-		shader_program.SetUniform("point_light.attenuation", point_light_attenuation);
+		GLfloat point_light_angle = 0.f;
+		shader_program.SetUniform("point_light.color", glm::vec3{1.f});
+		shader_program.SetUniform("point_light.intensity", 1.f);
+		shader_program.SetUniform("point_light.attenuation", glm::vec3{0.f, 0.f, 1.f});
 
 		constexpr auto material = gfx::Material::Jade();
 		shader_program.SetUniform("material.ambient", material.Ambient());
@@ -99,7 +96,9 @@ int main() {
 		shader_program.SetUniform("material.specular", material.Specular());
 		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
 
-		for (double previous_time = glfwGetTime(); !window.Closed();) {
+		double previous_time = glfwGetTime();
+		while(!window.Closed()) {
+
 			const double current_time = glfwGetTime();
 			const auto delta_time = static_cast<GLfloat>(current_time - previous_time);
 			previous_time = current_time;
