@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 namespace gfx {
 
@@ -13,7 +14,7 @@ namespace gfx {
 
 	public:
 		explicit Mesh(
-			std::vector<glm::vec3> positions,
+			std::vector<glm::vec4> positions,
 			std::vector<glm::vec2> texture_coordinates = {},
 			std::vector<glm::vec3> normals = {},
 			std::vector<GLuint> indices = {});
@@ -47,7 +48,7 @@ namespace gfx {
 
 	private:
 		GLuint vertex_array_{}, vertex_buffer_{}, element_buffer_{};
-		const std::vector<glm::vec3> positions_;
+		const std::vector<glm::vec4> positions_;
 		const std::vector<glm::vec2> texture_coordinates_;
 		const std::vector<glm::vec3> normals_;
 		const std::vector<GLuint> indices_;

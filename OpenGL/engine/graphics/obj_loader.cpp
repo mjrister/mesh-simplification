@@ -11,6 +11,7 @@
 #include <GL/gl3w.h>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include "mesh.h"
 #include "utils/string.h"
@@ -34,7 +35,7 @@ namespace {
 	glm::vec<N, T> ParseLine(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " \t"); tokens.size() == N + 1) {
 			glm::vec<N, T> vec{};
-			for (std::uint8_t i = 0; i < N; ++i) {
+			for (std::uint8_t i = 0; i <= N; ++i) {
 				vec[i] = ParseToken<T>(tokens[i + 1]);
 			}
 			return vec;
@@ -102,14 +103,15 @@ gfx::Mesh gfx::obj_loader::LoadMesh(const std::string_view filepath) {
 }
 
 gfx::Mesh gfx::obj_loader::LoadMesh(std::istream& is) {
-	std::vector<glm::vec3> positions, normals;
+	std::vector<glm::vec4> positions;
 	std::vector<glm::vec2> texture_coordinates;
+	std::vector<glm::vec3> normals;
 	std::vector<std::array<glm::ivec3, 3>> faces;
 
 	for (std::string line; std::getline(is, line);) {
 		if (const auto line_view = string::Trim(line); !line_view.empty() && !string::StartsWith(line_view, "#")) {
 			if (string::StartsWith(line_view, "v ")) {
-				positions.push_back(ParseLine<GLfloat, 3>(line));
+				positions.emplace_back(ParseLine<GLfloat, 3>(line), 1.0f);
 			} else if (string::StartsWith(line_view, "vt ")) {
 				texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
 			} else if (string::StartsWith(line_view, "vn ")) {
