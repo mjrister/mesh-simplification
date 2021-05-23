@@ -74,9 +74,6 @@
     <Filter Include="resources">
       <UniqueIdentifier>{c0c42f84-5304-4eaa-b6db-1fc9a9b75653}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\textures">
-      <UniqueIdentifier>{9defc858-045e-4698-8eb8-c3edd1b35fb8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\models">
       <UniqueIdentifier>{72540917-fab2-49b9-bf65-600687120d37}</UniqueIdentifier>
     </Filter>
@@ -88,26 +85,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\textures\bob.png">
-      <Filter>resources\textures</Filter>
-    </Image>
-    <Image Include="resources\textures\spot.png">
-      <Filter>resources\textures</Filter>
-    </Image>
-    <Image Include="resources\textures\blub.png">
-      <Filter>resources\textures</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="resources\models\bob.obj">
-      <Filter>resources\models</Filter>
-    </Object>
-    <Object Include="resources\models\spot.obj">
-      <Filter>resources\models</Filter>
-    </Object>
-    <Object Include="resources\models\blub.obj">
-      <Filter>resources\models</Filter>
-    </Object>
     <Object Include="resources\models\monkey.obj">
       <Filter>resources\models</Filter>
     </Object>
