@@ -44,6 +44,8 @@ namespace gfx {
 				glUniform1f(location, value);
 			} else if constexpr (std::is_same<T, glm::vec3>::value) {
 				glUniform3fv(location, 1, glm::value_ptr(value));
+			} else if constexpr (std::is_same<T, glm::vec4>::value) {
+				glUniform4fv(location, 1, glm::value_ptr(value));
 			} else if constexpr (std::is_same<T, glm::mat3>::value) {
 				glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 			} else if constexpr (std::is_same<T, glm::mat4>::value) {

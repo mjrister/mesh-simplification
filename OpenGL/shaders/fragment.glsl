@@ -7,7 +7,7 @@ in Vertex {
 } vertex;
 
 uniform struct PointLight {
-	vec3 position;
+	vec4 position;
 	vec3 color;
 	float intensity;
 	vec3 attenuation;
@@ -24,7 +24,7 @@ out vec4 fragment_color;
 
 void main() {
 	vec3 light_color = material.ambient;
-	vec3 light_direction = point_light.position - vertex.position.xyz;
+	vec3 light_direction = vec3(point_light.position - vertex.position);
 	float light_distance = length(light_direction);
 	light_direction = normalize(light_direction);
 	vec3 normal = normalize(vertex.normal);
