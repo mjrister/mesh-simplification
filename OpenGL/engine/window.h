@@ -16,11 +16,7 @@ public:
 		std::int32_t height,
 		std::int32_t opengl_major_version,
 		std::int32_t opengl_minor_version);
-
-	~Window() {
-		if (window_) glfwDestroyWindow(window_);
-		glfwTerminate();
-	}
+	~Window();
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
