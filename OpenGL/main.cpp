@@ -67,7 +67,7 @@ namespace {
 int main() {
 
 	try {
-		constexpr std::int32_t window_width{1280}, window_height{960};
+		std::int32_t window_width{1280}, window_height{960};
 		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
 		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
@@ -79,8 +79,8 @@ int main() {
 		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
 
 		constexpr GLfloat field_of_view{glm::radians(45.f)}, z_near{.1f}, z_far{100.f};
-		constexpr auto original_aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
-		auto projection_transform = glm::perspective(field_of_view, original_aspect_ratio, z_near, z_far);
+		auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
+		auto projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
 		constexpr glm::vec3 eye{0.f, 0.f, 2.f}, center{0.f}, up{0.f, 1.f, 0.f};
@@ -100,17 +100,15 @@ int main() {
 		shader_program.SetUniform("material.specular", material.Specular());
 		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
 
-		double previous_time = glfwGetTime();
-
-		while (!window.Closed()) {
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		for (double previous_time = glfwGetTime(); !window.Closed();) {
 			const double current_time = glfwGetTime();
 			const auto delta_time = static_cast<GLfloat>(current_time - previous_time);
 			previous_time = current_time;
 
 			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
-				const auto aspect_ratio = static_cast<GLfloat>(width) / height;
+				window_width = width;
+				window_height = height;
+				aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
 				projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
 				shader_program.SetUniform("projection_transform", projection_transform);
 			}
@@ -125,6 +123,7 @@ int main() {
 
 			HandleInput(window, view_model_transform, mesh);
 
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			mesh.Render();
 			window.Update();
 		}
