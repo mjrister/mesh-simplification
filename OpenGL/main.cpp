@@ -16,8 +16,7 @@
 #include "engine/graphics/shader_program.h"
 
 namespace {
-	void HandleInput(
-		const Window& window, const glm::mat4 view_model_transform,  gfx::Mesh& mesh) {
+	void HandleInput(const Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
 
 		static constexpr GLfloat translate_step{.01f};
 		static constexpr GLfloat scale_step{.01f};
