@@ -69,12 +69,12 @@ int main() {
 		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
 		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
-		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
-		shader_program.Enable();
-
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bunny.obj");
 		mesh.Scale(glm::vec3{.25f});
 		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
+
+		gfx::ShaderProgram shader_program{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
+		shader_program.Enable();
 
 		constexpr GLfloat field_of_view{glm::radians(45.f)}, z_near{.1f}, z_far{100.f};
 		constexpr auto original_aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
@@ -84,7 +84,7 @@ int main() {
 		constexpr glm::vec3 eye{0.f, 0.f, 2.f}, center{0.f}, up{0.f, 1.f, 0.f};
 		const auto view_transform = glm::lookAt(eye, center, up);
 
-		GLfloat point_light1_angle{glm::pi<GLfloat>()};
+		GLfloat point_light_angle{glm::pi<GLfloat>()};
 		constexpr glm::vec3 point_light_color{1.f};
 		constexpr GLfloat point_light_intensity{1.f};
 		constexpr glm::vec3 point_light_attenuation{0.f, 0.f, 1.f};
@@ -110,19 +110,17 @@ int main() {
 
 			const auto view_model_transform = view_transform * mesh.Model();
 			shader_program.SetUniform("view_model_transform", view_model_transform);
-
-			const auto normal_transform = glm::inverse(transpose(glm::mat3{view_model_transform}));
-			shader_program.SetUniform("normal_transform", normal_transform);
+			shader_program.SetUniform("normal_transform", glm::mat3{view_model_transform});
 
 			HandleInput(window, view_model_transform, mesh);
 
-			point_light1_angle -= .01f;
-			if (point_light1_angle < 0.f) {
-				point_light1_angle = glm::pi<GLfloat>();
+			point_light_angle -= .01f;
+			if (point_light_angle < 0.f) {
+				point_light_angle = glm::pi<GLfloat>();
 			}
 
-			const glm::vec3 point_light1_position{std::cos(point_light1_angle), std::sin(point_light1_angle), 0.f};
-			shader_program.SetUniform("point_light.position", glm::mat3{view_transform} * point_light1_position);
+			const glm::vec3 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 0.f};
+			shader_program.SetUniform("point_light.position", glm::mat3{view_transform} * point_light_position);
 
 			mesh.Render();
 			window.Update();
