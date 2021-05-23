@@ -34,7 +34,7 @@ namespace {
 			const glm::vec3 translate{-translate_step, 0.f, 0.f};
 			mesh.Translate(translate);
 		} else if (window.IsKeyPressed(GLFW_KEY_D)) {
-			const glm::vec3 translate{translate_step, 0.f, 0.f };
+			const glm::vec3 translate{translate_step, 0.f, 0.f};
 			mesh.Translate(translate);
 		}
 
@@ -97,7 +97,7 @@ int main() {
 		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
 
 		double previous_time = glfwGetTime();
-		while(!window.Closed()) {
+		while (!window.Closed()) {
 
 			const double current_time = glfwGetTime();
 			const auto delta_time = static_cast<GLfloat>(current_time - previous_time);
