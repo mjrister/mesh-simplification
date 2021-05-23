@@ -35,8 +35,8 @@ namespace {
 	glm::vec<N, T> ParseLine(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " \t"); tokens.size() == N + 1) {
 			glm::vec<N, T> vec{};
-			for (std::uint8_t i = 0; i <= N; ++i) {
-				vec[i] = ParseToken<T>(tokens[i + 1]);
+			for (std::uint8_t i = 1; i <= N; ++i) {
+				vec[i - 1] = ParseToken<T>(tokens[i]);
 			}
 			return vec;
 		}
