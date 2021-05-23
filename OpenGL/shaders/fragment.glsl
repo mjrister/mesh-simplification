@@ -30,13 +30,14 @@ void main() {
 	float light_distance = length(light_direction);
 	light_direction = normalize(light_direction);
 
-	float diffuse_intensity = max(dot(light_direction, vertex.normal), 0.0f);
+	vec3 normal = normalize(vertex.normal);
+	float diffuse_intensity = max(dot(light_direction, normal), 0.0f);
 	vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
 	if (diffuse_intensity > 0.0f) {
 
 		vec3 view_direction = normalize(-vertex.position.xyz);
-		vec3 reflect_direction = normalize(reflect(-light_direction, vertex.normal));
+		vec3 reflect_direction = normalize(reflect(-light_direction, normal));
 		float specular_intensity = pow(max(dot(view_direction, reflect_direction), 0.0f), material.shininess);
 		vec3 specular_color = specular_intensity * material.specular;
 
