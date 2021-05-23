@@ -110,9 +110,7 @@ int main() {
 
 			const auto view_model_transform = view_transform * mesh.Model();
 			shader_program.SetUniform("view_model_transform", view_model_transform);
-
-			const auto normal_transform = inverse(transpose(glm::mat3{view_model_transform}));
-			shader_program.SetUniform("normal_transform", normal_transform);
+			shader_program.SetUniform("normal_transform", glm::mat3{view_model_transform});
 
 			point_light_angle += .01f;
 			const glm::vec3 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 0.f};
