@@ -16,7 +16,9 @@
 #include "engine/graphics/shader_program.h"
 
 namespace {
-	void HandleInput(const Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
+	void HandleInput(
+		const Window& window, const glm::mat4 view_model_transform,  gfx::Mesh& mesh) {
+
 		static constexpr GLfloat translate_step{.01f};
 		static constexpr GLfloat scale_step{.01f};
 		static std::optional<glm::dvec2> prev_cursor_position{};
@@ -98,9 +100,14 @@ int main() {
 		shader_program.SetUniform("material.specular", material.Specular());
 		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
 
-		while (!window.Closed()) {
+		double previous_time = glfwGetTime();
 
+		while (!window.Closed()) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			const double current_time = glfwGetTime();
+			const auto delta_time = static_cast<GLfloat>(current_time - previous_time);
+			previous_time = current_time;
 
 			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
 				const auto aspect_ratio = static_cast<GLfloat>(width) / height;
@@ -112,7 +119,7 @@ int main() {
 			shader_program.SetUniform("view_model_transform", view_model_transform);
 			shader_program.SetUniform("normal_transform", glm::mat3{view_model_transform});
 
-			point_light_angle += .01f;
+			point_light_angle += delta_time;
 			const glm::vec3 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 0.f};
 			shader_program.SetUniform("point_light.position", glm::mat3{view_transform} * point_light_position);
 
