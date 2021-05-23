@@ -16,32 +16,33 @@
 #include "engine/graphics/shader_program.h"
 
 namespace {
-	void HandleInput(const Window& window, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
-		static constexpr GLfloat translate_step{.01f};
-		static constexpr GLfloat scale_step{.01f};
+	void HandleInput(
+		const Window& window, const GLfloat delta_time, const glm::mat4 view_model_transform, gfx::Mesh& mesh) {
 		static std::optional<glm::dvec2> prev_cursor_position{};
+		const GLfloat translate_step = 1.25f * delta_time;
+		const GLfloat scale_step = .75f * delta_time;
 
 		if (window.IsKeyPressed(GLFW_KEY_W)) {
-			static constexpr glm::vec3 translate{0.f, translate_step, 0.f};
+			const glm::vec3 translate{0.f, translate_step, 0.f};
 			mesh.Translate(translate);
 		} else if (window.IsKeyPressed(GLFW_KEY_X)) {
-			static constexpr glm::vec3 translate{0.f, -translate_step, 0.f};
+			const glm::vec3 translate{0.f, -translate_step, 0.f};
 			mesh.Translate(translate);
 		}
 
 		if (window.IsKeyPressed(GLFW_KEY_A)) {
-			static constexpr glm::vec3 translate{-translate_step, 0.f, 0.f};
+			const glm::vec3 translate{-translate_step, 0.f, 0.f};
 			mesh.Translate(translate);
 		} else if (window.IsKeyPressed(GLFW_KEY_D)) {
-			static constexpr glm::vec3 translate{translate_step, 0.f, 0.f};
+			const glm::vec3 translate{translate_step, 0.f, 0.f };
 			mesh.Translate(translate);
 		}
 
 		if (window.IsKeyPressed(GLFW_KEY_LEFT_SHIFT) && window.IsKeyPressed(GLFW_KEY_EQUAL)) {
-			static constexpr glm::vec3 scale{1.f + scale_step};
+			const glm::vec3 scale{1.f + scale_step};
 			mesh.Scale(scale);
 		} else if (window.IsKeyPressed(GLFW_KEY_MINUS)) {
-			static constexpr glm::vec3 scale{1.f - scale_step};
+			const glm::vec3 scale{1.f - scale_step};
 			mesh.Scale(scale);
 		}
 
@@ -65,8 +66,8 @@ namespace {
 int main() {
 
 	try {
-		std::int32_t window_width{1280}, window_height{960};
-		constexpr std::int32_t opengl_major_version{4}, opengl_minor_version{6};
+		std::int32_t window_width = 1280, window_height = 960;
+		constexpr std::int32_t opengl_major_version = 4, opengl_minor_version = 6;
 		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
@@ -119,7 +120,7 @@ int main() {
 			const glm::vec4 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 1.5f, 1.f};
 			shader_program.SetUniform("point_light.position", view_transform * point_light_position);
 
-			HandleInput(window, view_model_transform, mesh);
+			HandleInput(window, delta_time, view_model_transform, mesh);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			mesh.Render();
