@@ -70,12 +70,12 @@ int main() {
 		constexpr std::int32_t opengl_major_version = 4, opengl_minor_version = 6;
 		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
-		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
-		shader_program.Enable();
-
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bunny.obj");
 		mesh.Scale(glm::vec3{.25f});
 		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
+
+		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
+		shader_program.Enable();
 
 		constexpr GLfloat field_of_view{glm::radians(45.f)}, z_near{.1f}, z_far{100.f};
 		auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
