@@ -92,7 +92,7 @@ int main() {
 		shader_program.SetUniform("point_light.intensity", point_light_intensity);
 		shader_program.SetUniform("point_light.attenuation", point_light_attenuation);
 
-		constexpr auto material = gfx::Material::Chrome();
+		constexpr auto material = gfx::Material::Jade();
 		shader_program.SetUniform("material.ambient", material.Ambient());
 		shader_program.SetUniform("material.diffuse", material.Diffuse());
 		shader_program.SetUniform("material.specular", material.Specular());
