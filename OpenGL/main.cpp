@@ -53,7 +53,7 @@ namespace {
 					const auto& [view_rotation_axis, angle] = *axis_and_angle;
 					const auto view_model_transform_inv = glm::inverse(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_transform_inv} * view_rotation_axis;
-					mesh.Rotate(model_rotation_axis, angle);
+					mesh.Rotate(glm::normalize(model_rotation_axis), angle);
 				}
 			}
 			prev_cursor_position = cursor_position;
