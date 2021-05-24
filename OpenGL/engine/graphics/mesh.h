@@ -4,9 +4,6 @@
 
 #include <GL/gl3w.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 
 namespace gfx {
 
