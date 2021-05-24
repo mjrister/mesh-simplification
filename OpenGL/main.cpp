@@ -66,7 +66,7 @@ int main() {
 
 	try {
 		std::int32_t window_width = 1280, window_height = 960;
-		constexpr std::int32_t opengl_major_version = 4, opengl_minor_version = 6;
+		constexpr std::int32_t opengl_major_version = 4, opengl_minor_version = 1;
 		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
 
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bunny.obj");
