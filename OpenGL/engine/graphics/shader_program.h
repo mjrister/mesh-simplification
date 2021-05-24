@@ -69,6 +69,8 @@ namespace gfx {
 				glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 			} else if constexpr (std::is_same<T, glm::mat4>::value) {
 				glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+			} else {
+				static_assert(false, "Unsupported uniform variable type");
 			}
 		}
 
