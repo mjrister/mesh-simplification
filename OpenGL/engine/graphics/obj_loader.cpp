@@ -139,7 +139,7 @@ namespace {
 
 gfx::Mesh gfx::obj_loader::LoadMesh(const std::string_view filepath) {
 	if (std::ifstream ifs{filepath.data()}; ifs.good()) {
-		return LoadMesh(ifs);
+		return ::LoadMesh(ifs);
 	}
 	std::ostringstream oss;
 	oss << "Unable to open " << filepath;
