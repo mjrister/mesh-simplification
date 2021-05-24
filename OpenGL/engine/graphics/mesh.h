@@ -13,6 +13,18 @@ namespace gfx {
 	class Mesh {
 
 	public:
+		/**
+		 * \brief Initializes a triangle mesh.
+		 * \param positions The triangle mesh vertex positions.
+		 * \param texture_coordinates The triangle mesh texture coordinates.
+		 * \param normals The triangle mesh normals.
+		 * \param indices Indices describing each triangle face in the mesh.
+		 * \note If \p indices is empty, \p positions must describe a triangle mesh (i.e., be a nonzero multiple of 3).
+		 *		 If nonempty, \p texture_coordinates or \p normals must be the same size as \p positions so that data is
+		 *		 aligned when sent to the vertex shader. If \p indices if nonempty, it must describe a triangle mesh,
+		 *		 however, \p positions, \p texture_coordinates, and \p normals may be of any size. Consequentially, each
+		 *		 index assumes \p alignment between \p positions and \p texture_coordinates, \p normals.
+		 */
 		explicit Mesh(
 			std::vector<glm::vec4> positions,
 			std::vector<glm::vec2> texture_coordinates = {},
