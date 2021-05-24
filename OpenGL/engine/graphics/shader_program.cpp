@@ -6,6 +6,13 @@
 #include "utils/file.h"
 
 namespace {
+
+	/**
+	 * \brief Verifies the status of a shader.
+	 * \param shader_id The shader ID.
+	 * \param status_type The status type to verify.
+	 * \throw std::runtime_error if shader verification failed.
+	 */
 	void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
 		GLint success;
 		glGetShaderiv(shader_id, status_type, &success);
@@ -19,6 +26,12 @@ namespace {
 		}
 	}
 
+	/**
+	 * \brief Verifies the status of a shader program.
+	 * \param shader_program_id The shader program ID.
+	 * \param status_type The shader program status type to verify.
+	 * \throw std::runtime_error if shader program verification failed.
+	 */
 	void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum status_type) {
 		GLint success;
 		glGetProgramiv(shader_program_id, status_type, &success);
