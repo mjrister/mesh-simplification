@@ -44,8 +44,8 @@ namespace {
 	 * \tparam N The number of items to convert (does not include the first token identifying the line type).
 	 * \param line The line to parse.
 	 * \return A vector of size \p N containing each item in \p line converted to type \p T.
-	 * \throw std::invalid_argument if the line format is unsupported.
-	 * \note Does not support face elements.
+	 * \throw std::invalid_argument if the line format is unsupported or string conversion fails.
+	 * \note Does not support lines containing face elements.
 	 */
 	template <typename T, std::uint8_t N>
 	glm::vec<N, T> ParseLine(const std::string_view line) {
@@ -62,10 +62,10 @@ namespace {
 	}
 
 	/**
-	 * \brief Parses an index group of a face element line in an .obj file.
-	 * \param token The index group token to parse. May optionally contain texture coordinate and normal indices.
+	 * \brief Parses an token representing a face element index group.
+	 * \param token The token to parse. May optionally contain texture coordinate and normal indices.
 	 * \return A vector containing vertex position, texture coordinate, and normal indices.
-	 * \throw std::invalid_argument if the index group format is unsupported.
+	 * \throw std::invalid_argument if the index group format is unsupported or string conversion fails.
 	 * \note Unspecified texture coordinate and normal values are indicated with the sentinel value \p npos_index.
 	 */
 	glm::ivec3 ParseIndexGroup(const std::string_view token) {
@@ -106,6 +106,11 @@ namespace {
 		throw std::invalid_argument{oss.str()};
 	}
 
+	/**
+	 * \brief Parses a face line in an .obj file.
+	 * \param line The line to parse.
+	 * \return An array containing the parsed index groups.
+	 */
 	std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " \t"); tokens.size() == 4) {
 			return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
