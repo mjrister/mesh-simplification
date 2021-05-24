@@ -7,33 +7,33 @@ namespace {
 	TEST(ArcballTest, TestGetNormalizedDeviceCoordinates) {
 		constexpr auto width = 300, height = 200;
 
-		auto cursor_position_ndc = GetNormalizedDeviceCoordinates(glm::dvec2{0.f, 0.f}, width, height);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.x, -1.f);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.y, 1.f);
+		constexpr auto cursor_position_ndc0 = GetNormalizedDeviceCoordinates(glm::dvec2{0.f, 0.f}, width, height);
+		ASSERT_FLOAT_EQ(cursor_position_ndc0.x, -1.f);
+		ASSERT_FLOAT_EQ(cursor_position_ndc0.y, 1.f);
 
-		cursor_position_ndc = GetNormalizedDeviceCoordinates(glm::dvec2{0.f, height}, width, height);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.x, -1.f);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.y, -1.f);
+		constexpr auto cursor_position_ndc1 = GetNormalizedDeviceCoordinates(glm::dvec2{0.f, height}, width, height);
+		ASSERT_FLOAT_EQ(cursor_position_ndc1.x, -1.f);
+		ASSERT_FLOAT_EQ(cursor_position_ndc1.y, -1.f);
 
-		cursor_position_ndc = GetNormalizedDeviceCoordinates(glm::dvec2{width, height}, width, height);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.x, 1.f);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.y, -1.f);
+		constexpr auto cursor_position_ndc2 = GetNormalizedDeviceCoordinates(glm::dvec2{width, height}, width, height);
+		ASSERT_FLOAT_EQ(cursor_position_ndc2.x, 1.f);
+		ASSERT_FLOAT_EQ(cursor_position_ndc2.y, -1.f);
 
-		cursor_position_ndc = GetNormalizedDeviceCoordinates(glm::dvec2{width, 0.f}, width, height);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.x, 1.f);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.y, 1.f);
+		constexpr auto cursor_position_ndc3 = GetNormalizedDeviceCoordinates(glm::dvec2{width, 0.f}, width, height);
+		ASSERT_FLOAT_EQ(cursor_position_ndc3.x, 1.f);
+		ASSERT_FLOAT_EQ(cursor_position_ndc3.y, 1.f);
 
-		cursor_position_ndc = GetNormalizedDeviceCoordinates(glm::dvec2{width/2.f, height/2.f}, width, height);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.x, 0.f);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.y, 0.f);
+		constexpr auto cursor_position_ndc4 = GetNormalizedDeviceCoordinates(glm::dvec2{width/2.f, height/2.f}, width, height);
+		ASSERT_FLOAT_EQ(cursor_position_ndc4.x, 0.f);
+		ASSERT_FLOAT_EQ(cursor_position_ndc4.y, 0.f);
 
-		cursor_position_ndc = GetNormalizedDeviceCoordinates(glm::dvec2{-1.f, -1.f}, width, height);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.x, -1.f);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.y, 1.f);
+		constexpr auto cursor_position_ndc5 = GetNormalizedDeviceCoordinates(glm::dvec2{-1.f, -1.f}, width, height);
+		ASSERT_FLOAT_EQ(cursor_position_ndc5.x, -1.f);
+		ASSERT_FLOAT_EQ(cursor_position_ndc5.y, 1.f);
 
-		cursor_position_ndc = GetNormalizedDeviceCoordinates(glm::dvec2{width + 1.f, height + 1.f}, width, height);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.x, 1.f);
-		ASSERT_FLOAT_EQ(cursor_position_ndc.y, -1.f);
+		constexpr auto cursor_position_ndc6 = GetNormalizedDeviceCoordinates(glm::dvec2{width + 1.f, height + 1.f}, width, height);
+		ASSERT_FLOAT_EQ(cursor_position_ndc6.x, 1.f);
+		ASSERT_FLOAT_EQ(cursor_position_ndc6.y, -1.f);
 	}
 
 	TEST(ArcballTest, TestGetArcballPositionForCursorInsideSphere) {
@@ -46,7 +46,8 @@ namespace {
 	}
 
 	TEST(ArcballTest, TestGetArcballPositionForCursorOutsideSphere) {
-		const glm::vec2 cursor_position_ndc{.75f, .85f};
+		constexpr auto x = .75f, y = .85f;
+		constexpr glm::vec2 cursor_position_ndc{x, y};
 		const auto arcball_position = GetArcballPosition(cursor_position_ndc);
 		ASSERT_FLOAT_EQ(arcball_position.x, .66162163f);
 		ASSERT_FLOAT_EQ(arcball_position.y, .74983788f);
