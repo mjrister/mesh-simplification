@@ -8,7 +8,7 @@
 #include "window.h"
 
 namespace {
-	constexpr glm::vec2 GetNormalizedCursorPosition(
+	constexpr glm::vec2 GetNormalizedDeviceCoordinates(
 		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
 
 		const auto x_ndc = static_cast<GLfloat>(cursor_position.x * 2.0 / window_width - 1.0);
@@ -33,8 +33,8 @@ std::optional<const std::pair<const glm::vec3, const GLfloat>> arcball::GetRotat
 	const Window& window, const glm::dvec2& cursor_position, const glm::dvec2& prev_cursor_position) {
 
 	const auto [width, height] = window.Size();
-	const auto cursor_position_ndc = GetNormalizedCursorPosition(cursor_position, width, height);
-	const auto prev_cursor_position_ndc = GetNormalizedCursorPosition(prev_cursor_position, width, height);
+	const auto cursor_position_ndc = GetNormalizedDeviceCoordinates(cursor_position, width, height);
+	const auto prev_cursor_position_ndc = GetNormalizedDeviceCoordinates(prev_cursor_position, width, height);
 
 	const auto arcball_position = GetArcballPosition(cursor_position_ndc);
 	const auto prev_arcball_position = GetArcballPosition(prev_cursor_position_ndc);
