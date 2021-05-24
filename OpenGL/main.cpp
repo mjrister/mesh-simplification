@@ -51,7 +51,7 @@ namespace {
 			if (prev_cursor_position) {
 				if (const auto axis_and_angle = arcball::GetRotation(window, cursor_position, *prev_cursor_position)) {
 					const auto& [view_rotation_axis, angle] = *axis_and_angle;
-					const auto view_model_transform_inv = glm::inverse(view_model_transform);
+					const auto view_model_transform_inv = glm::transpose(view_model_transform);
 					const auto model_rotation_axis = glm::mat3{view_model_transform_inv} * view_rotation_axis;
 					mesh.Rotate(glm::normalize(model_rotation_axis), angle);
 				}
