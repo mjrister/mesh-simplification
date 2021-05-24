@@ -45,7 +45,6 @@ namespace {
 	 * \param line The line to parse.
 	 * \return A vector of size \p N containing each item in \p line converted to type \p T.
 	 * \throw std::invalid_argument if the line format is unsupported or string conversion fails.
-	 * \note Does not support lines containing face elements.
 	 */
 	template <typename T, std::uint8_t N>
 	glm::vec<N, T> ParseLine(const std::string_view line) {
@@ -62,11 +61,11 @@ namespace {
 	}
 
 	/**
-	 * \brief Parses an token representing a face element index group.
+	 * \brief Parses an token represent an index group in a face element.
 	 * \param token The token to parse. May optionally contain texture coordinate and normal indices.
-	 * \return A vector containing vertex position, texture coordinate, and normal indices.
+	 * \return A vector containing vertex position, texture coordinate, and normal indices. Unspecified texture
+	 *         coordinate and normal values are indicated with the sentinel value \p npos_index.
 	 * \throw std::invalid_argument if the index group format is unsupported or string conversion fails.
-	 * \note Unspecified texture coordinate and normal values are indicated with the sentinel value \p npos_index.
 	 */
 	glm::ivec3 ParseIndexGroup(const std::string_view token) {
 		static constexpr auto delimiter = "/";
@@ -107,9 +106,10 @@ namespace {
 	}
 
 	/**
-	 * \brief Parses a face line in an .obj file.
+	 * \brief Parses a line representing a triangular face element.
 	 * \param line The line to parse.
-	 * \return An array containing the parsed index groups.
+	 * \return An array of size three containing the parsed index groups.
+	 * \throw std::invalid_argument if the line format is unsupported.
 	 */
 	std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " \t"); tokens.size() == 4) {
@@ -120,6 +120,12 @@ namespace {
 		throw std::invalid_argument{oss.str()};
 	}
 
+	/**
+	 * \brief Loads a triangle mesh from an input stream representing the contents of an .obj file.
+	 * \param is The input stream to parse.
+	 * \return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
+	 * \throw std::invalid_argument if the input stream representing the .obj file contains an unsupported format.
+	 */
 	gfx::Mesh LoadMesh(std::istream& is) {
 		std::vector<glm::vec4> positions;
 		std::vector<glm::vec2> texture_coordinates;
@@ -147,6 +153,15 @@ namespace {
 		std::vector<GLuint> indices;
 		indices.reserve(faces.size() * 3);
 
+		// If applicable, store each texture coordinate and normal in the same index as the vertex position. If the
+		// number of unique vertex positions is much greater than the number of texture coordinates or normals this will
+		// introduce duplicate values which may not be desirable. Unfortunately, there is no way around this due to the
+		// limitations of OpenGL not supporting multiple element buffers. On the other hand, if the number of unique
+		// texture coordinates or normals is greater than the number of vertex positions, some values may be overwritten
+		// which could lead to visible artifacts (particularly with respect to texture coordinates). There are multiple
+		// ways to mitigate this such as detecting when a previously element contains a different value than the one
+		// current being ordered and appending a new position, texture coordinate, and normal triple to each ordered
+		// array, but for the purposes of this application, this implementation is sufficient and therefore faster.
 		for (const auto& face : faces) {
 			for (const auto& index_group : face) {
 				const auto position_index = index_group[0];
