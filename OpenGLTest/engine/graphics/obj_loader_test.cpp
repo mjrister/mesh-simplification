@@ -31,7 +31,7 @@ namespace {
 	}
 
 	TEST(ObjLoaderTest, TestParseLine) {
-		ASSERT_EQ((glm::vec3{0.707f, 0.395f, 0.684f}), (ParseLine<GLfloat, 3>("vt 0.707 0.395 0.684")));
+		ASSERT_EQ((glm::vec3{.707f, .395f, .684f}), (ParseLine<GLfloat, 3>("vt 0.707 0.395 0.684")));
 	}
 
 	TEST(ObjLoaderTest, TestParseIndexGroupWithPositionIndex) {
@@ -94,13 +94,14 @@ namespace {
 		)"};
 
 		const auto mesh = obj_loader::LoadMesh(ss);
-		constexpr glm::vec3 v0{0.0f, 0.1f, 0.2f}, v1{1.0f, 1.1f, 1.2f}, v2{2.0f, 2.1f, 2.2f};
-		constexpr glm::vec2 vt0{3.0f, 3.1f}, vt1{4.0f, 4.1f}, vt2{5.0f, 5.1f};
-		constexpr glm::vec3 vn0{6.0f, 6.1f, 6.2f}, vn1{7.0f, 7.1f, 7.2f}, vn2{8.0f, 8.1f, 8.2f};
+		constexpr glm::vec4 v0{0.f, 0.1f, 0.2f, 1.f}, v1{1.f, 1.1f, 1.2f, 1.f}, v2{2.f, 2.1f, 2.2f, 1.f};
+		constexpr glm::vec2 vt0{3.f, 3.1f}, vt1{4.f, 4.1f}, vt2{5.f, 5.1f};
+		constexpr glm::vec3 vn0{6.f, 6.1f, 6.2f}, vn1{7.f, 7.1f, 7.2f}, vn2{8.f, 8.1f, 8.2f};
 
 		ASSERT_EQ((std::vector{v0, v1, v2}), mesh.Positions());
 		ASSERT_EQ((std::vector{vt0, vt1, vt2}), mesh.TextureCoordinates());
 		ASSERT_EQ((std::vector{vn0, vn1, vn2}), mesh.Normals());
+		ASSERT_TRUE(mesh.Indices().empty());
 	}
 
 	TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
@@ -121,17 +122,18 @@ namespace {
 			vn 9.0  9.1  9.2
 			vn 10.0 10.1 10.2
 			# faces
-			f 1/1/1 2/2/2 3/4/3
-			f 1/1/3 2/2/2 4/3/1
+			f 1/4/2 2/1/3 3/2/1
+			f 1/4/2 2/1/3 4/3/1
 		)"};
 
 		const auto mesh = obj_loader::LoadMesh(ss);
-		constexpr glm::vec3 v0{0.0f, 0.1f, 0.2f}, v1{1.0f, 1.1f, 1.2f}, v2{2.0f, 2.1f, 2.2f}, v3{3.0f, 3.1f, 3.2f};
-		constexpr glm::vec2 vt0{4.0f, 4.1f}, vt1{5.0f, 5.1f}, vt2{6.0f, 6.1f}, vt3{7.0f, 7.1f};
-		constexpr glm::vec3 vn0{8.0f, 8.1f, 8.2f}, vn1{9.0f, 9.1f, 9.2f}, vn2{10.0f, 10.1f, 10.2f};
+		constexpr glm::vec4 v0{0.f, .1f, .2f, 1.f}, v1{1.f, 1.1f, 1.2f, 1.f}, v2{2.f, 2.1f, 2.2f, 1.f}, v3{3.f, 3.1f, 3.2f, 1.f};
+		constexpr glm::vec2 vt0{4.f, 4.1f}, vt1{5.f, 5.1f}, vt2{6.f, 6.1f}, vt3{7.f, 7.1f};
+		constexpr glm::vec3 vn0{8.f, 8.1f, 8.2f}, vn1{9.f, 9.1f, 9.2f}, vn2{10.f, 10.1f, 10.2f};
 
-		ASSERT_EQ((std::vector{v0, v1, v2, v0, v1, v3}), mesh.Positions());
-		ASSERT_EQ((std::vector{vt0, vt1, vt3, vt0, vt1, vt2}), mesh.TextureCoordinates());
-		ASSERT_EQ((std::vector{vn0, vn1, vn2, vn2, vn1, vn0}), mesh.Normals());
+		ASSERT_EQ((std::vector{v0, v1, v2, v3}), mesh.Positions());
+		ASSERT_EQ((std::vector{vt3, vt0, vt1, vt2}), mesh.TextureCoordinates());
+		ASSERT_EQ((std::vector{vn1, vn2, vn0, vn0}), mesh.Normals());
+		ASSERT_EQ((std::vector{0u, 1u, 2u, 0u, 1u, 3u}), mesh.Indices());
 	}
 }
