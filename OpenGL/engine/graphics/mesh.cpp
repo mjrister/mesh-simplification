@@ -43,34 +43,34 @@ gfx::Mesh::Mesh(
 
 	Validate(positions_, texture_coordinates_, normals_, indices_);
 
-	// generate vertex array
+	// generate the vertex array
 	glGenVertexArrays(1, &vertex_array_);
 	glBindVertexArray(vertex_array_);
 
-	// generate vertex buffer
+	// generate the vertex buffer
 	glGenBuffers(1, &vertex_buffer_);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
 
-	// allocate memory for vertex buffer
+	// allocate memory for the vertex buffer
 	const std::size_t positions_size = sizeof(glm::vec4) * positions_.size();
 	const std::size_t texture_coordinates_size = sizeof(glm::vec2) * texture_coordinates_.size();
 	const std::size_t normals_size = sizeof(glm::vec3) * normals_.size();
 	const std::size_t buffer_size = positions_size + texture_coordinates_size + normals_size;
 	glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
 
-	// copy positions to vertex buffer
+	// copy positions to the vertex buffer
 	glBufferSubData(GL_ARRAY_BUFFER, 0, positions_size, positions_.data());
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(0));
 	glEnableVertexAttribArray(0);
 
-	// copy texture coordinates to vertex buffer
+	// copy texture coordinates to the vertex buffer
 	if (!texture_coordinates_.empty()) {
 		glBufferSubData(GL_ARRAY_BUFFER, positions_size, texture_coordinates_size, texture_coordinates_.data());
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(positions_size));
 		glEnableVertexAttribArray(1);
 	}
 
-	// copy normals to vertex buffer
+	// copy normals to the vertex buffer
 	if (!normals_.empty()) {
 		const std::size_t offset = positions_size + texture_coordinates_size;
 		glBufferSubData(GL_ARRAY_BUFFER, offset, normals_size, normals_.data());
@@ -78,7 +78,7 @@ gfx::Mesh::Mesh(
 		glEnableVertexAttribArray(2);
 	}
 
-	// generate and copy indices to element buffer
+	// generate and copy indices to the element buffer
 	if (!indices_.empty()) {
 		const std::size_t indices_size = sizeof(GLuint) * indices_.size();
 		glGenBuffers(1, &element_buffer_);
