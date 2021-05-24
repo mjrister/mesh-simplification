@@ -12,7 +12,7 @@ namespace gfx {
 	public:
 		/**
 		 * \brief Initializes a triangle mesh.
-		 * \param positions The mesh vertex positions.
+		 * \param positions The mesh vertex positions. Must be nonempty.
 		 * \param texture_coordinates The mesh texture coordinates.
 		 * \param normals The mesh normals.
 		 * \param indices Element indices such that each three consecutive integers defines a triangle face in the mesh.
