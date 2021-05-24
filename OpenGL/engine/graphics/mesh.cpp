@@ -14,13 +14,13 @@ namespace {
 		if (positions.empty()) {
 			throw std::invalid_argument{"Vertex positions must be specified"};
 		}
-		if (indices.size() % 3 != 0) {
+		if (indices.empty() && positions.size() % 3 != 0 || indices.size() % 3 != 0) {
 			throw std::invalid_argument{"Object must be a triangle mesh"};
 		}
-		if (!texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
+		if (indices.empty() && !texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
 			throw std::invalid_argument{"Texture coordinates must align with position data"};
 		}
-		if (!normals.empty() && positions.size() != normals.size()) {
+		if (indices.empty() && !normals.empty() && positions.size() != normals.size()) {
 			throw std::invalid_argument{"Vertex normals must align with position data"};
 		}
 	}
