@@ -19,6 +19,13 @@
 namespace {
 	constexpr GLint npos_index{-1};
 
+	/**
+	 * \brief Parses a string token.
+	 * \tparam T The type to convert to.
+	 * \param token The string to parse.
+	 * \return The converted value of \p token to type \p T.
+	 * \throw std::invalid_argument if the string conversion fails.
+	 */
 	template <typename T>
 	T ParseToken(const std::string_view token) {
 		T value;
@@ -31,6 +38,15 @@ namespace {
 		return value;
 	}
 
+	/**
+	 * \brief Parses a line in an .obj file.
+	 * \tparam T The type to convert to.
+	 * \tparam N The number of items to convert (does not include the first token identifying the line type).
+	 * \param line The line to parse.
+	 * \return A vector of size \p N containing each item in \p line converted to type \p T.
+	 * \throw std::invalid_argument if the line format is unsupported.
+	 * \note Does not support face elements.
+	 */
 	template <typename T, std::uint8_t N>
 	glm::vec<N, T> ParseLine(const std::string_view line) {
 		if (const auto tokens = string::Split(line, " \t"); tokens.size() == N + 1) {
@@ -45,11 +61,18 @@ namespace {
 		throw std::invalid_argument{oss.str()};
 	}
 
-	glm::ivec3 ParseIndexGroup(const std::string_view line) {
+	/**
+	 * \brief Parses an index group of a face element line in an .obj file.
+	 * \param token The index group token to parse. May optionally contain texture coordinate and normal indices.
+	 * \return A vector containing vertex position, texture coordinate, and normal indices.
+	 * \throw std::invalid_argument if the index group format is unsupported.
+	 * \note Unspecified texture coordinate and normal values are indicated with the sentinel value \p npos_index.
+	 */
+	glm::ivec3 ParseIndexGroup(const std::string_view token) {
 		static constexpr auto delimiter = "/";
-		const auto tokens = string::Split(line, delimiter);
+		const auto tokens = string::Split(token, delimiter);
 
-		switch (std::count(line.cbegin(), line.cend(), *delimiter)) {
+		switch (std::count(token.cbegin(), token.cend(), *delimiter)) {
 			case 0:
 				if (tokens.size() == 1) {
 					const auto x = ParseToken<GLint>(tokens[0]) - 1;
@@ -64,7 +87,7 @@ namespace {
 				}
 				break;
 			case 2:
-				if (tokens.size() == 2 && *line.cbegin() != '/' && *(line.cend() - 1) != '/') {
+				if (tokens.size() == 2 && *token.cbegin() != '/' && *(token.cend() - 1) != '/') {
 					const auto x = ParseToken<GLint>(tokens[0]) - 1;
 					const auto z = ParseToken<GLint>(tokens[1]) - 1;
 					return {x, npos_index, z};
@@ -79,7 +102,7 @@ namespace {
 		}
 
 		std::ostringstream oss;
-		oss << "Unsupported format " << line;
+		oss << "Unsupported format " << token;
 		throw std::invalid_argument{oss.str()};
 	}
 
