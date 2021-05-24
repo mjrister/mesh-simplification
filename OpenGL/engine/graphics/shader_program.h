@@ -96,8 +96,8 @@ namespace gfx {
 
 		// Ideally, this would be an unordered_map, however, as of C++17 heterogeneous lookup is only supported for
 		// ordered containers. This is important because each uniform location query is performed using a string_view,
-		// but stored as as string. Without heterogeneous lookup each query would have to be converted to a string
-		// (and hence allocate unnecessary memory) which would be detrimental to performance.
+		// but stored as a string. Without heterogeneous lookup, each query would have to be converted to a string
+		// (and hence allocate unnecessary memory) which would degrade performance on the critical rendering path.
 		std::map<std::string, GLint, std::less<>> uniform_locations_;
 	};
 }
