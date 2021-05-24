@@ -9,6 +9,5 @@ namespace gfx {
 
 	namespace obj_loader {
 		Mesh LoadMesh(std::string_view filepath);
-		Mesh LoadMesh(std::istream& is);
 	}
 }

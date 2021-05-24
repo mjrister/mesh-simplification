@@ -93,7 +93,7 @@ namespace {
 			vn 8.0 8.1 8.2
 		)"};
 
-		const auto mesh = obj_loader::LoadMesh(ss);
+		const auto mesh = LoadMesh(ss);
 		constexpr glm::vec4 v0{0.f, 0.1f, 0.2f, 1.f}, v1{1.f, 1.1f, 1.2f, 1.f}, v2{2.f, 2.1f, 2.2f, 1.f};
 		constexpr glm::vec2 vt0{3.f, 3.1f}, vt1{4.f, 4.1f}, vt2{5.f, 5.1f};
 		constexpr glm::vec3 vn0{6.f, 6.1f, 6.2f}, vn1{7.f, 7.1f, 7.2f}, vn2{8.f, 8.1f, 8.2f};
@@ -126,7 +126,7 @@ namespace {
 			f 1/4/2 2/1/3 4/3/1
 		)"};
 
-		const auto mesh = obj_loader::LoadMesh(ss);
+		const auto mesh = LoadMesh(ss);
 		constexpr glm::vec4 v0{0.f, .1f, .2f, 1.f}, v1{1.f, 1.1f, 1.2f, 1.f}, v2{2.f, 2.1f, 2.2f, 1.f}, v3{3.f, 3.1f, 3.2f, 1.f};
 		constexpr glm::vec2 vt0{4.f, 4.1f}, vt1{5.f, 5.1f}, vt2{6.f, 6.1f}, vt3{7.f, 7.1f};
 		constexpr glm::vec3 vn0{8.f, 8.1f, 8.2f}, vn1{9.f, 9.1f, 9.2f}, vn2{10.f, 10.1f, 10.2f};

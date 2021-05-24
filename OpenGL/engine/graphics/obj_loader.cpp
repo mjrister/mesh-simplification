@@ -91,6 +91,50 @@ namespace {
 		oss << "Unsupported format " << line;
 		throw std::invalid_argument{oss.str()};
 	}
+
+	gfx::Mesh LoadMesh(std::istream& is) {
+		std::vector<glm::vec4> positions;
+		std::vector<glm::vec2> texture_coordinates;
+		std::vector<glm::vec3> normals;
+		std::vector<std::array<glm::ivec3, 3>> faces;
+
+		for (std::string line; std::getline(is, line);) {
+			if (const auto line_view = string::Trim(line); !line_view.empty() && !string::StartsWith(line_view, "#")) {
+				if (string::StartsWith(line_view, "v ")) {
+					positions.emplace_back(ParseLine<GLfloat, 3>(line), 1.0f);
+				} else if (string::StartsWith(line_view, "vt ")) {
+					texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
+				} else if (string::StartsWith(line_view, "vn ")) {
+					normals.push_back(ParseLine<GLfloat, 3>(line));
+				} else if (string::StartsWith(line_view, "f ")) {
+					faces.push_back(ParseFace(line));
+				}
+			}
+		}
+
+		if (faces.empty()) return gfx::Mesh{positions, texture_coordinates, normals};
+
+		std::vector<glm::vec2> ordered_texture_coordinates(texture_coordinates.empty() ? 0 : positions.size());
+		std::vector<glm::vec3> ordered_normals(normals.empty() ? 0 : positions.size());
+		std::vector<GLuint> indices;
+		indices.reserve(faces.size() * 3);
+
+		for (const auto& face : faces) {
+			for (const auto& index_group : face) {
+				const auto position_index = index_group[0];
+				indices.push_back(position_index);
+
+				if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index) {
+					ordered_texture_coordinates.at(position_index) = texture_coordinates.at(texture_coordinate_index);
+				}
+				if (const auto normal_index = index_group[2]; normal_index != npos_index) {
+					ordered_normals.at(position_index) = normals.at(normal_index);
+				}
+			}
+		}
+
+		return gfx::Mesh{positions, ordered_texture_coordinates, ordered_normals, indices};
+	}
 }
 
 gfx::Mesh gfx::obj_loader::LoadMesh(const std::string_view filepath) {
@@ -100,48 +144,4 @@ gfx::Mesh gfx::obj_loader::LoadMesh(const std::string_view filepath) {
 	std::ostringstream oss;
 	oss << "Unable to open " << filepath;
 	throw std::invalid_argument{oss.str()};
-}
-
-gfx::Mesh gfx::obj_loader::LoadMesh(std::istream& is) {
-	std::vector<glm::vec4> positions;
-	std::vector<glm::vec2> texture_coordinates;
-	std::vector<glm::vec3> normals;
-	std::vector<std::array<glm::ivec3, 3>> faces;
-
-	for (std::string line; std::getline(is, line);) {
-		if (const auto line_view = string::Trim(line); !line_view.empty() && !string::StartsWith(line_view, "#")) {
-			if (string::StartsWith(line_view, "v ")) {
-				positions.emplace_back(ParseLine<GLfloat, 3>(line), 1.0f);
-			} else if (string::StartsWith(line_view, "vt ")) {
-				texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
-			} else if (string::StartsWith(line_view, "vn ")) {
-				normals.push_back(ParseLine<GLfloat, 3>(line));
-			} else if (string::StartsWith(line_view, "f ")) {
-				faces.push_back(ParseFace(line));
-			}
-		}
-	}
-
-	if (faces.empty()) return Mesh{positions, texture_coordinates, normals};
-
-	std::vector<glm::vec2> ordered_texture_coordinates(texture_coordinates.empty() ? 0 : positions.size());
-	std::vector<glm::vec3> ordered_normals(normals.empty() ? 0 : positions.size());
-	std::vector<GLuint> indices;
-	indices.reserve(faces.size() * 3);
-
-	for (const auto& face : faces) {
-		for (const auto& index_group : face) {
-			const auto position_index = index_group[0];
-			indices.push_back(position_index);
-
-			if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index) {
-				ordered_texture_coordinates.at(position_index) = texture_coordinates.at(texture_coordinate_index);
-			}
-			if (const auto normal_index = index_group[2]; normal_index != npos_index) {
-				ordered_normals.at(position_index) = normals.at(normal_index);
-			}
-		}
-	}
-
-	return Mesh{positions, ordered_texture_coordinates, ordered_normals, indices};
 }
