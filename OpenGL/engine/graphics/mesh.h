@@ -23,7 +23,7 @@ namespace gfx {
 		 *		 If nonempty, \p texture_coordinates or \p normals must be the same size as \p positions so that data is
 		 *		 aligned when sent to the vertex shader. If \p indices if nonempty, it must describe a triangle mesh,
 		 *		 however, \p positions, \p texture_coordinates, and \p normals may be of any size. Consequentially, each
-		 *		 index assumes \p alignment between \p positions and \p texture_coordinates, \p normals.
+		 *		 index assumes alignment between \p positions and \p texture_coordinates, \p normals.
 		 */
 		explicit Mesh(
 			std::vector<glm::vec4> positions,
@@ -72,7 +72,7 @@ namespace gfx {
 
 		/**
 		 * \brief Rotates the mesh in local object space.
-		 * \param axis The axis to perform the rotation in.
+		 * \param axis The axis to rotate the mesh about.
 		 * \param angle The rotation angle specified in radians.
 		 */
 		void Rotate(const glm::vec3& axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
