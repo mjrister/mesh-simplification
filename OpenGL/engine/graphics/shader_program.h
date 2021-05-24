@@ -14,6 +14,12 @@ namespace gfx {
 		class Shader {
 
 		public:
+
+			/**
+			 * \brief Initializes a shader.
+			 * \param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)
+			 * \param shader_source The shader source code to be compiled.
+			 */
 			Shader(GLenum shader_type, const GLchar* shader_source);
 			~Shader() { glDeleteShader(id); }
 
@@ -27,6 +33,12 @@ namespace gfx {
 		};
 
 	public:
+
+		/**
+		 * \brief Initializes a shader program.
+		 * \param vertex_shader_filepath The file path to the vertex shader to be compiled.
+		 * \param fragment_shader_filepath The file path to the fragment shader to be compiled.
+		 */
 		ShaderProgram(std::string_view vertex_shader_filepath, std::string_view fragment_shader_filepath);
 		~ShaderProgram() { glDeleteProgram(id_); }
 
@@ -36,8 +48,15 @@ namespace gfx {
 		ShaderProgram(ShaderProgram&&) noexcept = delete;
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
+		/** \brief Enables this shader program to be used for rendering. */
 		void Enable() const noexcept { glUseProgram(id_); }
 
+		/**
+		 * \brief Sets a uniform variable in the shader program.
+		 * \tparam T The uniform variable type.
+		 * \param name The uniform variable name.
+		 * \param value The uniform variable value.
+		 */
 		template <typename T>
 		void SetUniform(const std::string_view name, const T& value) {
 			if constexpr (const auto location = GetUniformLocation(name); std::is_same<T, GLfloat>::value) {
@@ -54,6 +73,12 @@ namespace gfx {
 		}
 
 	private:
+
+		/**
+		 * \brief Gets the location for a uniform variable in the shader program.
+		 * \param name The uniform variable name.
+		 * \return An integer representing the uniform variable location. Returns -1 if the variable is not active.
+		 */
 		[[nodiscard]] GLint GetUniformLocation(const std::string_view name) {
 			if (const auto iterator = uniform_locations_.find(name); iterator == uniform_locations_.end()) {
 				const auto location = glGetUniformLocation(id_, name.data());
@@ -68,6 +93,11 @@ namespace gfx {
 
 		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
+
+		// Ideally, this would be an unordered_map, however, as of C++17 heterogeneous lookup is only supported for
+		// ordered containers. This is important because each uniform location query is performed using a string_view,
+		// but stored as as string. Without heterogeneous lookup each query would have to be converted to a string
+		// (and hence allocate unnecessary memory) which would be detrimental to performance.
 		std::map<std::string, GLint, std::less<>> uniform_locations_;
 	};
 }
