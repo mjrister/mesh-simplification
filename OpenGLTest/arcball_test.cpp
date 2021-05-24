@@ -1,10 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <cmath>
-#include <limits>
-
-#include <glm/gtc/epsilon.hpp>
-
 #include "engine/arcball.cpp"
 
 namespace {
