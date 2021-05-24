@@ -6,7 +6,7 @@
 
 namespace {
 
-	// Ensures that the provided positions, texture coordinates, normals and indices describe a triangle mesh
+	// Ensures that the provided positions, texture coordinates, normals and indices describe a triangle mesh.
 	void Validate(
 		const std::vector<glm::vec4>& positions,
 		const std::vector<glm::vec2>& texture_coordinates,
