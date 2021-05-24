@@ -15,10 +15,10 @@ namespace gfx {
 	public:
 		/**
 		 * \brief Initializes a triangle mesh.
-		 * \param positions The triangle mesh vertex positions.
-		 * \param texture_coordinates The triangle mesh texture coordinates.
-		 * \param normals The triangle mesh normals.
-		 * \param indices Indices describing each triangle face in the mesh.
+		 * \param positions The mesh vertex positions.
+		 * \param texture_coordinates The mesh texture coordinates.
+		 * \param normals The mesh normals.
+		 * \param indices Element indices such that each three consecutive integers defines a triangle face in the mesh.
 		 * \note If \p indices is empty, \p positions must describe a triangle mesh (i.e., be a nonzero multiple of 3).
 		 *		 If nonempty, \p texture_coordinates or \p normals must be the same size as \p positions so that data is
 		 *		 aligned when sent to the vertex shader. If \p indices if nonempty, it must describe a triangle mesh,
@@ -38,12 +38,22 @@ namespace gfx {
 		Mesh(Mesh&&) noexcept = delete;
 		Mesh& operator=(Mesh&&) noexcept = delete;
 
+		/** \brief Gets the mesh vertex positions. */
 		[[nodiscard]] const auto& Positions() const noexcept { return positions_; }
+
+		/** \brief Gets the mesh texture coordinates. */
 		[[nodiscard]] const auto& TextureCoordinates() const noexcept { return texture_coordinates_; }
+
+		/** \brief Gets the mesh normals. */
 		[[nodiscard]] const auto& Normals() const noexcept { return normals_; }
+
+		/** \brief Gets the mesh indices. */
 		[[nodiscard]] const auto& Indices() const noexcept { return indices_; }
+
+		/** \brief Gets the mesh model transform in local object space. */
 		[[nodiscard]] const auto& Model() const noexcept { return model_; }
 
+		/** \brief Renders the mesh to the current framebuffer. */
 		void Render() const noexcept {
 			glBindVertexArray(vertex_array_);
 			if (element_buffer_) {
@@ -54,8 +64,24 @@ namespace gfx {
 			glBindVertexArray(0);
 		}
 
+		/**
+		 * \brief Scales the mesh in local object space.
+		 * \param xyz The x,y,z directions to scale the mesh.
+		 */
 		void Scale(const glm::vec3& xyz) { model_ = glm::scale(model_, xyz); }
+
+		/**
+		 * \brief Rotates the mesh in local object space.
+		 * \param axis The axis to perform the rotation in.
+		 * \param angle The rotation angle specified in radians.
+		 */
 		void Rotate(const glm::vec3& axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
+
+
+		/**
+		 * \brief Translates the mesh in local object space.
+		 * \param xyz The x,y, z directions to translate the mesh.
+		 */
 		void Translate(const glm::vec3& xyz) { model_ = glm::translate(model_, xyz); }
 
 	private:
