@@ -6,7 +6,10 @@
 
 namespace {
 
-	// Ensures that the provided positions, texture coordinates, normals and indices describe a triangle mesh.
+	/**
+	 * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
+	 *        triangle mesh in addition to enforcing alignment between vertex attribute.
+	 */
 	void Validate(
 		const std::vector<glm::vec4>& positions,
 		const std::vector<glm::vec2>& texture_coordinates,
