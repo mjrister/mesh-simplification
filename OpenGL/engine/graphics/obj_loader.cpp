@@ -17,7 +17,7 @@
 #include "utils/string.h"
 
 namespace {
-	constexpr GLint npos_index{-1};
+	constexpr GLint npos_index = -1;
 
 	/**
 	 * \brief Parses a string token.
