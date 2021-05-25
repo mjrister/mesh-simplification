@@ -1,6 +1,6 @@
 #version 410 core
 
-// interpolated vertex data from the vertex shader
+// interpolated data from the vertex shader
 in Vertex {
 	vec4 position;
 	vec2 texture_coordinates;
