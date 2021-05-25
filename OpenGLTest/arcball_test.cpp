@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "engine/arcball.cpp"
+#include "engine/graphics/arcball.cpp"
 
 namespace {
 
