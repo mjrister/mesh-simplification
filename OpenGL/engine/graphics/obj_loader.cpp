@@ -44,7 +44,7 @@ namespace {
 	 * \tparam N The number of items to convert (does not include the first token identifying the line type).
 	 * \param line The line to parse.
 	 * \return A vector of size \p N containing each item in \p line converted to type \p T.
-	 * \throw std::invalid_argument if the line format is unsupported or string conversion fails.
+	 * \throw std::invalid_argument if the line format is unsupported.
 	 */
 	template <typename T, std::uint8_t N>
 	glm::vec<N, T> ParseLine(const std::string_view line) {
@@ -65,7 +65,7 @@ namespace {
 	 * \param token The token to parse. May optionally contain texture coordinate and normal indices.
 	 * \return A vector containing vertex position, texture coordinate, and normal indices. Unspecified texture
 	 *         coordinate and normal values are indicated with the sentinel value \p npos_index.
-	 * \throw std::invalid_argument if the index group format is unsupported or string conversion fails.
+	 * \throw std::invalid_argument if the index group format is unsupported.
 	 */
 	glm::ivec3 ParseIndexGroup(const std::string_view token) {
 		static constexpr auto delimiter = "/";
@@ -186,5 +186,5 @@ gfx::Mesh gfx::obj_loader::LoadMesh(const std::string_view filepath) {
 	}
 	std::ostringstream oss;
 	oss << "Unable to open " << filepath;
-	throw std::invalid_argument{oss.str()};
+	throw std::runtime_error{oss.str()};
 }

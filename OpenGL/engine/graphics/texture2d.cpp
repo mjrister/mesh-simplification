@@ -40,6 +40,6 @@ gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t te
 	} else {
 		std::ostringstream oss;
 		oss << "Failed to open " << filepath;
-		throw std::invalid_argument{oss.str()};
+		throw std::runtime_error{oss.str()};
 	}
 }
