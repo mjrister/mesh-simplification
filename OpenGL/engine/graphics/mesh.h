@@ -17,10 +17,10 @@ namespace gfx {
 		 * \param normals The mesh normals.
 		 * \param indices Element indices such that each three consecutive integers defines a triangle face in the mesh.
 		 * \note If \p indices is empty, \p positions must describe a triangle mesh (i.e., be a nonzero multiple of 3).
-		 *		 If nonempty, \p texture_coordinates and \p normals must be the same size as \p positions so that data
-		 *		 is aligned when sent to the vertex shader. If \p indices if nonempty, it must describe a triangle mesh,
-		 *		 however, \p positions, \p texture_coordinates, and \p normals may be of any size. Consequentially, each
-		 *		 index assumes alignment between \p positions and \p texture_coordinates, \p normals.
+		 *       If nonempty, \p texture_coordinates and \p normals must be the same size as \p positions so that data
+		 *       is aligned when sent to the vertex shader. If \p indices if nonempty, it must describe a triangle mesh,
+		 *       however, \p positions, \p texture_coordinates, and \p normals may be of any size. Consequentially, each
+		 *       index assumes alignment between \p positions and \p texture_coordinates, \p normals.
 		 */
 		explicit Mesh(
 			std::vector<glm::vec4> positions,

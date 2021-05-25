@@ -159,8 +159,8 @@ namespace {
 		// limitations of OpenGL not supporting multiple element buffers. On the other hand, if the number of unique
 		// texture coordinates or normals is greater than the number of vertex positions, some values may be overwritten
 		// which could lead to visible artifacts (particularly with respect to texture coordinates). There are multiple
-		// ways to mitigate this such as detecting when a previously element contains a different value than the one
-		// current being ordered and appending a new position, texture coordinate, and normal triple to each ordered
+		// ways to mitigate this such as detecting when a previously set element contains a different value than the one
+		// current being evaluated and appending a new position, texture coordinate, and normal triple to each ordered
 		// array, but for the purposes of this application, this implementation is sufficient and therefore faster.
 		for (const auto& face : faces) {
 			for (const auto& index_group : face) {
