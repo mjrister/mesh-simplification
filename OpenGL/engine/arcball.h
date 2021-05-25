@@ -17,7 +17,7 @@ namespace arcball {
 	 * \param window_dimensions The window width and height.
 	 * \return The axis (in view space) and angle to rotate the mesh if the angle between the arcball positions of
 	 *         \p cursor_position_start and \p cursor_position_end is nonzero, otherwise \c std::nullopt.
-	 * \see docs/arcball.pdf
+	 * \see docs/arcball.pdf for a more detailed description of the arcball interface.
 	 */
 	std::optional<const std::pair<const glm::vec3, const GLfloat>> GetRotation(
 		const glm::dvec2& cursor_position_start,
