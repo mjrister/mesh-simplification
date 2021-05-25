@@ -66,8 +66,9 @@ int main() {
 
 	try {
 		std::int32_t window_width = 1280, window_height = 960;
-		constexpr std::int32_t opengl_major_version = 4, opengl_minor_version = 1;
-		Window window{"OpenGL", window_width, window_height, opengl_major_version, opengl_minor_version};
+		const auto window_dimensions = std::make_pair(window_width, window_height);
+		const auto opengl_version = std::make_pair(4, 1);
+		Window window{"OpenGL", window_dimensions, opengl_version};
 
 		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bunny.obj");
 		mesh.Scale(glm::vec3{.25f});

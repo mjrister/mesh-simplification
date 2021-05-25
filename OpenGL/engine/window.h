@@ -10,12 +10,17 @@
 class Window {
 
 public:
+
+	/**
+	 * \brief Initializes a window.
+	 * \param title The window title.
+	 * \param window_dimensions The window width and height.
+	 * \param opengl_version The OpenGL major and minor version to use.
+	 */
 	Window(
 		std::string_view title,
-		std::int32_t width,
-		std::int32_t height,
-		std::int32_t opengl_major_version,
-		std::int32_t opengl_minor_version);
+		const std::pair<const std::int32_t, const std::int32_t>& window_dimensions,
+		const std::pair<const std::int32_t, const std::int32_t>& opengl_version);
 	~Window();
 
 	Window(const Window&) = delete;

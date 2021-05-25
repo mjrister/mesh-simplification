@@ -50,12 +50,17 @@ namespace {
 			<< message << std::endl;
 	}
 
-	void InitializeGlfw(const std::int32_t opengl_major_version, const std::int32_t opengl_minor_version) {
+	/**
+	 * \brief Initializes GLFW.
+	 * \param opengl_version The OpenGL major and minor version to use.
+	 */
+	void InitializeGlfw(const std::pair<const std::int32_t, const std::int32_t>& opengl_version) {
 
 		if (!glfwInit()) throw std::runtime_error{"GLFW initialization failed"};
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, opengl_major_version);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, opengl_minor_version);
+		const auto [major_version, minor_version] = opengl_version;
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major_version);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor_version);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		glfwSwapInterval(1);
@@ -68,13 +73,18 @@ namespace {
 #endif
 	}
 
-	void InitializeGl3w(const std::int32_t opengl_major_version, const std::int32_t opengl_minor_version) {
+	/**
+	 * \brief Initializes GL3W.
+	 * \param opengl_version The OpenGL major and minor version to use.
+	 */
+	void InitializeGl3w(const std::pair<const std::int32_t, const std::int32_t>& opengl_version) {
 
 		if (gl3wInit()) throw std::runtime_error{"OpenGL initialization failed"};
 
-		if (!gl3wIsSupported(opengl_major_version, opengl_minor_version)) {
+		const auto [major_version, minor_version] = opengl_version;
+		if (!gl3wIsSupported(major_version, minor_version)) {
 			std::ostringstream oss;
-			oss << "OpenGL " << opengl_major_version << "." << opengl_minor_version << " not supported";
+			oss << "OpenGL " << major_version << "." << minor_version << " not supported";
 			throw std::runtime_error{oss.str()};
 		}
 
@@ -90,13 +100,12 @@ namespace {
 
 Window::Window(
 	const std::string_view title,
-	const std::int32_t width,
-	const std::int32_t height,
-	const std::int32_t opengl_major_version,
-	const std::int32_t opengl_minor_version) {
+	const std::pair<const std::int32_t, const std::int32_t>& window_dimensions,
+	const std::pair<const std::int32_t, const std::int32_t>& opengl_version) {
 
-	InitializeGlfw(opengl_major_version, opengl_minor_version);
+	InitializeGlfw(opengl_version);
 
+	const auto [width, height] = window_dimensions;
 	window_ = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 	if (!window_) throw std::runtime_error{"Window creation failed"};
 
@@ -117,9 +126,10 @@ Window::Window(
 			}
 		});
 
-	InitializeGl3w(opengl_major_version, opengl_minor_version);
+	InitializeGl3w(opengl_version);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_MULTISAMPLE);
 }
 
 Window::~Window() {
