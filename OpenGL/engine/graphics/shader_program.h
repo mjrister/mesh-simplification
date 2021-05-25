@@ -36,8 +36,8 @@ namespace gfx {
 
 		/**
 		 * \brief Initializes a shader program.
-		 * \param vertex_shader_filepath The file path to the vertex shader to be compiled.
-		 * \param fragment_shader_filepath The file path to the fragment shader to be compiled.
+		 * \param vertex_shader_filepath The filepath to the vertex shader to be compiled.
+		 * \param fragment_shader_filepath The filepath to the fragment shader to be compiled.
 		 */
 		ShaderProgram(std::string_view vertex_shader_filepath, std::string_view fragment_shader_filepath);
 		~ShaderProgram() { glDeleteProgram(id_); }
@@ -48,7 +48,7 @@ namespace gfx {
 		ShaderProgram(ShaderProgram&&) noexcept = delete;
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
-		/** \brief Enables this shader program to be used for rendering. */
+		/** \brief Enables this shader program for immediate use in rendering. */
 		void Enable() const noexcept { glUseProgram(id_); }
 
 		/**
