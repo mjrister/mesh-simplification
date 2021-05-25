@@ -9,6 +9,7 @@ namespace {
 	/**
 	 * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
 	 *        triangle mesh in addition to enforcing alignment between vertex attribute.
+	 * \throw std::invalid_argument Indicates the provided arguments do not define a valid triangle mesh.
 	 */
 	void Validate(
 		const std::vector<glm::vec4>& positions,

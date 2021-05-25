@@ -14,8 +14,8 @@ namespace gfx {
 		 * \brief Initializes a 2D texture.
 		 * \param filepath The filepath of the texture to load.
 		 * \param texture_unit_index The index to bind the texture to.
-		 * \throw std::out_of_range if the texture unit index exceeds the maximum number of allowed texture units.
-		 * \throw std::runtime_error if the file cannot be opened.
+		 * \throw std::out_of_range Indicates \p index exceeds the maximum number of allowed texture units.
+		 * \throw std::runtime_error Indicates the file cannot be opened.
 		 */
 		explicit Texture2d(std::string_view filepath, std::uint8_t texture_unit_index = 0);
 		~Texture2d() { glDeleteTextures(1, &id_); }

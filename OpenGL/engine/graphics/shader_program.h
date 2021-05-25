@@ -19,7 +19,7 @@ namespace gfx {
 			 * \brief Initializes a shader.
 			 * \param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)
 			 * \param shader_source The shader source code to be compiled.
-			 * \throw std::runtime_error if shader does not compile successfully.
+			 * \throw std::runtime_error Indicates shader creation was unsuccessful.
 			 */
 			Shader(GLenum shader_type, const GLchar* shader_source);
 			~Shader() { glDeleteShader(id); }
@@ -39,7 +39,7 @@ namespace gfx {
 		 * \brief Initializes a shader program.
 		 * \param vertex_shader_filepath The filepath to the vertex shader to be compiled.
 		 * \param fragment_shader_filepath The filepath to the fragment shader to be compiled.
-		 * \throw std::runtime_error if the shader program does not link successfully.
+		 * \throw std::runtime_error Indicates the shader program creation was unsuccessful.
 		 */
 		ShaderProgram(std::string_view vertex_shader_filepath, std::string_view fragment_shader_filepath);
 		~ShaderProgram() { glDeleteProgram(id_); }

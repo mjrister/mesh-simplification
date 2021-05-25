@@ -15,7 +15,8 @@ namespace gfx {
 		 * \param positions The mesh vertex positions. Must be nonempty.
 		 * \param texture_coordinates The mesh texture coordinates.
 		 * \param normals The mesh normals.
-		 * \param indices Element indices such that each three consecutive integers defines a triangle face in the mesh.
+		 * \param indices Element indices such that each three consecutive integers define a triangle face in the mesh.
+	     * \throw std::invalid_argument Indicates the provided arguments do not define a valid triangle mesh.
 		 * \note If \p indices is empty, \p positions must describe a triangle mesh (i.e., be a nonzero multiple of 3).
 		 *       If nonempty, \p texture_coordinates and \p normals must be the same size as \p positions so that data
 		 *       is aligned when sent to the vertex shader. If \p indices if nonempty, it must describe a triangle mesh,
@@ -77,7 +78,7 @@ namespace gfx {
 
 		/**
 		 * \brief Translates the mesh in local object space.
-		 * \param xyz The x,y, z directions to translate the mesh.
+		 * \param xyz The x,y,z directions to translate the mesh.
 		 */
 		void Translate(const glm::vec3& xyz) { model_ = glm::translate(model_, xyz); }
 
