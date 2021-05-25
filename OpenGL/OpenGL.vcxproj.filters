@@ -71,25 +71,22 @@
     <Filter Include="lib">
       <UniqueIdentifier>{e17358ae-0753-43d3-946f-fd53390ebb40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources">
-      <UniqueIdentifier>{c0c42f84-5304-4eaa-b6db-1fc9a9b75653}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\models">
-      <UniqueIdentifier>{72540917-fab2-49b9-bf65-600687120d37}</UniqueIdentifier>
-    </Filter>
     <Filter Include="engine">
       <UniqueIdentifier>{13afd911-1223-4536-a5e8-fd3372ee5177}</UniqueIdentifier>
     </Filter>
     <Filter Include="engine\graphics">
       <UniqueIdentifier>{e2a2d935-f222-40b4-b7c5-da80e71d06b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="models">
+      <UniqueIdentifier>{72540917-fab2-49b9-bf65-600687120d37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Object Include="models\monkey.obj">
-      <Filter>resources\models</Filter>
+      <Filter>models</Filter>
     </Object>
     <Object Include="models\bunny.obj">
-      <Filter>resources\models</Filter>
+      <Filter>models</Filter>
     </Object>
   </ItemGroup>
 </Project>
