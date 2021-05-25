@@ -10,7 +10,6 @@
 class Window {
 
 public:
-
 	/**
 	 * \brief Initializes a window.
 	 * \param title The window title.
@@ -30,7 +29,7 @@ public:
 	Window& operator=(Window&&) noexcept = delete;
 
 	/**
-	 * \brief Gets the window dimensions.
+	 * \brief Gets the window size.
 	 * \return A pair representing the window width and height.
 	 */
 	[[nodiscard]] std::pair<const std::int32_t, const std::int32_t> Size() const noexcept {
