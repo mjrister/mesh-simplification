@@ -95,7 +95,7 @@ int main() {
 		shader_program.SetUniform("material.ambient", material.Ambient());
 		shader_program.SetUniform("material.diffuse", material.Diffuse());
 		shader_program.SetUniform("material.specular", material.Specular());
-		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
+		shader_program.SetUniform("material.shininess", material.Shininess() * 256.f);
 
 		double previous_time = glfwGetTime();
 		while (!window.Closed()) {

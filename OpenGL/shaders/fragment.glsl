@@ -25,7 +25,7 @@ uniform struct Material {
 
 out vec4 fragment_color;
 
-// computes the fragment color using the Phong reflection model
+// computes the fragment color using the Blinn-Phong reflection model
 void main() {
 
 	// start initial light contribution off with ambient intensity
@@ -44,9 +44,9 @@ void main() {
 		vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
 		// calculate specular intensity
-		vec3 reflect_direction = normalize(reflect(-light_direction, normal));
 		vec3 view_direction = normalize(-vertex.position.xyz);
-		float specular_intensity = pow(max(dot(reflect_direction, view_direction), 0.f), material.shininess);
+		vec3 halfway_direction = normalize(light_direction + view_direction);
+		float specular_intensity = pow(max(dot(halfway_direction, normal), 0.f), material.shininess);
 		vec3 specular_color = specular_intensity * material.specular;
 
 		// account for light attenuation
