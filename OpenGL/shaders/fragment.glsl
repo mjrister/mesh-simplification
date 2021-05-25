@@ -1,11 +1,13 @@
 #version 410 core
 
+// interpolated vertex data from the vertex shader
 in Vertex {
 	vec4 position;
 	vec2 texture_coordinates;
 	vec3 normal;
 } vertex;
 
+// a light source whose rays shine in all directions
 uniform struct PointLight {
 	vec4 position;
 	vec3 color;
@@ -13,6 +15,7 @@ uniform struct PointLight {
 	vec3 attenuation;
 } point_light;
 
+// light reflectance properties for a material
 uniform struct Material {
 	vec3 ambient;
 	vec3 diffuse;
@@ -22,24 +25,31 @@ uniform struct Material {
 
 out vec4 fragment_color;
 
+// computes the fragment color using the Phong reflection model
 void main() {
+
+	// start initial light contribution off with ambient intensity
 	vec3 light_color = material.ambient;
 
 	vec3 light_direction = (point_light.position - vertex.position).xyz;
 	float light_distance = length(light_direction);
 	light_direction = normalize(light_direction);
 
+	// calculate diffuse intensity
 	vec3 normal = normalize(vertex.normal);
 	float diffuse_intensity = max(dot(light_direction, normal), 0.f);
 
+	// avoid computing specular intensity if angle between light source and vertex position is greater than 90 degrees
 	if (diffuse_intensity > 0.f) {
 		vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
+		// calculate specular intensity
 		vec3 reflect_direction = normalize(reflect(-light_direction, normal));
 		vec3 view_direction = normalize(-vertex.position.xyz);
 		float specular_intensity = pow(max(dot(reflect_direction, view_direction), 0.f), material.shininess);
 		vec3 specular_color = specular_intensity * material.specular;
 
+		// account for light attenuation
 		float attenuation = dot(point_light.attenuation, vec3(1.f, light_distance, light_distance * light_distance));
 		light_color += point_light.color * point_light.intensity * (diffuse_color + specular_color) / attenuation;
 	}
