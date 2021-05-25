@@ -12,14 +12,14 @@ namespace {
 	/**
 	 * \brief Gets the cursor position in normalized device coordinates (e.g., \f$(x,y) \in [-1, 1]\f$).
 	 * \param cursor_position The cursor position in the window (e.g., \f$(x,y) \in [0, 1]\f$).
-	 * \param window_dimensions The window width and height.
+	 * \param window_size The window width and height.
 	 * \return The cursor position in normalized device coordinates.
 	 */
 	constexpr glm::vec2 GetNormalizedDeviceCoordinates(
-		const glm::dvec2& cursor_position, const std::pair<const std::int32_t, const std::int32_t>& window_dimensions) {
+		const glm::dvec2& cursor_position, const std::pair<const std::int32_t, const std::int32_t>& window_size) {
 
 		// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
-		const auto [width, height] = window_dimensions;
+		const auto [width, height] = window_size;
 		constexpr auto min = -1.f, max = 1.f;
 		const auto x_ndc = std::clamp(static_cast<GLfloat>(cursor_position.x * 2.0 / width - 1.0), min, max);
 		const auto y_ndc = std::clamp(static_cast<GLfloat>(cursor_position.y * 2.0 / height - 1.0), min, max);
@@ -50,10 +50,10 @@ namespace {
 std::optional<const std::pair<const glm::vec3, const GLfloat>> arcball::GetRotation(
 	const glm::dvec2& cursor_position_start,
 	const glm::dvec2& cursor_position_end,
-	const std::pair<const std::int32_t, const std::int32_t>& window_dimensions) {
+	const std::pair<const std::int32_t, const std::int32_t>& window_size) {
 
-	const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
-	const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
+	const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_size);
+	const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_size);
 
 	const auto arcball_position_start = GetArcballPosition(cursor_position_start_ndc);
 	const auto arcball_position_end = GetArcballPosition(cursor_position_end_ndc);
