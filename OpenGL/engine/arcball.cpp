@@ -8,15 +8,28 @@
 #include "window.h"
 
 namespace {
-	constexpr glm::vec2 GetNormalizedDeviceCoordinates(
-		const glm::dvec2& cursor_position, const std::int32_t window_width, const std::int32_t window_height) {
 
-		const auto x_ndc = static_cast<GLfloat>(cursor_position.x * 2.0 / window_width - 1.0);
-		const auto y_ndc = static_cast<GLfloat>(cursor_position.y * 2.0 / window_height - 1.0);
+	/**
+	 * \brief Gets the cursor position in normalized device coordinates (e.g., \f$(x,y) \in [-1, 1]\f$).
+	 * \param cursor_position The cursor position in the window (e.g., \f$(x,y) \in [0, 1]\f$).
+	 * \param window_dimensions The window width and height.
+	 * \return The cursor position in normalized device coordinates.
+	 */
+	constexpr glm::vec2 GetNormalizedDeviceCoordinates(
+		const glm::dvec2& cursor_position, const std::pair<const std::int32_t, const std::int32_t>& window_dimensions) {
+
+		const auto [width, height] = window_dimensions;
+		const auto x_ndc = static_cast<GLfloat>(cursor_position.x * 2.0 / width - 1.0);
+		const auto y_ndc = static_cast<GLfloat>(cursor_position.y * 2.0 / height - 1.0);
 
 		return {std::clamp(x_ndc, -1.f, 1.f), std::clamp(-y_ndc, -1.f, 1.f)};
 	}
 
+	/**
+	 * \brief Gets the position of the cursor on the arcball.
+	 * \param cursor_position_ndc The cursor position in normalized device coordinates.
+	 * \return The cursor position on the arcball.
+	 */
 	glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
 		const auto x = cursor_position_ndc.x;
 		const auto y = cursor_position_ndc.y;
@@ -30,11 +43,12 @@ namespace {
 }
 
 std::optional<const std::pair<const glm::vec3, const GLfloat>> arcball::GetRotation(
-	const Window& window, const glm::dvec2& cursor_position_start, const glm::dvec2& cursor_position_end) {
+	const glm::dvec2& cursor_position_start,
+	const glm::dvec2& cursor_position_end,
+	const std::pair<const std::int32_t, const std::int32_t>& window_dimensions) {
 
-	const auto [width, height] = window.Size();
-	const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, width, height);
-	const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, width, height);
+	const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
+	const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
 
 	const auto arcball_position_start = GetArcballPosition(cursor_position_start_ndc);
 	const auto arcball_position_end = GetArcballPosition(cursor_position_end_ndc);
