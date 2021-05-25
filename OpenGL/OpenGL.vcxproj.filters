@@ -17,8 +17,8 @@
     <ClCompile Include="engine\window.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\graphics\arcball.cpp">
-      <Filter>engine\graphics</Filter>
+    <ClCompile Include="engine\arcball.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -46,10 +46,10 @@
     <ClInclude Include="engine\window.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\material.h">
-      <Filter>engine\graphics</Filter>
+    <ClInclude Include="engine\arcball.h">
+      <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\arcball.h">
+    <ClInclude Include="engine\graphics\material.h">
       <Filter>engine\graphics</Filter>
     </ClInclude>
   </ItemGroup>

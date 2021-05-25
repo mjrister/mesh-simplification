@@ -209,7 +209,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\graphics\arcball.cpp" />
+    <ClCompile Include="engine\arcball.cpp" />
     <ClCompile Include="engine\graphics\mesh.cpp" />
     <ClCompile Include="engine\graphics\obj_loader.cpp" />
     <ClCompile Include="engine\graphics\shader_program.cpp" />
@@ -218,7 +218,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\graphics\arcball.h" />
+    <ClInclude Include="engine\arcball.h" />
     <ClInclude Include="engine\graphics\texture2d.h" />
     <ClInclude Include="lib\stb_image.h" />
     <ClInclude Include="engine\graphics\material.h" />

@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-#include "engine/window.h"
+#include "window.h"
 
 namespace {
 	constexpr glm::vec2 GetNormalizedDeviceCoordinates(
@@ -29,7 +29,7 @@ namespace {
 	}
 }
 
-std::optional<const std::pair<const glm::vec3, const GLfloat>> gfx::arcball::GetRotation(
+std::optional<const std::pair<const glm::vec3, const GLfloat>> arcball::GetRotation(
 	const Window& window, const glm::dvec2& cursor_position, const glm::dvec2& prev_cursor_position) {
 
 	const auto [width, height] = window.Size();
