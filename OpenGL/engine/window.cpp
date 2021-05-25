@@ -92,12 +92,12 @@ namespace {
 
 Window::Window(
 	const std::string_view title,
-	const std::pair<const std::int32_t, const std::int32_t>& window_dimensions,
+	const std::pair<const std::int32_t, const std::int32_t>& window_size,
 	const std::pair<const std::int32_t, const std::int32_t>& opengl_version) {
 
 	InitializeGlfw(opengl_version);
 
-	const auto [width, height] = window_dimensions;
+	const auto [width, height] = window_size;
 	window_ = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 	if (!window_) throw std::runtime_error{"Window creation failed"};
 
