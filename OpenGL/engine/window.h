@@ -24,7 +24,11 @@ public:
 	Window(Window&&) noexcept = delete;
 	Window& operator=(Window&&) noexcept = delete;
 
-	[[nodiscard]] std::pair<std::int32_t, std::int32_t> Size() const noexcept {
+	/**
+	 * \brief Gets the window dimensions.
+	 * \return A pair representing the window width and height.
+	 */
+	[[nodiscard]] std::pair<const std::int32_t, const std::int32_t> Size() const noexcept {
 		std::int32_t width, height;
 		glfwGetWindowSize(window_, &width, &height);
 		return {width, height};
@@ -66,6 +70,7 @@ public:
 		return {x, y};
 	}
 
+	/** \brief Updates the window for the next iteration of main render loop. */
 	void Update() const noexcept {
 		glfwSwapBuffers(window_);
 		glfwPollEvents();
