@@ -9,7 +9,7 @@ namespace file {
 
 	/**
 	 * \brief Retrieves the contents of a file.
-	 * \param filepath The filepath to load.
+	 * \param filepath The filepath to load contents from.
 	 * \return A string containing the file contents.
 	 * \throw std::runtime_error Indicates there was an error opening the file.
 	 */
