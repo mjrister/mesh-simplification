@@ -11,8 +11,8 @@
     <ClCompile Include="engine\graphics\mesh_test.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="arcball_test.cpp">
-      <Filter>engine\graphics</Filter>
+    <ClCompile Include="engine\arcball_test.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
