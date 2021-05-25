@@ -11,5 +11,5 @@ class Window;
 namespace arcball {
 
 	std::optional<const std::pair<const glm::vec3, const GLfloat>> GetRotation(
-		const Window& window, const glm::dvec2& cursor_position, const glm::dvec2& prev_cursor_position);
+		const Window& window, const glm::dvec2& cursor_position_start, const glm::dvec2& cursor_position_end);
 }

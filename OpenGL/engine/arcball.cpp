@@ -30,18 +30,18 @@ namespace {
 }
 
 std::optional<const std::pair<const glm::vec3, const GLfloat>> arcball::GetRotation(
-	const Window& window, const glm::dvec2& cursor_position, const glm::dvec2& prev_cursor_position) {
+	const Window& window, const glm::dvec2& cursor_position_start, const glm::dvec2& cursor_position_end) {
 
 	const auto [width, height] = window.Size();
-	const auto cursor_position_ndc = GetNormalizedDeviceCoordinates(cursor_position, width, height);
-	const auto prev_cursor_position_ndc = GetNormalizedDeviceCoordinates(prev_cursor_position, width, height);
+	const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, width, height);
+	const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, width, height);
 
-	const auto arcball_position = GetArcballPosition(cursor_position_ndc);
-	const auto prev_arcball_position = GetArcballPosition(prev_cursor_position_ndc);
-	const auto angle = std::acos(std::min<>(1.f, glm::dot(prev_arcball_position, arcball_position)));
+	const auto arcball_position_start = GetArcballPosition(cursor_position_start_ndc);
+	const auto arcball_position_end = GetArcballPosition(cursor_position_end_ndc);
+	const auto angle = std::acos(std::min<>(1.f, glm::dot(arcball_position_start, arcball_position_end)));
 
 	if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
-		const auto axis = glm::cross(prev_arcball_position, arcball_position);
+		const auto axis = glm::cross(arcball_position_start, arcball_position_end);
 		return std::make_pair(axis, angle);
 	}
 

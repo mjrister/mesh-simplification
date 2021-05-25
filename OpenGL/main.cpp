@@ -49,7 +49,7 @@ namespace {
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
 			if (prev_cursor_position) {
-				if (const auto axis_and_angle = arcball::GetRotation(window, cursor_position, *prev_cursor_position)) {
+				if (const auto axis_and_angle = arcball::GetRotation(window, *prev_cursor_position, cursor_position)) {
 					const auto& [view_rotation_axis, angle] = *axis_and_angle;
 					const auto model_rotation_axis = glm::mat3{glm::inverse(view_model_transform)} * view_rotation_axis;
 					mesh.Rotate(glm::normalize(model_rotation_axis), angle);
