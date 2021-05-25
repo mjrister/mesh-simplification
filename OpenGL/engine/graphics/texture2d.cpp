@@ -7,6 +7,8 @@
 #include "stb_image.h"
 
 namespace {
+
+	/** \brief Gets the maximum number of texture units allowed by the host GPU. */
 	GLint GetMaxTextureImageUnits() noexcept {
 		static GLint max_texture_image_units = 0;
 		if (!max_texture_image_units) {

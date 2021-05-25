@@ -9,6 +9,12 @@ namespace gfx {
 	class Texture2d {
 
 	public:
+
+		/**
+		 * \brief Initializes a 2D texture.
+		 * \param filepath The filepath to texture to load.
+		 * \param texture_unit_index The index to bind the texture to.
+		 */
 		explicit Texture2d(std::string_view filepath, std::uint8_t texture_unit_index = 0);
 		~Texture2d() { glDeleteTextures(1, &id_); }
 
@@ -18,6 +24,7 @@ namespace gfx {
 		Texture2d(Texture2d&&) noexcept = delete;
 		Texture2d& operator=(Texture2d&&) noexcept = delete;
 
+		/** \brief Binds this texture for immediate use in rendering. */
 		void Bind() const noexcept {
 			glActiveTexture(GL_TEXTURE0 + texture_unit_index_);
 			glBindTexture(GL_TEXTURE_2D, id_);
