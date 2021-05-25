@@ -9,8 +9,10 @@
 
 namespace gfx {
 
+	/** \brief An abstraction for a program that will execute one or more OpenGL shaders on the host GPU. */
 	class ShaderProgram {
 
+		/** \brief Represents a shader in the OpenGL graphics pipeline. */
 		class Shader {
 
 		public:

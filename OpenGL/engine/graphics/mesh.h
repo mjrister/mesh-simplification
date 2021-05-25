@@ -7,6 +7,7 @@
 
 namespace gfx {
 
+	/** \brief A renderable triangle mesh. */
 	class Mesh {
 
 	public:

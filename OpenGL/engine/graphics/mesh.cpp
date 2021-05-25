@@ -9,7 +9,6 @@ namespace {
 	/**
 	 * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
 	 *        triangle mesh in addition to enforcing alignment between vertex attribute.
-	 * \throw std::invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
 	 */
 	void Validate(
 		const std::vector<glm::vec4>& positions,
@@ -44,11 +43,9 @@ gfx::Mesh::Mesh(
 
 	Validate(positions_, texture_coordinates_, normals_, indices_);
 
-	// generate the vertex array
 	glGenVertexArrays(1, &vertex_array_);
 	glBindVertexArray(vertex_array_);
 
-	// generate the vertex buffer
 	glGenBuffers(1, &vertex_buffer_);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
 

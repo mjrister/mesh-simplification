@@ -4,9 +4,17 @@
 
 namespace gfx {
 
+	/** \brief Contains material properties for interacting with light sources. */
 	class Material {
 
 	public:
+		/**
+		 * \brief Initializes a material.
+		 * \param ambient The ambient light reflected.
+		 * \param diffuse The diffuse light reflected.
+		 * \param specular The specular light reflected.
+		 * \param shininess Controls the contribution of specular light to the material.
+		 */
 		constexpr Material(
 			const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const GLfloat shininess)
 			: ambient_{ambient},

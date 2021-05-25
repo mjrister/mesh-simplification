@@ -6,6 +6,7 @@
 
 namespace gfx {
 
+	/** \brief A abstraction for a 2D texture in OpenGL. */
 	class Texture2d {
 
 	public:

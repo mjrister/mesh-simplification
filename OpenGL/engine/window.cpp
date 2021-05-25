@@ -50,10 +50,6 @@ namespace {
 			<< message << std::endl;
 	}
 
-	/**
-	 * \brief Initializes GLFW.
-	 * \param opengl_version The OpenGL major and minor version to use.
-	 */
 	void InitializeGlfw(const std::pair<const std::int32_t, const std::int32_t>& opengl_version) {
 
 		if (!glfwInit()) throw std::runtime_error{"GLFW initialization failed"};
@@ -73,10 +69,6 @@ namespace {
 #endif
 	}
 
-	/**
-	 * \brief Initializes GL3W.
-	 * \param opengl_version The OpenGL major and minor version to use.
-	 */
 	void InitializeGl3w(const std::pair<const std::int32_t, const std::int32_t>& opengl_version) {
 
 		if (gl3wInit()) throw std::runtime_error{"OpenGL initialization failed"};

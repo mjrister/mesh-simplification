@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
+/** \brief An abstraction for a GLFW window. */
 class Window {
 
 public:
@@ -14,7 +15,7 @@ public:
 	 * \brief Initializes a window.
 	 * \param title The window title.
 	 * \param window_dimensions The window width and height.
-	 * \param opengl_version The OpenGL major and minor version to use.
+	 * \param opengl_version The OpenGL major and minor version.
 	 */
 	Window(
 		std::string_view title,
