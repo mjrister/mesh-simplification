@@ -39,7 +39,7 @@ void main() {
 	vec3 normal = normalize(vertex.normal);
 	float diffuse_intensity = max(dot(light_direction, normal), 0.f);
 
-	// avoid computing specular intensity if angle between light source and vertex position is greater than 90 degrees
+	// avoid calculating specular intensity if angle between light source and vertex position is greater than 90 degrees
 	if (diffuse_intensity > 0.f) {
 		vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
