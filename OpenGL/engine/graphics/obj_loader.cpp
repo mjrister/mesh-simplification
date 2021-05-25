@@ -17,6 +17,8 @@
 #include "utils/string.h"
 
 namespace {
+
+	// sentinel value indicating an unspecified face element index position
 	constexpr GLint npos_index = -1;
 
 	/**
