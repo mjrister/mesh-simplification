@@ -12,7 +12,7 @@ namespace gfx {
 
 		/**
 		 * \brief Initializes a 2D texture.
-		 * \param filepath The filepath to texture to load.
+		 * \param filepath The filepath of the texture to load.
 		 * \param texture_unit_index The index to bind the texture to.
 		 * \throw std::out_of_range if the texture unit index exceeds the maximum number of allowed texture units.
 		 * \throw std::runtime_error if the file cannot be opened.
