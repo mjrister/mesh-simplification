@@ -71,7 +71,7 @@ int main() {
 		constexpr auto opengl_version = std::make_pair(4, 1);
 		Window window{"OpenGL", window_dimensions, opengl_version};
 
-		auto mesh = gfx::obj_loader::LoadMesh("resources/models/bunny.obj");
+		auto mesh = gfx::obj_loader::LoadMesh("models/bunny.obj");
 		mesh.Scale(glm::vec3{.25f});
 		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
 
