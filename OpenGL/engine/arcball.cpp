@@ -63,7 +63,7 @@ std::optional<const std::pair<const glm::vec3, const GLfloat>> arcball::GetRotat
 
 	if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
 		const auto axis = glm::cross(arcball_position_start, arcball_position_end);
-		return std::make_pair(glm::normalize(axis), angle);
+		return std::make_pair(axis, angle);
 	}
 
 	return std::nullopt;
