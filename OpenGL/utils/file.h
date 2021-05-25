@@ -7,6 +7,12 @@
 
 namespace file {
 
+	/**
+	 * \brief Retrieves the contents of a file.
+	 * \param filepath The filepath to load.
+	 * \return A string containing the file contents.
+	 * \throw std::runtime_error if there was an error opening the file.
+	 */
 	static std::string Read(const std::string_view filepath) {
 
 		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
@@ -20,6 +26,6 @@ namespace file {
 
 		std::ostringstream oss;
 		oss << "Unable to open " << filepath;
-		throw std::invalid_argument{oss.str()};
+		throw std::runtime_error{oss.str()};
 	}
 }
