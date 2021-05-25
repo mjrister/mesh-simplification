@@ -49,8 +49,7 @@ namespace {
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
 			if (prev_cursor_position) {
-				const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.Size());
-				if (axis_and_angle) {
+				if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.Size())) {
 					const auto& [view_rotation_axis, angle] = *axis_and_angle;
 					const auto model_rotation_axis = glm::mat3{glm::inverse(view_model_transform)} * view_rotation_axis;
 					mesh.Rotate(glm::normalize(model_rotation_axis), angle);
@@ -97,9 +96,7 @@ int main() {
 		shader_program.SetUniform("material.specular", material.Specular());
 		shader_program.SetUniform("material.shininess", material.Shininess() * 256.f);
 
-		double previous_time = glfwGetTime();
-		while (!window.Closed()) {
-
+		for (double previous_time = glfwGetTime(); !window.Closed();) {
 			const double current_time = glfwGetTime();
 			const auto delta_time = static_cast<GLfloat>(current_time - previous_time);
 			previous_time = current_time;
