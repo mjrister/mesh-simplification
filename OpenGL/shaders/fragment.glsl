@@ -9,10 +9,10 @@ in Vertex {
 
 // a light source whose rays shine in all directions
 uniform struct PointLight {
-	vec4 position;
+	vec4 position; // assumed to be in camera space
 	vec3 color;
 	float intensity;
-	vec3 attenuation;
+	vec3 attenuation; // (constant, linear, exponential) attenuation coefficients
 } point_light;
 
 // light reflectance properties for a material
