@@ -1,8 +1,8 @@
-#include <gtest/gtest.h>
+#include "graphics/arcball.cpp"
 
 #include <utility>
 
-#include "graphics/arcball.cpp"
+#include <gtest/gtest.h>
 
 namespace {
 
