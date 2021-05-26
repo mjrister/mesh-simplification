@@ -14,6 +14,13 @@ namespace geometry {
 		[[nodiscard]] const glm::vec3& Position() const { return position_; }
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
+		friend bool operator==(const Vertex& lhs, const Vertex& rhs) {
+			return lhs.id_ == rhs.id_
+				&& lhs.position_ == rhs.position_
+				&& lhs.normal_ == rhs.normal_;
+		}
+
+		friend bool operator!=(const Vertex& lhs, const Vertex& rhs) { return !(lhs == rhs); }
 	private:
 		std::uint32_t id_;
 		glm::vec3 position_, normal_;
