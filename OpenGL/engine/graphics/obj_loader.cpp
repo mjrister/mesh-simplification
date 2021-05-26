@@ -24,7 +24,7 @@ namespace {
 	/**
 	 * \brief Parses a string token.
 	 * \tparam T The type to convert to.
-	 * \param token The string to parse.
+	 * \param token The token to parse.
 	 * \return The converted value of \p token to type \p T.
 	 * \throw std::invalid_argument Indicates the string conversion failed.
 	 */
@@ -110,7 +110,7 @@ namespace {
 	/**
 	 * \brief Parses a line representing a triangular face element.
 	 * \param line The line to parse.
-	 * \return An array of size three containing the parsed index groups.
+	 * \return An array containing the parsed index groups for the face.
 	 * \throw std::invalid_argument Indicates the line format is unsupported.
 	 */
 	std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
