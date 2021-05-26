@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <ostream>
 
 #include <glm/vec3.hpp>
 #include <glm/gtx/hash.hpp>
@@ -29,6 +30,10 @@ namespace geometry {
 			seed ^= (seed << 6) + (seed >> 2) + 0x272DC32C + std::hash<glm::vec3>{}(vertex.position_);
 			seed ^= (seed << 6) + (seed >> 2) + 0x0DE14DA2 + std::hash<glm::vec3>{}(vertex.normal_);
 			return seed;
+		}
+
+		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) {
+			return os << vertex.id_;
 		}
 
 	private:
