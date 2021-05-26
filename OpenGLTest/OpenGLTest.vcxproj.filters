@@ -6,23 +6,20 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\graphics\obj_loader_test.cpp">
-      <Filter>engine\graphics</Filter>
+      <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="engine\graphics\mesh_test.cpp">
-      <Filter>engine\graphics</Filter>
+      <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="engine\arcball_test.cpp">
-      <Filter>engine</Filter>
+      <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
       <UniqueIdentifier>{f96d5c31-664b-4b54-a68a-5152be897c41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="engine">
-      <UniqueIdentifier>{9ae8270f-455c-42c5-8cbf-d5e03450d8ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine\graphics">
+    <Filter Include="graphics">
       <UniqueIdentifier>{358dd437-5550-496d-9676-902602cd7ec3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

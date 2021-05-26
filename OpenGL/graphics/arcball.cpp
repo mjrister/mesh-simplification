@@ -47,7 +47,7 @@ namespace {
 	}
 }
 
-std::optional<const std::pair<const glm::vec3, const GLfloat>> arcball::GetRotation(
+std::optional<const std::pair<const glm::vec3, const GLfloat>> gfx::arcball::GetRotation(
 	const glm::dvec2& cursor_position_start,
 	const glm::dvec2& cursor_position_end,
 	const std::pair<const std::int32_t, const std::int32_t>& window_size) {

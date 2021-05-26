@@ -8,7 +8,7 @@
 
 class Window;
 
-namespace arcball {
+namespace gfx::arcball {
 
 	/**
 	 * \brief Gets the axis and angle to rotate a mesh using changes in cursor position.

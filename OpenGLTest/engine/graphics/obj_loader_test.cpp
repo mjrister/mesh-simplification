@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 #include <gtest/gtest.h>
 
-#include "engine/graphics/obj_loader.cpp"
+#include "graphics/obj_loader.cpp"
 
 namespace {
 	using namespace gfx;

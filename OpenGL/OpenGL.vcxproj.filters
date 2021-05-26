@@ -2,24 +2,22 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="engine\graphics\mesh.cpp">
-      <Filter>engine\graphics</Filter>
+    <ClCompile Include="graphics\mesh.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="engine\graphics\shader_program.cpp">
-      <Filter>engine\graphics</Filter>
+    <ClCompile Include="graphics\shader_program.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="engine\graphics\texture2d.cpp">
-      <Filter>engine\graphics</Filter>
+    <ClCompile Include="graphics\texture2d.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="engine\graphics\obj_loader.cpp">
-      <Filter>engine\graphics</Filter>
+    <ClCompile Include="graphics\obj_loader.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="engine\window.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="graphics\arcball.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="engine\arcball.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
+    <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.h">
@@ -28,30 +26,25 @@
     <ClInclude Include="utils\file.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\shader_program.h">
-      <Filter>engine\graphics</Filter>
+    <ClInclude Include="graphics\shader_program.h">
+      <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\mesh.h">
-      <Filter>engine\graphics</Filter>
+    <ClInclude Include="graphics\mesh.h">
+      <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\obj_loader.h">
-      <Filter>engine\graphics</Filter>
+    <ClInclude Include="graphics\obj_loader.h">
+      <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="lib\stb_image.h">
-      <Filter>lib</Filter>
+    <ClInclude Include="graphics\texture2d.h">
+      <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\texture2d.h">
-      <Filter>engine\graphics</Filter>
+    <ClInclude Include="graphics\material.h">
+      <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="engine\window.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="graphics\arcball.h">
+      <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="engine\arcball.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\graphics\material.h">
-      <Filter>engine\graphics</Filter>
-    </ClInclude>
+    <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -68,17 +61,11 @@
     <Filter Include="utils">
       <UniqueIdentifier>{48e9edca-52c8-4520-99ef-22029f2334b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib">
-      <UniqueIdentifier>{e17358ae-0753-43d3-946f-fd53390ebb40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine">
-      <UniqueIdentifier>{13afd911-1223-4536-a5e8-fd3372ee5177}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine\graphics">
-      <UniqueIdentifier>{e2a2d935-f222-40b4-b7c5-da80e71d06b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="models">
       <UniqueIdentifier>{72540917-fab2-49b9-bf65-600687120d37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{e2a2d935-f222-40b4-b7c5-da80e71d06b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "engine/arcball.cpp"
+#include "graphics/arcball.cpp"
 
 namespace {
 
