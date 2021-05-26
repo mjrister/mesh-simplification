@@ -226,6 +226,7 @@
     <ClInclude Include="graphics\obj_loader.h" />
     <ClInclude Include="graphics\shader_program.h" />
     <ClInclude Include="utils\string.h" />
+    <ClInclude Include="geometry\vertex.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>

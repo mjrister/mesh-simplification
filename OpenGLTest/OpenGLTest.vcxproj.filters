@@ -5,14 +5,17 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="engine\graphics\obj_loader_test.cpp">
+    <ClCompile Include="graphics\obj_loader_test.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="engine\graphics\mesh_test.cpp">
+    <ClCompile Include="graphics\mesh_test.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="engine\arcball_test.cpp">
+    <ClCompile Include="graphics\arcball_test.cpp">
       <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\vertex_test.cpp">
+      <Filter>geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -21,6 +24,9 @@
     </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{358dd437-5550-496d-9676-902602cd7ec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry">
+      <UniqueIdentifier>{daec029e-b1ee-494e-a6df-6335e2413eda}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
