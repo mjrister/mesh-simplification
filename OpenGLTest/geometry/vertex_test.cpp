@@ -31,4 +31,10 @@ namespace {
 		ASSERT_NE((Vertex{0, {0.f, 1.f, 2.f}, {}}), (Vertex{0, {3.f, 4.f, 5.f}, {}}));
 		ASSERT_NE((Vertex{0, {}, {0.f, 1.f, 2.f}}), (Vertex{0, {}, {3.f, 4.f, 5.f}}));
 	}
+
+	TEST(Vertex, TestEqualVerticesHaveSameHashValue) {
+		const Vertex v0{42, {0.f, 1.f, 2.f}, {3.f, 4.f, 5.f}};
+		const Vertex v1{42, {0.f, 1.f, 2.f}, {3.f, 4.f, 5.f}};
+		ASSERT_EQ(hash_value(v0), hash_value(v1));
+	}
 }

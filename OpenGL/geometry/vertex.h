@@ -1,6 +1,9 @@
 #pragma once
 
+#include <functional>
+
 #include <glm/vec3.hpp>
+#include <glm/gtx/hash.hpp>
 
 namespace geometry {
 
@@ -15,12 +18,19 @@ namespace geometry {
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
 		friend bool operator==(const Vertex& lhs, const Vertex& rhs) {
-			return lhs.id_ == rhs.id_
-				&& lhs.position_ == rhs.position_
-				&& lhs.normal_ == rhs.normal_;
+			return lhs.id_ == rhs.id_ && lhs.position_ == rhs.position_ && lhs.normal_ == rhs.normal_;
 		}
 
 		friend bool operator!=(const Vertex& lhs, const Vertex& rhs) { return !(lhs == rhs); }
+
+		friend std::size_t hash_value(const Vertex& vertex) {
+			std::size_t seed = 0x0EAC3880;
+			seed ^= (seed << 6) + (seed >> 2) + 0x7CB4C352 + std::hash<std::uint32_t>{}(vertex.id_);
+			seed ^= (seed << 6) + (seed >> 2) + 0x272DC32C + std::hash<glm::vec3>{}(vertex.position_);
+			seed ^= (seed << 6) + (seed >> 2) + 0x0DE14DA2 + std::hash<glm::vec3>{}(vertex.normal_);
+			return seed;
+		}
+
 	private:
 		std::uint32_t id_;
 		glm::vec3 position_, normal_;
