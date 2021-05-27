@@ -38,22 +38,22 @@ namespace gfx {
 		Mesh& operator=(Mesh&&) noexcept = delete;
 
 		/** \brief Gets the mesh vertex positions. */
-		[[nodiscard]] const auto& Positions() const noexcept { return positions_; }
+		[[nodiscard]] const auto& Positions() const { return positions_; }
 
 		/** \brief Gets the mesh texture coordinates. */
-		[[nodiscard]] const auto& TextureCoordinates() const noexcept { return texture_coordinates_; }
+		[[nodiscard]] const auto& TextureCoordinates() const { return texture_coordinates_; }
 
 		/** \brief Gets the mesh normals. */
-		[[nodiscard]] const auto& Normals() const noexcept { return normals_; }
+		[[nodiscard]] const auto& Normals() const { return normals_; }
 
 		/** \brief Gets the mesh indices. */
-		[[nodiscard]] const auto& Indices() const noexcept { return indices_; }
+		[[nodiscard]] const auto& Indices() const { return indices_; }
 
 		/** \brief Gets the mesh model transform in local object space. */
-		[[nodiscard]] const auto& Model() const noexcept { return model_; }
+		[[nodiscard]] const auto& Model() const { return model_; }
 
 		/** \brief Renders the mesh to the current framebuffer. */
-		void Render() const noexcept {
+		void Render() const {
 			glBindVertexArray(vertex_array_);
 			if (element_buffer_) {
 				glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_.size()), GL_UNSIGNED_INT, nullptr);

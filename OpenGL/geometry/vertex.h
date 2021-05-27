@@ -22,7 +22,9 @@ namespace geometry {
 			return lhs.id_ == rhs.id_ && lhs.position_ == rhs.position_ && lhs.normal_ == rhs.normal_;
 		}
 
-		friend bool operator!=(const Vertex& lhs, const Vertex& rhs) { return !(lhs == rhs); }
+		friend bool operator!=(const Vertex& lhs, const Vertex& rhs) {
+			return !(lhs == rhs);
+		}
 
 		friend std::size_t hash_value(const Vertex& vertex) {
 			std::size_t seed = 0x0EAC3880;

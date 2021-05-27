@@ -9,7 +9,7 @@
 namespace {
 
 	/** \brief Gets the maximum number of texture units allowed by the host GPU. */
-	GLint GetMaxTextureImageUnits() noexcept {
+	GLint GetMaxTextureImageUnits() {
 		static GLint max_texture_image_units = 0;
 		if (!max_texture_image_units) {
 			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_image_units);

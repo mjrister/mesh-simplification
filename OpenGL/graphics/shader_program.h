@@ -51,7 +51,7 @@ namespace gfx {
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
 		/** \brief Enables this shader program for immediate use in rendering. */
-		void Enable() const noexcept { glUseProgram(id_); }
+		void Enable() const { glUseProgram(id_); }
 
 		/**
 		 * \brief Sets a uniform variable in the shader program.
