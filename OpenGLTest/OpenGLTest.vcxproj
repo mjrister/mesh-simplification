@@ -41,7 +41,6 @@
     <ClCompile Include="graphics\obj_loader_test.cpp" />
     <ClCompile Include="graphics\mesh_test.cpp" />
     <ClCompile Include="utils\string_test.cpp" />
-    <ClCompile Include="geometry\vertex_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenGL\OpenGL.vcxproj">
