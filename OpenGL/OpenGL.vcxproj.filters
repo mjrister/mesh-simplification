@@ -49,6 +49,8 @@
       <Filter>geometry</Filter>
     </ClInclude>
     <ClInclude Include="geometry\half_edge.h" />
+    <ClInclude Include="geometry\half_edge_mesh.h" />
+    <ClInclude Include="geometry\face.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
