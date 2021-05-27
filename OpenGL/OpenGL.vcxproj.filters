@@ -48,6 +48,7 @@
     <ClInclude Include="geometry\vertex.h">
       <Filter>geometry</Filter>
     </ClInclude>
+    <ClInclude Include="geometry\half_edge.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
