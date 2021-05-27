@@ -45,7 +45,9 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="window.h" />
-    <ClInclude Include="geometry\vertex.h" />
+    <ClInclude Include="geometry\vertex.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -67,6 +69,9 @@
     </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{e2a2d935-f222-40b4-b7c5-da80e71d06b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry">
+      <UniqueIdentifier>{a63d86ff-a6ba-4e0f-b5b7-0e6345a41a0f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
