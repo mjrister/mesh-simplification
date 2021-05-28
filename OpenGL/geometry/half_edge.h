@@ -11,7 +11,7 @@ namespace geometry {
 	class HalfEdge {
 
 	public:
-		HalfEdge(std::shared_ptr<const Vertex> vertex)
+		explicit HalfEdge(std::shared_ptr<const Vertex> vertex)
 			: vertex_{std::move(vertex)} {}
 
 		[[nodiscard]] std::shared_ptr<const Vertex> Vertex() const { return vertex_; }

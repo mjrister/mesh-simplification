@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "half_edge_mesh.h"
+#include "geometry/half_edge_mesh.h"
 #include "graphics/arcball.h"
 #include "graphics/material.h"
 #include "graphics/mesh.h"
