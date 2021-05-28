@@ -20,7 +20,7 @@ namespace geometry {
 
 			vertices_.reserve(positions.size());
 			for (std::size_t i = 0; i < positions.size(); ++i) {
-				vertices_.push_back(std::make_shared<Vertex>(i, positions[i], normals[i]));
+				vertices_.push_back(std::make_shared<Vertex>(static_cast<GLuint>(i), positions[i], normals[i]));
 			}
 
 			for (std::size_t i = 0; i < indices.size(); i += 3) {
@@ -32,6 +32,31 @@ namespace geometry {
 				const auto face012 = CreateTriangle(v0, v1, v2);
 				faces_.emplace(face012_key, face012);
 			}
+		}
+
+		gfx::Mesh ToMesh() {
+
+			std::vector<glm::vec4> positions;
+			positions.reserve(vertices_.size());
+
+			std::vector<glm::vec3> normals;
+			normals.reserve(vertices_.size());
+
+			for (const auto& vertex : vertices_) {
+				positions.push_back(vertex->Position());
+				normals.push_back(vertex->Normal());
+			}
+
+			std::vector<GLuint> indices;
+			indices.reserve(faces_.size() * 3);
+
+			for (const auto& [_, face] : faces_) {
+				indices.push_back(face->V0()->Id());
+				indices.push_back(face->V1()->Id());
+				indices.push_back(face->V2()->Id());
+			}
+
+			return gfx::Mesh{positions, {}, normals, indices};
 		}
 
 	private:

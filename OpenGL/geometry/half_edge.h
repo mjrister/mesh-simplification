@@ -14,15 +14,15 @@ namespace geometry {
 		explicit HalfEdge(std::shared_ptr<const Vertex> vertex)
 			: vertex_{std::move(vertex)} {}
 
-		[[nodiscard]] std::shared_ptr<const Vertex> Vertex() const { return vertex_; }
+		[[nodiscard]] auto Vertex() const { return vertex_; }
 
-		[[nodiscard]] std::shared_ptr<const HalfEdge> Next() const { return next_; }
+		[[nodiscard]] auto Next() const { return next_; }
 		void SetNext(const std::shared_ptr<const HalfEdge>& next) { next_ = next; }
 
-		[[nodiscard]] std::shared_ptr<const HalfEdge> Flip() const { return flip_; }
+		[[nodiscard]] auto Flip() const { return flip_; }
 		void SetFlip(const std::shared_ptr<const HalfEdge>& flip) { flip_ = flip; }
 
-		[[nodiscard]] std::shared_ptr<const Face> Face() const { return face_; }
+		[[nodiscard]] auto Face() const { return face_; }
 		void SetFace(const std::shared_ptr<const geometry::Face>& face) { face_ = face; }
 
 	private:

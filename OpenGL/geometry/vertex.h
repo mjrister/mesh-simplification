@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <GL/gl3w.h>
 #include <glm/vec3.hpp>
 
 namespace geometry {
@@ -10,15 +11,16 @@ namespace geometry {
 	class Vertex {
 
 	public:
-		Vertex(const std::uint64_t id, const glm::vec3& position, const glm::vec3& normal)
+		Vertex(const GLuint id, const glm::vec4& position, const glm::vec3& normal)
 			: id_{id},
 		      position_{position},
 			  normal_{normal} {}
 
-		[[nodiscard]] glm::vec3 Position() const { return position_; }
-		[[nodiscard]] glm::vec3 Normal() const { return normal_; }
+		[[nodiscard]] auto Id() const { return id_; }
+		[[nodiscard]] const auto& Position() const { return position_; }
+		[[nodiscard]] const auto& Normal() const { return normal_; }
 
-		[[nodiscard]] std::shared_ptr<const HalfEdge> Edge() const { return edge_; }
+		[[nodiscard]] auto Edge() const { return edge_; }
 		void SetEdge(const std::shared_ptr<const HalfEdge>& edge) { edge_ = edge; }
 
 		friend std::size_t hash_value(const Vertex& v0, const Vertex& v1) {
@@ -37,8 +39,9 @@ namespace geometry {
 		}
 
 	private:
-		std::uint64_t id_;
-		const glm::vec3 position_, normal_;
+		const GLuint id_;
+		const glm::vec4 position_;
+		const glm::vec3 normal_;
 		std::shared_ptr<const HalfEdge> edge_;
 	};
 }

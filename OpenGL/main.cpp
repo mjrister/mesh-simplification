@@ -75,8 +75,6 @@ int main() {
 		mesh.Scale(glm::vec3{.25f});
 		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
 
-		geometry::HalfEdgeMesh half_edge_mesh{mesh};
-
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 

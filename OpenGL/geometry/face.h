@@ -16,11 +16,11 @@ namespace geometry {
 			  v1_{std::move(v1)},
 			  v2_{std::move(v2)} {}
 
-		[[nodiscard]] std::shared_ptr<const Vertex> V0() const { return v0_; }
-		[[nodiscard]] std::shared_ptr<const Vertex> V1() const { return v1_; }
-		[[nodiscard]] std::shared_ptr<const Vertex> V2() const { return v2_; }
+		[[nodiscard]] auto V0() const { return v0_; }
+		[[nodiscard]] auto V1() const { return v1_; }
+		[[nodiscard]] auto V2() const { return v2_; }
 
-		[[nodiscard]] std::shared_ptr<const HalfEdge> Edge() const { return edge_; }
+		[[nodiscard]] auto Edge() const { return edge_; }
 		void SetEdge(const std::shared_ptr<const HalfEdge>& edge) { edge_ = edge; }
 
 	private:
