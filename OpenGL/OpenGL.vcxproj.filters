@@ -45,6 +45,15 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="window.h" />
+    <ClInclude Include="vertex.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="half_edge.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="face.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">

@@ -218,14 +218,17 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="face.h" />
     <ClInclude Include="graphics\arcball.h" />
     <ClInclude Include="graphics\texture2d.h" />
     <ClInclude Include="graphics\material.h" />
+    <ClInclude Include="half_edge.h" />
     <ClInclude Include="utils\file.h" />
     <ClInclude Include="graphics\mesh.h" />
     <ClInclude Include="graphics\obj_loader.h" />
     <ClInclude Include="graphics\shader_program.h" />
     <ClInclude Include="utils\string.h" />
+    <ClInclude Include="vertex.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
