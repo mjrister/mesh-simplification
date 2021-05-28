@@ -34,8 +34,9 @@ namespace gfx {
 		Mesh(const Mesh&) = delete;
 		Mesh& operator=(const Mesh&) = delete;
 
-		Mesh(Mesh&&) noexcept = delete;
-		Mesh& operator=(Mesh&&) noexcept = delete;
+		Mesh(Mesh&& mesh) noexcept;
+
+		Mesh& operator=(Mesh&& mesh) noexcept;
 
 		/** \brief Gets the mesh vertex positions. */
 		[[nodiscard]] const auto& Positions() const { return positions_; }
@@ -85,10 +86,10 @@ namespace gfx {
 
 	private:
 		GLuint vertex_array_{}, vertex_buffer_{}, element_buffer_{};
-		const std::vector<glm::vec4> positions_;
-		const std::vector<glm::vec2> texture_coordinates_;
-		const std::vector<glm::vec3> normals_;
-		const std::vector<GLuint> indices_;
+		std::vector<glm::vec4> positions_;
+		std::vector<glm::vec2> texture_coordinates_;
+		std::vector<glm::vec3> normals_;
+		std::vector<GLuint> indices_;
 		glm::mat4 model_{1.f};
 	};
 }

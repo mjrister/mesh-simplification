@@ -87,7 +87,34 @@ gfx::Mesh::Mesh(
 }
 
 gfx::Mesh::~Mesh() {
-	glDeleteBuffers(1, &element_buffer_);
-	glDeleteBuffers(1, &vertex_buffer_);
 	glDeleteVertexArrays(1, &vertex_array_);
+	glDeleteBuffers(1, &vertex_buffer_);
+	glDeleteBuffers(1, &element_buffer_);
+}
+
+gfx::Mesh::Mesh(Mesh&& mesh) noexcept {
+	*this = std::move(mesh);
+}
+
+gfx::Mesh& gfx::Mesh::operator=(Mesh&& mesh) noexcept {
+
+	if (this == &mesh) return *this;
+
+	glDeleteVertexArrays(1, &vertex_array_);
+	glDeleteBuffers(1, &vertex_buffer_);
+	glDeleteBuffers(1, &element_buffer_);
+
+	vertex_array_ = mesh.vertex_array_;
+	vertex_buffer_ = mesh.vertex_buffer_;
+	element_buffer_ = mesh.element_buffer_;
+
+	mesh.vertex_array_ = mesh.vertex_buffer_ = mesh.element_buffer_ = 0;
+
+	positions_ = std::move(mesh.positions_);
+	texture_coordinates_ = std::move(mesh.texture_coordinates_);
+	normals_ = std::move(mesh.normals_);
+	indices_ = std::move(mesh.indices_);
+	model_ = mesh.model_;
+
+	return *this;
 }
