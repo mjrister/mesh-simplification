@@ -36,7 +36,6 @@
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="geometry\vertex_test.cpp" />
     <ClCompile Include="graphics\arcball_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="graphics\obj_loader_test.cpp" />
