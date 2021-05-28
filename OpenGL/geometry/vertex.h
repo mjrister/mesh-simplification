@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <ostream>
 
 #include <GL/gl3w.h>
 #include <glm/vec3.hpp>
@@ -21,7 +22,7 @@ namespace geometry {
 		[[nodiscard]] const auto& Normal() const { return normal_; }
 
 		[[nodiscard]] auto Edge() const { return edge_; }
-		void SetEdge(const std::shared_ptr<const HalfEdge>& edge) { edge_ = edge; }
+		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
 		friend std::size_t hash_value(const Vertex& v0, const Vertex& v1) {
 			std::size_t seed = 0x1C2CB417;
@@ -38,10 +39,11 @@ namespace geometry {
 			return seed;
 		}
 
+		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) { return os << vertex.id_; }
 	private:
 		const GLuint id_;
 		const glm::vec4 position_;
 		const glm::vec3 normal_;
-		std::shared_ptr<const HalfEdge> edge_;
+		std::shared_ptr<HalfEdge> edge_;
 	};
 }
