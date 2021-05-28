@@ -3,6 +3,7 @@
 #include <memory>
 #include <utility>
 
+#include "face.h"
 #include "vertex.h"
 
 namespace geometry {
@@ -21,9 +22,13 @@ namespace geometry {
 		[[nodiscard]] std::shared_ptr<const HalfEdge> Flip() const { return flip_; }
 		void SetFlip(const std::shared_ptr<const HalfEdge>& flip) { flip_ = flip; }
 
+		[[nodiscard]] std::shared_ptr<const Face> Face() const { return face_; }
+		void SetFace(const std::shared_ptr<const geometry::Face>& face) { face_ = face; }
+
 	private:
 		const std::shared_ptr<const geometry::Vertex> vertex_;
 		std::shared_ptr<const HalfEdge> next_;
 		std::shared_ptr<const HalfEdge> flip_;
+		std::shared_ptr<const geometry::Face> face_;
 	};
 }

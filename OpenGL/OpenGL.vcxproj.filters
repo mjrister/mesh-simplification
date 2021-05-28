@@ -45,13 +45,16 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="window.h" />
-    <ClInclude Include="vertex.h">
+    <ClInclude Include="geometry\vertex.h">
       <Filter>geometry</Filter>
     </ClInclude>
-    <ClInclude Include="half_edge.h">
+    <ClInclude Include="geometry\half_edge.h">
       <Filter>geometry</Filter>
     </ClInclude>
-    <ClInclude Include="face.h">
+    <ClInclude Include="geometry\face.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\half_edge_mesh.h">
       <Filter>geometry</Filter>
     </ClInclude>
   </ItemGroup>

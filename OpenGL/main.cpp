@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "half_edge_mesh.h"
 #include "graphics/arcball.h"
 #include "graphics/material.h"
 #include "graphics/mesh.h"
@@ -73,6 +74,8 @@ int main() {
 		auto mesh = gfx::obj_loader::LoadMesh("models/bunny.obj");
 		mesh.Scale(glm::vec3{.25f});
 		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
+
+		geometry::HalfEdgeMesh half_edge_mesh{mesh};
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
