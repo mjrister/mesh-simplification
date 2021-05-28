@@ -35,6 +35,7 @@ namespace gfx {
 		};
 
 	public:
+
 		/**
 		 * \brief Initializes a shader program.
 		 * \param vertex_shader_filepath The filepath to the vertex shader to be compiled.

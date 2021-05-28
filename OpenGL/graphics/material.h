@@ -8,6 +8,7 @@ namespace gfx {
 	class Material {
 
 	public:
+
 		/**
 		 * \brief Initializes a material.
 		 * \param ambient The ambient light reflected.

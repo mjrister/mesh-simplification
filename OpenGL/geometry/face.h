@@ -20,7 +20,7 @@ namespace geometry {
 		[[nodiscard]] auto V2() const { return v2_; }
 
 		[[nodiscard]] auto Edge() const { return edge_; }
-		void SetEdge(const std::shared_ptr<const HalfEdge>& edge) { edge_ = edge; }
+		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
 		friend std::ostream& operator<<(std::ostream& os, const Face& face) {
 			return os << '(' << face.v0_ << ',' << face.v1_ << ',' << face.v2_ << ')';

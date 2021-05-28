@@ -11,6 +11,7 @@ namespace gfx {
 	class Mesh {
 
 	public:
+
 		/**
 		 * \brief Initializes a triangle mesh.
 		 * \param positions The mesh vertex positions.
