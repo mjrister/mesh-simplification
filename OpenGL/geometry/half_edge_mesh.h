@@ -28,7 +28,6 @@ namespace geometry {
 				const auto v0 = vertices_[indices[i]];
 				const auto v1 = vertices_[indices[i + 1]];
 				const auto v2 = vertices_[indices[i + 2]];
-
 				const auto face012_key = hash_value(*v0, *v1, *v2);
 				const auto face012 = CreateTriangle(v0, v1, v2);
 				faces_.emplace(face012_key, face012);
@@ -86,9 +85,7 @@ namespace geometry {
 
 	private:
 		std::shared_ptr<Face> CreateTriangle(
-			const std::shared_ptr<Vertex>& v0,
-			const std::shared_ptr<Vertex>& v1,
-			const std::shared_ptr<Vertex>& v2) {
+			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2) {
 
 			const auto edge01 = CreateHalfEdge(v0, v1);
 			const auto edge12 = CreateHalfEdge(v1, v2);
@@ -157,7 +154,6 @@ namespace geometry {
 				DeleteFace(edge0i->Face());
 
 				vi = vj;
-
 			} while (edgej0 != edgeb0);
 
 			DeleteEdge(edgeb0);
@@ -175,8 +171,7 @@ namespace geometry {
 		}
 
 		void DeleteVertex(const std::shared_ptr<Vertex>& v0) {
-			const auto vertex_key = v0->Id();
-			if (const auto iterator = vertices_.find(vertex_key); iterator == vertices_.cend()) {
+			if (const auto iterator = vertices_.find(v0->Id()); iterator == vertices_.end()) {
 				std::ostringstream oss;
 				oss << "Attempted to delete a nonexistent vertex " << *v0 << std::endl;
 				throw std::invalid_argument{oss.str()};
@@ -188,7 +183,7 @@ namespace geometry {
 		void DeleteEdge(const std::shared_ptr<HalfEdge>& edge01) {
 			for (const auto& edge : {edge01, edge01->Flip()}) {
 				const auto edge_key = hash_value(*edge->Vertex(), *edge->Flip()->Vertex());
-				if (const auto iterator = edges_.find(edge_key); iterator == edges_.cend()) {
+				if (const auto iterator = edges_.find(edge_key); iterator == edges_.end()) {
 					std::ostringstream oss;
 					oss << "Attempted to delete a nonexistent edge " << edge << std::endl;
 					throw std::invalid_argument{oss.str()};
@@ -200,7 +195,7 @@ namespace geometry {
 
 		void DeleteFace(const std::shared_ptr<Face>& face012) {
 			const auto face_key = hash_value(*face012->V0(), *face012->V1(), *face012->V2());
-			if (const auto iterator = faces_.find(face_key); iterator == faces_.cend()) {
+			if (const auto iterator = faces_.find(face_key); iterator == faces_.end()) {
 				std::ostringstream oss;
 				oss << "Attempted to delete nonexistent face " << *face012 << std::endl;
 				throw std::invalid_argument{oss.str()};
