@@ -1,7 +1,6 @@
-#include <gtest/gtest.h>
-
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <gtest/gtest.h>
 
 #include "geometry/half_edge.h"
 #include "geometry/vertex.h"
