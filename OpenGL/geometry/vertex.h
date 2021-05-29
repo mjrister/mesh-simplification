@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <ostream>
 
 #include <glm/vec3.hpp>
 
@@ -20,8 +19,6 @@ namespace geometry {
 
 		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
-
-		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) { return os << vertex.id_; }
 
 	private:
 		const std::uint64_t id_;

@@ -36,17 +36,16 @@ namespace gfx {
 		Mesh& operator=(const Mesh&) = delete;
 
 		Mesh(Mesh&& mesh) noexcept;
-
 		Mesh& operator=(Mesh&& mesh) noexcept;
 
 		/** \brief Gets the mesh vertex positions. */
-		[[nodiscard]] const auto& Positions() const { return positions_; }
+		[[nodiscard]] const std::vector<glm::vec4>& Positions() const { return positions_; }
 
 		/** \brief Gets the mesh texture coordinates. */
-		[[nodiscard]] const auto& TextureCoordinates() const { return texture_coordinates_; }
+		[[nodiscard]] const std::vector<glm::vec2>& TextureCoordinates() const { return texture_coordinates_; }
 
 		/** \brief Gets the mesh normals. */
-		[[nodiscard]] const auto& Normals() const { return normals_; }
+		[[nodiscard]] const std::vector<glm::vec3>& Normals() const { return normals_; }
 
 		/** \brief Gets the mesh indices. */
 		[[nodiscard]] const auto& Indices() const { return indices_; }

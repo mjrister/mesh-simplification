@@ -16,6 +16,7 @@ namespace gfx {
 		class Shader {
 
 		public:
+
 			/**
 			 * \brief Initializes a shader.
 			 * \param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)

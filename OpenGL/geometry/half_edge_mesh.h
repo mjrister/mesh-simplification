@@ -177,9 +177,7 @@ namespace geometry {
 		std::shared_ptr<HalfEdge> GetHalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) {
 			const auto edge01_id = GetHalfEdgeId(*v0, *v1);
 			if (const auto iterator = edges_.find(edge01_id); iterator == edges_.end()) {
-				std::ostringstream oss;
-				oss << "Attempted to retrieve a nonexistent edge (" << *v0 << ',' << *v1 << ')' << std::endl;
-				throw std::invalid_argument(oss.str());
+				throw std::invalid_argument("Attempted to retrieve a nonexistent edge");
 			} else {
 				return iterator->second;
 			}
@@ -187,9 +185,7 @@ namespace geometry {
 
 		void DeleteVertex(const std::shared_ptr<Vertex>& v0) {
 			if (const auto iterator = vertices_.find(v0->Id()); iterator == vertices_.end()) {
-				std::ostringstream oss;
-				oss << "Attempted to delete a nonexistent vertex " << *v0 << std::endl;
-				throw std::invalid_argument{oss.str()};
+				throw std::invalid_argument{"Attempted to delete a nonexistent vertex"};
 			} else {
 				vertices_.erase(iterator);
 			}
@@ -199,9 +195,7 @@ namespace geometry {
 			for (const auto& edge : {edge01, edge01->Flip()}) {
 				const auto edge_id = GetHalfEdgeId(*edge->Vertex(), *edge->Flip()->Vertex());
 				if (const auto iterator = edges_.find(edge_id); iterator == edges_.end()) {
-					std::ostringstream oss;
-					oss << "Attempted to delete a nonexistent edge " << edge << std::endl;
-					throw std::invalid_argument{oss.str()};
+					throw std::invalid_argument{"Attempted to delete a nonexistent edge"};
 				} else {
 					edges_.erase(iterator);
 				}
@@ -211,9 +205,7 @@ namespace geometry {
 		void DeleteFace(const std::shared_ptr<Face>& face012) {
 			const auto face012_id = GetFaceId(*face012->V0(), *face012->V1(), *face012->V2());
 			if (const auto iterator = faces_.find(face012_id); iterator == faces_.end()) {
-				std::ostringstream oss;
-				oss << "Attempted to delete nonexistent face " << *face012 << std::endl;
-				throw std::invalid_argument{oss.str()};
+				throw std::invalid_argument{"Attempted to delete nonexistent face"};
 			} else {
 				faces_.erase(iterator);
 			}

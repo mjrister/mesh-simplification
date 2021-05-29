@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <ostream>
 #include <utility>
 
 #include "face.h"
@@ -25,10 +24,6 @@ namespace geometry {
 
 		[[nodiscard]] std::shared_ptr<Face> Face() const { return face_; }
 		void SetFace(const std::shared_ptr<geometry::Face>& face) { face_ = face; }
-
-		friend std::ostream& operator<<(std::ostream& os, const HalfEdge& half_edge) {
-			return os << '(' << half_edge.vertex_ << ',' << half_edge.flip_->vertex_ << ')';
-		}
 
 	private:
 		std::shared_ptr<geometry::Vertex> vertex_;
