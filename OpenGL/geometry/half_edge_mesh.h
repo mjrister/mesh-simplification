@@ -21,16 +21,16 @@ namespace geometry {
 
 			vertices_.reserve(positions.size());
 			for (std::size_t i = 0; i < positions.size(); ++i) {
-				vertices_.emplace(i, std::make_shared<Vertex>(static_cast<GLuint>(i), positions[i], normals[i]));
+				vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i], normals[i]));
 			}
 
 			for (std::size_t i = 0; i < indices.size(); i += 3) {
 				const auto v0 = vertices_[indices[i]];
 				const auto v1 = vertices_[indices[i + 1]];
 				const auto v2 = vertices_[indices[i + 2]];
-				const auto face012_key = hash_value(*v0, *v1, *v2);
+				const auto face012_id = GetFaceId(*v0, *v1, *v2);
 				const auto face012 = CreateTriangle(v0, v1, v2);
-				faces_.emplace(face012_key, face012);
+				faces_.emplace(face012_id, face012);
 			}
 		}
 
@@ -51,9 +51,9 @@ namespace geometry {
 			indices.reserve(faces_.size() * 3);
 
 			for (const auto& [_, face] : faces_) {
-				indices.push_back(face->V0()->Id());
-				indices.push_back(face->V1()->Id());
-				indices.push_back(face->V2()->Id());
+				indices.push_back(static_cast<GLuint>(face->V0()->Id()));
+				indices.push_back(static_cast<GLuint>(face->V1()->Id()));
+				indices.push_back(static_cast<GLuint>(face->V2()->Id()));
 			}
 
 			return gfx::Mesh{positions, {}, normals, indices};
@@ -84,6 +84,21 @@ namespace geometry {
 		}
 
 	private:
+		static std::size_t GetHalfEdgeId(const Vertex& v0, const Vertex& v1) {
+			std::size_t seed = 0x1C2CB417;
+			seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0.Id());
+			seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1.Id());
+			return seed;
+		}
+
+		static std::size_t GetFaceId(const Vertex& v0, const Vertex& v1, const Vertex& v2) {
+			std::size_t seed = 0x1C2CB417;
+			seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0.Id());
+			seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1.Id());
+			seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + std::hash<std::uint64_t>{}(v2.Id());
+			return seed;
+		}
+
 		std::shared_ptr<Face> CreateTriangle(
 			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2) {
 
@@ -112,19 +127,19 @@ namespace geometry {
 		std::shared_ptr<HalfEdge> CreateHalfEdge(
 			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) {
 
-			static const auto& get_or_insert = [this](const std::size_t key, const std::shared_ptr<Vertex>& vertex) {
-				if (const auto iterator = edges_.find(key); iterator != edges_.end()) {
+			static const auto& get_or_insert = [this](const std::size_t id, const std::shared_ptr<Vertex>& vertex) {
+				if (const auto iterator = edges_.find(id); iterator != edges_.end()) {
 					return iterator->second;
 				}
-				const auto& [iterator, _] = edges_.emplace(key, std::make_shared<HalfEdge>(vertex));
+				const auto [iterator, _] = edges_.emplace(id, std::make_shared<HalfEdge>(vertex));
 				return iterator->second;
 			};
 
-			const auto edge01_key = hash_value(*v0, *v1);
-			const auto& edge01 = get_or_insert(edge01_key, v1);
+			const auto edge01_id = GetHalfEdgeId(*v0, *v1);
+			const auto edge01 = get_or_insert(edge01_id, v1);
 
-			const auto edge10_key = hash_value(*v1, *v0);
-			const auto& edge10 = get_or_insert(edge10_key, v0);
+			const auto edge10_id = GetHalfEdgeId(*v1, *v0);
+			const auto edge10 = get_or_insert(edge10_id, v0);
 
 			edge01->SetFlip(edge10);
 			edge10->SetFlip(edge01);
@@ -160,8 +175,8 @@ namespace geometry {
 		}
 
 		std::shared_ptr<HalfEdge> GetHalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) {
-			const auto edge01_key = hash_value(*v0, *v1);
-			if (const auto iterator = edges_.find(edge01_key); iterator == edges_.end()) {
+			const auto edge01_id = GetHalfEdgeId(*v0, *v1);
+			if (const auto iterator = edges_.find(edge01_id); iterator == edges_.end()) {
 				std::ostringstream oss;
 				oss << "Attempted to retrieve a nonexistent edge (" << *v0 << ',' << *v1 << ')' << std::endl;
 				throw std::invalid_argument(oss.str());
@@ -182,8 +197,8 @@ namespace geometry {
 
 		void DeleteEdge(const std::shared_ptr<HalfEdge>& edge01) {
 			for (const auto& edge : {edge01, edge01->Flip()}) {
-				const auto edge_key = hash_value(*edge->Vertex(), *edge->Flip()->Vertex());
-				if (const auto iterator = edges_.find(edge_key); iterator == edges_.end()) {
+				const auto edge_id = GetHalfEdgeId(*edge->Vertex(), *edge->Flip()->Vertex());
+				if (const auto iterator = edges_.find(edge_id); iterator == edges_.end()) {
 					std::ostringstream oss;
 					oss << "Attempted to delete a nonexistent edge " << edge << std::endl;
 					throw std::invalid_argument{oss.str()};
@@ -194,8 +209,8 @@ namespace geometry {
 		}
 
 		void DeleteFace(const std::shared_ptr<Face>& face012) {
-			const auto face_key = hash_value(*face012->V0(), *face012->V1(), *face012->V2());
-			if (const auto iterator = faces_.find(face_key); iterator == faces_.end()) {
+			const auto face012_id = GetFaceId(*face012->V0(), *face012->V1(), *face012->V2());
+			if (const auto iterator = faces_.find(face012_id); iterator == faces_.end()) {
 				std::ostringstream oss;
 				oss << "Attempted to delete nonexistent face " << *face012 << std::endl;
 				throw std::invalid_argument{oss.str()};

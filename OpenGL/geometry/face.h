@@ -15,11 +15,11 @@ namespace geometry {
 		Face(std::shared_ptr<Vertex> v0, std::shared_ptr<Vertex> v1, std::shared_ptr<Vertex> v2)
 			: v0_{std::move(v0)}, v1_{std::move(v1)}, v2_{std::move(v2)} {}
 
-		[[nodiscard]] auto V0() const { return v0_; }
-		[[nodiscard]] auto V1() const { return v1_; }
-		[[nodiscard]] auto V2() const { return v2_; }
+		[[nodiscard]] std::shared_ptr<Vertex> V0() const { return v0_; }
+		[[nodiscard]] std::shared_ptr<Vertex> V1() const { return v1_; }
+		[[nodiscard]] std::shared_ptr<Vertex> V2() const { return v2_; }
 
-		[[nodiscard]] auto Edge() const { return edge_; }
+		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
 		friend std::ostream& operator<<(std::ostream& os, const Face& face) {
