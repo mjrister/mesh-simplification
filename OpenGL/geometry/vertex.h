@@ -11,7 +11,9 @@ namespace geometry {
 
 	public:
 		Vertex(const std::size_t id, const glm::vec4& position, const glm::vec3& normal)
-			: id_{id}, position_{position}, normal_{normal} {}
+			: id_{id},
+			  position_{position},
+			  normal_{normal} {}
 
 		[[nodiscard]] std::size_t Id() const { return id_; }
 		[[nodiscard]] const glm::vec4& Position() const { return position_; }
