@@ -10,10 +10,10 @@ namespace geometry {
 	class Vertex {
 
 	public:
-		Vertex(const std::uint64_t id, const glm::vec4& position, const glm::vec3& normal)
+		Vertex(const std::size_t id, const glm::vec4& position, const glm::vec3& normal)
 			: id_{id}, position_{position}, normal_{normal} {}
 
-		[[nodiscard]] std::uint64_t Id() const { return id_; }
+		[[nodiscard]] std::size_t Id() const { return id_; }
 		[[nodiscard]] const glm::vec4& Position() const { return position_; }
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
@@ -21,7 +21,7 @@ namespace geometry {
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
 	private:
-		const std::uint64_t id_;
+		const std::size_t id_;
 		const glm::vec4 position_;
 		const glm::vec3 normal_;
 		std::shared_ptr<HalfEdge> edge_;
