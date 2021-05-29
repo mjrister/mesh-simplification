@@ -6,7 +6,6 @@
 #include "graphics/mesh.cpp"
 
 namespace {
-	using namespace gfx;
 
 	TEST(MeshTest, TestValidateMeshWithInvalidNumberOfPositions) {
 		for (std::uint8_t i = 0; i <= static_cast<std::uint8_t>(4); ++i) {
