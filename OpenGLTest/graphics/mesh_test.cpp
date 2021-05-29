@@ -9,32 +9,36 @@ namespace {
 
 	TEST(MeshTest, TestValidateMeshWithInvalidNumberOfPositions) {
 		for (std::uint8_t i = 0; i <= static_cast<std::uint8_t>(4); ++i) {
-			if (i == 3) continue;
-			ASSERT_THROW(Validate(std::vector<glm::vec4>(i), {}, {}, {}), std::invalid_argument);
+			if (i != 3) {
+				ASSERT_THROW(Validate(std::vector<glm::vec4>(i), {}, {}, {}), std::invalid_argument);
+			}
 		}
 	}
 
 	TEST(MeshTest, TestValidateMeshWithInvalidNumberOfTextureCoordinates) {
 		const std::vector<glm::vec4> positions(3);
 		for (std::uint8_t i = 1; i <= static_cast<std::uint8_t>(4); ++i) {
-			if (i == 3) continue;
-			ASSERT_THROW(Validate(positions, std::vector<glm::vec2>(i), {}, {}), std::invalid_argument);
+			if (i != 3) {
+				ASSERT_THROW(Validate(positions, std::vector<glm::vec2>(i), {}, {}), std::invalid_argument);
+			}
 		}
 	}
 
 	TEST(MeshTest, TestValidateMeshInvalidNumberOfNormals) {
 		const std::vector<glm::vec4> positions(3);
 		for (std::uint8_t i = 1; i <= static_cast<std::uint8_t>(4); ++i) {
-			if (i == 3) continue;
-			ASSERT_THROW(Validate(positions, {}, std::vector<glm::vec3>(i), {}), std::invalid_argument);
+			if (i != 3) {
+				ASSERT_THROW(Validate(positions, {}, std::vector<glm::vec3>(i), {}), std::invalid_argument);
+			}
 		}
 	}
 
 	TEST(MeshTest, TestValidateMeshWithInvalidIndices) {
 		const std::vector<glm::vec4> positions(3);
 		for (std::uint8_t i = 1; i <= static_cast<std::uint8_t>(4); ++i) {
-			if (i == 3) continue;
-			ASSERT_THROW(Validate(positions, {}, {}, std::vector<GLuint>(i)), std::invalid_argument);
+			if (i != 3) {
+				ASSERT_THROW(Validate(positions, {}, {}, std::vector<GLuint>(i)), std::invalid_argument);
+			}
 		}
 	}
 
