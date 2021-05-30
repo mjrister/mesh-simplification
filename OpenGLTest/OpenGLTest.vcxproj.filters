@@ -14,7 +14,7 @@
     <ClCompile Include="graphics\arcball_test.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="geometry\half_edge_mesh_test.cpp">
+    <ClCompile Include="geometry\face_test.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
   </ItemGroup>

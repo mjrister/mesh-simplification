@@ -3,7 +3,6 @@
 #include "graphics/arcball.cpp"
 
 namespace {
-
 	TEST(ArcballTest, TestGetNormalizedDeviceCoordinates) {
 		constexpr auto width = 300;
 		constexpr auto height = 200;

@@ -4,7 +4,6 @@
 #include "graphics/obj_loader.cpp"
 
 namespace {
-
 	TEST(ObjLoaderTest, TestParseEmptyToken) {
 		ASSERT_THROW(ParseToken<GLint>(""), std::invalid_argument);
 	}

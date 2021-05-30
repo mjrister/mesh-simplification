@@ -1,9 +1,11 @@
 #include "face.h"
 
+#include <algorithm>
 #include <array>
 #include <sstream>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/epsilon.hpp>
 
 namespace {
 	std::array<std::shared_ptr<geometry::Vertex>, 3> GetMinVertexOrder(
@@ -27,7 +29,7 @@ namespace {
 
 		const auto edge01 = v1->Position() - v0->Position();
 		const auto edge02 = v2->Position() - v0->Position();
-		return glm::length(glm::cross(glm::vec3{edge01}, glm::vec3{edge02})) == 0.f;
+		return glm::cross(glm::vec3{edge01}, glm::vec3{edge02}) != glm::vec3{0.f};
 	}
 }
 
