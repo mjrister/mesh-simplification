@@ -1,0 +1,57 @@
+#include "face.h"
+
+#include <array>
+#include <sstream>
+#include <glm/glm.hpp>
+
+namespace {
+	std::array<std::shared_ptr<geometry::Vertex>, 3> GetMinVertexOrder(
+		const std::shared_ptr<geometry::Vertex>& v0,
+		const std::shared_ptr<geometry::Vertex>& v1,
+		const std::shared_ptr<geometry::Vertex>& v2) {
+
+		if (const auto min_id = std::min<>({v0->Id(), v1->Id(), v2->Id()}); min_id == v0->Id()) {
+			return {v0, v1, v2};
+		} else if (min_id == v1->Id()) {
+			return {v1, v2, v0};
+		} else {
+			return {v2, v0, v1};
+		}
+	}
+
+	bool IsTriangle(
+		const std::shared_ptr<geometry::Vertex>& v0,
+		const std::shared_ptr<geometry::Vertex>& v1,
+		const std::shared_ptr<geometry::Vertex>& v2) {
+
+		const auto edge01 = v1->Position() - v0->Position();
+		const auto edge02 = v2->Position() - v0->Position();
+		return glm::length(glm::cross(glm::vec3{edge01}, glm::vec3{edge02})) == 0.f;
+	}
+}
+
+std::size_t geometry::Face::GetFaceId(const Vertex& v0, const Vertex& v1, const Vertex& v2) {
+	std::size_t seed = 0x1C2CB417;
+	seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0.Id());
+	seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1.Id());
+	seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + std::hash<std::uint64_t>{}(v2.Id());
+	return seed;
+}
+
+geometry::Face::Face(
+	const std::size_t id,
+	const std::shared_ptr<Vertex>& v0,
+	const std::shared_ptr<Vertex>& v1,
+	const std::shared_ptr<Vertex>& v2): id_{id} {
+
+	const auto min_vertex_order = GetMinVertexOrder(v0, v1, v2);
+	v0_ = min_vertex_order[0];
+	v1_ = min_vertex_order[1];
+	v2_ = min_vertex_order[2];
+
+	if (IsTriangle(v0_, v1_, v2_)) {
+		std::ostringstream oss;
+		oss << *this << " is not a triangle";
+		throw std::invalid_argument{oss.str()};
+	}
+}

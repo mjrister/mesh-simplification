@@ -18,6 +18,9 @@
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="window.cpp" />
+    <ClCompile Include="geometry\face.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.h">
