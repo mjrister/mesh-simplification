@@ -19,37 +19,41 @@ namespace geometry {
 			const auto& normals = mesh.Normals();
 			const auto& indices = mesh.Indices();
 
-			vertices_.reserve(positions.size());
+			vertices_by_id_.reserve(positions.size());
 			for (std::size_t i = 0; i < positions.size(); ++i) {
-				vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i], normals[i]));
+				vertices_by_id_.emplace(i, std::make_shared<Vertex>(i, positions[i], normals[i]));
 			}
 
 			for (std::size_t i = 0; i < indices.size(); i += 3) {
-				const auto v0 = vertices_[indices[i]];
-				const auto v1 = vertices_[indices[i + 1]];
-				const auto v2 = vertices_[indices[i + 2]];
+				const auto v0 = vertices_by_id_[indices[i]];
+				const auto v1 = vertices_by_id_[indices[i + 1]];
+				const auto v2 = vertices_by_id_[indices[i + 2]];
 				const auto face012 = CreateTriangle(v0, v1, v2);
-				faces_.emplace(face012->Id(), face012);
+				faces_by_id_.emplace(face012->Id(), face012);
 			}
 		}
+
+		[[nodiscard]] const auto& VerticesById() const { return vertices_by_id_; }
+		[[nodiscard]] const auto& EdgesById() const { return edges_by_id_; }
+		[[nodiscard]] const auto& FacesById() const { return faces_by_id_; }
 
 		gfx::Mesh ToMesh() {
 
 			std::vector<glm::vec4> positions;
-			positions.reserve(vertices_.size());
+			positions.reserve(vertices_by_id_.size());
 
 			std::vector<glm::vec3> normals;
-			normals.reserve(vertices_.size());
+			normals.reserve(vertices_by_id_.size());
 
-			for (const auto& [_, vertex] : vertices_) {
+			for (const auto& [_, vertex] : vertices_by_id_) {
 				positions.push_back(vertex->Position());
 				normals.push_back(vertex->Normal());
 			}
 
 			std::vector<GLuint> indices;
-			indices.reserve(faces_.size() * 3);
+			indices.reserve(faces_by_id_.size() * 3);
 
-			for (const auto& [_, face] : faces_) {
+			for (const auto& [_, face] : faces_by_id_) {
 				indices.push_back(static_cast<GLuint>(face->V0()->Id()));
 				indices.push_back(static_cast<GLuint>(face->V1()->Id()));
 				indices.push_back(static_cast<GLuint>(face->V2()->Id()));
@@ -113,10 +117,10 @@ namespace geometry {
 			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) {
 
 			static auto get_or_insert = [this](const std::size_t id, const std::shared_ptr<Vertex>& vertex) {
-				if (const auto iterator = edges_.find(id); iterator != edges_.end()) {
+				if (const auto iterator = edges_by_id_.find(id); iterator != edges_by_id_.end()) {
 					return iterator->second;
 				}
-				const auto [iterator, _] = edges_.emplace(id, std::make_shared<HalfEdge>(id, vertex));
+				const auto [iterator, _] = edges_by_id_.emplace(id, std::make_shared<HalfEdge>(id, vertex));
 				return iterator->second;
 			};
 
@@ -161,7 +165,7 @@ namespace geometry {
 
 		std::shared_ptr<HalfEdge> GetHalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) {
 			const auto edge01_id = HalfEdge::GetHalfEdgeId(*v0, *v1);
-			if (const auto iterator = edges_.find(edge01_id); iterator == edges_.end()) {
+			if (const auto iterator = edges_by_id_.find(edge01_id); iterator == edges_by_id_.end()) {
 				throw std::invalid_argument("Attempted to retrieve a nonexistent edge");
 			} else {
 				return iterator->second;
@@ -169,33 +173,33 @@ namespace geometry {
 		}
 
 		void DeleteVertex(const std::shared_ptr<Vertex>& v0) {
-			if (const auto iterator = vertices_.find(v0->Id()); iterator == vertices_.end()) {
+			if (const auto iterator = vertices_by_id_.find(v0->Id()); iterator == vertices_by_id_.end()) {
 				throw std::invalid_argument{"Attempted to delete a nonexistent vertex"};
 			} else {
-				vertices_.erase(iterator);
+				vertices_by_id_.erase(iterator);
 			}
 		}
 
 		void DeleteEdge(const std::shared_ptr<HalfEdge>& edge01) {
 			for (const auto& edge : {edge01, edge01->Flip()}) {
-				if (const auto iterator = edges_.find(edge->Id()); iterator == edges_.end()) {
+				if (const auto iterator = edges_by_id_.find(edge->Id()); iterator == edges_by_id_.end()) {
 					throw std::invalid_argument{"Attempted to delete a nonexistent edge"};
 				} else {
-					edges_.erase(iterator);
+					edges_by_id_.erase(iterator);
 				}
 			}
 		}
 
 		void DeleteFace(const std::shared_ptr<Face>& face012) {
-			if (const auto iterator = faces_.find(face012->Id()); iterator == faces_.end()) {
+			if (const auto iterator = faces_by_id_.find(face012->Id()); iterator == faces_by_id_.end()) {
 				throw std::invalid_argument{"Attempted to delete nonexistent face"};
 			} else {
-				faces_.erase(iterator);
+				faces_by_id_.erase(iterator);
 			}
 		}
 
-		std::unordered_map<std::size_t, std::shared_ptr<Vertex>> vertices_;
-		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
-		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
+		std::unordered_map<std::size_t, std::shared_ptr<Vertex>> vertices_by_id_;
+		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_by_id_;
+		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_by_id_;
 	};
 }
