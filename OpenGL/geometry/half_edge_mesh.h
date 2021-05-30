@@ -166,6 +166,8 @@ namespace geometry {
 		std::shared_ptr<HalfEdge> GetHalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) {
 			const auto edge01_id = HalfEdge::GetHalfEdgeId(*v0, *v1);
 			if (const auto iterator = edges_by_id_.find(edge01_id); iterator == edges_by_id_.end()) {
+				std::ostringstream oss;
+				oss << "Attempted to delete a nonexistent edge (" << v0->Id() << ',' << v1->Id() << ')';
 				throw std::invalid_argument("Attempted to retrieve a nonexistent edge");
 			} else {
 				return iterator->second;
@@ -174,7 +176,9 @@ namespace geometry {
 
 		void DeleteVertex(const std::shared_ptr<Vertex>& v0) {
 			if (const auto iterator = vertices_by_id_.find(v0->Id()); iterator == vertices_by_id_.end()) {
-				throw std::invalid_argument{"Attempted to delete a nonexistent vertex"};
+				std::ostringstream oss;
+				oss << "Attempted to delete a nonexistent vertex " << *v0;
+				throw std::invalid_argument{oss.str()};
 			} else {
 				vertices_by_id_.erase(iterator);
 			}
@@ -183,7 +187,9 @@ namespace geometry {
 		void DeleteEdge(const std::shared_ptr<HalfEdge>& edge01) {
 			for (const auto& edge : {edge01, edge01->Flip()}) {
 				if (const auto iterator = edges_by_id_.find(edge->Id()); iterator == edges_by_id_.end()) {
-					throw std::invalid_argument{"Attempted to delete a nonexistent edge"};
+					std::ostringstream oss;
+					oss << "Attempted to delete a nonexistent edge " << *edge01;
+					throw std::invalid_argument{oss.str()};
 				} else {
 					edges_by_id_.erase(iterator);
 				}
@@ -192,7 +198,9 @@ namespace geometry {
 
 		void DeleteFace(const std::shared_ptr<Face>& face012) {
 			if (const auto iterator = faces_by_id_.find(face012->Id()); iterator == faces_by_id_.end()) {
-				throw std::invalid_argument{"Attempted to delete nonexistent face"};
+				std::ostringstream oss;
+				oss << "Attempted to delete a nonexistent face " << *face012;
+				throw std::invalid_argument{oss.str()};
 			} else {
 				faces_by_id_.erase(iterator);
 			}

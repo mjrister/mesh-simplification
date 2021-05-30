@@ -48,8 +48,8 @@ namespace geometry {
 		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
-		friend std::ostream& operator<<(std::ostream& os, const Face& obj) {
-			return os << '(' << obj.v0_->Id() << ',' << obj.v1_ << ',' << obj.v2_ << ')';
+		friend std::ostream& operator<<(std::ostream& os, const Face& face) {
+			return os << '(' << face.v0_->Id() << ',' << face.v1_ << ',' << face.v2_ << ')';
 		}
 
 	private:
