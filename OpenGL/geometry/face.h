@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <memory>
 #include <utility>
 
@@ -19,11 +20,28 @@ namespace geometry {
 			return seed;
 		}
 
-		Face(const std::size_t id, std::shared_ptr<Vertex> v0, std::shared_ptr<Vertex> v1, std::shared_ptr<Vertex> v2)
-			: id_{id},
-			  v0_{std::move(v0)},
-			  v1_{std::move(v1)},
-			  v2_{std::move(v2)} {}
+		static std::array<std::shared_ptr<Vertex>, 3> GetMinVertexOrder(
+			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2) {
+
+			if (const auto min_id = std::min<>({v0->Id(), v1->Id(), v2->Id()}); min_id == v0->Id()) {
+				return {v0, v1, v2};
+			} else if (min_id == v1->Id()) {
+				return {v1, v2, v0};
+			} else {
+				return {v2, v0, v1};
+			}
+		}
+
+		Face(const std::size_t id,
+		     const std::shared_ptr<Vertex>& v0,
+		     const std::shared_ptr<Vertex>& v1,
+		     const std::shared_ptr<Vertex>& v2) : id_{id} {
+
+			const auto min_vertex_order = GetMinVertexOrder(v0, v1, v2);
+			v0_ = min_vertex_order[0];
+			v1_ = min_vertex_order[1];
+			v2_ = min_vertex_order[2];
+		}
 
 		[[nodiscard]] std::size_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V0() const { return v0_; }
@@ -35,7 +53,7 @@ namespace geometry {
 
 	private:
 		const std::size_t id_;
-		const std::shared_ptr<Vertex> v0_, v1_, v2_;
+		std::shared_ptr<Vertex> v0_, v1_, v2_;
 		std::shared_ptr<HalfEdge> edge_;
 	};
 }
