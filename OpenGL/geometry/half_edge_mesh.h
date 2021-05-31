@@ -1,7 +1,7 @@
 #pragma once
 
+#include <map>
 #include <memory>
-#include <sstream>
 #include <unordered_map>
 
 #include "face.h"
@@ -19,9 +19,8 @@ namespace geometry {
 			const auto& normals = mesh.Normals();
 			const auto& indices = mesh.Indices();
 
-			vertices_.reserve(positions.size());
 			for (std::size_t i = 0; i < positions.size(); ++i) {
-				vertices_.push_back(std::make_shared<Vertex>(i, positions[i], normals[i]));
+				vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i], normals[i]));
 			}
 
 			for (std::size_t i = 0; i < indices.size(); i += 3) {
@@ -41,7 +40,7 @@ namespace geometry {
 			std::vector<glm::vec3> normals;
 			normals.reserve(vertices_.size());
 
-			for (const auto& vertex : vertices_) {
+			for (const auto& [_, vertex] : vertices_) {
 				positions.push_back(vertex->Position());
 				normals.push_back(vertex->Normal());
 			}
@@ -103,7 +102,7 @@ namespace geometry {
 			return edge01;
 		}
 
-		std::vector<std::shared_ptr<Vertex>> vertices_;
+		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;
 		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
 		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
 	};

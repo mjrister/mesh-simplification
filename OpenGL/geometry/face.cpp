@@ -49,3 +49,7 @@ geometry::Face::Face(
 		throw std::invalid_argument{oss.str()};
 	}
 }
+
+std::ostream& geometry::operator<<(std::ostream& os, const Face& face) {
+	return os << '(' << *face.v0_ << ',' << *face.v1_ << ',' << *face.v2_ << ')';
+}
