@@ -33,19 +33,10 @@ namespace {
 	}
 }
 
-std::size_t geometry::Face::GetFaceId(const Vertex& v0, const Vertex& v1, const Vertex& v2) {
-	std::size_t seed = 0x1C2CB417;
-	seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0.Id());
-	seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1.Id());
-	seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + std::hash<std::uint64_t>{}(v2.Id());
-	return seed;
-}
-
 geometry::Face::Face(
-	const std::size_t id,
 	const std::shared_ptr<Vertex>& v0,
 	const std::shared_ptr<Vertex>& v1,
-	const std::shared_ptr<Vertex>& v2): id_{id} {
+	const std::shared_ptr<Vertex>& v2) {
 
 	const auto min_vertex_order = GetMinVertexOrder(v0, v1, v2);
 	v0_ = min_vertex_order[0];

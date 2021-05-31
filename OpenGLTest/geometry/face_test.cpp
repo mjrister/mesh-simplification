@@ -30,4 +30,10 @@ namespace {
 		v2 = std::make_shared<geometry::Vertex>(0, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		ASSERT_FALSE(IsTriangle(v0, v1, v2));
 	}
+
+	TEST(FaceTest, TestGetFaceId) {
+		const auto v0 = std::make_shared<geometry::Vertex>(0, glm::vec4{}, glm::vec3{});
+		const auto v1 = std::make_shared<geometry::Vertex>(1, glm::vec4{}, glm::vec3{});
+		const auto v2 = std::make_shared<geometry::Vertex>(2, glm::vec4{}, glm::vec3{});
+	}
 }
