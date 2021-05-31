@@ -3,6 +3,8 @@
 
 #include "graphics/obj_loader.cpp"
 
+using namespace gfx;
+
 namespace {
 	TEST(ObjLoaderTest, TestParseEmptyToken) {
 		ASSERT_THROW(ParseToken<GLint>(""), std::invalid_argument);

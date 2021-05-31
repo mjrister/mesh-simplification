@@ -1,11 +1,8 @@
 #include <array>
-#include <memory>
 
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 #include <gtest/gtest.h>
 
-#include "geometry/face.h"
+#include "geometry/face.cpp"
 #include "geometry/vertex.h"
 
 using namespace geometry;
@@ -15,14 +12,14 @@ namespace {
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, .5f, 0.f, 1.f}, glm::vec3{});
 		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		return { v0, v1, v2 };
+		return {v0, v1, v2};
 	}
 
 	std::array<std::shared_ptr<Vertex>, 3> MakeInvalidTriangleVertices() {
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		return { v0, v1, v2 };
+		return {v0, v1, v2};
 	}
 
 	TEST(FaceTest, TestFaceInitializationVertexOrder) {
@@ -61,7 +58,7 @@ namespace {
 		ASSERT_THROW((Face{v0, v1, v2}), std::invalid_argument);
 	}
 
-	TEST(FaceTest, TestFaceStreamOperator) {
+	TEST(FaceTest, TestInsertionOperator) {
 		const auto [v0, v1, v2] = MakeTriangleVertices();
 		std::ostringstream oss;
 		oss << Face{v0, v1, v2};

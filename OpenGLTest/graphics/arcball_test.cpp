@@ -2,6 +2,8 @@
 
 #include "graphics/arcball.cpp"
 
+using namespace gfx;
+
 namespace {
 	TEST(ArcballTest, TestGetNormalizedDeviceCoordinates) {
 		constexpr auto width = 300;

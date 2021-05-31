@@ -17,13 +17,10 @@
     <ClCompile Include="geometry\face_test.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
-    <ClCompile Include="..\OpenGL\geometry\face.cpp">
-      <Filter>geometry\src</Filter>
+    <ClCompile Include="geometry\half_edge_test.cpp">
+      <Filter>geometry</Filter>
     </ClCompile>
-    <ClCompile Include="..\OpenGL\graphics\mesh.cpp">
-      <Filter>graphics\src</Filter>
-    </ClCompile>
-    <ClCompile Include="half_edge_test.cpp">
+    <ClCompile Include="geometry\vertex_test.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
   </ItemGroup>
@@ -36,12 +33,6 @@
     </Filter>
     <Filter Include="geometry">
       <UniqueIdentifier>{daec029e-b1ee-494e-a6df-6335e2413eda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="geometry\src">
-      <UniqueIdentifier>{03ff604f-d092-4808-8386-c1fd99a2d6b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="graphics\src">
-      <UniqueIdentifier>{195685bd-5792-4aec-9bfc-9b53a125aed6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

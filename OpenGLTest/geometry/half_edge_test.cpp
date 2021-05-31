@@ -9,16 +9,12 @@ using namespace geometry;
 
 namespace {
 	std::shared_ptr<HalfEdge> MakeHalfEdge(const std::uint64_t v0_id, const std::uint64_t v1_id) {
-
 		const auto v0 = std::make_shared<Vertex>(v0_id, glm::vec4{}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(v1_id, glm::vec4{}, glm::vec3{});
-
 		const auto edge01 = std::make_shared<HalfEdge>(v0, v1);
 		const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
-
 		edge01->SetFlip(edge10);
 		edge10->SetFlip(edge01);
-
 		return edge01;
 	}
 
