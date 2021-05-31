@@ -8,10 +8,10 @@
 using namespace geometry;
 
 namespace {
-	std::shared_ptr<HalfEdge> MakeHalfEdge() {
+	std::shared_ptr<HalfEdge> MakeHalfEdge(const std::uint64_t v0_id, const std::uint64_t v1_id) {
 
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{}, glm::vec3{});
+		const auto v0 = std::make_shared<Vertex>(v0_id, glm::vec4{}, glm::vec3{});
+		const auto v1 = std::make_shared<Vertex>(v1_id, glm::vec4{}, glm::vec3{});
 
 		const auto edge01 = std::make_shared<HalfEdge>(v0, v1);
 		const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
@@ -22,9 +22,21 @@ namespace {
 		return edge01;
 	}
 
-	TEST(HalfEdgeTest, TestHalfEdgeStreamOperator) {
+	TEST(HalfEdgeTest, TestEqualEdgesHaveTheSameId) {
+		const auto edge01 = MakeHalfEdge(0, 1);
+		const auto edge01_copy{edge01};
+		ASSERT_EQ(edge01->Id(), edge01_copy->Id());
+	}
+
+	TEST(HalfEdgeTest, TestEdgeHasDifferentIdThanFlipEdge) {
+		const auto edge01 = MakeHalfEdge(0, 1);
+		ASSERT_NE(edge01->Id(), edge01->Flip()->Id());
+	}
+
+	TEST(HalfEdgeTest, TestInsertionOperator) {
+		const auto edge01 = MakeHalfEdge(0, 1);
 		std::ostringstream oss;
-		oss << *MakeHalfEdge();
+		oss << *edge01;
 		ASSERT_EQ(oss.str(), "(0,1)");
 	}
 }
