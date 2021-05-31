@@ -11,7 +11,10 @@ namespace geometry {
 	class HalfEdge {
 
 	public:
-		HalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1);
+		static std::uint64_t GetHalfEdgeId(const Vertex& v0, const Vertex& v1);
+
+		HalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1)
+			: id_{GetHalfEdgeId(*v0, *v1)}, vertex_{v1} {}
 
 		[[nodiscard]] std::uint64_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> Vertex() const { return vertex_; }
