@@ -34,7 +34,7 @@ namespace geometry {
 		void SetFace(const std::shared_ptr<geometry::Face>& face) { face_ = face; }
 
 		friend std::ostream& operator<<(std::ostream& os, const HalfEdge& edge) {
-			return os << '(' << *edge.vertex_ << ',' << *edge.flip_->vertex_ << ')';
+			return os << '(' << *edge.flip_->vertex_ << ',' << *edge.vertex_ << ')';
 		}
 
 	private:

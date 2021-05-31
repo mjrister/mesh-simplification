@@ -23,6 +23,9 @@
     <ClCompile Include="..\OpenGL\graphics\mesh.cpp">
       <Filter>graphics\src</Filter>
     </ClCompile>
+    <ClCompile Include="half_edge_test.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">

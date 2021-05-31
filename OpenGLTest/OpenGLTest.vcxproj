@@ -40,6 +40,7 @@
     <ClCompile Include="..\OpenGL\graphics\mesh.cpp" />
     <ClCompile Include="geometry\face_test.cpp" />
     <ClCompile Include="graphics\arcball_test.cpp" />
+    <ClCompile Include="half_edge_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="graphics\obj_loader_test.cpp" />
     <ClCompile Include="graphics\mesh_test.cpp" />
