@@ -37,7 +37,7 @@ namespace {
 		ASSERT_FLOAT_EQ(cursor_position_ndc6.y, -1.f);
 	}
 
-	TEST(ArcballTest, TestGetArcballPositionForCursorInsideSphere) {
+	TEST(ArcballTest, TestGetArcballPositionForCursorInsideUnitSphere) {
 		constexpr auto x = 0.5f, y = .25f;
 		constexpr glm::vec2 cursor_position_ndc{x, y};
 		const auto arcball_position = GetArcballPosition(cursor_position_ndc);
@@ -46,7 +46,7 @@ namespace {
 		ASSERT_FLOAT_EQ(arcball_position.z, .82915622f);
 	}
 
-	TEST(ArcballTest, TestGetArcballPositionForCursorOutsideSphere) {
+	TEST(ArcballTest, TestGetArcballPositionForCursorOutsideUnitSphere) {
 		constexpr auto x = .75f, y = .85f;
 		constexpr glm::vec2 cursor_position_ndc{x, y};
 		const auto arcball_position = GetArcballPosition(cursor_position_ndc);

@@ -11,14 +11,17 @@ namespace geometry {
 	class Face {
 
 	public:
-		static std::size_t GetFaceId(const Vertex& v0, const Vertex& v1, const Vertex& v2);
+		static std::size_t GetFaceId(
+			const std::shared_ptr<Vertex>& v0,
+			const std::shared_ptr<Vertex>& v1,
+			const std::shared_ptr<Vertex>& v2);
 
-		Face(std::size_t id,
+		Face(std::uint64_t id,
 		     const std::shared_ptr<Vertex>& v0,
 		     const std::shared_ptr<Vertex>& v1,
 		     const std::shared_ptr<Vertex>& v2);
 
-		[[nodiscard]] std::size_t Id() const { return id_; }
+		[[nodiscard]] std::uint64_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V0() const { return v0_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V1() const { return v1_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V2() const { return v2_; }
@@ -31,7 +34,7 @@ namespace geometry {
 		}
 
 	private:
-		const std::size_t id_;
+		const std::uint64_t id_;
 		std::shared_ptr<Vertex> v0_, v1_, v2_;
 		std::shared_ptr<HalfEdge> edge_;
 	};

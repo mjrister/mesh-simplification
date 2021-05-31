@@ -12,18 +12,17 @@ namespace geometry {
 	class HalfEdge {
 
 	public:
-		static std::size_t GetHalfEdgeId(const Vertex& v0, const Vertex& v1) {
+		static std::uint64_t GetHalfEdgeId(const Vertex& v0, const Vertex& v1) {
 			std::size_t seed = 0x1C2CB417;
 			seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0.Id());
 			seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1.Id());
 			return seed;
 		}
 
-		explicit HalfEdge(const std::size_t id, std::shared_ptr<Vertex> vertex)
-			: id_{id},
-			  vertex_{std::move(vertex)} {}
+		explicit HalfEdge(const std::uint64_t id, std::shared_ptr<Vertex> vertex)
+			: id_{id}, vertex_{std::move(vertex)} {}
 
-		[[nodiscard]] std::size_t Id() const { return id_; }
+		[[nodiscard]] std::uint64_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> Vertex() const { return vertex_; }
 
 		[[nodiscard]] std::shared_ptr<HalfEdge> Next() const { return next_; }
@@ -40,7 +39,7 @@ namespace geometry {
 		}
 
 	private:
-		const std::size_t id_;
+		const std::uint64_t id_;
 		const std::shared_ptr<geometry::Vertex> vertex_;
 		std::shared_ptr<HalfEdge> next_, flip_;
 		std::shared_ptr<geometry::Face> face_;

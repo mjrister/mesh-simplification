@@ -102,7 +102,7 @@ namespace geometry {
 			edge12->SetNext(edge20);
 			edge20->SetNext(edge01);
 
-			const auto face012_id = Face::GetFaceId(*v0, *v1, *v2);
+			const auto face012_id = Face::GetFaceId(v0, v1, v2);
 			auto face012 = std::make_shared<Face>(face012_id, v0, v1, v2);
 			face012->SetEdge(edge01);
 
