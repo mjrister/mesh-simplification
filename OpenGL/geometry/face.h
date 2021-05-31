@@ -11,8 +11,14 @@ namespace geometry {
 	class Face {
 
 	public:
-		Face(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2);
+		static std::size_t GetFaceId(const Vertex& v0, const Vertex& v1, const Vertex& v2);
 
+		Face(std::size_t id,
+		     const std::shared_ptr<Vertex>& v0,
+		     const std::shared_ptr<Vertex>& v1,
+		     const std::shared_ptr<Vertex>& v2);
+
+		[[nodiscard]] std::size_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V0() const { return v0_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V1() const { return v1_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V2() const { return v2_; }
@@ -25,20 +31,8 @@ namespace geometry {
 		}
 
 	private:
+		const std::size_t id_;
 		std::shared_ptr<Vertex> v0_, v1_, v2_;
 		std::shared_ptr<HalfEdge> edge_;
-	};
-}
-
-namespace std {
-	template <>
-	struct hash<geometry::Face> {
-		std::size_t operator()(const geometry::Face& face) const noexcept {
-			std::size_t seed = 0x1C2CB417;
-			seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::size_t>{}(face.V0()->Id());
-			seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::size_t>{}(face.V1()->Id());
-			seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + std::hash<std::size_t>{}(face.V2()->Id());
-			return seed;
-		}
 	};
 }
