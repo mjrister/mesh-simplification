@@ -34,16 +34,3 @@ namespace geometry {
 		std::shared_ptr<HalfEdge> edge_;
 	};
 }
-
-namespace std {
-	template <>
-	struct hash<geometry::Face> {
-		std::size_t operator()(const geometry::Face& face) const noexcept {
-			std::uint64_t seed = 0x1C2CB417;
-			seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(face.V0()->Id());
-			seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(face.V1()->Id());
-			seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + std::hash<std::uint64_t>{}(face.V2()->Id());
-			return seed;
-		}
-	};
-}

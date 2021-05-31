@@ -3,7 +3,6 @@
 #include <memory>
 #include <sstream>
 #include <unordered_map>
-#include <unordered_set>
 
 #include "face.h"
 #include "graphics/mesh.h"
@@ -30,13 +29,13 @@ namespace geometry {
 				const auto v1 = vertices_by_id_[indices[i + 1]];
 				const auto v2 = vertices_by_id_[indices[i + 2]];
 				const auto face012 = CreateTriangle(v0, v1, v2);
-				faces_.insert(face012);
+				faces_by_id_.emplace(face012->Id(), face012);
 			}
 		}
 
 		[[nodiscard]] const auto& VerticesById() const { return vertices_by_id_; }
 		[[nodiscard]] const auto& EdgesById() const { return edges_by_id_; }
-		[[nodiscard]] const auto& FacesById() const { return faces_; }
+		[[nodiscard]] const auto& FacesById() const { return faces_by_id_; }
 
 		gfx::Mesh ToMesh() {
 
@@ -52,9 +51,9 @@ namespace geometry {
 			}
 
 			std::vector<GLuint> indices;
-			indices.reserve(faces_.size() * 3);
+			indices.reserve(faces_by_id_.size() * 3);
 
-			for (const auto& face : faces_) {
+			for (const auto& [_, face] : faces_by_id_) {
 				indices.push_back(static_cast<GLuint>(face->V0()->Id()));
 				indices.push_back(static_cast<GLuint>(face->V1()->Id()));
 				indices.push_back(static_cast<GLuint>(face->V2()->Id()));
@@ -197,17 +196,17 @@ namespace geometry {
 		}
 
 		void DeleteFace(const std::shared_ptr<Face>& face012) {
-			if (const auto iterator = faces_.find(face012); iterator == faces_.end()) {
+			if (const auto iterator = faces_by_id_.find(face012->Id()); iterator == faces_by_id_.end()) {
 				std::ostringstream oss;
 				oss << "Attempted to delete a nonexistent face " << *face012;
 				throw std::invalid_argument{oss.str()};
 			} else {
-				faces_.erase(iterator);
+				faces_by_id_.erase(iterator);
 			}
 		}
 
 		std::unordered_map<std::size_t, std::shared_ptr<Vertex>> vertices_by_id_;
 		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_by_id_;
-		std::unordered_set<std::shared_ptr<Face>> faces_;
+		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_by_id_;
 	};
 }
