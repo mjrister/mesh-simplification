@@ -87,22 +87,21 @@ namespace geometry {
 		std::shared_ptr<HalfEdge> CreateHalfEdge(
 			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) {
 
-			static auto get_or_insert = [this](const std::size_t id, const std::shared_ptr<Vertex>& vertex) {
-				if (const auto iterator = edges_.find(id); iterator != edges_.end()) {
-					return iterator->second;
-				}
-				const auto [iterator, _] = edges_.emplace(id, std::make_shared<HalfEdge>(id, vertex));
+			if (const auto iterator = edges_.find(HalfEdge::GetHalfEdgeId(*v0, *v1)); iterator != edges_.end()) {
 				return iterator->second;
-			};
+			}
 
 			const auto edge01_id = HalfEdge::GetHalfEdgeId(*v0, *v1);
-			const auto edge01 = get_or_insert(edge01_id, v1);
+			const auto edge01 = std::make_shared<HalfEdge>(edge01_id, v1);
 
 			const auto edge10_id = HalfEdge::GetHalfEdgeId(*v1, *v0);
-			const auto edge10 = get_or_insert(edge10_id, v0);
+			const auto edge10 = std::make_shared<HalfEdge>(edge10_id, v0);
 
 			edge01->SetFlip(edge10);
 			edge10->SetFlip(edge01);
+
+			edges_.emplace(edge01_id, edge01);
+			edges_.emplace(edge10_id, edge10);
 
 			return edge01;
 		}
