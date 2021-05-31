@@ -4,106 +4,24 @@
 #include <memory>
 #include <unordered_map>
 
-#include "face.h"
-#include "graphics/mesh.h"
-#include "half_edge.h"
-#include "vertex.h"
+namespace gfx {
+	class Mesh;
+}
 
 namespace geometry {
+	class HalfEdge;
+	class Face;
+	class Vertex;
 
 	class HalfEdgeMesh {
 
 	public:
-		explicit HalfEdgeMesh(const gfx::Mesh& mesh) {
-			const auto& positions = mesh.Positions();
-			const auto& normals = mesh.Normals();
-			const auto& indices = mesh.Indices();
-
-			for (std::size_t i = 0; i < positions.size(); ++i) {
-				vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i], normals[i]));
-			}
-
-			for (std::size_t i = 0; i < indices.size(); i += 3) {
-				const auto v0 = vertices_[indices[i]];
-				const auto v1 = vertices_[indices[i + 1]];
-				const auto v2 = vertices_[indices[i + 2]];
-				const auto face012 = CreateTriangle(v0, v1, v2);
-				faces_.emplace(face012->Id(), face012);
-			}
-		}
-
-		gfx::Mesh ToMesh() {
-
-			std::vector<glm::vec4> positions;
-			positions.reserve(vertices_.size());
-
-			std::vector<glm::vec3> normals;
-			normals.reserve(vertices_.size());
-
-			for (const auto& [_, vertex] : vertices_) {
-				positions.push_back(vertex->Position());
-				normals.push_back(vertex->Normal());
-			}
-
-			std::vector<GLuint> indices;
-			indices.reserve(faces_.size() * 3);
-
-			for (const auto& [_, face] : faces_) {
-				indices.push_back(static_cast<GLuint>(face->V0()->Id()));
-				indices.push_back(static_cast<GLuint>(face->V1()->Id()));
-				indices.push_back(static_cast<GLuint>(face->V2()->Id()));
-			}
-
-			return gfx::Mesh{positions, {}, normals, indices};
-		}
+		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
+		gfx::Mesh ToMesh();
 
 	private:
-		std::shared_ptr<Face> CreateTriangle(
-			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2) {
-
-			const auto edge01 = CreateHalfEdge(v0, v1);
-			const auto edge12 = CreateHalfEdge(v1, v2);
-			const auto edge20 = CreateHalfEdge(v2, v0);
-
-			v0->SetEdge(edge20);
-			v1->SetEdge(edge01);
-			v2->SetEdge(edge12);
-
-			edge01->SetNext(edge12);
-			edge12->SetNext(edge20);
-			edge20->SetNext(edge01);
-
-			auto face012 = std::make_shared<Face>(v0, v1, v2);
-			face012->SetEdge(edge01);
-
-			edge01->SetFace(face012);
-			edge12->SetFace(face012);
-			edge20->SetFace(face012);
-
-			return face012;
-		}
-
-		std::shared_ptr<HalfEdge> CreateHalfEdge(
-			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) {
-
-			if (const auto iterator = edges_.find(HalfEdge::GetHalfEdgeId(*v0, *v1)); iterator != edges_.end()) {
-				return iterator->second;
-			}
-
-			const auto edge01 = std::make_shared<HalfEdge>(v0, v1);
-			const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
-
-			edge01->SetFlip(edge10);
-			edge10->SetFlip(edge01);
-
-			edges_.emplace(edge01->Id(), edge01);
-			edges_.emplace(edge10->Id(), edge10);
-
-			return edge01;
-		}
-
-		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;
-		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
-		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
+		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_by_id_;
+		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_by_id_;
+		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_by_id_;
 	};
 }
