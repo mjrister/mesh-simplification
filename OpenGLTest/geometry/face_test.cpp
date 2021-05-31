@@ -57,21 +57,6 @@ namespace {
 		ASSERT_THROW((Face{v0, v1, v2}), std::invalid_argument);
 	}
 
-	TEST(FaceTest, TestFaceEquality) {
-
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, .5f, 0.f, 1.f}, glm::vec3{});
-		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-
-		const Face face012{v0, v1, v2};
-		const Face face120{v1, v2, v0};
-		const Face face201{v2, v0, v1};
-
-		ASSERT_EQ(face012, face012);
-		ASSERT_EQ(face012, face120);
-		ASSERT_EQ(face012, face201);
-	}
-
 	TEST(FaceTest, TestFaceStreamOperator) {
 
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
