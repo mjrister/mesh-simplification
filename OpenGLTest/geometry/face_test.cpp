@@ -11,12 +11,23 @@
 using namespace geometry;
 
 namespace {
-	TEST(FaceTest, TestFaceInitializationVertexOrder) {
-
+	std::array<std::shared_ptr<Vertex>, 3> MakeTriangle() {
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, .5f, 0.f, 1.f}, glm::vec3{});
 		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
+		return { v0, v1, v2 };
+	}
 
+	std::array<std::shared_ptr<Vertex>, 3> MakeInvalidTriangle() {
+		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
+		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, -1.f, 0.f, 1.f}, glm::vec3{});
+		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
+		return { v0, v1, v2 };
+	}
+
+	TEST(FaceTest, TestFaceInitializationVertexOrder) {
+
+		const auto [v0, v1, v2] = MakeTriangle();
 		const Face face012{v0, v1, v2};
 		const Face face120{v1, v2, v0};
 		const Face face201{v2, v0, v1};
@@ -36,10 +47,7 @@ namespace {
 
 	TEST(FaceTest, TestEquivalentFacesHaveSameId) {
 
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, .5f, 0.f, 1.f}, glm::vec3{});
-		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-
+		const auto [v0, v1, v2] = MakeTriangle();
 		const Face face012{v0, v1, v2};
 		const Face face120{v1, v2, v0};
 		const Face face201{v2, v0, v1};
@@ -49,23 +57,14 @@ namespace {
 	}
 
 	TEST(FaceTest, TestFaceInitializationWithCollinearVerticesThrowsException) {
-
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-
+		const auto [v0, v1, v2] = MakeInvalidTriangle();
 		ASSERT_THROW((Face{v0, v1, v2}), std::invalid_argument);
 	}
 
 	TEST(FaceTest, TestFaceStreamOperator) {
-
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, .5f, 0.f, 1.f}, glm::vec3{});
-		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-
+		const auto [v0, v1, v2] = MakeTriangle();
 		std::ostringstream oss;
 		oss << Face{v0, v1, v2};
-
 		ASSERT_EQ("(0,1,2)", oss.str());
 	}
 }
