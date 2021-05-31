@@ -1,26 +1,20 @@
 #include "face.h"
 
 #include <algorithm>
-#include <array>
 #include <sstream>
+#include <tuple>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
 namespace {
-	std::uint64_t GetFaceId(
-		const std::shared_ptr<geometry::Vertex>& v0,
-		const std::shared_ptr<geometry::Vertex>& v1,
-		const std::shared_ptr<geometry::Vertex>& v2) {
-
+	std::uint64_t GetFaceId(const geometry::Vertex& v0, const geometry::Vertex& v1, const geometry::Vertex& v2) {
 		std::uint64_t seed = 0x1C2CB417;
-		seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0->Id());
-		seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1->Id());
-		seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + std::hash<std::uint64_t>{}(v2->Id());
-
+		seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0.Id());
+		seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1.Id());
+		seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + std::hash<std::uint64_t>{}(v2.Id());
 		return seed;
 	}
-
 
 	auto GetMinVertexOrder(
 		const std::shared_ptr<geometry::Vertex>& v0,
@@ -36,14 +30,10 @@ namespace {
 		}
 	}
 
-	bool IsTriangle(
-		const std::shared_ptr<geometry::Vertex>& v0,
-		const std::shared_ptr<geometry::Vertex>& v1,
-		const std::shared_ptr<geometry::Vertex>& v2) {
-
-		const auto edge01 = v1->Position() - v0->Position();
-		const auto edge02 = v2->Position() - v0->Position();
-		return glm::cross(glm::vec3{edge01}, glm::vec3{edge02}) != glm::vec3{0.f};
+	bool IsTriangle(const geometry::Vertex& v0, const geometry::Vertex& v1, const geometry::Vertex& v2) {
+		const glm::vec3 edge01 = v1.Position() - v0.Position();
+		const glm::vec3 edge02 = v2.Position() - v0.Position();
+		return glm::cross(edge01, edge02) != glm::vec3{0.f};
 	}
 }
 
@@ -51,9 +41,9 @@ geometry::Face::Face(
 	const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2) {
 
 	std::tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
-	id_ = GetFaceId(v0_, v1_, v2_);
+	id_ = GetFaceId(*v0_, *v1_, *v2_);
 
-	if (!IsTriangle(v0_, v1_, v2_)) {
+	if (!IsTriangle(*v0_, *v1_, *v2_)) {
 		std::ostringstream oss;
 		oss << *this << " is not a triangle";
 		throw std::invalid_argument{oss.str()};
