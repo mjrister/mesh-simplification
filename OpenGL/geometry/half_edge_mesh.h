@@ -33,10 +33,6 @@ namespace geometry {
 			}
 		}
 
-		[[nodiscard]] const auto& VerticesById() const { return vertices_; }
-		[[nodiscard]] const auto& EdgesById() const { return edges_; }
-		[[nodiscard]] const auto& FacesById() const { return faces_; }
-
 		gfx::Mesh ToMesh() {
 
 			std::vector<glm::vec4> positions;
