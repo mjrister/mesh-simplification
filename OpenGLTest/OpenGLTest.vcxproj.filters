@@ -20,6 +20,9 @@
     <ClCompile Include="..\OpenGL\geometry\face.cpp">
       <Filter>geometry\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\OpenGL\graphics\mesh.cpp">
+      <Filter>graphics\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
@@ -33,6 +36,9 @@
     </Filter>
     <Filter Include="geometry\src">
       <UniqueIdentifier>{03ff604f-d092-4808-8386-c1fd99a2d6b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\src">
+      <UniqueIdentifier>{195685bd-5792-4aec-9bfc-9b53a125aed6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
