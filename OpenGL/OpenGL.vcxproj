@@ -210,7 +210,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="geometry\face.cpp" />
-    <ClCompile Include="geometry\half_edge.cpp" />
     <ClCompile Include="graphics\arcball.cpp" />
     <ClCompile Include="graphics\mesh.cpp" />
     <ClCompile Include="graphics\obj_loader.cpp" />

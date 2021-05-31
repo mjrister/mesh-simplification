@@ -21,7 +21,6 @@
     <ClCompile Include="geometry\face.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
-    <ClCompile Include="geometry\half_edge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.h">
