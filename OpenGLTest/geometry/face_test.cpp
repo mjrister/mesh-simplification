@@ -11,14 +11,14 @@
 using namespace geometry;
 
 namespace {
-	std::array<std::shared_ptr<Vertex>, 3> MakeTriangle() {
+	std::array<std::shared_ptr<Vertex>, 3> MakeTriangleVertices() {
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, .5f, 0.f, 1.f}, glm::vec3{});
 		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		return { v0, v1, v2 };
 	}
 
-	std::array<std::shared_ptr<Vertex>, 3> MakeInvalidTriangle() {
+	std::array<std::shared_ptr<Vertex>, 3> MakeInvalidTriangleVertices() {
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, -1.f, 0.f, 1.f}, glm::vec3{});
 		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
@@ -27,7 +27,7 @@ namespace {
 
 	TEST(FaceTest, TestFaceInitializationVertexOrder) {
 
-		const auto [v0, v1, v2] = MakeTriangle();
+		const auto [v0, v1, v2] = MakeTriangleVertices();
 		const Face face012{v0, v1, v2};
 		const Face face120{v1, v2, v0};
 		const Face face201{v2, v0, v1};
@@ -47,7 +47,7 @@ namespace {
 
 	TEST(FaceTest, TestEquivalentFacesHaveSameId) {
 
-		const auto [v0, v1, v2] = MakeTriangle();
+		const auto [v0, v1, v2] = MakeTriangleVertices();
 		const Face face012{v0, v1, v2};
 		const Face face120{v1, v2, v0};
 		const Face face201{v2, v0, v1};
@@ -57,12 +57,12 @@ namespace {
 	}
 
 	TEST(FaceTest, TestFaceInitializationWithCollinearVerticesThrowsException) {
-		const auto [v0, v1, v2] = MakeInvalidTriangle();
+		const auto [v0, v1, v2] = MakeInvalidTriangleVertices();
 		ASSERT_THROW((Face{v0, v1, v2}), std::invalid_argument);
 	}
 
 	TEST(FaceTest, TestFaceStreamOperator) {
-		const auto [v0, v1, v2] = MakeTriangle();
+		const auto [v0, v1, v2] = MakeTriangleVertices();
 		std::ostringstream oss;
 		oss << Face{v0, v1, v2};
 		ASSERT_EQ("(0,1,2)", oss.str());
