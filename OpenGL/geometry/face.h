@@ -11,15 +11,7 @@ namespace geometry {
 	class Face {
 
 	public:
-		static std::size_t GetFaceId(
-			const std::shared_ptr<Vertex>& v0,
-			const std::shared_ptr<Vertex>& v1,
-			const std::shared_ptr<Vertex>& v2);
-
-		Face(std::uint64_t id,
-		     const std::shared_ptr<Vertex>& v0,
-		     const std::shared_ptr<Vertex>& v1,
-		     const std::shared_ptr<Vertex>& v2);
+		Face(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2);
 
 		[[nodiscard]] std::uint64_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V0() const { return v0_; }
@@ -29,12 +21,15 @@ namespace geometry {
 		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
+		friend bool operator==(const Face& lhs, const Face& rhs) { return lhs.id_ == rhs.id_; }
+		friend bool operator!=(const Face& lhs, const Face& rhs) { return !(lhs == rhs); }
+
 		friend std::ostream& operator<<(std::ostream& os, const Face& face) {
-			return os << '(' << face.v0_->Id() << ',' << face.v1_ << ',' << face.v2_ << ')';
+			return os << '(' << *face.v0_ << ',' << *face.v1_ << ',' << *face.v2_ << ')';
 		}
 
 	private:
-		const std::uint64_t id_;
+		std::uint64_t id_;
 		std::shared_ptr<Vertex> v0_, v1_, v2_;
 		std::shared_ptr<HalfEdge> edge_;
 	};

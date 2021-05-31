@@ -36,6 +36,7 @@
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\OpenGL\geometry\face.cpp" />
     <ClCompile Include="geometry\face_test.cpp" />
     <ClCompile Include="graphics\arcball_test.cpp" />
     <ClCompile Include="main.cpp" />
