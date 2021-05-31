@@ -12,7 +12,7 @@ namespace {
 	 * \throw std::invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
 	 */
 	void Validate(
-		const std::vector<glm::vec4>& positions,
+		const std::vector<glm::vec3>& positions,
 		const std::vector<glm::vec2>& texture_coordinates,
 		const std::vector<glm::vec3>& normals,
 		const std::vector<GLuint>& indices) {
@@ -33,7 +33,7 @@ namespace {
 }
 
 gfx::Mesh::Mesh(
-	std::vector<glm::vec4> positions,
+	std::vector<glm::vec3> positions,
 	std::vector<glm::vec2> texture_coordinates,
 	std::vector<glm::vec3> normals,
 	std::vector<GLuint> indices)
@@ -51,7 +51,7 @@ gfx::Mesh::Mesh(
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
 
 	// allocate memory for the vertex buffer
-	const std::size_t positions_size = sizeof(glm::vec4) * positions_.size();
+	const std::size_t positions_size = sizeof(glm::vec3) * positions_.size();
 	const std::size_t texture_coordinates_size = sizeof(glm::vec2) * texture_coordinates_.size();
 	const std::size_t normals_size = sizeof(glm::vec3) * normals_.size();
 	const std::size_t buffer_size = positions_size + texture_coordinates_size + normals_size;
@@ -59,7 +59,7 @@ gfx::Mesh::Mesh(
 
 	// copy positions to the vertex buffer
 	glBufferSubData(GL_ARRAY_BUFFER, 0, positions_size, positions_.data());
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(0));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(0));
 	glEnableVertexAttribArray(0);
 
 	// copy texture coordinates to the vertex buffer

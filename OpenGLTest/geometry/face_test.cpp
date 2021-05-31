@@ -9,16 +9,16 @@ using namespace geometry;
 
 namespace {
 	std::array<std::shared_ptr<Vertex>, 3> MakeTriangleVertices() {
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, .5f, 0.f, 1.f}, glm::vec3{});
-		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
+		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{});
+		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{0.f, .5f, 0.f}, glm::vec3{});
+		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{1.f, -1.f, 0.f}, glm::vec3{});
 		return {v0, v1, v2};
 	}
 
 	std::array<std::shared_ptr<Vertex>, 3> MakeInvalidTriangleVertices() {
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec4{-1.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec4{0.f, -1.f, 0.f, 1.f}, glm::vec3{});
-		const auto v2 = std::make_shared<Vertex>(2, glm::vec4{1.f, -1.f, 0.f, 1.f}, glm::vec3{});
+		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{});
+		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{0.f, -1.f, 0.f}, glm::vec3{});
+		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{1.f, -1.f, 0.f}, glm::vec3{});
 		return {v0, v1, v2};
 	}
 

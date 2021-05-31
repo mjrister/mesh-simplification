@@ -129,7 +129,7 @@ namespace {
 	 * \throw std::invalid_argument Indicates the input stream contains an unsupported format.
 	 */
 	gfx::Mesh LoadMesh(std::istream& is) {
-		std::vector<glm::vec4> positions;
+		std::vector<glm::vec3> positions;
 		std::vector<glm::vec2> texture_coordinates;
 		std::vector<glm::vec3> normals;
 		std::vector<std::array<glm::ivec3, 3>> faces;
@@ -137,7 +137,7 @@ namespace {
 		for (std::string line; std::getline(is, line);) {
 			if (const auto line_view = string::Trim(line); !line_view.empty() && !string::StartsWith(line_view, "#")) {
 				if (string::StartsWith(line_view, "v ")) {
-					positions.emplace_back(ParseLine<GLfloat, 3>(line), 1.0f);
+					positions.push_back(ParseLine<GLfloat, 3>(line));
 				} else if (string::StartsWith(line_view, "vt ")) {
 					texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
 				} else if (string::StartsWith(line_view, "vn ")) {

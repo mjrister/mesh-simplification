@@ -79,7 +79,7 @@ HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) {
 
 gfx::Mesh HalfEdgeMesh::ToMesh() {
 
-	std::vector<glm::vec4> positions;
+	std::vector<glm::vec3> positions;
 	positions.reserve(vertices_by_id_.size());
 
 	std::vector<glm::vec3> normals;

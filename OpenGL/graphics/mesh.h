@@ -26,7 +26,7 @@ namespace gfx {
 		 *       index assumes alignment between \p positions and \p texture_coordinates, \p normals.
 		 */
 		explicit Mesh(
-			std::vector<glm::vec4> positions,
+			std::vector<glm::vec3> positions,
 			std::vector<glm::vec2> texture_coordinates = {},
 			std::vector<glm::vec3> normals = {},
 			std::vector<GLuint> indices = {});
@@ -39,7 +39,7 @@ namespace gfx {
 		Mesh& operator=(Mesh&& mesh) noexcept;
 
 		/** \brief Gets the mesh vertex positions. */
-		[[nodiscard]] const std::vector<glm::vec4>& Positions() const { return positions_; }
+		[[nodiscard]] const std::vector<glm::vec3>& Positions() const { return positions_; }
 
 		/** \brief Gets the mesh texture coordinates. */
 		[[nodiscard]] const std::vector<glm::vec2>& TextureCoordinates() const { return texture_coordinates_; }
@@ -86,7 +86,7 @@ namespace gfx {
 
 	private:
 		GLuint vertex_array_{}, vertex_buffer_{}, element_buffer_{};
-		std::vector<glm::vec4> positions_;
+		std::vector<glm::vec3> positions_;
 		std::vector<glm::vec2> texture_coordinates_;
 		std::vector<glm::vec3> normals_;
 		std::vector<GLuint> indices_;

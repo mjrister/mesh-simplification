@@ -4,7 +4,6 @@
 #include <ostream>
 
 #include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 
 namespace geometry {
 	class HalfEdge;
@@ -12,11 +11,11 @@ namespace geometry {
 	class Vertex {
 
 	public:
-		Vertex(const std::uint64_t id, const glm::vec4& position, const glm::vec3& normal)
+		Vertex(const std::uint64_t id, const glm::vec3& position, const glm::vec3& normal)
 			: id_{id}, position_{position}, normal_{normal} {}
 
 		[[nodiscard]] std::uint64_t Id() const { return id_; }
-		[[nodiscard]] const glm::vec4& Position() const { return position_; }
+		[[nodiscard]] const glm::vec3& Position() const { return position_; }
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
 		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
@@ -26,8 +25,7 @@ namespace geometry {
 
 	private:
 		const std::uint64_t id_;
-		const glm::vec4 position_;
-		const glm::vec3 normal_;
+		const glm::vec3 position_, normal_;
 		std::shared_ptr<HalfEdge> edge_;
 	};
 }
