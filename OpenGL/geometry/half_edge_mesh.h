@@ -91,17 +91,14 @@ namespace geometry {
 				return iterator->second;
 			}
 
-			const auto edge01_id = HalfEdge::GetHalfEdgeId(*v0, *v1);
-			const auto edge01 = std::make_shared<HalfEdge>(edge01_id, v1);
-
-			const auto edge10_id = HalfEdge::GetHalfEdgeId(*v1, *v0);
-			const auto edge10 = std::make_shared<HalfEdge>(edge10_id, v0);
+			const auto edge01 = std::make_shared<HalfEdge>(v0, v1);
+			const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
 
 			edge01->SetFlip(edge10);
 			edge10->SetFlip(edge01);
 
-			edges_.emplace(edge01_id, edge01);
-			edges_.emplace(edge10_id, edge10);
+			edges_.emplace(edge01->Id(), edge01);
+			edges_.emplace(edge10->Id(), edge10);
 
 			return edge01;
 		}

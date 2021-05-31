@@ -19,8 +19,8 @@ namespace geometry {
 			return seed;
 		}
 
-		explicit HalfEdge(const std::uint64_t id, std::shared_ptr<Vertex> vertex)
-			: id_{id}, vertex_{std::move(vertex)} {}
+		HalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1)
+			: id_{GetHalfEdgeId(*v0, *v1)}, vertex_{v1} {}
 
 		[[nodiscard]] std::uint64_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> Vertex() const { return vertex_; }
