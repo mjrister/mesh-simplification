@@ -4,41 +4,13 @@
 
 #include "geometry/face.h"
 #include "geometry/half_edge.h"
+#include "geometry/hash.h"
 #include "geometry/vertex.h"
 #include "graphics/mesh.h"
 
 using namespace geometry;
 
 namespace {
-	std::size_t hash_value(const Vertex& v0) {
-		std::size_t seed = 0x3E9EB221;
-		seed ^= (seed << 6) + (seed >> 2) + 0x3573AC13 + std::hash<std::uint64_t>{}(v0.Id());
-		return seed;
-	}
-
-	std::size_t hash_value(const Vertex& v0, const Vertex& v1) {
-		std::size_t seed = 0x32C95994;
-		seed ^= (seed << 6) + (seed >> 2) + 0x3FA612CE + hash_value(v0);
-		seed ^= (seed << 6) + (seed >> 2) + 0x197685C2 + hash_value(v1);
-		return seed;
-	}
-
-	std::size_t hash_value(const Vertex& v0, const Vertex& v1, const Vertex& v2) {
-		std::size_t seed = 0x230402B5;
-		seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + hash_value(v0);
-		seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + hash_value(v1);
-		seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + hash_value(v2);
-		return seed;
-	}
-
-	std::size_t hash_value(const HalfEdge& edge) {
-		return hash_value(*edge.Flip()->Vertex(), *edge.Vertex());
-	}
-
-	std::size_t hash_value(const Face& face) {
-		return hash_value(*face.V0(), *face.V1(), *face.V2());
-	}
-
 	std::shared_ptr<HalfEdge> CreateHalfEdge(
 		const std::shared_ptr<Vertex>& v0,
 		const std::shared_ptr<Vertex>& v1,

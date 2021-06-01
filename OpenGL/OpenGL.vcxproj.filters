@@ -61,6 +61,7 @@
     <ClInclude Include="geometry\half_edge_mesh.h">
       <Filter>geometry</Filter>
     </ClInclude>
+    <ClInclude Include="geometry\hash.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">

@@ -221,6 +221,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry\face.h" />
+    <ClInclude Include="geometry\hash.h" />
     <ClInclude Include="graphics\arcball.h" />
     <ClInclude Include="graphics\texture2d.h" />
     <ClInclude Include="graphics\material.h" />
