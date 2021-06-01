@@ -1,4 +1,4 @@
-#include "obj_loader.h"
+#include "graphics/obj_loader.h"
 
 #include <algorithm>
 #include <array>
@@ -13,7 +13,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "mesh.h"
+#include "graphics/mesh.h"
 #include "utils/string.h"
 
 namespace {

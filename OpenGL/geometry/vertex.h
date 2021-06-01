@@ -25,7 +25,9 @@ namespace geometry {
 			return lhs.id_ == rhs.id_ && lhs.position_ == rhs.position_ && lhs.normal_ == rhs.normal_;
 		}
 
-		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) { return os << vertex.id_; }
+		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) {
+			return os << vertex.id_;
+		}
 
 	private:
 		const std::uint64_t id_;

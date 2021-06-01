@@ -1,4 +1,4 @@
-#include "arcball.h"
+#include "graphics/arcball.h"
 
 #include <cmath>
 #include <algorithm>
