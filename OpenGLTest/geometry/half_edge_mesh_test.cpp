@@ -11,7 +11,7 @@ using namespace gfx;
 
 namespace {
 
-	HalfEdgeMesh MakeHalfEdgeMesh() {
+	Mesh MakeMesh() {
 
 		const std::vector<glm::vec3> positions{
 			{1.f, 0.f, 0.f},   // v0
@@ -52,8 +52,7 @@ namespace {
 			1, 6, 7  // f9
 		};
 
-		const Mesh mesh{positions, {}, normals, indices};
-		return HalfEdgeMesh{mesh};
+		return Mesh{positions, {}, normals, indices};
 	}
 
 	void VerifyEdge(
@@ -127,22 +126,13 @@ namespace {
 
 	TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
 
-		const auto half_edge_mesh = MakeHalfEdgeMesh();
+		const auto mesh = MakeMesh();
+		HalfEdgeMesh half_edge_mesh{mesh};
+
 		ASSERT_EQ(10, half_edge_mesh.VerticesById().size());
 		ASSERT_EQ(38, half_edge_mesh.EdgesById().size());
 		ASSERT_EQ(10, half_edge_mesh.FacesById().size());
 
-		VerifyTriangles(half_edge_mesh, std::vector<GLuint> {
-			0, 2, 3,
-			0, 3, 1,
-			0, 1, 7,
-			0, 7, 8,
-			0, 8, 9,
-			0, 9, 2,
-			1, 3, 4,
-			1, 4, 5,
-			1, 5, 6,
-			1, 6, 7
-		});
+		VerifyTriangles(half_edge_mesh, mesh.Indices());
 	}
 }
