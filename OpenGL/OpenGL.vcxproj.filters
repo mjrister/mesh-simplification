@@ -89,11 +89,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="models\monkey.obj">
-      <Filter>models</Filter>
-    </Object>
     <Object Include="models\bunny.obj">
       <Filter>models</Filter>
     </Object>
+    <Object Include="models\bob.obj" />
+    <Object Include="models\sphere.obj" />
+    <Object Include="models\spot.obj" />
+    <Object Include="models\torus.obj" />
   </ItemGroup>
 </Project>
