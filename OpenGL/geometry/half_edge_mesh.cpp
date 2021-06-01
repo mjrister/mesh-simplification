@@ -70,8 +70,7 @@ namespace {
 			std::ostringstream oss;
 			oss << "Attempted to retrieve a nonexistent edge (" << v0.Id() << ',' << v1.Id() << ')';
 			throw std::invalid_argument("Attempted to retrieve a nonexistent edge");
-		}
-		else {
+		} else {
 			return iterator->second;
 		}
 	}
@@ -82,8 +81,7 @@ namespace {
 			std::ostringstream oss;
 			oss << "Attempted to delete a nonexistent vertex " << v0;
 			throw std::invalid_argument{oss.str()};
-		}
-		else {
+		} else {
 			vertices.erase(iterator);
 		}
 	}
@@ -94,9 +92,8 @@ namespace {
 			if (const auto iterator = edges.find(edge_key); iterator == edges.end()) {
 				std::ostringstream oss;
 				oss << "Attempted to delete a nonexistent edge " << edge;
-				throw std::invalid_argument{ oss.str() };
-			}
-			else {
+				throw std::invalid_argument{oss.str()};
+			} else {
 				edges.erase(iterator);
 			}
 		}
@@ -107,9 +104,8 @@ namespace {
 		if (const auto iterator = faces.find(hash_value(face)); iterator == faces.end()) {
 			std::ostringstream oss;
 			oss << "Attempted to delete a nonexistent face " << face;
-			throw std::invalid_argument{ oss.str() };
-		}
-		else {
+			throw std::invalid_argument{oss.str()};
+		} else {
 			faces.erase(iterator);
 		}
 	}
@@ -162,7 +158,7 @@ HalfEdgeMesh::operator gfx::Mesh() const {
 }
 
 void HalfEdgeMesh::CollapseEdge(
-	const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1,const std::shared_ptr<Vertex>& v_new) {
+	const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v_new) {
 
 	const auto edge01 = GetHalfEdge(*v0, *v1, edges_);
 	const auto edge10 = edge01->Flip();
