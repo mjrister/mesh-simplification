@@ -119,7 +119,7 @@ namespace {
 
 	TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
 		const auto mesh = MakeMesh();
-		HalfEdgeMesh half_edge_mesh{mesh};
+		const HalfEdgeMesh half_edge_mesh{mesh};
 		ASSERT_EQ(10, half_edge_mesh.Vertices().size());
 		ASSERT_EQ(38, half_edge_mesh.Edges().size());
 		ASSERT_EQ(10, half_edge_mesh.Faces().size());
@@ -133,6 +133,14 @@ namespace {
 		ASSERT_EQ(mesh_a.TextureCoordinates(), mesh_b.TextureCoordinates());
 		ASSERT_EQ(mesh_a.Normals(), mesh_b.Normals());
 		ASSERT_EQ(mesh_a.Model(), mesh_b.Model());
+	}
+
+	TEST(HalfEdgeMeshTest, TestGetNextVertexId) {
+		const auto mesh = MakeMesh();
+		HalfEdgeMesh half_edge_mesh{mesh};
+		ASSERT_EQ(10, half_edge_mesh.NextVertexId());
+		ASSERT_EQ(11, half_edge_mesh.NextVertexId());
+		ASSERT_EQ(12, half_edge_mesh.NextVertexId());
 	}
 
 	TEST(HalfEdgeMeshTest, TestGetHalfEdge) {

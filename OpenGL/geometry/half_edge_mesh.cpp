@@ -130,6 +130,8 @@ HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) {
 		const auto face012 = CreateTriangle(v0, v1, v2, edges_);
 		faces_.emplace(face012_key, face012);
 	}
+
+	next_vertex_id_ = positions.size();
 }
 
 HalfEdgeMesh::operator gfx::Mesh() const {

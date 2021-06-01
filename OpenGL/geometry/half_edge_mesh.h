@@ -21,6 +21,7 @@ namespace geometry {
 		[[nodiscard]] const auto& Vertices() const { return vertices_; }
 		[[nodiscard]] const auto& Edges() const { return edges_; }
 		[[nodiscard]] const auto& Faces() const { return faces_; }
+		[[nodiscard]] auto NextVertexId() { return next_vertex_id_++; }
 
 		operator gfx::Mesh() const;
 
@@ -31,5 +32,6 @@ namespace geometry {
 		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;
 		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
 		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
+		std::uint64_t next_vertex_id_;
 	};
 }
