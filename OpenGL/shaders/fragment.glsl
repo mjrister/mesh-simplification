@@ -9,10 +9,10 @@ in Vertex {
 
 // a light source at a fixed position in space whose rays shine in all directions
 uniform struct PointLight {
-	vec4 position; // assumed to be in camera space
+	vec4 position; // in view space
 	vec3 color;
 	float intensity;
-	vec3 attenuation; // (constant, linear, exponential) attenuation coefficients
+	vec3 attenuation;
 } point_light;
 
 // light reflectance properties for a material
@@ -25,34 +25,39 @@ uniform struct Material {
 
 out vec4 fragment_color;
 
-// computes the fragment color using the Blinn-Phong reflection model
-void main() {
+// evaluates the fragment color using the Phong reflection model
+vec4 GetFragmentColor() {
 
 	// start initial light contribution off with ambient intensity
-	vec3 light_color = material.ambient;
+	vec3 fragment_color = material.ambient;
 
 	vec3 light_direction = (point_light.position - vertex.position).xyz;
 	float light_distance = length(light_direction);
 	light_direction = normalize(light_direction);
 
-	// calculate diffuse intensity
+	// calculate angle between light source and vertex normal
 	vec3 normal = normalize(vertex.normal);
 	float diffuse_intensity = max(dot(light_direction, normal), 0.f);
 
-	// avoid calculating specular intensity if angle between light source and vertex position is greater than 90 degrees
+	// light contribution should not be considered if the angle between the light source and normal is greater than 90
 	if (diffuse_intensity > 0.f) {
 		vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
-		// calculate specular intensity
+		// calculate the angle between the reflected light and view direction
+		vec3 reflect_direction = normalize(reflect(-light_direction, normal));
 		vec3 view_direction = normalize(-vertex.position.xyz);
-		vec3 halfway_direction = normalize(light_direction + view_direction);
-		float specular_intensity = pow(max(dot(halfway_direction, normal), 0.f), material.shininess);
+		float specular_intensity = pow(max(dot(reflect_direction, view_direction), 0.f), material.shininess);
 		vec3 specular_color = specular_intensity * material.specular;
 
 		// account for light attenuation
 		float attenuation = dot(point_light.attenuation, vec3(1.f, light_distance, light_distance * light_distance));
-		light_color += point_light.color * point_light.intensity * (diffuse_color + specular_color) / attenuation;
+		fragment_color += point_light.color * point_light.intensity * (diffuse_color + specular_color) / attenuation;
 	}
 
-	fragment_color = vec4(light_color, 1.f);
+	return vec4(fragment_color, 1.f);
+}
+
+
+void main() {
+	fragment_color = GetFragmentColor();
 }
