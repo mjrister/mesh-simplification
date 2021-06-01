@@ -39,7 +39,8 @@ vec4 GetFragmentColor() {
 	vec3 normal = normalize(vertex.normal);
 	float diffuse_intensity = max(dot(light_direction, normal), 0.f);
 
-	// light contribution should not be considered if the angle between the light source and normal is greater than 90
+	// direct light contribution should not be considered if the angle between
+	// the light source and vertex normal is greater than or equal to 90 degrees
 	if (diffuse_intensity > 0.f) {
 		vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
