@@ -10,7 +10,6 @@ using namespace geometry;
 using namespace gfx;
 
 namespace {
-
 	std::shared_ptr<HalfEdge> MakeHalfEdge() {
 
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});

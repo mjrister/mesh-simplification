@@ -11,7 +11,6 @@ namespace gfx {
 	class Mesh {
 
 	public:
-
 		/**
 		 * \brief Initializes a triangle mesh.
 		 * \param positions The mesh vertex positions.
@@ -88,7 +87,6 @@ namespace gfx {
 		 * \param angle The rotation angle specified in radians.
 		 */
 		void Rotate(const glm::vec3& axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
-
 
 		/**
 		 * \brief Translates the mesh in local object space.

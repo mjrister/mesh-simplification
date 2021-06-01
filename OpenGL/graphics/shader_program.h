@@ -16,7 +16,6 @@ namespace gfx {
 		class Shader {
 
 		public:
-
 			/**
 			 * \brief Initializes a shader.
 			 * \param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)
@@ -36,7 +35,6 @@ namespace gfx {
 		};
 
 	public:
-
 		/**
 		 * \brief Initializes a shader program.
 		 * \param vertex_shader_filepath The filepath to the vertex shader to be compiled.
@@ -79,7 +77,6 @@ namespace gfx {
 		}
 
 	private:
-
 		/**
 		 * \brief Gets the location for a uniform variable in the shader program.
 		 * \param name The uniform variable name.

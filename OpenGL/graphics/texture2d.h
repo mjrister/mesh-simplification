@@ -10,7 +10,6 @@ namespace gfx {
 	class Texture2d {
 
 	public:
-
 		/**
 		 * \brief Initializes a 2D texture.
 		 * \param filepath The filepath of the texture to load.
