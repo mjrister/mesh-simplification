@@ -121,6 +121,24 @@ namespace {
 		}
 	}
 
+	TEST(HalfEdgeMeshTest, TestEqualVerticesProduceTheSameHashValue) {
+		const Vertex v0{0, glm::vec3{0.f}, glm::vec3{1.f}};
+		ASSERT_EQ(hash(v0), hash(Vertex{v0}));
+	}
+
+	TEST(HalfEdgeMeshTest, TestEqualVertexPairsProduceTheSameHashValue) {
+		const Vertex v0{0, glm::vec3{0.f}, glm::vec3{1.f}};
+		const Vertex v1{1, glm::vec3{2.f}, glm::vec3{3.f}};
+		ASSERT_EQ(hash(v0, v1), hash(Vertex{v0}, Vertex{v1}));
+	}
+
+	TEST(HalfEdgeMeshTest, TestEqualVertexTriplesProduceTheSameHashValue) {
+		const Vertex v0{0, glm::vec3{0.f}, glm::vec3{1.f}};
+		const Vertex v1{1, glm::vec3{2.f}, glm::vec3{3.f}};
+		const Vertex v2{2, glm::vec3{4.f}, glm::vec3{5.f}};
+		ASSERT_EQ(hash(v0, v1, v2), hash(Vertex{v0}, Vertex{v1}, Vertex{v2}));
+	}
+
 	TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
 
 		const auto mesh = MakeMesh();
