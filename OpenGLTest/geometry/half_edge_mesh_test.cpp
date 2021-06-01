@@ -10,7 +10,6 @@ using namespace geometry;
 using namespace gfx;
 
 namespace {
-
 	Mesh MakeMesh() {
 
 		const std::vector<glm::vec3> positions{
@@ -127,5 +126,41 @@ namespace {
 		ASSERT_EQ(mesh_a.TextureCoordinates(), mesh_b.TextureCoordinates());
 		ASSERT_EQ(mesh_a.Normals(), mesh_b.Normals());
 		ASSERT_EQ(mesh_a.Model(), mesh_b.Model());
+	}
+
+	TEST(HalfEdgeMeshTest, TestDeleteVertex) {
+		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
+		std::map<std::size_t, std::shared_ptr<Vertex>> vertices{{0, v0}};
+		DeleteVertex(*v0, vertices);
+		ASSERT_TRUE(vertices.empty());
+		ASSERT_THROW(DeleteVertex(*v0, vertices), std::invalid_argument);
+	}
+
+	TEST(HalfEdgeMeshTest, TestDeleteHalfEdge) {
+		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
+		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{}, glm::vec3{});
+		const auto edge01 = std::make_shared<HalfEdge>(v0, v1);
+		const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
+		edge01->SetFlip(edge10);
+		edge10->SetFlip(edge01);
+		std::cout << *edge01 << std::endl << *edge10 << std::endl;
+		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges{
+			{hash_value(*edge01), edge01},
+			{hash_value(*edge10), edge10}
+		};
+		DeleteEdge(*edge01, edges);
+		ASSERT_TRUE(edges.empty());
+		ASSERT_THROW(DeleteEdge(*edge01, edges), std::invalid_argument);
+	}
+
+	TEST(HalfEdgeMeshTest, TestDeleteFace) {
+		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{});
+		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{0.f, .5f, 0.f}, glm::vec3{});
+		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{1.f, -1.f, 0.f}, glm::vec3{});
+		const auto face012 = std::make_shared<Face>(v0, v1, v2);
+		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces{{hash_value(*face012), face012}};
+		DeleteFace(*face012, faces);
+		ASSERT_TRUE(faces.empty());
+		ASSERT_THROW(DeleteFace(*face012, faces), std::invalid_argument);
 	}
 }
