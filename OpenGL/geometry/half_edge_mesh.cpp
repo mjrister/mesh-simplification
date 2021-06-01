@@ -112,32 +112,33 @@ namespace {
 
 	void CollapseIncidentTriangles(
 		const std::shared_ptr<Vertex>& v0,
-		const std::shared_ptr<Vertex>& vt,
-		const std::shared_ptr<Vertex>& vb,
+		const std::shared_ptr<Vertex>& v_start,
+		const std::shared_ptr<Vertex>& v_end,
 		const std::shared_ptr<Vertex>& v_new,
 		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges,
 		std::unordered_map<std::size_t, std::shared_ptr<Face>>& faces) {
 
-		auto vi = vt;
-		std::shared_ptr<HalfEdge> edgej0;
-		const auto edgeb0 = GetHalfEdge(*vb, *v0, edges);
+		const auto edge_start = GetHalfEdge(*v0, *v_start, edges);
+		const auto edge_end = GetHalfEdge(*v0, *v_end, edges);
 
-		do {
-			const auto edge0i = GetHalfEdge(*v0, *vi, edges);
+		for (auto edge0i = edge_start; edge0i != edge_end;) {
+
 			const auto edgeij = edge0i->Next();
-			edgej0 = edgeij->Next();
+			const auto edgej0 = edgeij->Next();
 
+			const auto vi = edge0i->Vertex();
 			const auto vj = edgeij->Vertex();
-			const auto face = CreateTriangle(v_new, vi, vj, edges);
-			faces.emplace(hash_value(*face), face);
+
+			const auto face_new = CreateTriangle(v_new, vi, vj, edges);
+			faces.emplace(hash_value(*face_new), face_new);
 
 			DeleteEdge(*edge0i, edges);
 			DeleteFace(*edge0i->Face(), faces);
 
-			vi = vj;
-		} while (edgej0 != edgeb0);
+			edge0i = edgej0->Flip();
+		}
 
-		DeleteEdge(*edgeb0, edges);
+		DeleteEdge(*edge_end, edges);
 	}
 }
 
