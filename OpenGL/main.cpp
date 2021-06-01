@@ -73,7 +73,8 @@ int main() {
 
 		auto mesh = gfx::obj_loader::LoadMesh("models/spot.obj");
 		mesh = geometry::HalfEdgeMesh{mesh};
-		mesh.Scale(glm::vec3{.25f});
+		mesh.Scale(glm::vec3{.3f});
+		mesh.Rotate(glm::vec3{0.f, 1.f, 0.f}, glm::radians(-135.f));
 		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
@@ -96,7 +97,7 @@ int main() {
 		shader_program.SetUniform("material.ambient", material.Ambient());
 		shader_program.SetUniform("material.diffuse", material.Diffuse());
 		shader_program.SetUniform("material.specular", material.Specular());
-		shader_program.SetUniform("material.shininess", material.Shininess() * 256.f);
+		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
 
 		for (double previous_time = glfwGetTime(); !window.Closed();) {
 			const double current_time = glfwGetTime();
