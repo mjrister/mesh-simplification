@@ -21,7 +21,7 @@ namespace geometry {
 		[[nodiscard]] const auto& Vertices() const { return vertices_; }
 		[[nodiscard]] const auto& Edges() const { return edges_; }
 		[[nodiscard]] const auto& Faces() const { return faces_; }
-		[[nodiscard]] auto NextVertexId() { return next_vertex_id_++; }
+		[[nodiscard]] std::uint64_t NextVertexId() { return next_vertex_id_++; }
 
 		operator gfx::Mesh() const;
 
