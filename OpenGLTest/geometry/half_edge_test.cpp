@@ -18,21 +18,15 @@ namespace {
 		return edge01;
 	}
 
-	TEST(HalfEdgeTest, TestEqualEdgesHaveTheSameId) {
+	TEST(HalfEdgeTest, TestHalfEdgeEquality) {
 		const auto edge01 = MakeHalfEdge(0, 1);
-		const auto edge01_copy{edge01};
-		ASSERT_EQ(edge01->Id(), edge01_copy->Id());
-	}
-
-	TEST(HalfEdgeTest, TestEdgeHasDifferentIdThanFlipEdge) {
-		const auto edge01 = MakeHalfEdge(0, 1);
-		ASSERT_NE(edge01->Id(), edge01->Flip()->Id());
+		ASSERT_TRUE(*edge01 == *edge01);
+		ASSERT_FALSE(*edge01 == *edge01->Flip());
 	}
 
 	TEST(HalfEdgeTest, TestInsertionOperator) {
-		const auto edge01 = MakeHalfEdge(0, 1);
 		std::ostringstream oss;
-		oss << *edge01;
+		oss << *MakeHalfEdge(0, 1);
 		ASSERT_EQ(oss.str(), "(0,1)");
 	}
 }

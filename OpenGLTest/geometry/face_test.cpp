@@ -42,15 +42,17 @@ namespace {
 		ASSERT_EQ(face120.V2(), v2);
 	}
 
-	TEST(FaceTest, TestEquivalentFacesHaveSameId) {
+	TEST(FaceTest, TestFaceEquality) {
 
 		const auto [v0, v1, v2] = MakeTriangleVertices();
 		const Face face012{v0, v1, v2};
 		const Face face120{v1, v2, v0};
 		const Face face201{v2, v0, v1};
+		const Face face021{v0, v2, v1};
 
-		ASSERT_EQ(face012.Id(), face120.Id());
-		ASSERT_EQ(face120.Id(), face201.Id());
+		ASSERT_TRUE(face012 == face120);
+		ASSERT_TRUE(face120 == face201);
+		ASSERT_FALSE(face012 == face021); // opposite winding order
 	}
 
 	TEST(FaceTest, TestFaceInitializationWithCollinearVerticesThrowsException) {
