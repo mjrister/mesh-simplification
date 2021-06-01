@@ -38,16 +38,28 @@ namespace gfx {
 		Mesh(Mesh&& mesh) noexcept;
 		Mesh& operator=(Mesh&& mesh) noexcept;
 
-		/** \brief Gets the mesh vertex positions. */
+		/**
+		 * \brief Gets the mesh vertex positions.
+		 * \return A vector of 3D vertex positions.
+		 */
 		[[nodiscard]] const std::vector<glm::vec3>& Positions() const { return positions_; }
 
-		/** \brief Gets the mesh texture coordinates. */
+		/**
+		 * \brief Gets the mesh texture coordinates.
+		 * \return A vector of 2D texture coordinates.
+		 */
 		[[nodiscard]] const std::vector<glm::vec2>& TextureCoordinates() const { return texture_coordinates_; }
 
-		/** \brief Gets the mesh normals. */
+		/**
+		 * \brief Gets the mesh normals.
+		 * \return A vector of 3D vertex normals.
+		 */
 		[[nodiscard]] const std::vector<glm::vec3>& Normals() const { return normals_; }
 
-		/** \brief Gets the mesh indices. */
+		/**
+		 * \brief Gets the mesh indices.
+		 * \return A vector of indices corresponding to a triangle face for every three consecutive integers.
+		 */
 		[[nodiscard]] const std::vector<GLuint>& Indices() const { return indices_; }
 
 		/** \brief Gets the mesh model transform in local object space. */
