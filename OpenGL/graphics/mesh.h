@@ -48,10 +48,10 @@ namespace gfx {
 		[[nodiscard]] const std::vector<glm::vec3>& Normals() const { return normals_; }
 
 		/** \brief Gets the mesh indices. */
-		[[nodiscard]] const auto& Indices() const { return indices_; }
+		[[nodiscard]] const std::vector<GLuint>& Indices() const { return indices_; }
 
 		/** \brief Gets the mesh model transform in local object space. */
-		[[nodiscard]] const auto& Model() const { return model_; }
+		[[nodiscard]] const glm::mat4& Model() const { return model_; }
 
 		/** \brief Renders the mesh to the current framebuffer. */
 		void Render() const {
