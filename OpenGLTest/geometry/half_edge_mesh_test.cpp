@@ -12,13 +12,17 @@ using namespace gfx;
 namespace {
 
 	std::shared_ptr<HalfEdge> MakeHalfEdge() {
+
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{}, glm::vec3{});
 		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{}, glm::vec3{});
+
 		const auto edge01 = std::make_shared<HalfEdge>(v0, v1);
 		const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
+
 		edge01->SetFlip(edge10);
 		edge10->SetFlip(edge01);
+
 		return edge01;
 	}
 
@@ -51,6 +55,11 @@ namespace {
 		};
 
 		return Mesh{positions, {}, std::vector(10, glm::vec3{0.f, 0.f, 1.f}), indices};
+	}
+
+	HalfEdgeMesh MakeHalfEdgeMesh() {
+		const auto mesh = MakeMesh();
+		return HalfEdgeMesh{mesh};
 	}
 
 	void VerifyEdge(
@@ -118,73 +127,115 @@ namespace {
 	}
 
 	TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
+
 		const auto mesh = MakeMesh();
 		const HalfEdgeMesh half_edge_mesh{mesh};
+
 		ASSERT_EQ(10, half_edge_mesh.Vertices().size());
 		ASSERT_EQ(38, half_edge_mesh.Edges().size());
 		ASSERT_EQ(10, half_edge_mesh.Faces().size());
+
 		VerifyTriangles(half_edge_mesh, mesh.Indices());
 	}
 
 	TEST(HalfEdgeMeshTest, TestHalfEdgeMeshConversionToMesh) {
+
 		const auto mesh_a = MakeMesh();
 		const Mesh mesh_b = HalfEdgeMesh{mesh_a};
+
 		ASSERT_EQ(mesh_a.Positions(), mesh_b.Positions());
 		ASSERT_EQ(mesh_a.TextureCoordinates(), mesh_b.TextureCoordinates());
 		ASSERT_EQ(mesh_a.Normals(), mesh_b.Normals());
 		ASSERT_EQ(mesh_a.Model(), mesh_b.Model());
 	}
 
+	TEST(HalfEdgeMeshTest, TestCollapseEdge) {
+
+		auto half_edge_mesh = MakeHalfEdgeMesh();
+		const auto& vertices = half_edge_mesh.Vertices();
+		const auto v0 = vertices.find(0)->second;
+		const auto v1 = vertices.find(1)->second;
+		const auto v_new = Vertex::Average(half_edge_mesh.NextVertexId(), *v0, *v1);
+
+		half_edge_mesh.CollapseEdge(v0, v1, std::make_shared<Vertex>(v_new));
+
+		ASSERT_EQ(9, half_edge_mesh.Vertices().size());
+		ASSERT_EQ(32, half_edge_mesh.Edges().size());
+		ASSERT_EQ(8, half_edge_mesh.Faces().size());
+
+		VerifyTriangles(half_edge_mesh, {
+			2, 3, 10,
+			3, 4, 10,
+			4, 5, 10,
+			5, 6, 10,
+			6, 7, 10,
+			7, 8, 10,
+			8, 9, 10,
+			2, 10, 9
+		});
+	}
+
 	TEST(HalfEdgeMeshTest, TestGetNextVertexId) {
-		const auto mesh = MakeMesh();
-		HalfEdgeMesh half_edge_mesh{mesh};
+		auto half_edge_mesh = MakeHalfEdgeMesh();
 		ASSERT_EQ(10, half_edge_mesh.NextVertexId());
 		ASSERT_EQ(11, half_edge_mesh.NextVertexId());
 		ASSERT_EQ(12, half_edge_mesh.NextVertexId());
 	}
 
 	TEST(HalfEdgeMeshTest, TestGetHalfEdge) {
+
 		const auto edge01 = MakeHalfEdge();
 		const auto edge10 = edge01->Flip();
-		const auto v0 = edge10->Vertex();
-		const auto v1 = edge01->Vertex();
-		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{}, glm::vec3{});
 		const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges{
 			{hash_value(*edge01), edge01},
 			{hash_value(*edge10), edge10}
 		};
+
+		const auto v0 = edge10->Vertex();
+		const auto v1 = edge01->Vertex();
+		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{}, glm::vec3{});
+
 		ASSERT_EQ(*edge01, *GetHalfEdge(*v0, *v1, edges));
 		ASSERT_EQ(*edge10, *GetHalfEdge(*v1, *v0, edges));
 		ASSERT_THROW(GetHalfEdge(*v0, *v2, edges), std::invalid_argument);
 	}
 
 	TEST(HalfEdgeMeshTest, TestDeleteVertex) {
+
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
 		std::map<std::size_t, std::shared_ptr<Vertex>> vertices{{0, v0}};
+
 		DeleteVertex(*v0, vertices);
+
 		ASSERT_TRUE(vertices.empty());
 		ASSERT_THROW(DeleteVertex(*v0, vertices), std::invalid_argument);
 	}
 
 	TEST(HalfEdgeMeshTest, TestDeleteHalfEdge) {
+
 		const auto edge01 = MakeHalfEdge();
 		const auto edge10 = edge01->Flip();
 		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges{
 			{hash_value(*edge01), edge01},
 			{hash_value(*edge10), edge10}
 		};
+
 		DeleteEdge(*edge01, edges);
+
 		ASSERT_TRUE(edges.empty());
 		ASSERT_THROW(DeleteEdge(*edge01, edges), std::invalid_argument);
 	}
 
 	TEST(HalfEdgeMeshTest, TestDeleteFace) {
+
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{0.f, .5f, 0.f}, glm::vec3{});
 		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{1.f, -1.f, 0.f}, glm::vec3{});
 		const auto face012 = std::make_shared<Face>(v0, v1, v2);
 		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces{{hash_value(*face012), face012}};
+
 		DeleteFace(*face012, faces);
+
 		ASSERT_TRUE(faces.empty());
 		ASSERT_THROW(DeleteFace(*face012, faces), std::invalid_argument);
 	}

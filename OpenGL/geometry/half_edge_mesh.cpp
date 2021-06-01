@@ -109,6 +109,36 @@ namespace {
 			faces.erase(iterator);
 		}
 	}
+
+	void CollapseIncidentTriangles(
+		const std::shared_ptr<Vertex>& v0,
+		const std::shared_ptr<Vertex>& vt,
+		const std::shared_ptr<Vertex>& vb,
+		const std::shared_ptr<Vertex>& v_new,
+		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges,
+		std::unordered_map<std::size_t, std::shared_ptr<Face>>& faces) {
+
+		auto vi = vt;
+		std::shared_ptr<HalfEdge> edgej0;
+		const auto edgeb0 = GetHalfEdge(*vb, *v0, edges);
+
+		do {
+			const auto edge0i = GetHalfEdge(*v0, *vi, edges);
+			const auto edgeij = edge0i->Next();
+			edgej0 = edgeij->Next();
+
+			const auto vj = edgeij->Vertex();
+			const auto face = CreateTriangle(v_new, vi, vj, edges);
+			faces.emplace(hash_value(*face), face);
+
+			DeleteEdge(*edge0i, edges);
+			DeleteFace(*edge0i->Face(), faces);
+
+			vi = vj;
+		} while (edgej0 != edgeb0);
+
+		DeleteEdge(*edgeb0, edges);
+	}
 }
 
 HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) {
@@ -171,8 +201,8 @@ void HalfEdgeMesh::CollapseEdge(
 	const auto face01t = edge01->Face();
 	const auto face10b = edge10->Face();
 
-	//CollapseIncidentTriangles(v0, vt, vb, v_new);
-	//CollapseIncidentTriangles(v1, vb, vt, v_new);
+	CollapseIncidentTriangles(v0, vt, vb, v_new, edges_, faces_);
+	CollapseIncidentTriangles(v1, vb, vt, v_new, edges_, faces_);
 
 	DeleteEdge(*edge01, edges_);
 
@@ -181,4 +211,6 @@ void HalfEdgeMesh::CollapseEdge(
 
 	DeleteVertex(*v0, vertices_);
 	DeleteVertex(*v1, vertices_);
+
+	vertices_.emplace(v_new->Id(), v_new);
 }
