@@ -11,10 +11,8 @@ namespace geometry {
 	class HalfEdge {
 
 	public:
-		HalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1)
-			: id_{hash_value(*v0, *v1)}, vertex_{v1} {}
+		HalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1) : vertex_{v1} {}
 
-		[[nodiscard]] std::uint64_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> Vertex() const { return vertex_; }
 
 		[[nodiscard]] std::shared_ptr<HalfEdge> Next() const { return next_; }
@@ -27,7 +25,7 @@ namespace geometry {
 		void SetFace(const std::shared_ptr<geometry::Face>& face) { face_ = face; }
 
 		friend bool operator==(const HalfEdge& lhs, const HalfEdge& rhs) {
-			return lhs.id_ == rhs.id_ && lhs.vertex_ == rhs.vertex_ && lhs.flip_->vertex_ == rhs.flip_->vertex_;
+			return lhs.vertex_ == rhs.vertex_ && lhs.flip_->vertex_ == rhs.flip_->vertex_;
 		}
 
 		friend std::ostream& operator<<(std::ostream& os, const HalfEdge& edge) {
@@ -35,7 +33,6 @@ namespace geometry {
 		}
 
 	private:
-		const std::uint64_t id_;
 		const std::shared_ptr<geometry::Vertex> vertex_;
 		std::shared_ptr<HalfEdge> next_, flip_;
 		std::shared_ptr<geometry::Face> face_;

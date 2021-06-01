@@ -19,13 +19,13 @@ namespace geometry {
 		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
 		gfx::Mesh ToMesh();
 
-		[[nodiscard]] const auto& VerticesById() const { return vertices_by_id_; }
-		[[nodiscard]] const auto& EdgesById() const { return edges_by_id_; }
-		[[nodiscard]] const auto& FacesById() const { return faces_by_id_; }
+		[[nodiscard]] const auto& Vertices() const { return vertices_; }
+		[[nodiscard]] const auto& Edges() const { return edges_; }
+		[[nodiscard]] const auto& Faces() const { return faces_; }
 
 	private:
-		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_by_id_;
-		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_by_id_;
-		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_by_id_;
+		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;
+		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
+		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
 	};
 }

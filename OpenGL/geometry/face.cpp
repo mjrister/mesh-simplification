@@ -36,7 +36,6 @@ Face::Face(
 	v0_ = vertex_order[0];
 	v1_ = vertex_order[1];
 	v2_ = vertex_order[2];
-	id_ = hash_value(*v0_, *v1_, *v2_);
 
 	if (IsCollinear(*v0_, *v1_, *v2_)) {
 		std::ostringstream oss;
