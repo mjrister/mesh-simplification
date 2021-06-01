@@ -60,11 +60,8 @@ namespace {
 		const Vertex& v1,
 		const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges_by_id) {
 
-		const auto edge01_id = HalfEdge::GetHalfEdgeId(v0, v1);
-		const auto edge10_id = HalfEdge::GetHalfEdgeId(v1, v0);
-
-		const auto edge01_iterator = edges_by_id.find(edge01_id);
-		const auto edge10_iterator = edges_by_id.find(edge10_id);
+		const auto edge01_iterator = edges_by_id.find(hash_value(v0, v1));
+		const auto edge10_iterator = edges_by_id.find(hash_value(v1, v0));
 
 		ASSERT_NE(edge01_iterator, edges_by_id.end());
 		ASSERT_NE(edge10_iterator, edges_by_id.end());
@@ -105,9 +102,9 @@ namespace {
 			VerifyEdge(*v1, *v2, edges_by_id);
 			VerifyEdge(*v2, *v0, edges_by_id);
 
-			const auto edge01 = edges_by_id.find(HalfEdge::GetHalfEdgeId(*v0, *v1))->second;
-			const auto edge12 = edges_by_id.find(HalfEdge::GetHalfEdgeId(*v1, *v2))->second;
-			const auto edge20 = edges_by_id.find(HalfEdge::GetHalfEdgeId(*v2, *v0))->second;
+			const auto edge01 = edges_by_id.find(hash_value(*v0, *v1))->second;
+			const auto edge12 = edges_by_id.find(hash_value(*v1, *v2))->second;
+			const auto edge20 = edges_by_id.find(hash_value(*v2, *v0))->second;
 
 			ASSERT_EQ(*edge01->Next(), *edge12);
 			ASSERT_EQ(*edge12->Next(), *edge20);

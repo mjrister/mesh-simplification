@@ -3,23 +3,16 @@
 #include <memory>
 #include <ostream>
 
-#include "face.h"
-#include "vertex.h"
+#include "geometry/face.h"
+#include "geometry/vertex.h"
 
 namespace geometry {
 
 	class HalfEdge {
 
 	public:
-		static std::uint64_t GetHalfEdgeId(const Vertex& v0, const Vertex& v1) {
-			std::size_t seed = 0x1C2CB417;
-			seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0.Id());
-			seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1.Id());
-			return seed;
-		}
-
 		HalfEdge(const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1)
-			: id_{GetHalfEdgeId(*v0, *v1)}, vertex_{v1} {}
+			: id_{hash_value(*v0, *v1)}, vertex_{v1} {}
 
 		[[nodiscard]] std::uint64_t Id() const { return id_; }
 		[[nodiscard]] std::shared_ptr<Vertex> Vertex() const { return vertex_; }

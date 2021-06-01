@@ -3,7 +3,7 @@
 #include <memory>
 #include <ostream>
 
-#include "vertex.h"
+#include "geometry/vertex.h"
 
 namespace geometry {
 	class HalfEdge;

@@ -1,4 +1,4 @@
-#include "face.h"
+#include "geometry/face.h"
 
 #include <algorithm>
 #include <array>
@@ -10,18 +10,8 @@
 using namespace geometry;
 
 namespace {
-	std::uint64_t GetFaceId(const Vertex& v0, const Vertex& v1, const Vertex& v2) {
-		std::uint64_t seed = 0x1C2CB417;
-		seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + std::hash<std::uint64_t>{}(v0.Id());
-		seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + std::hash<std::uint64_t>{}(v1.Id());
-		seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + std::hash<std::uint64_t>{}(v2.Id());
-		return seed;
-	}
-
 	std::array<std::shared_ptr<Vertex>, 3> GetMinVertexOrder(
-		const std::shared_ptr<Vertex>& v0,
-		const std::shared_ptr<Vertex>& v1,
-		const std::shared_ptr<Vertex>& v2) {
+		const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2) {
 
 		if (const auto min_id = std::min<>({v0->Id(), v1->Id(), v2->Id()}); min_id == v0->Id()) {
 			return {v0, v1, v2};
@@ -46,7 +36,7 @@ Face::Face(
 	v0_ = vertex_order[0];
 	v1_ = vertex_order[1];
 	v2_ = vertex_order[2];
-	id_ = GetFaceId(*v0_, *v1_, *v2_);
+	id_ = hash_value(*v0_, *v1_, *v2_);
 
 	if (IsCollinear(*v0_, *v1_, *v2_)) {
 		std::ostringstream oss;

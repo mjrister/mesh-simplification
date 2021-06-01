@@ -1,4 +1,4 @@
-#include "half_edge_mesh.h"
+#include "geometry/half_edge_mesh.h"
 
 #include "geometry/face.h"
 #include "geometry/half_edge.h"
@@ -13,8 +13,7 @@ namespace {
 		const std::shared_ptr<Vertex>& v1,
 		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges_by_id) {
 
-		const auto edge01_id = HalfEdge::GetHalfEdgeId(*v0, *v1);
-		if (const auto iterator = edges_by_id.find(edge01_id); iterator != edges_by_id.end()) {
+		if (const auto iterator = edges_by_id.find(hash_value(*v0, *v1)); iterator != edges_by_id.end()) {
 			return iterator->second;
 		}
 
