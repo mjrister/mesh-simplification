@@ -11,28 +11,7 @@ using namespace gfx;
 
 namespace {
 
-	//void VerifyEdge(
-	//	const std::shared_ptr<Vertex>& v0,
-	//	const std::shared_ptr<Vertex>& v1,
-	//	const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges_by_id) {
-
-	//	const auto edge01_id = HalfEdge::GetHalfEdgeId(*v0, *v1);
-	//	const auto edge10_id = HalfEdge::GetHalfEdgeId(*v1, *v0);
-
-	//	const auto edge01_map_entry = edges_by_id.find(edge01_id);
-	//	const auto edge10_map_entry = edges_by_id.find(edge10_id);
-
-	//	ASSERT_NE(edge01_map_entry, edges_by_id.end());
-	//	ASSERT_NE(edge10_map_entry, edges_by_id.end());
-
-	//	const auto edge01 = edge01_map_entry->second;
-	//	const auto edge10 = edge10_map_entry->second;
-
-	//	ASSERT_EQ(edge01, edge10->Flip());
-	//	ASSERT_EQ(edge10, edge01->Flip());
-	//}
-
-	TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
+	HalfEdgeMesh MakeHalfEdgeMesh() {
 
 		const std::vector<glm::vec3> positions{
 			{1.f, 0.f, 0.f},   // v0
@@ -61,34 +40,113 @@ namespace {
 		};
 
 		const std::vector<GLuint> indices{
-			0, 2, 3, // t0
-			0, 3, 1, // t1
-			0, 1, 7, // t2
-			0, 7, 8, // t3
-			0, 8, 9, // t4
-			0, 9, 2, // t5
-			1, 3, 4, // t6
-			1, 4, 5, // t7
-			1, 5, 6, // t8
-			1, 6, 7  // t9
+			0, 2, 3, // f0
+			0, 3, 1, // f1
+			0, 1, 7, // f2
+			0, 7, 8, // f3
+			0, 8, 9, // f4
+			0, 9, 2, // f5
+			1, 3, 4, // f6
+			1, 4, 5, // f7
+			1, 5, 6, // f8
+			1, 6, 7  // f9
 		};
 
 		const Mesh mesh{positions, {}, normals, indices};
-		const HalfEdgeMesh half_edge_mesh{mesh};
+		return HalfEdgeMesh{mesh};
+	}
 
+	void VerifyEdge(
+		const Vertex& v0,
+		const Vertex& v1,
+		const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges_by_id) {
+
+		const auto edge01_id = HalfEdge::GetHalfEdgeId(v0, v1);
+		const auto edge10_id = HalfEdge::GetHalfEdgeId(v1, v0);
+
+		const auto edge01_iterator = edges_by_id.find(edge01_id);
+		const auto edge10_iterator = edges_by_id.find(edge10_id);
+
+		ASSERT_NE(edge01_iterator, edges_by_id.end());
+		ASSERT_NE(edge10_iterator, edges_by_id.end());
+
+		const auto edge01 = edge01_iterator->second;
+		const auto edge10 = edge10_iterator->second;
+
+		ASSERT_EQ(v0, *edge10->Vertex());
+		ASSERT_EQ(v1, *edge01->Vertex());
+
+		ASSERT_EQ(*edge01, *edge10->Flip());
+		ASSERT_EQ(*edge10, *edge01->Flip());
+
+		ASSERT_EQ(*edge01, *edge01->Flip()->Flip());
+		ASSERT_EQ(*edge10, *edge10->Flip()->Flip());
+	}
+
+	void VerifyTriangles(const HalfEdgeMesh& half_edge_mesh, const std::vector<GLuint>& indices) {
 		const auto& vertices_by_id = half_edge_mesh.VerticesById();
 		const auto& edges_by_id = half_edge_mesh.EdgesById();
 		const auto& faces_by_id = half_edge_mesh.FacesById();
 
-		ASSERT_EQ(10, vertices_by_id.size());
-		ASSERT_EQ(38, edges_by_id.size());
-		ASSERT_EQ(10, faces_by_id.size());
-
 		for (std::size_t i = 0; i < indices.size(); i += 3) {
 
-			const auto v0 = *vertices_by_id.find(indices[i]);
-			const auto v1 = *vertices_by_id.find(indices[i+1]);
-			const auto v2 = *vertices_by_id.find(indices[i+2]);
+			const auto v0_iterator = vertices_by_id.find(indices[i]);
+			const auto v1_iterator = vertices_by_id.find(indices[i + 1]);
+			const auto v2_iterator = vertices_by_id.find(indices[i + 2]);
+
+			ASSERT_NE(v0_iterator, vertices_by_id.end());
+			ASSERT_NE(v1_iterator, vertices_by_id.end());
+			ASSERT_NE(v2_iterator, vertices_by_id.end());
+
+			const auto v0 = v0_iterator->second;
+			const auto v1 = v1_iterator->second;
+			const auto v2 = v2_iterator->second;
+
+			VerifyEdge(*v0, *v1, edges_by_id);
+			VerifyEdge(*v1, *v2, edges_by_id);
+			VerifyEdge(*v2, *v0, edges_by_id);
+
+			const auto edge01 = edges_by_id.find(HalfEdge::GetHalfEdgeId(*v0, *v1))->second;
+			const auto edge12 = edges_by_id.find(HalfEdge::GetHalfEdgeId(*v1, *v2))->second;
+			const auto edge20 = edges_by_id.find(HalfEdge::GetHalfEdgeId(*v2, *v0))->second;
+
+			ASSERT_EQ(*edge01->Vertex(), *v1);
+			ASSERT_EQ(*edge12->Vertex(), *v2);
+			ASSERT_EQ(*edge20->Vertex(), *v0);
+
+			ASSERT_EQ(*edge01->Next(), *edge12);
+			ASSERT_EQ(*edge12->Next(), *edge20);
+			ASSERT_EQ(*edge20->Next(), *edge01);
+
+			const auto face012_iterator = faces_by_id.find(Face{v0, v1, v2}.Id());
+			ASSERT_NE(face012_iterator, faces_by_id.end());
+
+			const auto face012 = face012_iterator->second;
+			ASSERT_EQ(*edge01->Face(), *face012);
+			ASSERT_EQ(*edge12->Face(), *face012);
+			ASSERT_EQ(*edge20->Face(), *face012);
+			ASSERT_TRUE(*face012->Edge() == *edge01 || *face012->Edge() == *edge12 || *face012->Edge() == *edge20);
 		}
+	}
+
+	TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
+
+		const auto half_edge_mesh = MakeHalfEdgeMesh();
+		ASSERT_EQ(10, half_edge_mesh.VerticesById().size());
+		ASSERT_EQ(38, half_edge_mesh.EdgesById().size());
+		ASSERT_EQ(10, half_edge_mesh.FacesById().size());
+
+		VerifyTriangles(half_edge_mesh, std::vector<GLuint> {
+			0, 2, 3,
+			0, 3, 1,
+			0, 1, 7,
+			0, 7, 8,
+			0, 8, 9,
+			0, 9, 2,
+			1, 3, 4,
+			1, 4, 5,
+			1, 5, 6,
+			1, 6, 7
+		});
 	}
 }
