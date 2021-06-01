@@ -21,7 +21,9 @@
     <ClCompile Include="geometry\face.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
-    <ClCompile Include="geometry\half_edge_mesh.cpp" />
+    <ClCompile Include="geometry\half_edge_mesh.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.h">
@@ -61,7 +63,9 @@
     <ClInclude Include="geometry\half_edge_mesh.h">
       <Filter>geometry</Filter>
     </ClInclude>
-    <ClInclude Include="geometry\hash.h" />
+    <ClInclude Include="geometry\hash.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
@@ -92,9 +96,17 @@
     <Object Include="models\bunny.obj">
       <Filter>models</Filter>
     </Object>
-    <Object Include="models\bob.obj" />
-    <Object Include="models\sphere.obj" />
-    <Object Include="models\spot.obj" />
-    <Object Include="models\torus.obj" />
+    <Object Include="models\bob.obj">
+      <Filter>models</Filter>
+    </Object>
+    <Object Include="models\sphere.obj">
+      <Filter>models</Filter>
+    </Object>
+    <Object Include="models\spot.obj">
+      <Filter>models</Filter>
+    </Object>
+    <Object Include="models\torus.obj">
+      <Filter>models</Filter>
+    </Object>
   </ItemGroup>
 </Project>
