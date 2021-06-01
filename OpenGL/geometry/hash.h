@@ -8,7 +8,7 @@ namespace geometry {
 
 	inline std::size_t hash_value(const Vertex& v0) {
 		std::size_t seed = 0x3E9EB221;
-		seed ^= (seed << 6) + (seed >> 2) + 0x3573AC13 + std::hash<std::uint64_t>{}(v0.Id());
+		seed ^= (seed << 6) + (seed >> 2) + 0x3573AC13 + std::hash<std::size_t>{}(v0.Id());
 		return seed;
 	}
 

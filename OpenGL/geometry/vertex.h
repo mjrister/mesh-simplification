@@ -11,16 +11,16 @@ namespace geometry {
 	class Vertex {
 
 	public:
-		static Vertex Average(const std::uint64_t id, const Vertex& v0, const Vertex& v1) {
+		static Vertex Average(const std::size_t id, const Vertex& v0, const Vertex& v1) {
 			const auto position = (v0.position_ + v1.position_) / 2.f;
 			const auto normal = (v0.normal_ + v1.normal_) / 2.f;
 			return Vertex{id, position, normal};
 		}
 
-		Vertex(const std::uint64_t id, const glm::vec3& position, const glm::vec3& normal)
+		Vertex(const std::size_t id, const glm::vec3& position, const glm::vec3& normal)
 			: id_{id}, position_{position}, normal_{normal} {}
 
-		[[nodiscard]] std::uint64_t Id() const { return id_; }
+		[[nodiscard]] std::size_t Id() const { return id_; }
 		[[nodiscard]] const glm::vec3& Position() const { return position_; }
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
@@ -36,7 +36,7 @@ namespace geometry {
 		}
 
 	private:
-		const std::uint64_t id_;
+		const std::size_t id_;
 		const glm::vec3 position_, normal_;
 		std::shared_ptr<HalfEdge> edge_;
 	};
