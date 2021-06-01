@@ -103,7 +103,7 @@ HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) {
 	}
 }
 
-gfx::Mesh HalfEdgeMesh::ToMesh() {
+HalfEdgeMesh::operator gfx::Mesh() const {
 
 	std::vector<glm::vec3> positions;
 	positions.reserve(vertices_.size());

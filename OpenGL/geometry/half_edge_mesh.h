@@ -17,11 +17,12 @@ namespace geometry {
 
 	public:
 		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
-		gfx::Mesh ToMesh();
 
 		[[nodiscard]] const auto& Vertices() const { return vertices_; }
 		[[nodiscard]] const auto& Edges() const { return edges_; }
 		[[nodiscard]] const auto& Faces() const { return faces_; }
+
+		operator gfx::Mesh() const;
 
 	private:
 		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;

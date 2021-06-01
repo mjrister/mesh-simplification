@@ -152,7 +152,7 @@ namespace {
 	TEST(HalfEdgeMeshTest, TestHalfEdgeMeshConversionToMesh) {
 
 		const auto mesh_a = MakeMesh();
-		const auto mesh_b = HalfEdgeMesh{mesh_a}.ToMesh();
+		const Mesh mesh_b = HalfEdgeMesh{mesh_a};
 
 		ASSERT_EQ(mesh_a.Positions(), mesh_b.Positions());
 		ASSERT_EQ(mesh_a.TextureCoordinates(), mesh_b.TextureCoordinates());

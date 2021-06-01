@@ -72,7 +72,7 @@ int main() {
 		Window window{"OpenGL", window_dimensions, opengl_version};
 
 		auto mesh = gfx::obj_loader::LoadMesh("models/monkey.obj");
-		mesh = geometry::HalfEdgeMesh{mesh}.ToMesh();
+		mesh = geometry::HalfEdgeMesh{mesh};
 		mesh.Scale(glm::vec3{.25f});
 		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
 
