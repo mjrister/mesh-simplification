@@ -26,19 +26,6 @@ namespace {
 			{0.f, 0.f, 0.f}    // v9
 		};
 
-		const std::vector<glm::vec3> normals{
-			{0.f, 0.f, 1.f}, // vn0
-			{0.f, 0.f, 1.f}, // vn1
-			{0.f, 0.f, 1.f}, // vn2
-			{0.f, 0.f, 1.f}, // vn3
-			{0.f, 0.f, 1.f}, // vn4
-			{0.f, 0.f, 1.f}, // vn5
-			{0.f, 0.f, 1.f}, // vn6
-			{0.f, 0.f, 1.f}, // vn7
-			{0.f, 0.f, 1.f}, // vn8
-			{0.f, 0.f, 1.f}, // vn9
-		};
-
 		const std::vector<GLuint> indices{
 			0, 2, 3, // f0
 			0, 3, 1, // f1
@@ -52,7 +39,7 @@ namespace {
 			1, 6, 7  // f9
 		};
 
-		return Mesh{positions, {}, normals, indices};
+		return Mesh{positions, {}, std::vector(10, glm::vec3{0.f, 0.f, 1.f}), indices};
 	}
 
 	void VerifyEdge(
