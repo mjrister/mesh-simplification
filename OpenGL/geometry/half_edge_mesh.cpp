@@ -1,5 +1,7 @@
 #include "geometry/half_edge_mesh.h"
 
+#include <sstream>
+
 #include "geometry/face.h"
 #include "geometry/half_edge.h"
 #include "geometry/vertex.h"
@@ -80,6 +82,68 @@ namespace {
 
 		return face012;
 	}
+
+	std::shared_ptr<HalfEdge> GetHalfEdge(
+		const std::shared_ptr<Vertex>& v0,
+		const std::shared_ptr<Vertex>& v1,
+		const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges) {
+
+		if (const auto iterator = edges.find(hash(*v0, *v1)); iterator == edges.end()) {
+			std::ostringstream oss;
+			oss << "Attempted to delete a nonexistent edge (" << v0->Id() << ',' << v1->Id() << ')';
+			throw std::invalid_argument("Attempted to retrieve a nonexistent edge");
+		}
+		else {
+			return iterator->second;
+		}
+	}
+
+	void DeleteVertex(const std::shared_ptr<Vertex>& v0, std::map<std::size_t, std::shared_ptr<Vertex>>& vertices) {
+		if (const auto iterator = vertices.find(v0->Id()); iterator == vertices.end()) {
+			std::ostringstream oss;
+			oss << "Attempted to delete a nonexistent vertex " << v0->Id();
+			throw std::invalid_argument{oss.str()};
+		}
+		else {
+			vertices.erase(iterator);
+		}
+	}
+
+	void DeleteEdge(
+		const std::shared_ptr<Vertex>& v0,
+		const std::shared_ptr<Vertex>& v1,
+		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges) {
+
+		for (const auto& edge_key : {hash(*v0, *v1), hash(*v1, *v0)}) {
+			if (const auto iterator = edges.find(edge_key); iterator == edges.end()) {
+				std::ostringstream oss;
+				oss << "Attempted to delete a nonexistent edge (" << v0->Id() << ',' << v1->Id() << ')';
+				throw std::invalid_argument{ oss.str() };
+			}
+			else {
+				edges.erase(iterator);
+			}
+		}
+	}
+
+	void DeleteFace(
+		const std::shared_ptr<Vertex>& v0,
+		const std::shared_ptr<Vertex>& v1,
+		const std::shared_ptr<Vertex>& v2,
+		std::unordered_map<std::size_t, std::shared_ptr<Face>>& faces) {
+
+		const Face face012{v0, v1, v2};
+		const auto face012_key = hash(*face012.V0(), *face012.V1(), *face012.V2());
+
+		if (const auto iterator = faces.find(face012_key); iterator == faces.end()) {
+			std::ostringstream oss;
+			oss << "Attempted to delete a nonexistent face (" << v0->Id() << ',' << v1->Id() << ',' << v2->Id() << ')';
+			throw std::invalid_argument{ oss.str() };
+		}
+		else {
+			faces.erase(iterator);
+		}
+	}
 }
 
 HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) {
@@ -127,3 +191,36 @@ HalfEdgeMesh::operator gfx::Mesh() const {
 
 	return gfx::Mesh{positions, {}, normals, indices};
 }
+
+//void HalfEdgeMesh::CollapseEdge(
+//	const Vertex& v0, const Vertex& v1, const Vertex& v_new) {
+//
+//	const auto edge01_key = hash(v0, v1);
+//	const auto edge01_iterator = edges_.find(edge01_key);
+//
+//	if (edge01_iterator == edges_.end()) {
+//		std::ostringstream oss;
+//		oss << "Attempted to collapse a nonexistent edge (" << v0 << ',' << v1 << ')';
+//		throw std::invalid_argument{oss.str()};
+//	}
+//
+//	const auto edge01 = GetHalfEdge(v0, v1);
+//	const auto edge10 = edge01->Flip();
+//
+//	const auto vt = edge01->Next()->Vertex();
+//	const auto vb = edge10->Next()->Vertex();
+//
+//	const auto face01t = edge01->Face();
+//	const auto face10b = edge10->Face();
+//
+//	CollapseIncidentTriangles(v0, vt, vb, v_new);
+//	CollapseIncidentTriangles(v1, vb, vt, v_new);
+//
+//	DeleteEdge(edge01);
+//
+//	DeleteFace(face01t);
+//	DeleteFace(face10b);
+//
+//	DeleteVertex(v0);
+//	DeleteVertex(v1);
+//}
