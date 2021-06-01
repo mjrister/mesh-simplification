@@ -13,7 +13,7 @@ namespace file {
 	 * \return A string containing the file contents.
 	 * \throw std::runtime_error Indicates there was an error opening the file.
 	 */
-	static std::string Read(const std::string_view filepath) {
+	inline std::string Read(const std::string_view filepath) {
 
 		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
 			std::string source;
