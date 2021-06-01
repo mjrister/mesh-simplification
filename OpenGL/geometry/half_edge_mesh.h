@@ -24,7 +24,8 @@ namespace geometry {
 
 		operator gfx::Mesh() const;
 
-		//void CollapseEdge(const Vertex& v0, const Vertex& v1, const Vertex& v_new);
+		void CollapseEdge(
+			const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v_new);
 
 	private:
 		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;

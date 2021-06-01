@@ -45,8 +45,8 @@ namespace {
 	void VerifyEdge(
 		const Vertex& v0, const Vertex& v1, const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges) {
 
-		const auto edge01_iterator = edges.find(hash(v0, v1));
-		const auto edge10_iterator = edges.find(hash(v1, v0));
+		const auto edge01_iterator = edges.find(hash_value(v0, v1));
+		const auto edge10_iterator = edges.find(hash_value(v1, v0));
 
 		ASSERT_NE(edge01_iterator, edges.end());
 		ASSERT_NE(edge10_iterator, edges.end());
@@ -87,15 +87,15 @@ namespace {
 			VerifyEdge(*v1, *v2, edges);
 			VerifyEdge(*v2, *v0, edges);
 
-			const auto edge01 = edges.find(hash(*v0, *v1))->second;
-			const auto edge12 = edges.find(hash(*v1, *v2))->second;
-			const auto edge20 = edges.find(hash(*v2, *v0))->second;
+			const auto edge01 = edges.find(hash_value(*v0, *v1))->second;
+			const auto edge12 = edges.find(hash_value(*v1, *v2))->second;
+			const auto edge20 = edges.find(hash_value(*v2, *v0))->second;
 
 			ASSERT_EQ(*edge01->Next(), *edge12);
 			ASSERT_EQ(*edge12->Next(), *edge20);
 			ASSERT_EQ(*edge20->Next(), *edge01);
 
-			const auto face012_iterator = faces.find(hash(*v0, *v1, *v2));
+			const auto face012_iterator = faces.find(hash_value(*v0, *v1, *v2));
 			ASSERT_NE(face012_iterator, faces.end());
 
 			const auto face012 = face012_iterator->second;
@@ -108,20 +108,20 @@ namespace {
 
 	TEST(HalfEdgeMeshTest, TestEqualVerticesProduceTheSameHashValue) {
 		const Vertex v0{0, glm::vec3{0.f}, glm::vec3{1.f}};
-		ASSERT_EQ(hash(v0), hash(Vertex{v0}));
+		ASSERT_EQ(hash_value(v0), hash_value(Vertex{v0}));
 	}
 
 	TEST(HalfEdgeMeshTest, TestEqualVertexPairsProduceTheSameHashValue) {
 		const Vertex v0{0, glm::vec3{0.f}, glm::vec3{1.f}};
 		const Vertex v1{1, glm::vec3{2.f}, glm::vec3{3.f}};
-		ASSERT_EQ(hash(v0, v1), hash(Vertex{v0}, Vertex{v1}));
+		ASSERT_EQ(hash_value(v0, v1), hash_value(Vertex{v0}, Vertex{v1}));
 	}
 
 	TEST(HalfEdgeMeshTest, TestEqualVertexTriplesProduceTheSameHashValue) {
 		const Vertex v0{0, glm::vec3{0.f}, glm::vec3{1.f}};
 		const Vertex v1{1, glm::vec3{2.f}, glm::vec3{3.f}};
 		const Vertex v2{2, glm::vec3{4.f}, glm::vec3{5.f}};
-		ASSERT_EQ(hash(v0, v1, v2), hash(Vertex{v0}, Vertex{v1}, Vertex{v2}));
+		ASSERT_EQ(hash_value(v0, v1, v2), hash_value(Vertex{v0}, Vertex{v1}, Vertex{v2}));
 	}
 
 	TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
