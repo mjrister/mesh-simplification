@@ -110,10 +110,6 @@ namespace {
 			const auto edge12 = edges_by_id.find(HalfEdge::GetHalfEdgeId(*v1, *v2))->second;
 			const auto edge20 = edges_by_id.find(HalfEdge::GetHalfEdgeId(*v2, *v0))->second;
 
-			ASSERT_EQ(*edge01->Vertex(), *v1);
-			ASSERT_EQ(*edge12->Vertex(), *v2);
-			ASSERT_EQ(*edge20->Vertex(), *v0);
-
 			ASSERT_EQ(*edge01->Next(), *edge12);
 			ASSERT_EQ(*edge12->Next(), *edge20);
 			ASSERT_EQ(*edge20->Next(), *edge01);
