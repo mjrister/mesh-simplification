@@ -5,6 +5,12 @@
 using namespace geometry;
 
 namespace {
+	TEST(VertexTest, TestAverageVertices) {
+		const Vertex v0{0, glm::vec3{1.f}, glm::vec3{2.f}};
+		const Vertex v1{1, glm::vec3{3.f}, glm::vec3{4.f}};
+		ASSERT_EQ((Vertex{2, glm::vec3{2.f}, glm::vec3{3.f}}), Vertex::Average(2, v0, v1));
+	}
+
 	TEST(VertexTest, TestVertexEquality) {
 		const Vertex v0{0, {0.f, 1.f, 2.f}, {3.f, 4.f, 5.f}};
 		ASSERT_TRUE(v0 == v0);
