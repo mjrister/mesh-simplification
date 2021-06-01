@@ -10,6 +10,18 @@ using namespace geometry;
 using namespace gfx;
 
 namespace {
+
+	std::shared_ptr<HalfEdge> MakeHalfEdge() {
+		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
+		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{}, glm::vec3{});
+		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{}, glm::vec3{});
+		const auto edge01 = std::make_shared<HalfEdge>(v0, v1);
+		const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
+		edge01->SetFlip(edge10);
+		edge10->SetFlip(edge01);
+		return edge01;
+	}
+
 	Mesh MakeMesh() {
 
 		const std::vector<glm::vec3> positions{
@@ -106,26 +118,36 @@ namespace {
 	}
 
 	TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
-
 		const auto mesh = MakeMesh();
 		HalfEdgeMesh half_edge_mesh{mesh};
-
 		ASSERT_EQ(10, half_edge_mesh.Vertices().size());
 		ASSERT_EQ(38, half_edge_mesh.Edges().size());
 		ASSERT_EQ(10, half_edge_mesh.Faces().size());
-
 		VerifyTriangles(half_edge_mesh, mesh.Indices());
 	}
 
 	TEST(HalfEdgeMeshTest, TestHalfEdgeMeshConversionToMesh) {
-
 		const auto mesh_a = MakeMesh();
 		const Mesh mesh_b = HalfEdgeMesh{mesh_a};
-
 		ASSERT_EQ(mesh_a.Positions(), mesh_b.Positions());
 		ASSERT_EQ(mesh_a.TextureCoordinates(), mesh_b.TextureCoordinates());
 		ASSERT_EQ(mesh_a.Normals(), mesh_b.Normals());
 		ASSERT_EQ(mesh_a.Model(), mesh_b.Model());
+	}
+
+	TEST(HalfEdgeMeshTest, TestGetHalfEdge) {
+		const auto edge01 = MakeHalfEdge();
+		const auto edge10 = edge01->Flip();
+		const auto v0 = edge10->Vertex();
+		const auto v1 = edge01->Vertex();
+		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{}, glm::vec3{});
+		const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges{
+			{hash_value(*edge01), edge01},
+			{hash_value(*edge10), edge10}
+		};
+		ASSERT_EQ(*edge01, *GetHalfEdge(*v0, *v1, edges));
+		ASSERT_EQ(*edge10, *GetHalfEdge(*v1, *v0, edges));
+		ASSERT_THROW(GetHalfEdge(*v0, *v2, edges), std::invalid_argument);
 	}
 
 	TEST(HalfEdgeMeshTest, TestDeleteVertex) {
@@ -137,13 +159,8 @@ namespace {
 	}
 
 	TEST(HalfEdgeMeshTest, TestDeleteHalfEdge) {
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{}, glm::vec3{});
-		const auto edge01 = std::make_shared<HalfEdge>(v0, v1);
-		const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
-		edge01->SetFlip(edge10);
-		edge10->SetFlip(edge01);
-		std::cout << *edge01 << std::endl << *edge10 << std::endl;
+		const auto edge01 = MakeHalfEdge();
+		const auto edge10 = edge01->Flip();
 		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges{
 			{hash_value(*edge01), edge01},
 			{hash_value(*edge10), edge10}
