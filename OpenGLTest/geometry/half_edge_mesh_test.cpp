@@ -56,15 +56,13 @@ namespace {
 	}
 
 	void VerifyEdge(
-		const Vertex& v0,
-		const Vertex& v1,
-		const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges_by_id) {
+		const Vertex& v0, const Vertex& v1, const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges) {
 
-		const auto edge01_iterator = edges_by_id.find(hash(v0, v1));
-		const auto edge10_iterator = edges_by_id.find(hash(v1, v0));
+		const auto edge01_iterator = edges.find(hash(v0, v1));
+		const auto edge10_iterator = edges.find(hash(v1, v0));
 
-		ASSERT_NE(edge01_iterator, edges_by_id.end());
-		ASSERT_NE(edge10_iterator, edges_by_id.end());
+		ASSERT_NE(edge01_iterator, edges.end());
+		ASSERT_NE(edge10_iterator, edges.end());
 
 		const auto edge01 = edge01_iterator->second;
 		const auto edge10 = edge10_iterator->second;
@@ -80,38 +78,38 @@ namespace {
 	}
 
 	void VerifyTriangles(const HalfEdgeMesh& half_edge_mesh, const std::vector<GLuint>& indices) {
-		const auto& vertices_by_id = half_edge_mesh.Vertices();
-		const auto& edges_by_id = half_edge_mesh.Edges();
-		const auto& faces_by_id = half_edge_mesh.Faces();
+		const auto& vertices = half_edge_mesh.Vertices();
+		const auto& edges = half_edge_mesh.Edges();
+		const auto& faces = half_edge_mesh.Faces();
 
 		for (std::size_t i = 0; i < indices.size(); i += 3) {
 
-			const auto v0_iterator = vertices_by_id.find(indices[i]);
-			const auto v1_iterator = vertices_by_id.find(indices[i + 1]);
-			const auto v2_iterator = vertices_by_id.find(indices[i + 2]);
+			const auto v0_iterator = vertices.find(indices[i]);
+			const auto v1_iterator = vertices.find(indices[i + 1]);
+			const auto v2_iterator = vertices.find(indices[i + 2]);
 
-			ASSERT_NE(v0_iterator, vertices_by_id.end());
-			ASSERT_NE(v1_iterator, vertices_by_id.end());
-			ASSERT_NE(v2_iterator, vertices_by_id.end());
+			ASSERT_NE(v0_iterator, vertices.end());
+			ASSERT_NE(v1_iterator, vertices.end());
+			ASSERT_NE(v2_iterator, vertices.end());
 
 			const auto v0 = v0_iterator->second;
 			const auto v1 = v1_iterator->second;
 			const auto v2 = v2_iterator->second;
 
-			VerifyEdge(*v0, *v1, edges_by_id);
-			VerifyEdge(*v1, *v2, edges_by_id);
-			VerifyEdge(*v2, *v0, edges_by_id);
+			VerifyEdge(*v0, *v1, edges);
+			VerifyEdge(*v1, *v2, edges);
+			VerifyEdge(*v2, *v0, edges);
 
-			const auto edge01 = edges_by_id.find(hash(*v0, *v1))->second;
-			const auto edge12 = edges_by_id.find(hash(*v1, *v2))->second;
-			const auto edge20 = edges_by_id.find(hash(*v2, *v0))->second;
+			const auto edge01 = edges.find(hash(*v0, *v1))->second;
+			const auto edge12 = edges.find(hash(*v1, *v2))->second;
+			const auto edge20 = edges.find(hash(*v2, *v0))->second;
 
 			ASSERT_EQ(*edge01->Next(), *edge12);
 			ASSERT_EQ(*edge12->Next(), *edge20);
 			ASSERT_EQ(*edge20->Next(), *edge01);
 
-			const auto face012_iterator = faces_by_id.find(hash(*v0, *v1, *v2));
-			ASSERT_NE(face012_iterator, faces_by_id.end());
+			const auto face012_iterator = faces.find(hash(*v0, *v1, *v2));
+			ASSERT_NE(face012_iterator, faces.end());
 
 			const auto face012 = face012_iterator->second;
 			ASSERT_EQ(*edge01->Face(), *face012);
