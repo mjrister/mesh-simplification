@@ -135,14 +135,14 @@ namespace {
 		std::vector<std::array<glm::ivec3, 3>> faces;
 
 		for (std::string line; std::getline(is, line);) {
-			if (const auto line_view = string::Trim(line); !line_view.empty() && !string::StartsWith(line_view, "#")) {
-				if (string::StartsWith(line_view, "v ")) {
+			if (line = string::Trim(line); !line.empty() && !string::StartsWith(line, "#")) {
+				if (string::StartsWith(line, "v ")) {
 					positions.push_back(ParseLine<GLfloat, 3>(line));
-				} else if (string::StartsWith(line_view, "vt ")) {
+				} else if (string::StartsWith(line, "vt ")) {
 					texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
-				} else if (string::StartsWith(line_view, "vn ")) {
+				} else if (string::StartsWith(line, "vn ")) {
 					normals.push_back(ParseLine<GLfloat, 3>(line));
-				} else if (string::StartsWith(line_view, "f ")) {
+				} else if (string::StartsWith(line, "f ")) {
 					faces.push_back(ParseFace(line));
 				}
 			}
