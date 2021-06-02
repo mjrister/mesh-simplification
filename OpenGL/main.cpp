@@ -8,7 +8,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "geometry/half_edge.h"
 #include "geometry/half_edge_mesh.h"
+#include "geometry/vertex.h"
 #include "graphics/arcball.h"
 #include "graphics/material.h"
 #include "graphics/mesh.h"
@@ -71,11 +73,21 @@ int main() {
 		constexpr auto opengl_version = std::make_pair(4, 1);
 		Window window{"OpenGL", window_dimensions, opengl_version};
 
-		auto mesh = gfx::obj_loader::LoadMesh("models/spot.obj");
-		mesh = geometry::HalfEdgeMesh{mesh};
-		mesh.Scale(glm::vec3{.3f});
-		mesh.Rotate(glm::vec3{0.f, 1.f, 0.f}, glm::radians(-135.f));
-		mesh.Translate(glm::vec3{.25f, -.75f, 0.f});
+		auto mesh = gfx::obj_loader::LoadMesh("models/sphere.obj");
+		mesh.Scale(glm::vec3{.5f});
+		geometry::HalfEdgeMesh half_edge_mesh{mesh};
+
+		window.HandleKeyPress([&](const auto& key) {
+			if (key == GLFW_KEY_S) {
+				const auto first_edge = half_edge_mesh.Edges().begin()->second;
+				const auto v0 = first_edge->Flip()->Vertex();
+				const auto v1 = first_edge->Vertex();
+				const auto v_new = geometry::Vertex::Average(half_edge_mesh.NextVertexId(), *v0, *v1);
+				half_edge_mesh.CollapseEdge(v0, v1, std::make_shared<geometry::Vertex>(v_new));
+				mesh = half_edge_mesh;
+				mesh.Scale(glm::vec3{.5f});
+			}
+		});
 
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
@@ -104,13 +116,13 @@ int main() {
 			const auto delta_time = static_cast<GLfloat>(current_time - previous_time);
 			previous_time = current_time;
 
-			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
-				window_width = width;
-				window_height = height;
-				aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
-				projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
-				shader_program.SetUniform("projection_transform", projection_transform);
-			}
+			//if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
+			//	window_width = width;
+			//	window_height = height;
+			//	aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
+			//	projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
+			//	shader_program.SetUniform("projection_transform", projection_transform);
+			//}
 
 			const auto view_model_transform = view_transform * mesh.Model();
 			shader_program.SetUniform("view_model_transform", view_model_transform);

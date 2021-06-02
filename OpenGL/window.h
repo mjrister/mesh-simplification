@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string_view>
 #include <utility>
 
@@ -28,6 +29,9 @@ public:
 
 	Window(Window&&) noexcept = delete;
 	Window& operator=(Window&&) noexcept = delete;
+
+	[[nodiscard]] const std::function<void(std::int32_t)>& GetHandleKeyPress() const { return handle_key_press_;}
+	void HandleKeyPress(const std::function<void(std::int32_t)>& event) { handle_key_press_ = event; }
 
 	/**
 	 * \brief Gets the window size.
@@ -83,4 +87,5 @@ public:
 
 private:
 	GLFWwindow* window_{};
+	std::function<void(std::int32_t)> handle_key_press_;
 };

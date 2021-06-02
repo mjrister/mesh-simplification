@@ -101,6 +101,7 @@ Window::Window(
 	window_ = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 	if (!window_) throw std::runtime_error{"Window creation failed"};
 
+	glfwSetWindowUserPointer(window_, this);
 	glfwMakeContextCurrent(window_);
 	glfwSetFramebufferSizeCallback(
 		window_, [](GLFWwindow* const /*window*/, const std::int32_t width, const std::int32_t height) noexcept {
@@ -115,6 +116,10 @@ Window::Window(
 		   const std::int32_t /*modifiers*/) noexcept {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 				glfwSetWindowShouldClose(window, true);
+			}
+			if (action == GLFW_PRESS) {
+				const auto self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+				self->GetHandleKeyPress()(key);
 			}
 		});
 
