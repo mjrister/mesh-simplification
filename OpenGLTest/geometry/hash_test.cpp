@@ -8,8 +8,8 @@ namespace {
 	std::shared_ptr<HalfEdge> MakeHalfEdge() {
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{0.f}, glm::vec3{1.f});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{2.f}, glm::vec3{3.f});
-		auto edge01 = std::make_shared<HalfEdge>(v0, v1);
-		const auto edge10 = std::make_shared<HalfEdge>(v1, v0);
+		auto edge01 = std::make_shared<HalfEdge>(v1);
+		const auto edge10 = std::make_shared<HalfEdge>(v0);
 		edge01->SetFlip(edge10);
 		edge10->SetFlip(edge01);
 		return edge01;

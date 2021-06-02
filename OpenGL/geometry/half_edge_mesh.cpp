@@ -24,8 +24,8 @@ namespace {
 			return iterator->second;
 		}
 
-		auto edge01 = std::make_shared<geometry::HalfEdge>(v0, v1);
-		const auto edge10 = std::make_shared<geometry::HalfEdge>(v1, v0);
+		auto edge01 = std::make_shared<geometry::HalfEdge>(v1);
+		const auto edge10 = std::make_shared<geometry::HalfEdge>(v0);
 
 		edge01->SetFlip(edge10);
 		edge10->SetFlip(edge01);
