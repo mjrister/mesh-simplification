@@ -27,12 +27,12 @@ namespace {
 
 	TEST(StringTest, TestTrimWhitespaceString) {
 		constexpr auto* line = "     ";
-		static_assert(Trim(line).empty());
+		ASSERT_TRUE(Trim(line).empty());
 	}
 
 	TEST(StringTest, TestTrimString) {
-		constexpr auto* line = "\t  Hello, World!  \t\r\n";
-		static_assert("Hello, World!" == Trim(line));
+		const auto* line = "\t  Hello, World!  \t\r\n";
+		ASSERT_EQ("Hello, World!", Trim(line));
 	}
 
 	TEST(StringTest, TestSplitEmptyString) {
@@ -50,12 +50,12 @@ namespace {
 	TEST(StringTest, TestSplitNoWhitespaceString) {
 		constexpr auto* line = "Hello";
 		const auto tokens = Split(line, " ");
-		ASSERT_EQ((std::vector<std::string_view>{line}), tokens);
+		ASSERT_EQ((std::vector<std::string>{line}), tokens);
 	}
 
 	TEST(StringTest, TestSplitStringOnWhitespaceAndTab) {
 		constexpr auto* line = "\t vt 0.707 0.395 0.684 ";
 		const auto tokens = Split(line, " \t");
-		ASSERT_EQ((std::vector<std::string_view>{"vt", "0.707", "0.395", "0.684"}), tokens);
+		ASSERT_EQ((std::vector<std::string>{"vt", "0.707", "0.395", "0.684"}), tokens);
 	}
 }
