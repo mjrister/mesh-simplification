@@ -106,9 +106,9 @@ namespace {
 			VerifyEdge(*v1, *v2, edges);
 			VerifyEdge(*v2, *v0, edges);
 
-			const auto edge01 = edges.find(hash_value(*v0, *v1))->second;
-			const auto edge12 = edges.find(hash_value(*v1, *v2))->second;
-			const auto edge20 = edges.find(hash_value(*v2, *v0))->second;
+			const auto edge01 = edges.at(hash_value(*v0, *v1));
+			const auto edge12 = edges.at(hash_value(*v1, *v2));
+			const auto edge20 = edges.at(hash_value(*v2, *v0));
 
 			ASSERT_EQ(*edge01->Next(), *edge12);
 			ASSERT_EQ(*edge12->Next(), *edge20);
@@ -152,11 +152,13 @@ namespace {
 
 		auto half_edge_mesh = MakeHalfEdgeMesh();
 		const auto& vertices = half_edge_mesh.Vertices();
-		const auto v0 = vertices.find(0)->second;
-		const auto v1 = vertices.find(1)->second;
+		const auto& edges = half_edge_mesh.Edges();
+		const auto v0 = vertices.at(0);
+		const auto v1 = vertices.at(1);
+		const auto edge01 = edges.at(hash_value(*v0, *v1));
 		const auto v_new = Vertex::Average(half_edge_mesh.NextVertexId(), *v0, *v1);
 
-		half_edge_mesh.CollapseEdge(v0, v1, std::make_shared<Vertex>(v_new));
+		half_edge_mesh.CollapseEdge(edge01, std::make_shared<Vertex>(v_new));
 
 		ASSERT_EQ(9, half_edge_mesh.Vertices().size());
 		ASSERT_EQ(32, half_edge_mesh.Edges().size());

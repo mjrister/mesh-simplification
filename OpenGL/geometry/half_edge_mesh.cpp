@@ -67,7 +67,7 @@ namespace {
 	std::shared_ptr<geometry::HalfEdge> GetHalfEdge(
 		const geometry::Vertex& v0,
 		const geometry::Vertex& v1,
-		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
+		const std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
 
 		if (const auto iterator = edges.find(hash_value(v0, v1)); iterator == edges.end()) {
 			std::ostringstream oss;
@@ -203,11 +203,11 @@ geometry::HalfEdgeMesh::operator gfx::Mesh() const {
 }
 
 void geometry::HalfEdgeMesh::CollapseEdge(
-	const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v_new) {
+	const std::shared_ptr<HalfEdge>& edge01, const std::shared_ptr<Vertex>& v_new) {
 
-	const auto edge01 = GetHalfEdge(*v0, *v1, edges_);
 	const auto edge10 = edge01->Flip();
-
+	const auto v0 = edge10->Vertex();
+	const auto v1 = edge01->Vertex();
 	const auto v_top = edge01->Next()->Vertex();
 	const auto v_bottom = edge10->Next()->Vertex();
 
