@@ -155,15 +155,7 @@ namespace {
 		std::vector<GLuint> indices;
 		indices.reserve(faces.size() * 3);
 
-		// If applicable, store each texture coordinate and normal in the same index as the vertex position. If the
-		// number of unique vertex positions is much greater than the number of texture coordinates or normals this will
-		// introduce duplicate values which may not be desirable. Unfortunately, there is no way around this due to the
-		// limitations of OpenGL not supporting multiple element buffers. Conversely, if the number of unique texture
-		// coordinates or normals is greater than the number of vertex positions, some values may be overwritten which
-		// could lead to visible artifacts (particularly with respect to texture coordinates). There are multiple
-		// solutions to mitigate this such as detecting when a previously set element contains a different value than
-		// the one current being evaluated and appending a new position, texture coordinate, and normal triple to each
-		// ordered array, but for the purposes of this application, this is sufficient and consequentially faster.
+		// store each texture coordinate and normal at the same index as the vertex position
 		for (const auto& face : faces) {
 			for (const auto& index_group : face) {
 				const auto position_index = index_group[0];
