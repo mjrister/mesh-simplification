@@ -1,14 +1,226 @@
 #include "geometry/half_edge_mesh.h"
 
+#include <sstream>
 
-using namespace geometry;
+#include <GL/gl3w.h>
+#include <glm/vec3.hpp>
+
+#include "geometry/face.h"
+#include "geometry/half_edge.h"
+#include "geometry/hash.h"
+#include "geometry/vertex.h"
+#include "graphics/mesh.h"
 
 namespace {
-	
+	std::shared_ptr<geometry::HalfEdge> CreateHalfEdge(
+		const std::shared_ptr<geometry::Vertex>& v0,
+		const std::shared_ptr<geometry::Vertex>& v1,
+		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
 
+		const auto edge01_key = hash_value(*v0, *v1);
+		const auto edge10_key = hash_value(*v1, *v0);
 
-	
-	
+		if (const auto iterator = edges.find(edge01_key); iterator != edges.end()) {
+			return iterator->second;
+		}
 
-	
+		auto edge01 = std::make_shared<geometry::HalfEdge>(v0, v1);
+		const auto edge10 = std::make_shared<geometry::HalfEdge>(v1, v0);
+
+		edge01->SetFlip(edge10);
+		edge10->SetFlip(edge01);
+
+		edges.emplace(edge01_key, edge01);
+		edges.emplace(edge10_key, edge10);
+
+		return edge01;
+	}
+
+	std::shared_ptr<geometry::Face> CreateTriangle(
+		const std::shared_ptr<geometry::Vertex>& v0,
+		const std::shared_ptr<geometry::Vertex>& v1,
+		const std::shared_ptr<geometry::Vertex>& v2,
+		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
+
+		const auto edge01 = CreateHalfEdge(v0, v1, edges);
+		const auto edge12 = CreateHalfEdge(v1, v2, edges);
+		const auto edge20 = CreateHalfEdge(v2, v0, edges);
+
+		v0->SetEdge(edge20);
+		v1->SetEdge(edge01);
+		v2->SetEdge(edge12);
+
+		edge01->SetNext(edge12);
+		edge12->SetNext(edge20);
+		edge20->SetNext(edge01);
+
+		auto face012 = std::make_shared<geometry::Face>(v0, v1, v2);
+		face012->SetEdge(edge01);
+
+		edge01->SetFace(face012);
+		edge12->SetFace(face012);
+		edge20->SetFace(face012);
+
+		return face012;
+	}
+
+	std::shared_ptr<geometry::HalfEdge> GetHalfEdge(
+		const geometry::Vertex& v0,
+		const geometry::Vertex& v1,
+		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
+
+		if (const auto iterator = edges.find(hash_value(v0, v1)); iterator == edges.end()) {
+			std::ostringstream oss;
+			oss << "Attempted to retrieve a nonexistent edge (" << v0.Id() << ',' << v1.Id() << ')';
+			throw std::invalid_argument("Attempted to retrieve a nonexistent edge");
+		}
+		else {
+			return iterator->second;
+		}
+	}
+
+	void DeleteVertex(
+		const geometry::Vertex& vertex,
+		std::map<std::size_t, std::shared_ptr<geometry::Vertex>>& vertices) {
+
+		if (const auto iterator = vertices.find(vertex.Id()); iterator == vertices.end()) {
+			std::ostringstream oss;
+			oss << "Attempted to delete a nonexistent vertex " << vertex;
+			throw std::invalid_argument{ oss.str() };
+		}
+		else {
+			vertices.erase(iterator);
+		}
+	}
+
+	void DeleteEdge(
+		const geometry::HalfEdge& edge,
+		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
+
+		for (const auto& edge_key : { hash_value(edge), hash_value(*edge.Flip()) }) {
+			if (const auto iterator = edges.find(edge_key); iterator == edges.end()) {
+				std::ostringstream oss;
+				oss << "Attempted to delete a nonexistent edge " << edge;
+				throw std::invalid_argument{ oss.str() };
+			}
+			else {
+				edges.erase(iterator);
+			}
+		}
+	}
+
+	void DeleteFace(
+		const geometry::Face& face, std::unordered_map<std::size_t, std::shared_ptr<geometry::Face>>& faces) {
+
+		if (const auto iterator = faces.find(hash_value(face)); iterator == faces.end()) {
+			std::ostringstream oss;
+			oss << "Attempted to delete a nonexistent face " << face;
+			throw std::invalid_argument{oss.str()};
+		} else {
+			faces.erase(iterator);
+		}
+	}
+
+	void CollapseIncidentTriangles(
+		const std::shared_ptr<geometry::Vertex>& v_target,
+		const std::shared_ptr<geometry::Vertex>& v_start,
+		const std::shared_ptr<geometry::Vertex>& v_end,
+		const std::shared_ptr<geometry::Vertex>& v_new,
+		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges,
+		std::unordered_map<std::size_t, std::shared_ptr<geometry::Face>>& faces) {
+
+		const auto edge_start = GetHalfEdge(*v_target, *v_start, edges);
+		const auto edge_end = GetHalfEdge(*v_target, *v_end, edges);
+
+		for (auto edge0i = edge_start; edge0i != edge_end;) {
+
+			const auto edgeij = edge0i->Next();
+			const auto edgej0 = edgeij->Next();
+
+			const auto vi = edge0i->Vertex();
+			const auto vj = edgeij->Vertex();
+
+			const auto face_new = CreateTriangle(v_new, vi, vj, edges);
+			faces.emplace(hash_value(*face_new), face_new);
+
+			DeleteEdge(*edge0i, edges);
+			DeleteFace(*edge0i->Face(), faces);
+
+			edge0i = edgej0->Flip();
+		}
+
+		DeleteEdge(*edge_end, edges);
+	}
+}
+
+geometry::HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) {
+	const auto& positions = mesh.Positions();
+	const auto& normals = mesh.Normals();
+	const auto& indices = mesh.Indices();
+
+	for (std::size_t i = 0; i < positions.size(); ++i) {
+		vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i], normals[i]));
+	}
+
+	for (std::size_t i = 0; i < indices.size(); i += 3) {
+		const auto v0 = vertices_[indices[i]];
+		const auto v1 = vertices_[indices[i + 1]];
+		const auto v2 = vertices_[indices[i + 2]];
+		const auto face012 = CreateTriangle(v0, v1, v2, edges_);
+		faces_.emplace(hash_value(*face012), face012);
+	}
+
+	next_vertex_id_ = positions.size();
+}
+
+geometry::HalfEdgeMesh::operator gfx::Mesh() const {
+
+	std::vector<glm::vec3> positions;
+	positions.reserve(vertices_.size());
+
+	std::vector<glm::vec3> normals;
+	normals.reserve(vertices_.size());
+
+	std::vector<GLuint> indices;
+	indices.reserve(faces_.size() * 3);
+
+	GLuint i = 0;
+	std::unordered_map<std::size_t, GLuint> index_map;
+
+	for (const auto& [_, vertex] : vertices_) {
+		index_map.emplace(vertex->Id(), i++);
+		positions.push_back(vertex->Position());
+		normals.push_back(vertex->Normal());
+	}
+
+	for (const auto& [_, face] : faces_) {
+		indices.push_back(index_map.at(face->V0()->Id()));
+		indices.push_back(index_map.at(face->V1()->Id()));
+		indices.push_back(index_map.at(face->V2()->Id()));
+	}
+
+	return gfx::Mesh{positions, {}, normals, indices};
+}
+
+void geometry::HalfEdgeMesh::CollapseEdge(
+	const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v_new) {
+
+	const auto edge01 = GetHalfEdge(*v0, *v1, edges_);
+	const auto edge10 = edge01->Flip();
+
+	const auto v_top = edge01->Next()->Vertex();
+	const auto v_bottom = edge10->Next()->Vertex();
+
+	CollapseIncidentTriangles(v0, v_top, v_bottom, v_new, edges_, faces_);
+	CollapseIncidentTriangles(v1, v_bottom, v_top, v_new, edges_, faces_);
+
+	DeleteEdge(*edge01, edges_);
+
+	DeleteFace(*edge01->Face(), faces_);
+	DeleteFace(*edge10->Face(), faces_);
+
+	DeleteVertex(*v0, vertices_);
+	DeleteVertex(*v1, vertices_);
+
+	vertices_.emplace(v_new->Id(), v_new);
 }
