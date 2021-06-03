@@ -4,7 +4,9 @@
 #include <memory>
 #include <unordered_map>
 
-namespace gfx { class Mesh; }
+namespace gfx {
+	class Mesh;
+}
 
 namespace geometry {
 	class Face;
