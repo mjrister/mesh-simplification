@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <functional>
 #include <limits>
 #include <queue>
 
@@ -80,10 +81,6 @@ namespace geometry {
 				std::tie(vertex, cost) = GetOptimalEdgeContractionVertex(next_vertex_id, *edge, quadrics);
 			}
 
-			friend bool operator<(const HalfEdgeEntry& a, const HalfEdgeEntry& b) {
-				return a.cost < b.cost;
-			}
-
 			std::shared_ptr<HalfEdge> edge;
 			std::shared_ptr<Vertex> vertex;
 			float cost = std::numeric_limits<float>::infinity();
@@ -96,58 +93,6 @@ namespace geometry {
 			});
 		}
 
-		static void CollapseEdge(
-			const HalfEdgeEntry& entry,
-			HalfEdgeMesh& mesh,
-			std::unordered_map<std::size_t, glm::mat4>& quadrics,
-			std::unordered_map<std::size_t, std::shared_ptr<HalfEdgeEntry>>& valid_pairs,
-			std::priority_queue<std::shared_ptr<HalfEdgeEntry>>& edge_queue) {
-
-			const auto edge01 = entry.edge;
-			const auto v0 = edge01->Flip()->Vertex();
-			const auto v1 = edge01->Vertex();
-			const auto v_new = entry.vertex;
-
-			// remove valid pairs for edges that will be removed
-			for (const auto& vertex : {v0, v1}) {
-				for (auto edge = vertex->Edge()->Next()->Flip(); edge != vertex->Edge(); edge = edge->Next()->Flip()) {
-					if (edge == edge01) continue;
-					const auto edge_key = hash_value(*edge);
-					valid_pairs.erase(edge_key);
-				}
-			}
-			const auto edge01_key = hash_value(*edge01);
-			valid_pairs.erase(edge01_key);
-
-			// collapse edge
-			mesh.CollapseEdge(edge01, v_new);
-
-			// merge edge quadrics
-			const auto& K0 = quadrics.at(v0->Id());
-			const auto& K1 = quadrics.at(v1->Id());
-			quadrics.emplace(v_new->Id(), K0 + K1);
-
-			std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> visited;
-
-			const auto vi = v_new;
-			for (auto edgeji = vi->Edge()->Next()->Flip(); edgeji != vi->Edge(); edgeji = edgeji->Next()->Flip()) {
-				const auto vj = edgeji->Flip()->Vertex();
-
-				for (auto edgekj = vj->Edge()->Next()->Flip(); edgekj != vj->Edge(); edgekj = edgekj->Next()->Flip()) {
-					const auto min_edge = GetMinEdge(edgekj);
-
-					if (const auto min_edge_key = hash_value(*min_edge); !visited.count(min_edge_key)) {
-						if (auto iterator = valid_pairs.find(min_edge_key); iterator != valid_pairs.end()) {
-							iterator->second->most_recent = false;
-						}
-						const auto edge_entry = std::make_shared<HalfEdgeEntry>(min_edge, quadrics, mesh.NextVertexId());
-						valid_pairs[min_edge_key] = edge_entry;
-						edge_queue.push(edge_entry);
-					}
-				}
-			}
-		}
-
 	public:
 		static void Simplify(HalfEdgeMesh& mesh, const float stop_ratio) {
 
@@ -158,12 +103,14 @@ namespace geometry {
 			}
 
 			std::unordered_map<std::size_t, std::shared_ptr<HalfEdgeEntry>> valid_pairs;
-			std::priority_queue<std::shared_ptr<HalfEdgeEntry>> edge_queue;
+
+			const auto comparator = [](const std::shared_ptr<HalfEdgeEntry>& lhs, const std::shared_ptr<HalfEdgeEntry>& rhs) {
+				return lhs->cost < rhs->cost;
+			};
+			std::priority_queue<std::shared_ptr<HalfEdgeEntry>, std::vector<std::shared_ptr<HalfEdgeEntry>>, decltype(comparator)> edge_queue{comparator};
 
 			for (const auto& [_, edge] : mesh.Edges()) {
-				const auto min_edge = std::min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
-					return edge01->Vertex()->Id() < edge10->Vertex()->Id();
-				});
+				const auto min_edge = GetMinEdge(edge);
 				if (const auto min_edge_key = hash_value(*min_edge); !valid_pairs.count(min_edge_key)) {
 					const auto edge_entry = std::make_shared<HalfEdgeEntry>(min_edge, quadrics, mesh.NextVertexId());
 					valid_pairs.emplace(min_edge_key, edge_entry);
@@ -179,6 +126,53 @@ namespace geometry {
 
 			while (!edge_queue.empty() && !should_stop()) {
 				const auto& entry = edge_queue.top();
+				if (entry->most_recent && valid_pairs.count(hash_value(*entry->edge))) {
+					const auto edge01 = entry->edge;
+					const auto v0 = edge01->Flip()->Vertex();
+					const auto v1 = edge01->Vertex();
+					const auto v_new = entry->vertex;
+
+					// remove valid pairs for edges that will be removed
+					for (const auto& vertex : {v0, v1}) {
+						for (auto edge = vertex->Edge()->Next()->Flip(); edge != vertex->Edge(); edge = edge->Next()->Flip()) {
+							if (edge == edge01) continue;
+							const auto min_edge = GetMinEdge(edge);
+							const auto min_edge_key = hash_value(*min_edge);
+							valid_pairs.erase(min_edge_key);
+						}
+					}
+					const auto edge01_key = hash_value(*edge01);
+					valid_pairs.erase(edge01_key);
+
+					// collapse edge
+					mesh.CollapseEdge(edge01, v_new);
+
+					// merge edge quadrics
+					const auto& K0 = quadrics.at(v0->Id());
+					const auto& K1 = quadrics.at(v1->Id());
+					quadrics.emplace(v_new->Id(), K0 + K1);
+
+					std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> visited;
+
+					const auto vi = v_new;
+					for (auto edgeji = vi->Edge()->Next()->Flip(); edgeji != vi->Edge(); edgeji = edgeji->Next()->Flip()) {
+						const auto vj = edgeji->Flip()->Vertex();
+
+						for (auto edgekj = vj->Edge()->Next()->Flip(); edgekj != vj->Edge(); edgekj = edgekj->Next()->Flip()) {
+							const auto min_edge = GetMinEdge(edgekj);
+
+							if (const auto min_edge_key = hash_value(*min_edge); !visited.count(min_edge_key)) {
+								if (auto iterator = valid_pairs.find(min_edge_key); iterator != valid_pairs.end()) {
+									iterator->second->most_recent = false;
+								}
+								const auto edge_entry = std::make_shared<HalfEdgeEntry>(min_edge, quadrics, mesh.NextVertexId());
+								valid_pairs[min_edge_key] = edge_entry;
+								edge_queue.push(edge_entry);
+								visited.emplace(min_edge_key, min_edge);
+							}
+						}
+					}
+				}
 				edge_queue.pop();
 			}
 		}
