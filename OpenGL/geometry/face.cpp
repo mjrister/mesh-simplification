@@ -22,10 +22,10 @@ namespace {
 		}
 	}
 
-	bool IsCollinear(const geometry::Vertex& v0, const geometry::Vertex& v1, const geometry::Vertex& v2) {
+	glm::vec3 GetFaceNormal(const geometry::Vertex& v0, const geometry::Vertex& v1, const geometry::Vertex& v2) {
 		const glm::vec3 edge01 = v1.Position() - v0.Position();
 		const glm::vec3 edge02 = v2.Position() - v0.Position();
-		return glm::cross(edge01, edge02) == glm::vec3{0.f};
+		return glm::cross(edge01, edge02);
 	}
 }
 
@@ -36,8 +36,9 @@ geometry::Face::Face(
 	v0_ = vertex_order[0];
 	v1_ = vertex_order[1];
 	v2_ = vertex_order[2];
+	normal_ = GetFaceNormal(*v0_, *v1_, *v2_);
 
-	if (IsCollinear(*v0_, *v1_, *v2_)) {
+	if (normal_ == glm::vec3{0.f}) {
 		std::ostringstream oss;
 		oss << *this << " is not a triangle";
 		throw std::invalid_argument{oss.str()};

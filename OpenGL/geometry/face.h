@@ -16,6 +16,7 @@ namespace geometry {
 		[[nodiscard]] std::shared_ptr<Vertex> V0() const { return v0_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V1() const { return v1_; }
 		[[nodiscard]] std::shared_ptr<Vertex> V2() const { return v2_; }
+		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
 		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
@@ -31,5 +32,6 @@ namespace geometry {
 	private:
 		std::shared_ptr<Vertex> v0_, v1_, v2_;
 		std::shared_ptr<HalfEdge> edge_;
+		glm::vec3 normal_;
 	};
 }
