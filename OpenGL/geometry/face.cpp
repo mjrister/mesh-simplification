@@ -8,10 +8,10 @@
 #include <glm/gtc/epsilon.hpp>
 
 namespace {
-	std::array<std::shared_ptr<geometry::Vertex>, 3> GetMinVertexOrder(
-		const std::shared_ptr<geometry::Vertex>& v0,
-		const std::shared_ptr<geometry::Vertex>& v1,
-		const std::shared_ptr<geometry::Vertex>& v2) {
+	std::array<std::shared_ptr<const geometry::Vertex>, 3> GetMinVertexOrder(
+		const std::shared_ptr<const geometry::Vertex>& v0,
+		const std::shared_ptr<const geometry::Vertex>& v1,
+		const std::shared_ptr<const geometry::Vertex>& v2) {
 
 		if (const auto min_id = std::min<>({v0->Id(), v1->Id(), v2->Id()}); min_id == v0->Id()) {
 			return {v0, v1, v2};
@@ -30,13 +30,15 @@ namespace {
 }
 
 geometry::Face::Face(
-	const std::shared_ptr<Vertex>& v0, const std::shared_ptr<Vertex>& v1, const std::shared_ptr<Vertex>& v2) {
+	const std::shared_ptr<const Vertex>& v0,
+	const std::shared_ptr<const Vertex>& v1,
+	const std::shared_ptr<const Vertex>& v2)
+	: normal_{GetFaceNormal(*v0, *v1, *v2)} {
 
 	const auto vertex_order = GetMinVertexOrder(v0, v1, v2);
 	v0_ = vertex_order[0];
 	v1_ = vertex_order[1];
 	v2_ = vertex_order[2];
-	normal_ = GetFaceNormal(*v0_, *v1_, *v2_);
 
 	if (normal_ == glm::vec3{0.f}) {
 		std::ostringstream oss;
