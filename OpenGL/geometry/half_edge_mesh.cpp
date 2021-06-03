@@ -2,7 +2,6 @@
 
 #include <sstream>
 
-#include <GL/gl3w.h>
 #include <glm/vec3.hpp>
 
 #include "geometry/face.h"
@@ -181,8 +180,8 @@ geometry::HalfEdgeMesh::operator gfx::Mesh() const {
 	std::vector<GLuint> indices;
 	indices.reserve(faces_.size() * 3);
 
-	GLuint i = 0;
-	std::unordered_map<std::size_t, GLuint> index_map;
+	std::uint32_t i = 0;
+	std::unordered_map<std::size_t, std::uint32_t> index_map;
 
 	for (const auto& [_, vertex] : vertices_) {
 		index_map.emplace(vertex->Id(), i++);
