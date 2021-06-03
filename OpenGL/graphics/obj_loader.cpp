@@ -155,7 +155,7 @@ namespace {
 		std::vector<GLuint> indices;
 		indices.reserve(faces.size() * 3);
 
-		// store each texture coordinate and normal at the same index as the vertex position
+		// store texture coordinates and normals at the same index as the vertex position
 		for (const auto& face : faces) {
 			for (const auto& index_group : face) {
 				const auto position_index = index_group[0];

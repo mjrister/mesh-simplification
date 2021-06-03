@@ -77,7 +77,7 @@ gfx::Mesh::Mesh(
 		glEnableVertexAttribArray(2);
 	}
 
-	// generate and copy indices to the element buffer
+	// copy indices to the element buffer
 	if (!indices_.empty()) {
 		const std::size_t indices_size = sizeof(GLuint) * indices_.size();
 		glGenBuffers(1, &element_buffer_);
