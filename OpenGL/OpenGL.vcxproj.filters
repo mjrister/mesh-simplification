@@ -64,6 +64,7 @@
     <ClInclude Include="geometry\hash.h">
       <Filter>geometry</Filter>
     </ClInclude>
+    <ClInclude Include="geometry\mesh_simplifier.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
