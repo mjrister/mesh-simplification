@@ -21,7 +21,9 @@
     <ClCompile Include="geometry\face.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
-    <ClCompile Include="geometry\half_edge_mesh.cpp" />
+    <ClCompile Include="geometry\half_edge_mesh.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\string.h">
@@ -64,7 +66,9 @@
     <ClInclude Include="geometry\hash.h">
       <Filter>geometry</Filter>
     </ClInclude>
-    <ClInclude Include="geometry\mesh_simplifier.h" />
+    <ClInclude Include="geometry\mesh_simplifier.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl">
