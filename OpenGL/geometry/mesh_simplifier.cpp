@@ -52,13 +52,13 @@ namespace {
 		const auto v0 = edge01.Flip()->Vertex();
 		const auto v1 = edge01.Vertex();
 
-		const auto& quadric0 = quadrics.at(v0->Id());
-		const auto& quadric1 = quadrics.at(v1->Id());
-		const auto quadric01 = quadric0 + quadric1;
+		const auto& q0 = quadrics.at(v0->Id());
+		const auto& q1 = quadrics.at(v1->Id());
+		const auto q01 = q0 + q1;
 
-		const glm::mat3 Q{quadric01};
-		const glm::vec3 b = glm::column(quadric01, 3);
-		const auto d = quadric01[3][3];
+		const glm::mat3 Q{q01};
+		const glm::vec3 b = glm::column(q01, 3);
+		const auto d = q01[3][3];
 
 		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
 			const auto v_new = geometry::Vertex::Average(vertex_id, *v0, *v1);
@@ -66,12 +66,12 @@ namespace {
 		}
 
 		const auto Q_inv = glm::inverse(Q);
-		const auto D_inv = glm::column(glm::mat4{Q_inv}, 3, glm::vec4{1.f / d * Q_inv * b, 1.f / d});
+		const auto D_inv = glm::column(glm::mat4{Q_inv}, 3, glm::vec4{-1.f / d * Q_inv * b, 1.f / d});
 
 		auto position = D_inv * glm::vec4{0.f, 0.f, 0.f, 1.f};
 		position /= position.w;
 		const auto normal = (v0->Normal() + v1->Normal()) / 2.f;
-		const auto cost = dot(position, quadric01 * position);
+		const auto cost = glm::dot(position, q01 * position);
 
 		return {std::make_shared<geometry::Vertex>(vertex_id, position, normal), cost};
 	}
@@ -127,11 +127,9 @@ namespace {
 		explicit EdgeContraction(
 			geometry::HalfEdgeMesh& mesh,
 			const std::shared_ptr<geometry::HalfEdge>& edge,
-			const std::unordered_map<std::size_t, glm::mat4>& quadrics)
-			: edge{edge} {
+			const std::unordered_map<std::size_t, glm::mat4>& quadrics) : edge{edge} {
 
 			std::tie(vertex, cost) = GetEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
-			valid = !WillDegenerate(edge) && WillCreateValidTriangles(edge, vertex);
 		}
 
 		std::shared_ptr<geometry::HalfEdge> edge;
@@ -173,18 +171,19 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 	};
 
 	while (!edge_contractions.empty() && !should_stop()) {
+		const auto& edge_contraction = edge_contractions.top();
+		const auto& edge01 = edge_contraction->edge;
+		const auto& v_new = edge_contraction->vertex;
+		const auto v0 = edge01->Flip()->Vertex();
+		const auto v1 = edge01->Vertex();
 
-		if (const auto & edge_contraction = edge_contractions.top(); edge_contraction->valid) {
-			const auto& edge01 = edge_contraction->edge;
-			const auto& v_new = edge_contraction->vertex;
-			const auto v0 = edge01->Flip()->Vertex();
-			const auto v1 = edge01->Vertex();
+		if (edge_contraction->valid && !WillDegenerate(edge01) && WillCreateValidTriangles(edge01, v_new)) {
 
 			mesh.CollapseEdge(edge01, v_new);
 
-			const auto& quadric0 = quadrics.at(v0->Id());
-			const auto& quadric1 = quadrics.at(v1->Id());
-			quadrics.emplace(v_new->Id(), quadric0 + quadric1);
+			const auto& q0 = quadrics.at(v0->Id());
+			const auto& q1 = quadrics.at(v1->Id());
+			quadrics.emplace(v_new->Id(), q0 + q1);
 
 			for (const auto& vertex : {v0, v1}) {
 				auto edge = vertex->Edge();
