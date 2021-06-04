@@ -10,7 +10,7 @@
 
 #include "geometry/half_edge.h"
 #include "geometry/half_edge_mesh.h"
-#include "geometry/vertex.h"
+#include "geometry/mesh_simplifier.h"
 #include "graphics/arcball.h"
 #include "graphics/material.h"
 #include "graphics/mesh.h"
@@ -79,11 +79,7 @@ int main() {
 
 		window.HandleKeyPress([&](const auto& key) {
 			if (key == GLFW_KEY_S) {
-				const auto first_edge = half_edge_mesh.Edges().begin()->second;
-				const auto v0 = first_edge->Flip()->Vertex();
-				const auto v1 = first_edge->Vertex();
-				const auto v_new = geometry::Vertex::Average(half_edge_mesh.NextVertexId(), *v0, *v1);
-				half_edge_mesh.CollapseEdge(first_edge, std::make_shared<geometry::Vertex>(v_new));
+				geometry::mesh_simplifier::Simplify(half_edge_mesh, .9f);
 				mesh = half_edge_mesh;
 				mesh.Scale(glm::vec3{.25f});
 			}

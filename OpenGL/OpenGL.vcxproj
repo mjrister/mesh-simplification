@@ -216,6 +216,7 @@
     <ClCompile Include="graphics\obj_loader.cpp" />
     <ClCompile Include="graphics\shader_program.cpp" />
     <ClCompile Include="graphics\texture2d.cpp" />
+    <ClCompile Include="geometry\mesh_simplifier.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
