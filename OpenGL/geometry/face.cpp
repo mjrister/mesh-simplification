@@ -40,7 +40,7 @@ geometry::Face::Face(
 	v2_ = vertex_order[2];
 	normal_ = GetFaceNormal(*v0_, *v1_, *v2_);
 
-	if (glm::length(normal_) < std::numeric_limits<float>::epsilon()) {
+	if (glm::any(glm::isnan(normal_))) {
 		std::ostringstream oss;
 		oss << *this << " is not a triangle";
 		throw std::invalid_argument{oss.str()};
