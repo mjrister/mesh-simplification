@@ -35,19 +35,6 @@ namespace {
 		ASSERT_EQ(face120.V2(), v2);
 	}
 
-	TEST(FaceTest, TestEquivalentFacesAreEqual) {
-
-		const auto [v0, v1, v2] = MakeTriangleVertices();
-		const Face face012{v0, v1, v2};
-		const Face face120{v1, v2, v0};
-		const Face face201{v2, v0, v1};
-		const Face face021{v0, v2, v1};
-
-		ASSERT_TRUE(face012 == face120);
-		ASSERT_TRUE(face120 == face201);
-		ASSERT_FALSE(face012 == face021); // opposite winding order
-	}
-
 	TEST(FaceTest, TestFaceInitializationWithCollinearVerticesThrowsException) {
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{-1.f, -1.f, 0.f}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{0.f, -1.f, 0.f}, glm::vec3{});

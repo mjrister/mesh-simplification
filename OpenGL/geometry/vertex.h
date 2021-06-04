@@ -27,10 +27,6 @@ namespace geometry {
 		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
-		friend bool operator==(const Vertex& lhs, const Vertex& rhs) {
-			return lhs.id_ == rhs.id_ && lhs.position_ == rhs.position_ && lhs.normal_ == rhs.normal_;
-		}
-
 		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) {
 			return os << vertex.id_;
 		}

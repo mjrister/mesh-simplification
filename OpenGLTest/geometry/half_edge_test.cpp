@@ -18,12 +18,6 @@ namespace {
 		return edge01;
 	}
 
-	TEST(HalfEdgeTest, TestHalfEdgeEquality) {
-		const auto edge01 = MakeHalfEdge(0, 1);
-		ASSERT_TRUE(*edge01 == *edge01);
-		ASSERT_FALSE(*edge01 == *edge01->Flip());
-	}
-
 	TEST(HalfEdgeTest, TestInsertionOperator) {
 		std::ostringstream oss;
 		oss << *MakeHalfEdge(0, 1);

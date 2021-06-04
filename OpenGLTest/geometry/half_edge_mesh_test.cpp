@@ -62,10 +62,12 @@ namespace {
 	}
 
 	void VerifyEdge(
-		const Vertex& v0, const Vertex& v1, const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges) {
+		const std::shared_ptr<Vertex>& v0,
+		const std::shared_ptr<Vertex>& v1,
+		const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges) {
 
-		const auto edge01_iterator = edges.find(hash_value(v0, v1));
-		const auto edge10_iterator = edges.find(hash_value(v1, v0));
+		const auto edge01_iterator = edges.find(hash_value(*v0, *v1));
+		const auto edge10_iterator = edges.find(hash_value(*v1, *v0));
 
 		ASSERT_NE(edge01_iterator, edges.end());
 		ASSERT_NE(edge10_iterator, edges.end());
@@ -73,14 +75,14 @@ namespace {
 		const auto edge01 = edge01_iterator->second;
 		const auto edge10 = edge10_iterator->second;
 
-		ASSERT_EQ(v0, *edge10->Vertex());
-		ASSERT_EQ(v1, *edge01->Vertex());
+		ASSERT_EQ(v0, edge10->Vertex());
+		ASSERT_EQ(v1, edge01->Vertex());
 
-		ASSERT_EQ(*edge01, *edge10->Flip());
-		ASSERT_EQ(*edge10, *edge01->Flip());
+		ASSERT_EQ(edge01, edge10->Flip());
+		ASSERT_EQ(edge10, edge01->Flip());
 
-		ASSERT_EQ(*edge01, *edge01->Flip()->Flip());
-		ASSERT_EQ(*edge10, *edge10->Flip()->Flip());
+		ASSERT_EQ(edge01, edge01->Flip()->Flip());
+		ASSERT_EQ(edge10, edge10->Flip()->Flip());
 	}
 
 	void VerifyTriangles(const HalfEdgeMesh& half_edge_mesh, const std::vector<GLuint>& indices) {
@@ -102,26 +104,26 @@ namespace {
 			const auto v1 = v1_iterator->second;
 			const auto v2 = v2_iterator->second;
 
-			VerifyEdge(*v0, *v1, edges);
-			VerifyEdge(*v1, *v2, edges);
-			VerifyEdge(*v2, *v0, edges);
+			VerifyEdge(v0, v1, edges);
+			VerifyEdge(v1, v2, edges);
+			VerifyEdge(v2, v0, edges);
 
 			const auto edge01 = edges.at(hash_value(*v0, *v1));
 			const auto edge12 = edges.at(hash_value(*v1, *v2));
 			const auto edge20 = edges.at(hash_value(*v2, *v0));
 
-			ASSERT_EQ(*edge01->Next(), *edge12);
-			ASSERT_EQ(*edge12->Next(), *edge20);
-			ASSERT_EQ(*edge20->Next(), *edge01);
+			ASSERT_EQ(edge01->Next(), edge12);
+			ASSERT_EQ(edge12->Next(), edge20);
+			ASSERT_EQ(edge20->Next(), edge01);
 
 			const auto face012_iterator = faces.find(hash_value(*v0, *v1, *v2));
 			ASSERT_NE(face012_iterator, faces.end());
 
 			const auto face012 = face012_iterator->second;
-			ASSERT_EQ(*edge01->Face(), *face012);
-			ASSERT_EQ(*edge12->Face(), *face012);
-			ASSERT_EQ(*edge20->Face(), *face012);
-			ASSERT_TRUE(*face012->Edge() == *edge01 || *face012->Edge() == *edge12 || *face012->Edge() == *edge20);
+			ASSERT_EQ(edge01->Face(), face012);
+			ASSERT_EQ(edge12->Face(), face012);
+			ASSERT_EQ(edge20->Face(), face012);
+			ASSERT_TRUE(face012->Edge() == edge01 || face012->Edge() == edge12 || face012->Edge() == edge20);
 		}
 	}
 
@@ -180,7 +182,6 @@ namespace {
 		auto half_edge_mesh = MakeHalfEdgeMesh();
 		ASSERT_EQ(10, half_edge_mesh.NextVertexId());
 		ASSERT_EQ(11, half_edge_mesh.NextVertexId());
-		ASSERT_EQ(12, half_edge_mesh.NextVertexId());
 	}
 
 	TEST(HalfEdgeMeshTest, TestGetHalfEdge) {
@@ -196,8 +197,8 @@ namespace {
 		const auto v1 = edge01->Vertex();
 		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{}, glm::vec3{});
 
-		ASSERT_EQ(*edge01, *GetHalfEdge(*v0, *v1, edges));
-		ASSERT_EQ(*edge10, *GetHalfEdge(*v1, *v0, edges));
+		ASSERT_EQ(edge01, GetHalfEdge(*v0, *v1, edges));
+		ASSERT_EQ(edge10, GetHalfEdge(*v1, *v0, edges));
 		ASSERT_THROW(GetHalfEdge(*v0, *v2, edges), std::invalid_argument);
 	}
 
