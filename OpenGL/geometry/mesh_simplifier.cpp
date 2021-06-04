@@ -17,6 +17,12 @@
 namespace {
 	constexpr auto epsilon = std::numeric_limits<float>::epsilon();
 
+	std::shared_ptr<geometry::HalfEdge> GetMinEdge(const std::shared_ptr<geometry::HalfEdge>& edge) {
+		return std::min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
+			return edge01->Vertex()->Id() < edge10->Vertex()->Id();
+		});
+	}
+
 	glm::mat4 ComputeQuadric(const geometry::Vertex& v0) {
 		glm::mat4 quadric{0.f};
 		auto edge = v0.Edge();
@@ -69,12 +75,6 @@ namespace {
 		return {std::make_shared<geometry::Vertex>(vertex_id, position, normal), cost};
 	}
 
-	std::shared_ptr<geometry::HalfEdge> GetMinEdge(const std::shared_ptr<geometry::HalfEdge>& edge) {
-		return std::min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
-			return edge01->Vertex()->Id() < edge10->Vertex()->Id();
-		});
-	}
-
 	struct EdgeContraction {
 		explicit EdgeContraction(geometry::HalfEdgeMesh& mesh,
 			const std::shared_ptr<geometry::HalfEdge>& edge,
@@ -87,6 +87,27 @@ namespace {
 		float cost = std::numeric_limits<float>::infinity();
 		bool valid = true;
 	};
+
+	bool WillDegenerate(const std::shared_ptr<geometry::HalfEdge>& edge) {
+		const auto v0 = edge->Flip()->Vertex();
+		const auto va = edge->Next()->Vertex();
+		const auto vb = edge->Flip()->Next()->Vertex();
+		std::unordered_map<std::size_t, std::shared_ptr<geometry::Vertex>> neighborhood;
+
+		for (auto iterator = edge->Next(); iterator != edge->Flip(); iterator = iterator->Flip()->Next()) {
+			if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != va && vertex != vb) {
+				neighborhood.emplace(hash_value(*vertex), vertex);
+			}
+		}
+
+		for (auto iterator = edge->Flip()->Next(); iterator != edge; iterator = iterator->Flip()->Next()) {
+			if (const auto vertex = iterator->Vertex(); neighborhood.count(hash_value(*vertex))) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
 
 void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ratio) {
@@ -121,8 +142,9 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 	};
 
 	while (!edge_contractions.empty() && !should_stop()) {
+		const auto& edge_contraction = edge_contractions.top();
 
-		if (const auto& edge_contraction = edge_contractions.top(); edge_contraction->valid) {
+		if (edge_contraction->valid && !WillDegenerate(edge_contraction->edge)) {
 			const auto& edge01 = edge_contraction->edge;
 			const auto& v_new = edge_contraction->vertex;
 			const auto v0 = edge01->Flip()->Vertex();
@@ -146,7 +168,7 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 				} while (edge != vertex->Edge());
 			}
 
-			std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> affected_edges;
+			std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> visited_edges;
 			const auto& vi = v_new;
 			auto edgeji = v_new->Edge();
 			do {
@@ -154,14 +176,14 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 				auto edgekj = vj->Edge();
 				do {
 					const auto min_edge = GetMinEdge(edgekj);
-					if (const auto min_edge_key = hash_value(*min_edge); !affected_edges.count(min_edge_key)) {
+					if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.count(min_edge_key)) {
 						if (auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
 							iterator->second->valid = false;
 						}
 						const auto edge_contraction = std::make_shared<EdgeContraction>(mesh, min_edge, quadrics);
 						valid_edges[min_edge_key] = edge_contraction;
 						edge_contractions.emplace(edge_contraction);
-						affected_edges.emplace(min_edge_key, min_edge);
+						visited_edges.emplace(min_edge_key, min_edge);
 					}
 					edgekj = edgekj->Next()->Flip();
 				} while (edgekj != vj->Edge());
