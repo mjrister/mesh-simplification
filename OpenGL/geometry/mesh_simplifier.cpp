@@ -96,7 +96,7 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 
 	constexpr auto comparator = [](
 		const std::shared_ptr<EdgeContraction>& lhs,
-		const std::shared_ptr<EdgeContraction>& rhs) { return lhs->cost < rhs->cost; };
+		const std::shared_ptr<EdgeContraction>& rhs) { return lhs->cost > rhs->cost; };
 	std::priority_queue<
 		std::shared_ptr<EdgeContraction>,
 		std::vector<std::shared_ptr<EdgeContraction>>,
