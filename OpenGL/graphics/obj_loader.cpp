@@ -9,9 +9,7 @@
 #include <vector>
 
 #include <GL/gl3w.h>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
+#include <glm/glm.hpp>
 
 #include "graphics/mesh.h"
 #include "utils/string.h"

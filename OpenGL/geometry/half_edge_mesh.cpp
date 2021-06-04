@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 
 #include "geometry/face.h"
 #include "geometry/half_edge.h"
