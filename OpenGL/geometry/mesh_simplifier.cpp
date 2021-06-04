@@ -15,6 +15,8 @@
 #include "geometry/vertex.h"
 
 namespace {
+	constexpr auto epsilon = std::numeric_limits<float>::epsilon();
+
 	glm::mat4 ComputeQuadric(const geometry::Vertex& v0) {
 		glm::mat4 quadric{0.f};
 		auto edge = v0.Edge();
@@ -51,7 +53,7 @@ namespace {
 		const glm::vec3 b = glm::column(quadric01, 3);
 		const auto d = quadric01[3][3];
 
-		if (std::abs(glm::determinant(Q)) < std::numeric_limits<float>::epsilon()) {
+		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
 			const auto v_new = geometry::Vertex::Average(vertex_id, *v0, *v1);
 			return {std::make_shared<geometry::Vertex>(v_new), 0.f};
 		}
