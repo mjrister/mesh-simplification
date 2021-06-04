@@ -25,22 +25,22 @@ namespace {
 	glm::vec3 GetFaceNormal(const geometry::Vertex& v0, const geometry::Vertex& v1, const geometry::Vertex& v2) {
 		const glm::vec3 edge01 = v1.Position() - v0.Position();
 		const glm::vec3 edge02 = v2.Position() - v0.Position();
-		return glm::cross(edge01, edge02);
+		return glm::normalize(glm::cross(edge01, edge02));
 	}
 }
 
 geometry::Face::Face(
 	const std::shared_ptr<const Vertex>& v0,
 	const std::shared_ptr<const Vertex>& v1,
-	const std::shared_ptr<const Vertex>& v2)
-	: normal_{GetFaceNormal(*v0, *v1, *v2)} {
+	const std::shared_ptr<const Vertex>& v2) {
 
 	const auto vertex_order = GetMinVertexOrder(v0, v1, v2);
 	v0_ = vertex_order[0];
 	v1_ = vertex_order[1];
 	v2_ = vertex_order[2];
+	normal_ = GetFaceNormal(*v0_, *v1_, *v2_);
 
-	if (normal_ == glm::vec3{0.f}) {
+	if (glm::length(normal_) < std::numeric_limits<float>::epsilon()) {
 		std::ostringstream oss;
 		oss << *this << " is not a triangle";
 		throw std::invalid_argument{oss.str()};
