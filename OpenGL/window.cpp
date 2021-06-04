@@ -14,6 +14,8 @@ namespace {
 		const GLchar* const message,
 		const void* /*user_param*/) {
 
+		if (id == 131185) return;
+
 		std::string message_source;
 		switch (source) {
 			case GL_DEBUG_SOURCE_API: message_source = "API"; break;
