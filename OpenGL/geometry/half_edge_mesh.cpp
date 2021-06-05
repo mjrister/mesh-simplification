@@ -205,11 +205,11 @@ void geometry::HalfEdgeMesh::CollapseEdge(
 	const auto edge10 = edge01->Flip();
 	const auto v0 = edge10->Vertex();
 	const auto v1 = edge01->Vertex();
-	const auto v_top = edge01->Next()->Vertex();
-	const auto v_bottom = edge10->Next()->Vertex();
+	const auto v0_next = edge10->Next()->Vertex();
+	const auto v1_next = edge01->Next()->Vertex();
 
-	CollapseIncidentTriangles(v0, v_top, v_bottom, v_new, edges_, faces_);
-	CollapseIncidentTriangles(v1, v_bottom, v_top, v_new, edges_, faces_);
+	CollapseIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
+	CollapseIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
 
 	DeleteEdge(*edge01, edges_);
 
