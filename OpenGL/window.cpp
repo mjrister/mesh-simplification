@@ -120,8 +120,9 @@ Window::Window(
 				glfwSetWindowShouldClose(window, true);
 			}
 			if (action == GLFW_PRESS) {
-				const auto self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-				self->GetHandleKeyPress()(key);
+				if (const auto self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
+					self->GetHandleKeyPress()(key);
+				}
 			}
 		});
 
