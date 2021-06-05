@@ -97,31 +97,6 @@ namespace {
 		return false;
 	}
 
-	float GetTriangleNiceness(const geometry::Vertex& v0, const geometry::Vertex& v1, const geometry::Vertex& v2) {
-		const auto edge0 = v1.Position() - v0.Position();
-		const auto edge1 = v2.Position() - v1.Position();
-		const auto edge2 = v0.Position() - v2.Position();
-		const auto cross = glm::cross(edge0, edge1);
-		const auto area = .5f * glm::length(cross);
-		return 4.f * std::sqrt(3.f) * area / glm::dot(edge0, edge0) + glm::dot(edge1, edge1) + glm::dot(edge2, edge2);
-	}
-
-	bool WillCreateValidTriangles(
-		const std::shared_ptr<geometry::HalfEdge>& edge01, const std::shared_ptr<geometry::Vertex>& v_new) {
-
-		for (const auto& edge : {edge01, edge01->Flip()}) {
-			for (auto prev = edge->Next(), current = prev->Flip()->Next(); current != edge->Flip();) {
-				if (GetTriangleNiceness(*v_new, *current->Vertex(), *prev->Vertex()) < .45f) {
-					return false;
-				}
-				prev = current;
-				current = prev->Flip()->Next();
-			}
-		}
-
-		return true;
-	}
-
 	struct EdgeContraction {
 
 		explicit EdgeContraction(
@@ -177,7 +152,7 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 		const auto v0 = edge01->Flip()->Vertex();
 		const auto v1 = edge01->Vertex();
 
-		if (edge_contraction->valid && !WillDegenerate(edge01) && WillCreateValidTriangles(edge01, v_new)) {
+		if (edge_contraction->valid && !WillDegenerate(edge01)) {
 
 			mesh.CollapseEdge(edge01, v_new);
 
