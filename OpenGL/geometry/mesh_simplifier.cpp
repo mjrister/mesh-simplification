@@ -201,6 +201,6 @@ gfx::Mesh geometry::mesh_simplifier::Simplify(const gfx::Mesh& mesh, const float
 		edge_contractions.pop();
 	}
 
-	return half_edge_mesh;
+	return static_cast<gfx::Mesh>(half_edge_mesh);
 }
 

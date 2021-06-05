@@ -19,13 +19,12 @@ namespace geometry {
 
 	public:
 		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
+		explicit operator gfx::Mesh() const;
 
 		[[nodiscard]] const auto& Vertices() const { return vertices_; }
 		[[nodiscard]] const auto& Edges() const { return edges_; }
 		[[nodiscard]] const auto& Faces() const { return faces_; }
 		[[nodiscard]] std::size_t NextVertexId() { return next_vertex_id_++; }
-
-		operator gfx::Mesh() const;
 
 		void CollapseEdge(const std::shared_ptr<HalfEdge>& edge01, const std::shared_ptr<Vertex>& v_new);
 
