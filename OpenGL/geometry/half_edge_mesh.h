@@ -19,7 +19,7 @@ namespace geometry {
 
 	public:
 		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
-		explicit operator gfx::Mesh() const;
+		operator gfx::Mesh() const;
 
 		[[nodiscard]] const auto& Vertices() const { return vertices_; }
 		[[nodiscard]] const auto& Edges() const { return edges_; }
