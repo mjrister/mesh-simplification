@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <array>
 #include <charconv>
+#include <format>
 #include <fstream>
-#include <sstream>
 #include <stdexcept>
 #include <vector>
 
@@ -31,9 +31,7 @@ namespace {
 		T value;
 		if (const auto [_, error_code] = std::from_chars(token.data(), token.data() + token.size(), value);
 			error_code == std::errc::invalid_argument) {
-			std::ostringstream oss;
-			oss << "Unable to convert " << token << " to type " << typeid(T).name();
-			throw std::invalid_argument{oss.str()};
+			throw std::invalid_argument{std::format("Unable to convert {} to type {}", token, typeid(T).name())};
 		}
 		return value;
 	}
@@ -55,9 +53,7 @@ namespace {
 			}
 			return vec;
 		}
-		std::ostringstream oss;
-		oss << "Unsupported format " << line;
-		throw std::invalid_argument{oss.str()};
+		throw std::invalid_argument{std::format("Unsupported format {}", line)};
 	}
 
 	/**
@@ -71,7 +67,7 @@ namespace {
 		static constexpr auto delimiter = "/";
 		const auto tokens = string::Split(token, delimiter);
 
-		switch (std::count(token.cbegin(), token.cend(), *delimiter)) {
+		switch (std::ranges::count(token, *delimiter)) {
 			case 0:
 				if (tokens.size() == 1) {
 					const auto x = ParseToken<GLint>(tokens[0]) - 1;
@@ -100,9 +96,7 @@ namespace {
 				break;
 		}
 
-		std::ostringstream oss;
-		oss << "Unsupported format " << token;
-		throw std::invalid_argument{oss.str()};
+		throw std::invalid_argument{std::format("Unsupported format {}", token)};
 	}
 
 	/**
@@ -115,9 +109,7 @@ namespace {
 		if (const auto tokens = string::Split(line, " \t"); tokens.size() == 4) {
 			return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
 		}
-		std::ostringstream oss;
-		oss << "Unsupported format " << line;
-		throw std::invalid_argument{oss.str()};
+		throw std::invalid_argument{std::format("Unsupported format {}", line)};
 	}
 
 	/**
@@ -176,7 +168,5 @@ gfx::Mesh gfx::obj_loader::LoadMesh(const std::string_view filepath) {
 	if (std::ifstream ifs{filepath.data()}; ifs.good()) {
 		return ::LoadMesh(ifs);
 	}
-	std::ostringstream oss;
-	oss << "Unable to open " << filepath;
-	throw std::runtime_error{oss.str()};
+	throw std::runtime_error{std::format("Unable to open {}", filepath)};
 }
