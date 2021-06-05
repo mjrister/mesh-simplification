@@ -1,6 +1,7 @@
 #include "graphics/mesh.h"
 
 #include <stdexcept>
+#include <utility>
 
 #include <GLFW/glfw3.h>
 
@@ -36,11 +37,13 @@ gfx::Mesh::Mesh(
 	std::vector<glm::vec3> positions,
 	std::vector<glm::vec2> texture_coordinates,
 	std::vector<glm::vec3> normals,
-	std::vector<GLuint> indices)
+	std::vector<GLuint> indices,
+	glm::mat4 model)
 	: positions_{std::move(positions)},
 	  texture_coordinates_{std::move(texture_coordinates)},
 	  normals_{std::move(normals)},
-	  indices_{std::move(indices)} {
+	  indices_{std::move(indices)},
+	  model_{std::move(model)} {
 
 	Validate(positions_, texture_coordinates_, normals_, indices_);
 
@@ -114,7 +117,7 @@ gfx::Mesh& gfx::Mesh::operator=(Mesh&& mesh) noexcept {
 	texture_coordinates_ = std::move(mesh.texture_coordinates_);
 	normals_ = std::move(mesh.normals_);
 	indices_ = std::move(mesh.indices_);
-	model_ = mesh.model_;
+	model_ = std::move(mesh.model_);
 
 	return *this;
 }

@@ -149,7 +149,9 @@ namespace {
 	}
 }
 
-geometry::HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) {
+geometry::HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh)
+	: model_{mesh.Model()} {
+
 	const auto& positions = mesh.Positions();
 	const auto& normals = mesh.Normals();
 	const auto& indices = mesh.Indices();
@@ -195,7 +197,7 @@ geometry::HalfEdgeMesh::operator gfx::Mesh() const {
 		indices.push_back(index_map.at(face->V2()->Id()));
 	}
 
-	return gfx::Mesh{positions, {}, normals, indices};
+	return gfx::Mesh{positions, {}, normals, indices, model_};
 }
 
 void geometry::HalfEdgeMesh::CollapseEdge(

@@ -3,9 +3,10 @@
 #include <vector>
 
 #include <GL/gl3w.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace gfx {
 
@@ -19,6 +20,7 @@ namespace gfx {
 		 * \param texture_coordinates The mesh texture coordinates.
 		 * \param normals The mesh normals.
 		 * \param indices Element indices such that each three consecutive integers define a triangle face in the mesh.
+		 * \param model The mesh model transformation.
 		 * \throw std::invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
 		 * \note If \p indices is empty, \p positions must describe a triangle mesh (i.e., be a nonzero multiple of 3).
 		 *       If nonempty, \p texture_coordinates and \p normals must be the same size as \p positions so that data
@@ -30,7 +32,8 @@ namespace gfx {
 			std::vector<glm::vec3> positions,
 			std::vector<glm::vec2> texture_coordinates = {},
 			std::vector<glm::vec3> normals = {},
-			std::vector<GLuint> indices = {});
+			std::vector<GLuint> indices = {},
+			glm::mat4 model = glm::mat4{1.f});
 		~Mesh();
 
 		Mesh(const Mesh&) = delete;
@@ -102,6 +105,6 @@ namespace gfx {
 		std::vector<glm::vec2> texture_coordinates_;
 		std::vector<glm::vec3> normals_;
 		std::vector<GLuint> indices_;
-		glm::mat4 model_{1.f};
+		glm::mat4 model_;
 	};
 }

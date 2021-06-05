@@ -75,13 +75,12 @@ int main() {
 
 		auto mesh = gfx::obj_loader::LoadMesh("models/bunny.obj");
 		mesh.Scale(glm::vec3{.25f});
-		geometry::HalfEdgeMesh half_edge_mesh{mesh};
 
 		window.HandleKeyPress([&](const auto& key) {
 			if (key == GLFW_KEY_S) {
+				geometry::HalfEdgeMesh half_edge_mesh{mesh};
 				geometry::mesh_simplifier::Simplify(half_edge_mesh, .1f);
 				mesh = half_edge_mesh;
-				mesh.Scale(glm::vec3{.25f});
 			}
 		});
 
