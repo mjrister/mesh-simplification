@@ -8,7 +8,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
-#include <glm/gtx/norm.hpp>
 
 #include "geometry/half_edge.h"
 #include "geometry/half_edge_mesh.h"
@@ -26,13 +25,13 @@ namespace {
 	glm::mat4 ComputeQuadric(const geometry::Vertex& v0) {
 		glm::mat4 quadric{0.f};
 		const auto& position = v0.Position();
-		auto edge = v0.Edge();
+		auto iterator = v0.Edge();
 		do {
-			const auto& normal = edge->Face()->Normal();
+			const auto& normal = iterator->Face()->Normal();
 			const auto plane = glm::vec4{normal, -glm::dot(position, normal)};
 			quadric += glm::outerProduct(plane, plane);
-			edge = edge->Next()->Flip();
-		} while (edge != v0.Edge());
+			iterator = iterator->Next()->Flip();
+		} while (iterator != v0.Edge());
 		return quadric;
 	}
 
@@ -96,7 +95,6 @@ namespace {
 			geometry::HalfEdgeMesh& mesh,
 			const std::shared_ptr<geometry::HalfEdge>& edge,
 			const std::unordered_map<std::size_t, glm::mat4>& quadrics) : edge{edge} {
-
 			std::tie(vertex, cost) = GetEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
 		}
 
@@ -169,7 +167,7 @@ gfx::Mesh geometry::mesh_simplifier::Simplify(const gfx::Mesh& mesh, const float
 
 			std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> visited_edges;
 			const auto& vi = v_new;
-			auto edgeji = v_new->Edge();
+			auto edgeji = vi->Edge();
 			do {
 				const auto vj = edgeji->Flip()->Vertex();
 				auto edgekj = vj->Edge();
