@@ -30,12 +30,19 @@ namespace {
 
 	glm::mat4 ComputeQuadric(const geometry::Vertex& v0) {
 		glm::mat4 quadric{0.f};
-		const auto& position = v0.Position();
 		auto iterator = v0.Edge();
 		do {
+			const auto& position = v0.Position();
 			const auto& normal = iterator->Face()->Normal();
-			const auto plane = glm::vec4{normal, -glm::dot(position, normal)};
-			quadric += glm::outerProduct(plane, plane);
+			const auto a = normal.x;
+			const auto b = normal.y;
+			const auto c = normal.z;
+			const auto d = -glm::dot(position, normal);
+			quadric += glm::mat4{
+				a * a, b * a, c * a, d * a,
+				a * b, b * b, c * b, d * b,
+				a * c, b * c, c * c, d * c,
+				a * d, b * d, c * d, d * d };
 			iterator = iterator->Next()->Flip();
 		} while (iterator != v0.Edge());
 		return quadric;
