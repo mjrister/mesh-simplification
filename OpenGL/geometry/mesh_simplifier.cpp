@@ -82,12 +82,12 @@ namespace {
 
 	bool WillDegenerate(const std::shared_ptr<geometry::HalfEdge>& edge01) {
 		const auto v0 = edge01->Flip()->Vertex();
-		const auto va = edge01->Next()->Vertex();
-		const auto vb = edge01->Flip()->Next()->Vertex();
+		const auto v1_next = edge01->Next()->Vertex();
+		const auto v0_next = edge01->Flip()->Next()->Vertex();
 		std::unordered_map<std::size_t, std::shared_ptr<geometry::Vertex>> neighborhood;
 
 		for (auto iterator = edge01->Next(); iterator != edge01->Flip(); iterator = iterator->Flip()->Next()) {
-			if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != va && vertex != vb) {
+			if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
 				neighborhood.emplace(hash_value(*vertex), vertex);
 			}
 		}
