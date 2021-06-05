@@ -8,9 +8,9 @@
 using namespace geometry;
 
 namespace {
-	std::shared_ptr<HalfEdge> MakeHalfEdge(const std::uint64_t v0_id, const std::uint64_t v1_id) {
-		const auto v0 = std::make_shared<Vertex>(v0_id, glm::vec3{}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(v1_id, glm::vec3{}, glm::vec3{});
+	std::shared_ptr<HalfEdge> MakeHalfEdge() {
+		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
+		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{}, glm::vec3{});
 		auto edge01 = std::make_shared<HalfEdge>(v1);
 		const auto edge10 = std::make_shared<HalfEdge>(v0);
 		edge01->SetFlip(edge10);
@@ -20,7 +20,20 @@ namespace {
 
 	TEST(HalfEdgeTest, TestInsertionOperator) {
 		std::ostringstream oss;
-		oss << *MakeHalfEdge(0, 1);
+		oss << *MakeHalfEdge();
 		ASSERT_EQ(oss.str(), "(0,1)");
+	}
+
+	TEST(HalfEdgeTest, TestEqualHalfEdgesProduceTheSameHashValue) {
+		const auto edge01 = MakeHalfEdge();
+		ASSERT_EQ(hash_value(*edge01), hash_value(HalfEdge{*edge01}));
+		ASSERT_NE(hash_value(*edge01), hash_value(*edge01->Flip()));
+	}
+
+	TEST(HalfEdgeTest, TestTwoVerticesProduceSameHashValueAsHalfEdge) {
+		const auto edge01 = MakeHalfEdge();
+		const auto v0 = edge01->Flip()->Vertex();
+		const auto v1 = edge01->Vertex();
+		ASSERT_EQ(hash_value(*v0, *v1), hash_value(*edge01));
 	}
 }

@@ -28,6 +28,10 @@ namespace geometry {
 			return os << '(' << *face.v0_ << ',' << *face.v1_ << ',' << *face.v2_ << ')';
 		}
 
+		friend std::size_t hash_value(const Face& face) {
+			return hash_value(*face.v0_, *face.v1_, *face.v2_);
+		}
+
 	private:
 		std::shared_ptr<const Vertex> v0_, v1_, v2_;
 		std::shared_ptr<const HalfEdge> edge_;

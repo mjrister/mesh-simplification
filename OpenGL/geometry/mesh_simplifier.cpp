@@ -11,7 +11,6 @@
 
 #include "geometry/half_edge.h"
 #include "geometry/half_edge_mesh.h"
-#include "geometry/hash.h"
 #include "geometry/vertex.h"
 #include "graphics/mesh.h"
 

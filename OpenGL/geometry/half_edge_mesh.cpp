@@ -6,7 +6,6 @@
 
 #include "geometry/face.h"
 #include "geometry/half_edge.h"
-#include "geometry/hash.h"
 #include "geometry/vertex.h"
 #include "graphics/mesh.h"
 

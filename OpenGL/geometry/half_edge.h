@@ -29,6 +29,10 @@ namespace geometry {
 			return os << '(' << *edge.flip_->vertex_ << ',' << *edge.vertex_ << ')';
 		}
 
+		friend std::size_t hash_value(const HalfEdge& edge) {
+			return hash_value(*edge.flip_->vertex_, *edge.vertex_);
+		}
+
 	private:
 		const std::shared_ptr<geometry::Vertex> vertex_;
 		std::shared_ptr<HalfEdge> next_, flip_;
