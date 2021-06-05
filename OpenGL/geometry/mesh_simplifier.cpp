@@ -198,4 +198,3 @@ gfx::Mesh geometry::mesh_simplifier::Simplify(const gfx::Mesh& mesh, const float
 
 	return half_edge_mesh;
 }
-
