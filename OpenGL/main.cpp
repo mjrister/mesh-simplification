@@ -73,13 +73,13 @@ int main() {
 		constexpr auto opengl_version = std::make_pair(4, 1);
 		Window window{"OpenGL", window_dimensions, opengl_version};
 
-		auto mesh = gfx::obj_loader::LoadMesh("models/sphere.obj");
+		auto mesh = gfx::obj_loader::LoadMesh("models/bunny.obj");
 		mesh.Scale(glm::vec3{.25f});
 		geometry::HalfEdgeMesh half_edge_mesh{mesh};
 
 		window.HandleKeyPress([&](const auto& key) {
 			if (key == GLFW_KEY_S) {
-				geometry::mesh_simplifier::Simplify(half_edge_mesh, .9f);
+				geometry::mesh_simplifier::Simplify(half_edge_mesh, .1f);
 				mesh = half_edge_mesh;
 				mesh.Scale(glm::vec3{.25f});
 			}
