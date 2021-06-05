@@ -148,9 +148,7 @@ namespace {
 	}
 }
 
-geometry::HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh)
-	: model_{mesh.Model()} {
-
+geometry::HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) : model_{mesh.Model()} {
 	const auto& positions = mesh.Positions();
 	const auto& normals = mesh.Normals();
 	const auto& indices = mesh.Indices();
