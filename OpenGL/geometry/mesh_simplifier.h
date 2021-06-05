@@ -4,9 +4,6 @@ namespace gfx {
 	class Mesh;
 }
 
-namespace geometry {
-
-	namespace mesh_simplifier {
-		gfx::Mesh Simplify(const gfx::Mesh& mesh, float stop_ratio);
-	}
+namespace geometry::mesh_simplifier {
+	gfx::Mesh Simplify(const gfx::Mesh& mesh, float stop_ratio);
 }
