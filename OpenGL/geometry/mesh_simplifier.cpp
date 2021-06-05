@@ -64,7 +64,7 @@ namespace {
 		const glm::vec3 b = glm::column(q01, 3);
 		const auto d = q01[3][3];
 
-		constexpr auto epsilon = std::numeric_limits<float>::epsilon();
+		static constexpr auto epsilon = std::numeric_limits<float>::epsilon();
 		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
 			return {AverageVertices(vertex_id, *v0, *v1), 0.f};
 		}
