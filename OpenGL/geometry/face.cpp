@@ -28,7 +28,7 @@ namespace {
 		if (glm::any(glm::isnan(normal))) {
 			std::ostringstream oss;
 			oss << '(' << v0 << ',' << v1 << ',' << v2 << ") is not a triangle";
-			throw std::invalid_argument{ oss.str() };
+			throw std::invalid_argument{oss.str()};
 		}
 		return normal;
 	}
