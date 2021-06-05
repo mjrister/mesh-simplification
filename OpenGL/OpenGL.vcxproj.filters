@@ -99,15 +99,6 @@
     <Object Include="models\bunny.obj">
       <Filter>models</Filter>
     </Object>
-    <Object Include="models\bob.obj">
-      <Filter>models</Filter>
-    </Object>
-    <Object Include="models\sphere.obj">
-      <Filter>models</Filter>
-    </Object>
-    <Object Include="models\spot.obj">
-      <Filter>models</Filter>
-    </Object>
     <Object Include="models\torus.obj">
       <Filter>models</Filter>
     </Object>
