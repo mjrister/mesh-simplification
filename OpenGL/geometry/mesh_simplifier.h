@@ -1,9 +1,12 @@
 #pragma once
 
+namespace gfx {
+	class Mesh;
+}
+
 namespace geometry {
-	class HalfEdgeMesh;
 
 	namespace mesh_simplifier {
-		void Simplify(HalfEdgeMesh& mesh, float stop_ratio);
+		gfx::Mesh Simplify(const gfx::Mesh& mesh, float stop_ratio);
 	}
 }

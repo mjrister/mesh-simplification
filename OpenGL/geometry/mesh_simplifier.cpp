@@ -14,6 +14,7 @@
 #include "geometry/half_edge_mesh.h"
 #include "geometry/hash.h"
 #include "geometry/vertex.h"
+#include "graphics/mesh.h"
 
 namespace {
 	constexpr auto epsilon = std::numeric_limits<float>::epsilon();
@@ -114,10 +115,12 @@ namespace {
 	};
 }
 
-void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ratio) {
+gfx::Mesh geometry::mesh_simplifier::Simplify(const gfx::Mesh& mesh, const float stop_ratio) {
+
+	HalfEdgeMesh half_edge_mesh{mesh};
 
 	std::unordered_map<std::size_t, glm::mat4> quadrics;
-	for (const auto& [vertex_id, vertex] : mesh.Vertices()) {
+	for (const auto& [vertex_id, vertex] : half_edge_mesh.Vertices()) {
 		quadrics.emplace(vertex_id, ComputeQuadric(*vertex));
 	}
 
@@ -130,18 +133,18 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 		decltype(comparator)> edge_contractions{comparator};
 	std::unordered_map<std::size_t, std::shared_ptr<EdgeContraction>> valid_edges;
 
-	for (const auto& [_, edge] : mesh.Edges()) {
+	for (const auto& [_, edge] : half_edge_mesh.Edges()) {
 		const auto min_edge = GetMinEdge(edge);
 		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.count(min_edge_key)) {
-			const auto edge_contraction = std::make_shared<EdgeContraction>(mesh, min_edge, quadrics);
+			const auto edge_contraction = std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
 			edge_contractions.push(edge_contraction);
 			valid_edges.emplace(min_edge_key, edge_contraction);
 		}
 	}
 
-	const auto initial_face_count = static_cast<float>(mesh.Faces().size());
+	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
 	const auto should_stop = [&]() {
-		const auto face_count = static_cast<float>(mesh.Faces().size());
+		const auto face_count = static_cast<float>(half_edge_mesh.Faces().size());
 		return face_count < initial_face_count * stop_ratio;
 	};
 
@@ -154,7 +157,7 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 
 		if (edge_contraction->valid && !WillDegenerate(edge01)) {
 
-			mesh.CollapseEdge(edge01, v_new);
+			half_edge_mesh.CollapseEdge(edge01, v_new);
 
 			const auto& q0 = quadrics.at(v0->Id());
 			const auto& q1 = quadrics.at(v1->Id());
@@ -184,7 +187,7 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 						if (auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
 							iterator->second->valid = false;
 						}
-						const auto edge_contraction = std::make_shared<EdgeContraction>(mesh, min_edge, quadrics);
+						const auto edge_contraction = std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
 						valid_edges[min_edge_key] = edge_contraction;
 						edge_contractions.emplace(edge_contraction);
 						visited_edges.emplace(min_edge_key, min_edge);
@@ -197,5 +200,7 @@ void geometry::mesh_simplifier::Simplify(HalfEdgeMesh& mesh, const float stop_ra
 
 		edge_contractions.pop();
 	}
+
+	return half_edge_mesh;
 }
 
