@@ -17,8 +17,6 @@
 #include "graphics/mesh.h"
 
 namespace {
-	constexpr auto epsilon = std::numeric_limits<float>::epsilon();
-
 	std::shared_ptr<geometry::HalfEdge> GetMinEdge(const std::shared_ptr<geometry::HalfEdge>& edge) {
 		return std::min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
 			return edge01->Vertex()->Id() < edge10->Vertex()->Id();
@@ -27,19 +25,12 @@ namespace {
 
 	glm::mat4 ComputeQuadric(const geometry::Vertex& v0) {
 		glm::mat4 quadric{0.f};
+		const auto& position = v0.Position();
 		auto edge = v0.Edge();
 		do {
-			const auto& position = v0.Position();
 			const auto& normal = edge->Face()->Normal();
-			const auto a = normal.x;
-			const auto b = normal.y;
-			const auto c = normal.z;
-			const auto d = -glm::dot(position, normal);
-			quadric += glm::mat4{
-				a * a, b * a, c * a, d * a,
-				a * b, b * b, c * b, d * b,
-				a * c, b * c, c * c, d * c,
-				a * d, b * d, c * d, d * d};
+			const auto plane = glm::vec4{normal, -glm::dot(position, normal)};
+			quadric += glm::outerProduct(plane, plane);
 			edge = edge->Next()->Flip();
 		} while (edge != v0.Edge());
 		return quadric;
@@ -61,6 +52,7 @@ namespace {
 		const glm::vec3 b = glm::column(q01, 3);
 		const auto d = q01[3][3];
 
+		constexpr auto epsilon = std::numeric_limits<float>::epsilon();
 		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
 			const auto v_new = geometry::Vertex::Average(vertex_id, *v0, *v1);
 			return {std::make_shared<geometry::Vertex>(v_new), 0.f};
