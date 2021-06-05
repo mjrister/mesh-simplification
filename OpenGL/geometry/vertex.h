@@ -11,12 +11,6 @@ namespace geometry {
 	class Vertex {
 
 	public:
-		static Vertex Average(const std::size_t id, const Vertex& v0, const Vertex& v1) {
-			const auto position = (v0.position_ + v1.position_) / 2.f;
-			const auto normal = (v0.normal_ + v1.normal_) / 2.f;
-			return Vertex{id, position, normal};
-		}
-
 		Vertex(const std::size_t id, const glm::vec3& position, const glm::vec3& normal)
 			: id_{id}, position_{position}, normal_{normal} {}
 

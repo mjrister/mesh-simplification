@@ -26,6 +26,7 @@
     <ClCompile Include="geometry\half_edge_mesh_test.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
+    <ClCompile Include="geometry\mesh_simplifier_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">

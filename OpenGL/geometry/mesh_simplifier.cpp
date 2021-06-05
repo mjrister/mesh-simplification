@@ -21,6 +21,13 @@ namespace {
 		});
 	}
 
+	std::shared_ptr<geometry::Vertex> AverageVertices(
+		const std::size_t id, const geometry::Vertex& v0, const geometry::Vertex& v1) {
+		const auto position = (v0.Position() + v1.Position()) / 2.f;
+		const auto normal = (v0.Normal() + v1.Normal()) / 2.f;
+		return std::make_shared<geometry::Vertex>(id, position, normal);
+	}
+
 	glm::mat4 ComputeQuadric(const geometry::Vertex& v0) {
 		glm::mat4 quadric{0.f};
 		const auto& position = v0.Position();
@@ -52,8 +59,7 @@ namespace {
 
 		constexpr auto epsilon = std::numeric_limits<float>::epsilon();
 		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
-			const auto v_new = geometry::Vertex::Average(vertex_id, *v0, *v1);
-			return {std::make_shared<geometry::Vertex>(v_new), 0.f};
+			return {AverageVertices(vertex_id, *v0, *v1), 0.f};
 		}
 
 		const auto Q_inv = glm::inverse(Q);
@@ -67,19 +73,19 @@ namespace {
 		return {std::make_shared<geometry::Vertex>(vertex_id, position, normal), cost};
 	}
 
-	bool WillDegenerate(const std::shared_ptr<geometry::HalfEdge>& edge) {
-		const auto v0 = edge->Flip()->Vertex();
-		const auto va = edge->Next()->Vertex();
-		const auto vb = edge->Flip()->Next()->Vertex();
+	bool WillDegenerate(const std::shared_ptr<geometry::HalfEdge>& edge01) {
+		const auto v0 = edge01->Flip()->Vertex();
+		const auto va = edge01->Next()->Vertex();
+		const auto vb = edge01->Flip()->Next()->Vertex();
 		std::unordered_map<std::size_t, std::shared_ptr<geometry::Vertex>> neighborhood;
 
-		for (auto iterator = edge->Next(); iterator != edge->Flip(); iterator = iterator->Flip()->Next()) {
+		for (auto iterator = edge01->Next(); iterator != edge01->Flip(); iterator = iterator->Flip()->Next()) {
 			if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != va && vertex != vb) {
 				neighborhood.emplace(hash_value(*vertex), vertex);
 			}
 		}
 
-		for (auto iterator = edge->Flip()->Next(); iterator != edge; iterator = iterator->Flip()->Next()) {
+		for (auto iterator = edge01->Flip()->Next(); iterator != edge01; iterator = iterator->Flip()->Next()) {
 			if (const auto vertex = iterator->Vertex(); neighborhood.count(hash_value(*vertex))) {
 				return true;
 			}

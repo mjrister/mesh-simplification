@@ -38,6 +38,7 @@
   <ItemGroup>
     <ClCompile Include="geometry\face_test.cpp" />
     <ClCompile Include="geometry\half_edge_mesh_test.cpp" />
+    <ClCompile Include="geometry\mesh_simplifier_test.cpp" />
     <ClCompile Include="graphics\arcball_test.cpp" />
     <ClCompile Include="geometry\half_edge_test.cpp" />
     <ClCompile Include="main.cpp" />

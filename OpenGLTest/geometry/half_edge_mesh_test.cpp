@@ -158,7 +158,7 @@ namespace {
 		const auto v0 = vertices.at(0);
 		const auto v1 = vertices.at(1);
 		const auto edge01 = edges.at(hash_value(*v0, *v1));
-		const auto v_new = Vertex::Average(half_edge_mesh.NextVertexId(), *v0, *v1);
+		const Vertex v_new{half_edge_mesh.NextVertexId(), (v0->Position() + v1->Position() / 2.f), glm::vec3{0.f}};
 
 		half_edge_mesh.CollapseEdge(edge01, std::make_shared<Vertex>(v_new));
 
