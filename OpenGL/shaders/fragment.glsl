@@ -39,8 +39,7 @@ vec4 GetFragmentColor() {
 	vec3 vertex_normal = normalize(vertex.normal);
 	float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
 
-	// direct light contribution should not be considered if the angle between
-	// the light source and vertex normal is greater than or equal to 90 degrees
+	// avoid calculating specular intensity if angle between light source and vertex position is greater than 90 degrees
 	if (diffuse_intensity > 0.f) {
 		vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
