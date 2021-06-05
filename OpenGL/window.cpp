@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 namespace {
-	void HandleDebugMessageReceived(
+	void APIENTRY HandleDebugMessageReceived(
 		const GLenum source,
 		const GLenum type,
 		const GLuint id,
