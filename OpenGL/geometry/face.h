@@ -11,10 +11,9 @@ namespace geometry {
 	class Face {
 
 	public:
-		Face(
-			const std::shared_ptr<const Vertex>& v0,
-			const std::shared_ptr<const Vertex>& v1,
-			const std::shared_ptr<const Vertex>& v2);
+		Face(const std::shared_ptr<const Vertex>& v0,
+		     const std::shared_ptr<const Vertex>& v1,
+		     const std::shared_ptr<const Vertex>& v2);
 
 		[[nodiscard]] std::shared_ptr<const Vertex> V0() const { return v0_; }
 		[[nodiscard]] std::shared_ptr<const Vertex> V1() const { return v1_; }
