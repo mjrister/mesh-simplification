@@ -2,29 +2,9 @@
 
 #include "utils/string.h"
 
+using namespace string;
+
 namespace {
-	using namespace string;
-
-	TEST(StringTest, TestEmptyStringStartsWithPrefix) {
-		constexpr auto* line = "";
-		static_assert(!StartsWith(line, "Hello"));
-	}
-
-	TEST(StringTest, TestStringStartsWithPrefix) {
-		constexpr auto* line = "Hello, World!";
-		static_assert(StartsWith(line, "Hello"));
-	}
-
-	TEST(StringTest, TestStringDoesNotStartWithPrefix) {
-		constexpr auto* line = "Hello, World!";
-		static_assert(!StartsWith(line, "World!"));
-	}
-
-	TEST(StringTest, TestShortStringDoesNotStartWithLongPrefix) {
-		constexpr auto* line = "Hello";
-		static_assert(!StartsWith(line, "Hello, World!"));
-	}
-
 	TEST(StringTest, TestTrimWhitespaceString) {
 		constexpr auto* line = "     ";
 		ASSERT_TRUE(Trim(line).empty());

@@ -8,17 +8,6 @@
 namespace string {
 
 	/**
-	 * \brief Determines if a string starts with a given prefix.
-	 * \param line The string to evaluate.
-	 * \param prefix The prefix to test.
-	 * \return \c true if \p line starts with \p prefix, otherwise \c false.
-	 * \note This can be removed in favor of \c std::string_view::starts_with when this project is migrated to C++20.
-	 */
-	constexpr bool StartsWith(const std::string_view line, const std::string_view prefix) {
-		return prefix.size() <= line.size() && line.compare(0, prefix.size(), prefix.data()) == 0;
-	}
-
-	/**
 	 * \brief Removes a set of characters from the beginning and end of the string.
 	 * \param line The string to evaluate.
 	 * \param delimiter A set of characters (in any order) to remove from the beginning and end of the string.
