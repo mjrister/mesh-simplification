@@ -6,10 +6,12 @@
 #include <format>
 #include <fstream>
 #include <stdexcept>
+#include <unordered_map>
 #include <vector>
 
 #include <GL/gl3w.h>
 #include <glm/glm.hpp>
+#include <glm/gtx/hash.hpp>
 
 #include "graphics/mesh.h"
 #include "utils/string.h"
@@ -140,27 +142,35 @@ namespace {
 
 		if (faces.empty()) return gfx::Mesh{positions, texture_coordinates, normals};
 
-		std::vector<glm::vec2> ordered_texture_coordinates(texture_coordinates.empty() ? 0 : positions.size());
-		std::vector<glm::vec3> ordered_normals(normals.empty() ? 0 : positions.size());
+		std::vector<glm::vec3> ordered_positions;
+		std::vector<glm::vec2> ordered_texture_coordinates;
+		std::vector<glm::vec3> ordered_normals;
 		std::vector<GLuint> indices;
 		indices.reserve(faces.size() * 3);
 
-		// store texture coordinates and normals at the same index as the vertex position
-		for (const auto& face : faces) {
+		for (std::unordered_map<glm::ivec3, GLuint> unique_index_groups; const auto& face : faces) {
 			for (const auto& index_group : face) {
-				const auto position_index = index_group[0];
-				indices.push_back(position_index);
+				if (const auto iterator = unique_index_groups.find(index_group); iterator == unique_index_groups.end()) {
+					const auto position_index = index_group[0];
+					ordered_positions.push_back(positions.at(position_index));
 
-				if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index) {
-					ordered_texture_coordinates.at(position_index) = texture_coordinates.at(texture_coordinate_index);
-				}
-				if (const auto normal_index = index_group[2]; normal_index != npos_index) {
-					ordered_normals.at(position_index) = normals.at(normal_index);
+					if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index) {
+						ordered_texture_coordinates.push_back(texture_coordinates.at(texture_coordinate_index));
+					}
+					if (const auto normal_index = index_group[2]; normal_index != npos_index) {
+						ordered_normals.push_back(normals.at(normal_index));
+					}
+
+					const auto index = static_cast<GLuint>(ordered_positions.size()) - 1u;
+					indices.push_back(index);
+					unique_index_groups.emplace(index_group, index);
+				} else {
+					indices.push_back(iterator->second);
 				}
 			}
 		}
 
-		return gfx::Mesh{positions, ordered_texture_coordinates, ordered_normals, indices};
+		return gfx::Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices};
 	}
 }
 
