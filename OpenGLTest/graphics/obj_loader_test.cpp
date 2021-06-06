@@ -123,7 +123,7 @@ namespace {
 			vn 10.0 10.1 10.2
 			# faces
 			f 1/4/2 2/1/3 3/2/1
-			f 1/4/2 2/1/3 4/3/1
+			f 1/2/2 2/1/3 4/3/1
 		)"};
 
 		const auto mesh = LoadMesh(ss);
@@ -131,9 +131,9 @@ namespace {
 		constexpr glm::vec2 vt0{4.f, 4.1f}, vt1{5.f, 5.1f}, vt2{6.f, 6.1f}, vt3{7.f, 7.1f};
 		constexpr glm::vec3 vn0{8.f, 8.1f, 8.2f}, vn1{9.f, 9.1f, 9.2f}, vn2{10.f, 10.1f, 10.2f};
 
-		ASSERT_EQ((std::vector{v0, v1, v2, v3}), mesh.Positions());
-		ASSERT_EQ((std::vector{vt3, vt0, vt1, vt2}), mesh.TextureCoordinates());
-		ASSERT_EQ((std::vector{vn1, vn2, vn0, vn0}), mesh.Normals());
-		ASSERT_EQ((std::vector{0u, 1u, 2u, 0u, 1u, 3u}), mesh.Indices());
+		ASSERT_EQ((std::vector{v0, v1, v2, v0, v3}), mesh.Positions());
+		ASSERT_EQ((std::vector{vt3, vt0, vt1, vt1, vt2}), mesh.TextureCoordinates());
+		ASSERT_EQ((std::vector{vn1, vn2, vn0, vn1, vn0}), mesh.Normals());
+		ASSERT_EQ((std::vector{0u, 1u, 2u, 3u, 1u, 4u}), mesh.Indices());
 	}
 }
