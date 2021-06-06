@@ -43,7 +43,7 @@ namespace {
 			return glm::vec3{x, y, std::sqrt(1.f - c)};
 		}
 
-		// get closest position on the arcball
+		// get nearest position on the arcball
 		return glm::normalize(glm::vec3{x, y, 0.f});
 	}
 }
