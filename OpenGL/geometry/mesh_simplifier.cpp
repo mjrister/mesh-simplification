@@ -213,7 +213,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 		"Mesh simplified from {} to {} triangles in {} seconds\n",
 		initial_face_count,
 		half_edge_mesh.Faces().size(),
-		std::chrono::duration<float>{end_time - start_time}.count()) << std::endl;
+		std::chrono::duration<float>{end_time - start_time}.count());
 
 	return half_edge_mesh;
 }
