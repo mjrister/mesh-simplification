@@ -7,10 +7,10 @@
 
 namespace string {
 
-	struct string_view_hash {
-		using is_transparent = void;
-		std::size_t operator()(const std::string_view value) const { return std::hash<std::string_view>{}(value); }
-	};
+	/**
+	 * \brief Implements the hash operator for a string view. Needed to perform heterogeneous lookup in unordered containers.
+	 */
+
 
 	/**
 	 * \brief Removes a set of characters from the beginning and end of the string.

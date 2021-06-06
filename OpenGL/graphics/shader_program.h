@@ -99,6 +99,15 @@ namespace gfx {
 
 		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
-		std::unordered_map<std::string, GLint, string::string_view_hash, std::equal_to<>> uniform_locations_;
+
+		// The following is needed to perform heterogeneous lookup in unordered containers. This is important because
+		// each uniform location query is performed using a string_view, but stored as a string. Without heterogeneous
+		// lookup, each query would have to be converted to a string (and hence allocate unnecessary memory) which would
+		// degrade performance on the critical rendering path.
+		struct string_view_hash {
+			using is_transparent = void;
+			std::size_t operator()(const std::string_view value) const { return std::hash<std::string_view>{}(value); }
+		};
+		std::unordered_map<std::string, GLint, string_view_hash, std::equal_to<>> uniform_locations_;
 	};
 }
