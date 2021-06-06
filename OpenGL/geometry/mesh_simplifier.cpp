@@ -193,7 +193,8 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 						if (auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
 							iterator->second->valid = false;
 						}
-						const auto new_edge_contraction = std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
+						const auto new_edge_contraction =
+							std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
 						valid_edges[min_edge_key] = new_edge_contraction;
 						edge_contractions.emplace(new_edge_contraction);
 						visited_edges.emplace(min_edge_key, min_edge);
