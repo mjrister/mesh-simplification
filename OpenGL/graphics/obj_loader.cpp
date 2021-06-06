@@ -27,7 +27,9 @@ namespace {
 	 * \return A view of the characters in \p delimiter removed from the beginning and end of \p line.
 	 * \warning Generally, returning a \c string_view is unsafe since it may lead to a dangling pointer if a temporary
 	 *          is passed in to \p line. This is guaranteed to \b not happen in this context because \p line will always
-	 *          refer to a dynamically allocated string created by reading the .obj file.
+	 *          refer to a dynamically allocated string created by reading the .obj file. Furthermore, preventing
+	 *          unnecessary copies of \p line can reduce the total time needed to parse an .obj file by half and
+	 *          therefore its usage is warranted.
 	 */
 	std::string_view Trim(std::string_view line, const std::string_view delimiter = " \t\r\n") {
 		line.remove_prefix(std::min<>(line.find_first_not_of(delimiter), line.size()));
@@ -42,7 +44,9 @@ namespace {
 	 * \return A vector of tokens in \p line split on the characters in \p delimiter.
 	 * \warning Generally, returning a \c string_view is unsafe since it may lead to a dangling pointer if a temporary
 	 *          is passed in to \p line. This is guaranteed to \b not happen in this context because \p line will always
-	 *          refer to a dynamically allocated string created by reading the .obj file.
+	 *          refer to a dynamically allocated string created by reading the .obj file. Furthermore, preventing
+	 *          unnecessary copies of \p line can reduce the total time needed to parse an .obj file by half and
+	 *          therefore its usage is warranted.
 	 */
 	std::vector<std::string_view> Split(const std::string_view line, const std::string_view delimiter) {
 		std::vector<std::string_view> tokens;
