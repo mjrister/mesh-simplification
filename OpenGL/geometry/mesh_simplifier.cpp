@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <limits>
 #include <queue>
+#include <ranges>
 #include <unordered_map>
 #include <vector>
 
@@ -135,9 +136,9 @@ gfx::Mesh geometry::mesh_simplifier::Simplify(const gfx::Mesh& mesh, const float
 		decltype(comparator)> edge_contractions{comparator};
 	std::unordered_map<std::size_t, std::shared_ptr<EdgeContraction>> valid_edges;
 
-	for (const auto& [_, edge] : half_edge_mesh.Edges()) {
+	for (const auto& edge : half_edge_mesh.Edges() | std::views::values) {
 		const auto min_edge = GetMinEdge(edge);
-		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.count(min_edge_key)) {
+		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
 			const auto edge_contraction = std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
 			edge_contractions.push(edge_contraction);
 			valid_edges.emplace(min_edge_key, edge_contraction);
@@ -185,7 +186,7 @@ gfx::Mesh geometry::mesh_simplifier::Simplify(const gfx::Mesh& mesh, const float
 				auto edgekj = vj->Edge();
 				do {
 					const auto min_edge = GetMinEdge(edgekj);
-					if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.count(min_edge_key)) {
+					if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.contains(min_edge_key)) {
 						if (auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
 							iterator->second->valid = false;
 						}

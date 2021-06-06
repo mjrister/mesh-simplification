@@ -37,7 +37,6 @@ namespace {
 geometry::Face::Face(
 	const std::shared_ptr<const Vertex>& v0,
 	const std::shared_ptr<const Vertex>& v1,
-	const std::shared_ptr<const Vertex>& v2)
-	: normal_{GetFaceNormal(*v0, *v1, *v2)} {
+	const std::shared_ptr<const Vertex>& v2) : normal_{GetFaceNormal(*v0, *v1, *v2)} {
 	std::tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
 }

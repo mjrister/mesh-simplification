@@ -1,4 +1,4 @@
-#include "window.h"
+#include "graphics/window.h"
 
 #include <iostream>
 #include <sstream>
@@ -92,7 +92,7 @@ namespace {
 	}
 }
 
-Window::Window(
+gfx::Window::Window(
 	const std::string_view title,
 	const std::pair<const std::int32_t, const std::int32_t>& window_size,
 	const std::pair<const std::int32_t, const std::int32_t>& opengl_version) {
@@ -132,7 +132,7 @@ Window::Window(
 	glEnable(GL_MULTISAMPLE);
 }
 
-Window::~Window() {
+gfx::Window::~Window() {
 	if (window_) {
 		glfwDestroyWindow(window_);
 	}
