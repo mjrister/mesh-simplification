@@ -8,21 +8,21 @@
 namespace {
 
 	/** \brief Gets the maximum number of texture units allowed by the host GPU. */
-	GLint GetMaxTextureImageUnits() {
-		static GLint max_texture_image_units = 0;
-		if (!max_texture_image_units) {
-			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_image_units);
+	GLint GetMaxTextureUnits() {
+		static GLint max_texture_units = 0;
+		if (!max_texture_units) {
+			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
 		}
-		return max_texture_image_units;
+		return max_texture_units;
 	}
 }
 
 gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t texture_unit_index)
 	: texture_unit_index_{texture_unit_index} {
 
-	if (const auto max_texture_units = GetMaxTextureImageUnits();  texture_unit_index >= max_texture_units) {
+	if (const auto max_texture_units = GetMaxTextureUnits();  texture_unit_index >= max_texture_units) {
 		throw std::out_of_range{
-			std::format("{} exceeds maximum texture image unit index {}", texture_unit_index, max_texture_units - 1)};
+			std::format("{} exceeds maximum texture unit index {}", texture_unit_index, max_texture_units - 1)};
 	}
 
 	glActiveTexture(GL_TEXTURE0 + texture_unit_index_);
