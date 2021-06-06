@@ -1,6 +1,6 @@
 #include "graphics/texture2d.h"
 
-#include <sstream>
+#include <format>
 #include <stdexcept>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -21,7 +21,10 @@ namespace {
 gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t texture_unit_index)
 	: texture_unit_index_{texture_unit_index} {
 
-	if (texture_unit_index >= GetMaxTextureImageUnits()) throw std::out_of_range{"Texture unit index out of range"};
+	if (const auto max_texture_units = GetMaxTextureImageUnits();  texture_unit_index >= max_texture_units) {
+		throw std::out_of_range{
+			std::format("{} exceeds maximum texture image unit index {}", texture_unit_index, max_texture_units - 1)};
+	}
 
 	glActiveTexture(GL_TEXTURE0 + texture_unit_index_);
 	glGenTextures(1, &id_);
@@ -38,8 +41,6 @@ gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t te
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(data);
 	} else {
-		std::ostringstream oss;
-		oss << "Failed to open " << filepath;
-		throw std::runtime_error{oss.str()};
+		throw std::runtime_error{std::format("Unable to open {}", filepath)};
 	}
 }
