@@ -10,7 +10,7 @@
 
 namespace gfx {
 
-	/** \brief A renderable triangle mesh. */
+	/** \brief A renderable triangle mesh in OpenGL. */
 	class Mesh {
 
 	public:
