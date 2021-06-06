@@ -14,12 +14,45 @@
 #include <glm/gtx/hash.hpp>
 
 #include "graphics/mesh.h"
-#include "utils/string.h"
 
 namespace {
 
 	// sentinel value indicating an unspecified face element index position
 	constexpr GLint npos_index = -1;
+
+	/**
+	 * \brief Removes a set of characters from the beginning and end of the string.
+	 * \param line The string to evaluate.
+	 * \param delimiter A set of characters (in any order) to remove from the beginning and end of the string.
+	 * \return A view of the characters in \p delimiter removed from the beginning and end of \p line.
+	 * \warning Generally, returning a \c string_view is unsafe since it may lead to a dangling pointer if a temporary
+	 *          is passed in to \p line. This is guaranteed to \b not happen in this context because \p line will always
+	 *          refer to a dynamically allocated string created by reading the .obj file.
+	 */
+	std::string_view Trim(std::string_view line, const std::string_view delimiter = " \t\r\n") {
+		line.remove_prefix(std::min<>(line.find_first_not_of(delimiter), line.size()));
+		line.remove_suffix(line.size() - line.find_last_not_of(delimiter) - 1);
+		return line;
+	}
+
+	/**
+	 * \brief Gets tokens delimited by a set of characters.
+	 * \param line The string to evaluate.
+	 * \param delimiter The set of characters (in any order) to split the string on.
+	 * \return A vector of tokens in \p line split on the characters in \p delimiter.
+	 * \warning Generally, returning a \c string_view is unsafe since it may lead to a dangling pointer if a temporary
+	 *          is passed in to \p line. This is guaranteed to \b not happen in this context because \p line will always
+	 *          refer to a dynamically allocated string created by reading the .obj file.
+	 */
+	std::vector<std::string_view> Split(const std::string_view line, const std::string_view delimiter) {
+		std::vector<std::string_view> tokens;
+		for (auto i = line.find_first_not_of(delimiter); i < line.size();) {
+			const auto j = std::min<>(line.find_first_of(delimiter, i), line.size());
+			tokens.push_back(line.substr(i, j - i));
+			i = line.find_first_not_of(delimiter, j);
+		}
+		return tokens;
+	}
 
 	/**
 	 * \brief Parses a string token.
@@ -48,7 +81,7 @@ namespace {
 	 */
 	template <typename T, std::uint8_t N>
 	glm::vec<N, T> ParseLine(const std::string_view line) {
-		if (const auto tokens = string::Split(line, " \t"); tokens.size() == N + 1) {
+		if (const auto tokens = Split(line, " \t"); tokens.size() == N + 1) {
 			glm::vec<N, T> vec{};
 			for (std::uint8_t i = 1; i <= N; ++i) {
 				vec[i - 1] = ParseToken<T>(tokens[i]);
@@ -67,7 +100,7 @@ namespace {
 	 */
 	glm::ivec3 ParseIndexGroup(const std::string_view token) {
 		static constexpr auto delimiter = "/";
-		const auto tokens = string::Split(token, delimiter);
+		const auto tokens = Split(token, delimiter);
 
 		switch (std::ranges::count(token, *delimiter)) {
 			case 0:
@@ -108,7 +141,7 @@ namespace {
 	 * \throw std::invalid_argument Indicates the line format is unsupported.
 	 */
 	std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
-		if (const auto tokens = string::Split(line, " \t"); tokens.size() == 4) {
+		if (const auto tokens = Split(line, " \t"); tokens.size() == 4) {
 			return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
 		}
 		throw std::invalid_argument{std::format("Unsupported format {}", line)};
@@ -127,7 +160,7 @@ namespace {
 		std::vector<std::array<glm::ivec3, 3>> faces;
 
 		for (std::string line; std::getline(is, line);) {
-			if (line = string::Trim(line); !line.empty() && !line.starts_with('#')) {
+			if (line = Trim(line); !line.empty() && !line.starts_with('#')) {
 				if (line.starts_with("v ")) {
 					positions.push_back(ParseLine<GLfloat, 3>(line));
 				} else if (line.starts_with("vt ")) {

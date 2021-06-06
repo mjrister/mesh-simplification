@@ -31,12 +31,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils\string.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\file.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="graphics\shader_program.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -85,9 +79,6 @@
   <ItemGroup>
     <Filter Include="shaders">
       <UniqueIdentifier>{bc519ce1-d050-44ca-bf16-5049ce0cb9a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="utils">
-      <UniqueIdentifier>{48e9edca-52c8-4520-99ef-22029f2334b4}</UniqueIdentifier>
     </Filter>
     <Filter Include="models">
       <UniqueIdentifier>{72540917-fab2-49b9-bf65-600687120d37}</UniqueIdentifier>

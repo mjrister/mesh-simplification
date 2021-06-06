@@ -8,8 +8,6 @@
 #include <GL/gl3w.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "utils/string.h"
-
 namespace gfx {
 
 	/** \brief A program used to execute one or more OpenGL shaders on the host GPU. */

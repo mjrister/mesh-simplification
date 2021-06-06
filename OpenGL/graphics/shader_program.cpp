@@ -1,11 +1,30 @@
 #include "shader_program.h"
 
+#include <fstream>
 #include <stdexcept>
 #include <vector>
 
-#include "utils/file.h"
-
 namespace {
+
+	/**
+	 * \brief Retrieves the contents of a file.
+	 * \param filepath The filepath to load contents from.
+	 * \return A string containing the file contents.
+	 * \throw std::runtime_error Indicates there was an error opening the file.
+	 */
+	std::string Read(const std::string_view filepath) {
+
+		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
+			std::string source;
+			ifs.seekg(0, std::ios::end);
+			source.reserve(static_cast<std::size_t>(ifs.tellg()));
+			ifs.seekg(0, std::ios::beg);
+			source.assign(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
+			return source;
+		}
+
+		throw std::runtime_error{std::format("Unable to open {}", filepath)};
+	}
 
 	/**
 	 * \brief Verifies the status of a shader.
@@ -59,8 +78,8 @@ gfx::ShaderProgram::Shader::Shader(const GLenum shader_type, const GLchar* const
 gfx::ShaderProgram::ShaderProgram(
 	const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
 	: id_{glCreateProgram()},
-	  vertex_shader_{GL_VERTEX_SHADER, file::Read(vertex_shader_filepath).c_str()},
-	  fragment_shader_{GL_FRAGMENT_SHADER, file::Read(fragment_shader_filepath).c_str()} {
+	  vertex_shader_{GL_VERTEX_SHADER, Read(vertex_shader_filepath).c_str()},
+	  fragment_shader_{GL_FRAGMENT_SHADER, Read(fragment_shader_filepath).c_str()} {
 
 	if (!id_) throw std::runtime_error{"Shader program creation failed"};
 
