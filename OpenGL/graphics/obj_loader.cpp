@@ -31,7 +31,7 @@ namespace {
 	 *          unnecessary copies of \p line can reduce the total time needed to parse an .obj file by half and
 	 *          therefore its usage is warranted.
 	 */
-	std::string_view Trim(std::string_view line, const std::string_view delimiter = " \t\r\n") {
+	std::string_view Trim(std::string_view line, const std::string_view delimiter = " \t") {
 		line.remove_prefix(std::min<>(line.find_first_not_of(delimiter), line.size()));
 		line.remove_suffix(line.size() - line.find_last_not_of(delimiter) - 1);
 		return line;
@@ -48,7 +48,7 @@ namespace {
 	 *          unnecessary copies of \p line can reduce the total time needed to parse an .obj file by half and
 	 *          therefore its usage is warranted.
 	 */
-	std::vector<std::string_view> Split(const std::string_view line, const std::string_view delimiter) {
+	std::vector<std::string_view> Split(const std::string_view line, const std::string_view delimiter = " \t") {
 		std::vector<std::string_view> tokens;
 		for (auto i = line.find_first_not_of(delimiter); i < line.size();) {
 			const auto j = std::min<>(line.find_first_of(delimiter, i), line.size());
@@ -85,7 +85,7 @@ namespace {
 	 */
 	template <typename T, std::uint8_t N>
 	glm::vec<N, T> ParseLine(const std::string_view line) {
-		if (const auto tokens = Split(line, " \t"); tokens.size() == N + 1) {
+		if (const auto tokens = Split(line); tokens.size() == N + 1) {
 			glm::vec<N, T> vec{};
 			for (std::uint8_t i = 1; i <= N; ++i) {
 				vec[i - 1] = ParseToken<T>(tokens[i]);
@@ -104,9 +104,8 @@ namespace {
 	 */
 	glm::ivec3 ParseIndexGroup(const std::string_view token) {
 		static constexpr auto delimiter = "/";
-		const auto tokens = Split(token, delimiter);
 
-		switch (std::ranges::count(token, *delimiter)) {
+		switch (const auto tokens = Split(token, delimiter); std::ranges::count(token, *delimiter)) {
 			case 0:
 				if (tokens.size() == 1) {
 					const auto x = ParseToken<GLint>(tokens[0]) - 1;
