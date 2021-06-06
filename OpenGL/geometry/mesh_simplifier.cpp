@@ -136,7 +136,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 	std::priority_queue<
 		std::shared_ptr<EdgeContraction>,
 		std::vector<std::shared_ptr<EdgeContraction>>,
-		decltype(comparator)> edge_contractions{ comparator };
+		decltype(comparator)> edge_contractions{comparator};
 	std::unordered_map<std::size_t, std::shared_ptr<EdgeContraction>> valid_edges;
 
 	for (const auto& edge : half_edge_mesh.Edges() | std::views::values) {
@@ -169,7 +169,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 			const auto& q1 = quadrics.at(v1->Id());
 			quadrics.emplace(v_new->Id(), q0 + q1);
 
-			for (const auto& vertex : { v0, v1 }) {
+			for (const auto& vertex : {v0, v1}) {
 				auto edge = vertex->Edge();
 				do {
 					const auto min_edge = GetMinEdge(edge);
