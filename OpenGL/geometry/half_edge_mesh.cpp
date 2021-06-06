@@ -1,5 +1,6 @@
 #include "geometry/half_edge_mesh.h"
 
+#include <ranges>
 #include <sstream>
 
 #include <glm/glm.hpp>
@@ -182,13 +183,13 @@ geometry::HalfEdgeMesh::operator gfx::Mesh() const {
 	std::uint32_t i = 0;
 	std::unordered_map<std::size_t, std::uint32_t> index_map;
 
-	for (const auto& [_, vertex] : vertices_) {
+	for (const auto& vertex : vertices_ | std::views::values) {
 		index_map.emplace(vertex->Id(), i++);
 		positions.push_back(vertex->Position());
 		normals.push_back(vertex->Normal());
 	}
 
-	for (const auto& [_, face] : faces_) {
+	for (const auto& face : faces_ | std::views::values) {
 		indices.push_back(index_map.at(face->V0()->Id()));
 		indices.push_back(index_map.at(face->V1()->Id()));
 		indices.push_back(index_map.at(face->V2()->Id()));
