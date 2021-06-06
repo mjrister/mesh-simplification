@@ -59,10 +59,10 @@ namespace {
 	}
 
 	/**
-	 * \brief Parses an token represent an index group in a face element.
+	 * \brief Parses a token representing a face element index group.
 	 * \param token The token to parse. May optionally contain texture coordinate and normal indices.
 	 * \return A vector containing vertex position, texture coordinate, and normal indices. Unspecified texture
-	 *         coordinate and normal values are indicated with the sentinel value \p npos_index.
+	 *         coordinate and normal values are indicated by the value \c npos_index.
 	 * \throw std::invalid_argument Indicates the index group format is unsupported.
 	 */
 	glm::ivec3 ParseIndexGroup(const std::string_view token) {
@@ -104,7 +104,7 @@ namespace {
 	/**
 	 * \brief Parses a line representing a triangular face element.
 	 * \param line The line to parse.
-	 * \return An array containing the parsed index groups for the face.
+	 * \return An array containing three parsed index groups for the face.
 	 * \throw std::invalid_argument Indicates the line format is unsupported.
 	 */
 	std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
@@ -148,9 +148,15 @@ namespace {
 		std::vector<GLuint> indices;
 		indices.reserve(faces.size() * 3);
 
+		// For each index group, store texture coordinate and normals at the same index as the vertex position so that
+		// data is aligned when sent to the vertex shader. Occasionally, different index groups may specify different
+		// texture coordinates and normals for the same vertex position. To handle this situation, an unordered map is
+		// employed to keep track of unique index groups and appends new position, texture coordinate, and normal
+		// triples to the end of each respective ordered array as necessary.
 		for (std::unordered_map<glm::ivec3, GLuint> unique_index_groups; const auto& face : faces) {
 			for (const auto& index_group : face) {
 				if (const auto iterator = unique_index_groups.find(index_group); iterator == unique_index_groups.end()) {
+
 					const auto position_index = index_group[0];
 					ordered_positions.push_back(positions.at(position_index));
 
