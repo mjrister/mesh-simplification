@@ -149,24 +149,21 @@ namespace {
 		indices.reserve(faces.size() * 3);
 
 		// For each index group, store texture coordinate and normals at the same index as the vertex position so that
-		// data is aligned when sent to the vertex shader. Occasionally, different index groups may specify different
-		// texture coordinates and normals for the same vertex position. To handle this situation, an unordered map is
-		// employed to keep track of unique index groups and appends new position, texture coordinate, and normal
-		// triples to the end of each respective ordered array as necessary.
+		// data is aligned when sent to the vertex shader. Occasionally, index groups may specify different texture
+		// coordinates or normals for the same vertex position. To handle this situation, an unordered map is used to
+		// keep track of unique index groups and appends new position, texture coordinate, and normal triples to the end
+		// of each respective ordered array as necessary.
 		for (std::unordered_map<glm::ivec3, GLuint> unique_index_groups; const auto& face : faces) {
 			for (const auto& index_group : face) {
 				if (const auto iterator = unique_index_groups.find(index_group); iterator == unique_index_groups.end()) {
-
 					const auto position_index = index_group[0];
 					ordered_positions.push_back(positions.at(position_index));
-
 					if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index) {
 						ordered_texture_coordinates.push_back(texture_coordinates.at(texture_coordinate_index));
 					}
 					if (const auto normal_index = index_group[2]; normal_index != npos_index) {
 						ordered_normals.push_back(normals.at(normal_index));
 					}
-
 					const auto index = static_cast<GLuint>(ordered_positions.size()) - 1u;
 					indices.push_back(index);
 					unique_index_groups.emplace(index_group, index);
