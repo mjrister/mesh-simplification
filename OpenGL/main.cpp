@@ -73,6 +73,7 @@ int main() {
 
 		auto mesh = gfx::obj_loader::LoadMesh("models/bunny.obj");
 		mesh.Scale(glm::vec3{.25f});
+		mesh.Translate({glm::vec3{.5f, -.9f, 0.f}});
 
 		window.HandleKeyPress([&](const auto& key) {
 			if (key == GLFW_KEY_S) {
