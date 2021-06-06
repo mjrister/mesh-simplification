@@ -1,11 +1,13 @@
 #pragma once
 
 #include <iostream>
-#include <map>
 #include <string_view>
+#include <unordered_map>
 
 #include <GL/gl3w.h>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "utils/string.h"
 
 namespace gfx {
 
@@ -96,6 +98,6 @@ namespace gfx {
 
 		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
-		std::map<std::string, GLint, std::less<>> uniform_locations_;
+		std::unordered_map<std::string, GLint, string::string_view_hash, std::equal_to<>> uniform_locations_;
 	};
 }
