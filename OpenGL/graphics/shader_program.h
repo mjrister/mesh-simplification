@@ -1,5 +1,6 @@
 #pragma once
 
+#include <format>
 #include <iostream>
 #include <string_view>
 #include <unordered_map>
@@ -11,10 +12,10 @@
 
 namespace gfx {
 
-	/** \brief An abstraction for a program that will execute one or more OpenGL shaders on the host GPU. */
+	/** \brief A program used to execute one or more OpenGL shaders on the host GPU. */
 	class ShaderProgram {
 
-		/** \brief Represents a shader in the OpenGL graphics pipeline. */
+		/** \brief A shader in the OpenGL graphics pipeline. */
 		class Shader {
 
 		public:
@@ -88,7 +89,7 @@ namespace gfx {
 			if (const auto iterator = uniform_locations_.find(name); iterator == uniform_locations_.end()) {
 				const auto location = glGetUniformLocation(id_, name.data());
 				if (location == -1) {
-					std::cerr << name << " is not an active uniform variable" << std::endl;
+					std::cerr << std::format("{} is not an active uniform variable", name) << std::endl;
 				}
 				return uniform_locations_[std::string{name}] = location;
 			} else {
