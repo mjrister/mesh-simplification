@@ -118,7 +118,7 @@ namespace {
 	};
 }
 
-gfx::Mesh geometry::mesh_simplifier::Simplify(const gfx::Mesh& mesh, const float stop_ratio) {
+gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio) {
 
 	HalfEdgeMesh half_edge_mesh{mesh};
 
