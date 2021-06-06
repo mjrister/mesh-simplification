@@ -190,9 +190,9 @@ gfx::Mesh geometry::mesh_simplifier::Simplify(const gfx::Mesh& mesh, const float
 						if (auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
 							iterator->second->valid = false;
 						}
-						const auto edge_contraction = std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
-						valid_edges[min_edge_key] = edge_contraction;
-						edge_contractions.emplace(edge_contraction);
+						const auto new_edge_contraction = std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
+						valid_edges[min_edge_key] = new_edge_contraction;
+						edge_contractions.emplace(new_edge_contraction);
 						visited_edges.emplace(min_edge_key, min_edge);
 					}
 					edgekj = edgekj->Next()->Flip();
