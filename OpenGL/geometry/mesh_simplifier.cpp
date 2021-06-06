@@ -1,6 +1,8 @@
 #include "geometry/mesh_simplifier.h"
 
 #include <algorithm>
+#include <chrono>
+#include <iostream>
 #include <limits>
 #include <queue>
 #include <ranges>
@@ -120,6 +122,7 @@ namespace {
 
 gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio) {
 
+	const auto start_time = std::chrono::high_resolution_clock::now();
 	HalfEdgeMesh half_edge_mesh{mesh};
 
 	std::unordered_map<std::size_t, glm::mat4> quadrics;
@@ -133,7 +136,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 	std::priority_queue<
 		std::shared_ptr<EdgeContraction>,
 		std::vector<std::shared_ptr<EdgeContraction>>,
-		decltype(comparator)> edge_contractions{comparator};
+		decltype(comparator)> edge_contractions{ comparator };
 	std::unordered_map<std::size_t, std::shared_ptr<EdgeContraction>> valid_edges;
 
 	for (const auto& edge : half_edge_mesh.Edges() | std::views::values) {
@@ -148,7 +151,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
 	const auto should_stop = [&]() {
 		const auto face_count = static_cast<float>(half_edge_mesh.Faces().size());
-		return face_count < initial_face_count * stop_ratio;
+		return face_count < initial_face_count* stop_ratio;
 	};
 
 	while (!edge_contractions.empty() && !should_stop()) {
@@ -166,7 +169,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 			const auto& q1 = quadrics.at(v1->Id());
 			quadrics.emplace(v_new->Id(), q0 + q1);
 
-			for (const auto& vertex : {v0, v1}) {
+			for (const auto& vertex : { v0, v1 }) {
 				auto edge = vertex->Edge();
 				do {
 					const auto min_edge = GetMinEdge(edge);
@@ -203,6 +206,14 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 
 		edge_contractions.pop();
 	}
+
+	const auto end_time = std::chrono::high_resolution_clock::now();
+	std::format_to(
+		std::ostream_iterator<char>{std::cout},
+		"Mesh simplified from {} to {} triangles in {} seconds\n",
+		initial_face_count,
+		half_edge_mesh.Faces().size(),
+		std::chrono::duration<float>{end_time - start_time}.count());
 
 	return half_edge_mesh;
 }
