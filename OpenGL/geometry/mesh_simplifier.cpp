@@ -196,7 +196,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 		}
 	}
 
-	// stop mesh simplification when the number of triangles has been sufficiently reduced
+	// stop mesh simplification if the number of triangles has been sufficiently reduced
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
 	const auto target_face_count = initial_face_count * (1.f - rate);
 	const auto should_stop = [&]() {
