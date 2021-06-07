@@ -1,7 +1,6 @@
 #include "geometry/face.h"
 
 #include <algorithm>
-#include <ranges>
 #include <sstream>
 #include <tuple>
 
