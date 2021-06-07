@@ -6,6 +6,7 @@
 #include <limits>
 #include <queue>
 #include <ranges>
+#include <stdexcept>
 #include <unordered_map>
 #include <vector>
 
@@ -120,7 +121,11 @@ namespace {
 	};
 }
 
-gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio) {
+gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
+
+	if (rate != std::clamp(rate, 0.f, 1.f)) {
+		throw std::invalid_argument{std::format("Invalid reduction rate {}", rate)};
+	}
 
 	const auto start_time = std::chrono::high_resolution_clock::now();
 	HalfEdgeMesh half_edge_mesh{mesh};
@@ -149,9 +154,10 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float stop_ratio
 	}
 
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
+	const auto stop_ratio = 1.f - rate;
 	const auto should_stop = [&]() {
 		const auto face_count = static_cast<float>(half_edge_mesh.Faces().size());
-		return face_count < initial_face_count* stop_ratio;
+		return face_count < initial_face_count * stop_ratio;
 	};
 
 	while (!edge_contractions.empty() && !should_stop()) {

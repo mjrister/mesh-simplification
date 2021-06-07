@@ -77,7 +77,7 @@ int main() {
 
 		window.HandleKeyPress([&](const auto& key) {
 			if (key == GLFW_KEY_S) {
-				mesh = geometry::mesh::Simplify(mesh, .05f);
+				mesh = geometry::mesh::Simplify(mesh, .95f);
 			}
 		});
 

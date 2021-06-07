@@ -5,5 +5,12 @@ namespace gfx {
 }
 
 namespace geometry::mesh {
-	gfx::Mesh Simplify(const gfx::Mesh& mesh, float stop_ratio);
+
+	/**
+	 * \brief Reduces the number of triangles in a mesh.
+	 * \param mesh The mesh to simplify.
+	 * \param rate The percentage of triangles to be removed (e.g., .95 indicates 95% of triangles should be removed).
+	 * \return A triangle mesh with \p rate percent of triangles removed from \p mesh.
+	 */
+	gfx::Mesh Simplify(const gfx::Mesh& mesh, float rate);
 }
