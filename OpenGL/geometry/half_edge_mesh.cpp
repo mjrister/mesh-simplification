@@ -71,7 +71,7 @@ namespace {
 		if (const auto iterator = edges.find(hash_value(v0, v1)); iterator == edges.end()) {
 			std::ostringstream oss;
 			oss << "Attempted to retrieve a nonexistent edge (" << v0 << ',' << v1 << ')';
-			throw std::invalid_argument("Attempted to retrieve a nonexistent edge");
+			throw std::invalid_argument(oss.str());
 		} else {
 			return iterator->second;
 		}
