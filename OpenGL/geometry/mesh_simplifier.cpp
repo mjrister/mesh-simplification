@@ -136,7 +136,7 @@ namespace {
 		return false;
 	}
 
-	/** \brief Represents an edge contraction candidate. */
+	/** \brief Represents an edge contraction candidate priority queue entry. */
 	struct EdgeContraction {
 
 		explicit EdgeContraction(
@@ -146,9 +146,16 @@ namespace {
 			std::tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
 		}
 
+		/** \brief The edge to be collapsed. */
 		std::shared_ptr<geometry::HalfEdge> edge;
+
+		/** \brief The optimal vertex position that minimizes the cost of collapsing this edge. */
 		std::shared_ptr<geometry::Vertex> vertex;
+
+		/** \brief The associated cost of collapsing this edge. */
 		float cost = std::numeric_limits<float>::infinity();
+
+		/** \brief Indicates this edge contraction candidate is not valid. See priority queue invalidation comment. */
 		bool valid = true;
 	};
 }
