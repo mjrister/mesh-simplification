@@ -128,7 +128,7 @@ namespace {
 		return false;
 	}
 
-	/** \brief Represents an edge contraction. */
+	/** \brief Represents an edge contraction candidate. */
 	struct EdgeContraction {
 
 		explicit EdgeContraction(
@@ -139,7 +139,7 @@ namespace {
 		}
 
 		/** \brief The edge to be collapsed. */
-		std::shared_ptr<geometry::HalfEdge> edge;
+		const std::shared_ptr<geometry::HalfEdge> edge;
 
 		/** \brief The optimal vertex position that minimizes the cost of collapsing this edge. */
 		std::shared_ptr<geometry::Vertex> vertex;

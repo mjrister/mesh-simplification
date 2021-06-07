@@ -37,7 +37,7 @@ namespace geometry {
 			return os << '(' << *face.v0_ << ',' << *face.v1_ << ',' << *face.v2_ << ')';
 		}
 
-		/** \brief Gets the face hash value. */
+		/** \brief Gets the hash value for a face. */
 		friend std::size_t hash_value(const Face& face) {
 			return hash_value(*face.v0_, *face.v1_, *face.v2_);
 		}
