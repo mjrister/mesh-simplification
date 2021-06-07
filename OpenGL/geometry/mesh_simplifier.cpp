@@ -123,9 +123,7 @@ namespace {
 
 gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 
-	if (rate != std::clamp(rate, 0.f, 1.f)) {
-		throw std::invalid_argument{std::format("Invalid reduction rate {}", rate)};
-	}
+	if (rate < 0.f || rate > 1.f) throw std::invalid_argument{std::format("Invalid reduction rate {}", rate)};
 
 	const auto start_time = std::chrono::high_resolution_clock::now();
 	HalfEdgeMesh half_edge_mesh{mesh};
