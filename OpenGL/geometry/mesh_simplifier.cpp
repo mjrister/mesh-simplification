@@ -45,7 +45,7 @@ namespace {
 				a * a, b * a, c * a, d * a,
 				a * b, b * b, c * b, d * b,
 				a * c, b * c, c * c, d * c,
-				a * d, b * d, c * d, d * d };
+				a * d, b * d, c * d, d * d};
 			iterator = iterator->Next()->Flip();
 		} while (iterator != v0.Edge());
 		return quadric;
