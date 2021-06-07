@@ -19,24 +19,43 @@
 #include "graphics/mesh.h"
 
 namespace {
+
+	constexpr auto epsilon = std::numeric_limits<float>::epsilon();
+
+	/**
+	 * \brief Gets a canonical representation of a half-edge. Used to disambiguate between its flip edge.
+	 * \param edge The half-edge to disambiguate.
+	 * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
+	 */
 	std::shared_ptr<geometry::HalfEdge> GetMinEdge(const std::shared_ptr<geometry::HalfEdge>& edge) {
 		return std::min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
 			return edge01->Vertex()->Id() < edge10->Vertex()->Id();
 		});
 	}
 
+	/**
+	 * \brief Averages two vertices.
+	 * \param vertex_id The ID of the vertex to be created.
+	 * \param v0,v1 The vertices to average.
+	 * \return A new vertex containing the averaged position and normal between \p v0 and \p v1.
+	 */
 	std::shared_ptr<geometry::Vertex> AverageVertices(
-		const std::size_t id, const geometry::Vertex& v0, const geometry::Vertex& v1) {
+		const std::size_t vertex_id, const geometry::Vertex& v0, const geometry::Vertex& v1) {
 		const auto position = (v0.Position() + v1.Position()) / 2.f;
 		const auto normal = (v0.Normal() + v1.Normal()) / 2.f;
-		return std::make_shared<geometry::Vertex>(id, position, normal);
+		return std::make_shared<geometry::Vertex>(vertex_id, position, normal);
 	}
 
-	glm::mat4 ComputeQuadric(const geometry::Vertex& v0) {
+	/**
+	 * \brief Computes the error quadric for a vertex.
+	 * \param vertex The vertex to compute the error quadric for.
+	 * \return The summation of quadrics for all triangles incident to \p vertex.
+	 */
+	glm::mat4 ComputeQuadric(const geometry::Vertex& vertex) {
 		glm::mat4 quadric{0.f};
-		auto iterator = v0.Edge();
+		auto iterator = vertex.Edge();
 		do {
-			const auto& position = v0.Position();
+			const auto& position = vertex.Position();
 			const auto& normal = iterator->Face()->Normal();
 			const auto a = normal.x;
 			const auto b = normal.y;
@@ -48,11 +67,18 @@ namespace {
 				a * c, b * c, c * c, d * c,
 				a * d, b * d, c * d, d * d};
 			iterator = iterator->Next()->Flip();
-		} while (iterator != v0.Edge());
+		} while (iterator != vertex.Edge());
 		return quadric;
 	}
 
-	std::pair<std::shared_ptr<geometry::Vertex>, float> GetEdgeContractionVertex(
+	/**
+	 * \brief Determines the optimal vertex position for an edge contraction.
+	 * \param vertex_id The ID to use for the newly created vertex.
+	 * \param edge01 The half-edge to evaluate.
+	 * \param quadrics A mapping of error quadrics by vertex.
+	 * \return The optimal vertex and cost associated with collapsing \p edge01.
+	 */
+	std::pair<std::shared_ptr<geometry::Vertex>, float> GetOptimalEdgeContractionVertex(
 		const std::size_t vertex_id,
 		const geometry::HalfEdge& edge01,
 		const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
@@ -68,7 +94,7 @@ namespace {
 		const glm::vec3 b = glm::column(q01, 3);
 		const auto d = q01[3][3];
 
-		static constexpr auto epsilon = std::numeric_limits<float>::epsilon();
+		// if the upper 3x3 matrix of the error quadric is not invertible just use the average between the edge vertices
 		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
 			return {AverageVertices(vertex_id, *v0, *v1), 0.f};
 		}
@@ -84,6 +110,11 @@ namespace {
 		return {std::make_shared<geometry::Vertex>(vertex_id, position, normal), cost};
 	}
 
+	/**
+	 * \brief Determines if the removal of an edge will cause the mesh to degenerate.
+	 * \param edge01 The half-edge to evaluate.
+	 * \return \c true if the removal of \p edge01 will cause the mesh to degenerate, otherwise \c false.
+	 */
 	bool WillDegenerate(const std::shared_ptr<geometry::HalfEdge>& edge01) {
 		const auto v0 = edge01->Flip()->Vertex();
 		const auto v1_next = edge01->Next()->Vertex();
@@ -105,13 +136,14 @@ namespace {
 		return false;
 	}
 
+	/** \brief Represents an edge contraction candidate. */
 	struct EdgeContraction {
 
 		explicit EdgeContraction(
 			geometry::HalfEdgeMesh& mesh,
 			const std::shared_ptr<geometry::HalfEdge>& edge,
 			const std::unordered_map<std::size_t, glm::mat4>& quadrics) : edge{edge} {
-			std::tie(vertex, cost) = GetEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
+			std::tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
 		}
 
 		std::shared_ptr<geometry::HalfEdge> edge;
@@ -128,11 +160,13 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 	const auto start_time = std::chrono::high_resolution_clock::now();
 	HalfEdgeMesh half_edge_mesh{mesh};
 
+	// compute error quadrics for each vertex
 	std::unordered_map<std::size_t, glm::mat4> quadrics;
 	for (const auto& [vertex_id, vertex] : half_edge_mesh.Vertices()) {
 		quadrics.emplace(vertex_id, ComputeQuadric(*vertex));
 	}
 
+	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
 	constexpr auto comparator = [](
 		const std::shared_ptr<EdgeContraction>& lhs,
 		const std::shared_ptr<EdgeContraction>& rhs) { return lhs->cost > rhs->cost; };
@@ -140,8 +174,12 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 		std::shared_ptr<EdgeContraction>,
 		std::vector<std::shared_ptr<EdgeContraction>>,
 		decltype(comparator)> edge_contractions{comparator};
+
+	// to work around the limitation of std::priority_queue not providing an API to update an existing entry's priority,
+	// duplicate entries may be inserted and this map will be used to invalidate previous entries in the priority queue
 	std::unordered_map<std::size_t, std::shared_ptr<EdgeContraction>> valid_edges;
 
+	// compute the optimal vertex position that minimizes the cost of collapsing each edge
 	for (const auto& edge : half_edge_mesh.Edges() | std::views::values) {
 		const auto min_edge = GetMinEdge(edge);
 		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
@@ -151,28 +189,31 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 		}
 	}
 
+	// stop mesh simplification when the number of triangles has been sufficiently reduced
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
-	const auto stop_ratio = 1.f - rate;
+	const auto target_face_count = initial_face_count * (1.f - rate);
 	const auto should_stop = [&]() {
 		const auto face_count = static_cast<float>(half_edge_mesh.Faces().size());
-		return face_count < initial_face_count * stop_ratio;
+		return face_count < target_face_count;
 	};
 
 	while (!edge_contractions.empty() && !should_stop()) {
 		const auto& edge_contraction = edge_contractions.top();
-		const auto& edge01 = edge_contraction->edge;
-		const auto& v_new = edge_contraction->vertex;
-		const auto v0 = edge01->Flip()->Vertex();
-		const auto v1 = edge01->Vertex();
 
-		if (edge_contraction->valid && !WillDegenerate(edge01)) {
+		if (const auto & edge01 = edge_contraction->edge; edge_contraction->valid && !WillDegenerate(edge01)) {
+			const auto& v_new = edge_contraction->vertex;
+			const auto v0 = edge01->Flip()->Vertex();
+			const auto v1 = edge01->Vertex();
 
+			// remove the edge from the mesh and attach incident edges to the new vertex position
 			half_edge_mesh.CollapseEdge(edge01, v_new);
 
+			// compute the error quadric for the new vertex position
 			const auto& q0 = quadrics.at(v0->Id());
 			const auto& q1 = quadrics.at(v1->Id());
 			quadrics.emplace(v_new->Id(), q0 + q1);
 
+			// invalidate edge entries in the priority queue that were removed during the edge contraction
 			for (const auto& vertex : {v0, v1}) {
 				auto edge = vertex->Edge();
 				do {
@@ -185,6 +226,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 				} while (edge != vertex->Edge());
 			}
 
+			// add new edge contraction candidates for edges affected by the previous edge contraction
 			std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> visited_edges;
 			const auto& vi = v_new;
 			auto edgeji = vi->Edge();
@@ -195,6 +237,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 					const auto min_edge = GetMinEdge(edgekj);
 					if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.contains(min_edge_key)) {
 						if (auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
+							// invalidate existing edge contraction candidate in the priority queue
 							iterator->second->valid = false;
 						}
 						const auto new_edge_contraction =
