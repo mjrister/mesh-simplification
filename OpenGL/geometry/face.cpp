@@ -13,7 +13,7 @@ namespace {
 	 *        preserving the face winding order.
 	 * \param v0,v1,v2 The face vertices.
 	 * \return A tuple consisting of \p v0, \p v1, \p v2 ordered by the lowest ID.
-	 * \note The is necessary to disambiguate equivalent queries for face elements in a mesh.
+	 * \note The is necessary to disambiguate equivalent face elements queries.
 	 */
 	auto GetMinVertexOrder(
 		const std::shared_ptr<const geometry::Vertex>& v0,
