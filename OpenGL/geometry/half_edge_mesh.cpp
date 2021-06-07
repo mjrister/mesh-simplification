@@ -163,7 +163,7 @@ namespace {
 	 * \param edges A mapping of mesh half-edges by ID.
 	 * \param faces A mapping of mesh faces by ID.
 	 */
-	void UpdateIncidentTriangles(
+	void UpdateIncidentEdges(
 		const std::shared_ptr<geometry::Vertex>& v_target,
 		const std::shared_ptr<geometry::Vertex>& v_start,
 		const std::shared_ptr<geometry::Vertex>& v_end,
@@ -251,8 +251,8 @@ void geometry::HalfEdgeMesh::CollapseEdge(
 	const auto v0_next = edge10->Next()->Vertex();
 	const auto v1_next = edge01->Next()->Vertex();
 
-	UpdateIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
-	UpdateIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
+	UpdateIncidentEdges(v0, v1_next, v0_next, v_new, edges_, faces_);
+	UpdateIncidentEdges(v1, v0_next, v1_next, v_new, edges_, faces_);
 
 	DeleteEdge(*edge01, edges_);
 
