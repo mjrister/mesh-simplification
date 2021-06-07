@@ -180,13 +180,11 @@ geometry::HalfEdgeMesh::operator gfx::Mesh() const {
 	std::vector<GLuint> indices;
 	indices.reserve(faces_.size() * 3);
 
-	std::uint32_t i = 0;
-	std::unordered_map<std::size_t, std::uint32_t> index_map;
-
-	for (const auto& vertex : vertices_ | std::views::values) {
-		index_map.emplace(vertex->Id(), i++);
+	std::unordered_map<std::size_t, GLuint> index_map;
+	for (GLuint i = 0; const auto & vertex : vertices_ | std::views::values) {
 		positions.push_back(vertex->Position());
 		normals.push_back(vertex->Normal());
+		index_map.emplace(vertex->Id(), i++);
 	}
 
 	for (const auto& face : faces_ | std::views::values) {
