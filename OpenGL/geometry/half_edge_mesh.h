@@ -15,17 +15,42 @@ namespace geometry {
 	class HalfEdge;
 	class Vertex;
 
+	/**
+	 * \brief An edge centric data structure used to represent a triangle mesh.
+	 * \details A half-edge mesh is comprised of directional half-edges that refer to the next edge in a triangle in
+	 *          counter-clockwise order in addition to the vertex at the head of the edge. A half-edge also provides a
+	 *          pointer to its flip edge which represents the same half-edge in the opposite direction. Using just these
+	 *          three pointers, one can effectively traverse and modify edges in a triangle mesh.
+	 */
 	class HalfEdgeMesh {
 
 	public:
+		/**
+		 * \brief Initializes a half-edge mesh.
+		 * \param mesh The triangle mesh to create the half-edge mesh from.
+		 */
 		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
+
+		/** \brief Defines the conversion operator back to a triangle mesh. */
 		operator gfx::Mesh() const;
 
+		/** \brief Gets the half-edge mesh vertices. */
 		[[nodiscard]] const auto& Vertices() const { return vertices_; }
+
+		/** \brief Gets the half-edge mesh edges. */
 		[[nodiscard]] const auto& Edges() const { return edges_; }
+
+		/** \brief Gets the half-edge mesh faces. */
 		[[nodiscard]] const auto& Faces() const { return faces_; }
+
+		/** \brief Gets a unique vertex ID that can be used to construct a new vertex in the half-edge mesh. */
 		[[nodiscard]] std::size_t NextVertexId() { return next_vertex_id_++; }
 
+		/**
+		 * \brief Collapses an edge into a single vertex and updates all incident edges to connect to that vertex.
+		 * \param edge01 The edge from vertex \c v0 to \c v1 to collapse.
+		 * \param v_new The vertex to collapse the edge onto.
+		 */
 		void CollapseEdge(const std::shared_ptr<HalfEdge>& edge01, const std::shared_ptr<Vertex>& v_new);
 
 	private:

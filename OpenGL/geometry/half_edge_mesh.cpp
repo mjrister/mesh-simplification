@@ -11,6 +11,13 @@
 #include "graphics/mesh.h"
 
 namespace {
+
+	/**
+	 * \brief Creates a new half-edge and its associated flip edge.
+	 * \param v0,v1 The half-edge vertices.
+	 * \param edges A mapping of mesh half-edges by ID.
+	 * \return The half-edge connecting vertex \p v0 to \p v1.
+	 */
 	std::shared_ptr<geometry::HalfEdge> CreateHalfEdge(
 		const std::shared_ptr<geometry::Vertex>& v0,
 		const std::shared_ptr<geometry::Vertex>& v1,
@@ -19,6 +26,7 @@ namespace {
 		const auto edge01_key = hash_value(*v0, *v1);
 		const auto edge10_key = hash_value(*v1, *v0);
 
+		// prevent the creation of duplicate edges
 		if (const auto iterator = edges.find(edge01_key); iterator != edges.end()) {
 			return iterator->second;
 		}
@@ -35,6 +43,12 @@ namespace {
 		return edge01;
 	}
 
+	/**
+	 * \brief Creates a new triangle in the half-edge mesh.
+	 * \param v0,v1,v2 The triangle vertices in counter-clockwise order.
+	 * \param edges A mapping of mesh half-edges by ID.
+	 * \return A triangle face representing vertices \p v0, \p v1, \p v2 in the half-edge mesh.
+	 */
 	std::shared_ptr<geometry::Face> CreateTriangle(
 		const std::shared_ptr<geometry::Vertex>& v0,
 		const std::shared_ptr<geometry::Vertex>& v1,
@@ -61,6 +75,13 @@ namespace {
 		return face012;
 	}
 
+	/**
+	 * \brief Gets a half-edge connecting two vertices.
+	 * \param v0,v1 The half-edge vertices.
+	 * \param edges A mapping of mesh half-edges by ID.
+	 * \return The half-edge connecting \p v0 to \p v1.
+	 * \throw std::invalid_argument Indicates no edge connecting \p v0 to \p v1 exists in \p edges.
+	 */
 	std::shared_ptr<geometry::HalfEdge> GetHalfEdge(
 		const geometry::Vertex& v0,
 		const geometry::Vertex& v1,
@@ -75,6 +96,12 @@ namespace {
 		}
 	}
 
+	/**
+	 * \brief Deletes a vertex in the half-edge mesh.
+	 * \param vertex The vertex to delete.
+	 * \param vertices A mapping of mesh vertices by ID.
+	 * \throw std::invalid_argument Indicates \p vertex does not exist in \p vertices.
+	 */
 	void DeleteVertex(
 		const geometry::Vertex& vertex,
 		std::map<std::size_t, std::shared_ptr<geometry::Vertex>>& vertices) {
@@ -88,6 +115,12 @@ namespace {
 		}
 	}
 
+	/**
+	 * \brief Deletes an edge in the half-edge mesh.
+	 * \param edge The half-edge to delete.
+	 * \param edges A mapping of mesh half-edges by ID.
+	 * \throw std::invalid_argument Indicates \p edge does not exist in \p edges.
+	 */
 	void DeleteEdge(
 		const geometry::HalfEdge& edge,
 		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
@@ -103,6 +136,12 @@ namespace {
 		}
 	}
 
+	/**
+	 * \brief Deletes a face in the half-edge mesh.
+	 * \param face The face to delete.
+	 * \param faces A mapping of mesh faces by ID.
+	 * \throw std::invalid_argument Indicates \p face does not exist in \p faces.
+	 */
 	void DeleteFace(
 		const geometry::Face& face, std::unordered_map<std::size_t, std::shared_ptr<geometry::Face>>& faces) {
 
@@ -115,7 +154,16 @@ namespace {
 		}
 	}
 
-	void CollapseIncidentTriangles(
+	/**
+	 * \brief Attaches edges incident to a vertex to be removed onto a new vertex.
+	 * \param v_target The vertex to be removed whose incident edges require updating.
+	 * \param v_start The vertex opposite of \p v_target representing the first half-edge to process.
+	 * \param v_end The vertex opposite of \p v_target representing the last half-edge to process.
+	 * \param v_new The new vertex to attach incident edges to.
+	 * \param edges A mapping of mesh half-edges by ID.
+	 * \param faces A mapping of mesh faces by ID.
+	 */
+	void UpdateIncidentTriangles(
 		const std::shared_ptr<geometry::Vertex>& v_target,
 		const std::shared_ptr<geometry::Vertex>& v_start,
 		const std::shared_ptr<geometry::Vertex>& v_end,
@@ -178,6 +226,7 @@ geometry::HalfEdgeMesh::operator gfx::Mesh() const {
 	std::vector<GLuint> indices;
 	indices.reserve(faces_.size() * 3);
 
+	// because vertices may have been removed, remap vertex IDs based on their new index positions.
 	std::unordered_map<std::size_t, GLuint> index_map;
 	for (GLuint i = 0; const auto & vertex : vertices_ | std::views::values) {
 		positions.push_back(vertex->Position());
@@ -203,8 +252,8 @@ void geometry::HalfEdgeMesh::CollapseEdge(
 	const auto v0_next = edge10->Next()->Vertex();
 	const auto v1_next = edge01->Next()->Vertex();
 
-	CollapseIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
-	CollapseIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
+	UpdateIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
+	UpdateIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
 
 	DeleteEdge(*edge01, edges_);
 
