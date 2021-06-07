@@ -19,7 +19,6 @@
 #include "graphics/mesh.h"
 
 namespace {
-
 	constexpr auto epsilon = std::numeric_limits<float>::epsilon();
 
 	/**
@@ -57,15 +56,8 @@ namespace {
 		do {
 			const auto& position = vertex.Position();
 			const auto& normal = iterator->Face()->Normal();
-			const auto a = normal.x;
-			const auto b = normal.y;
-			const auto c = normal.z;
-			const auto d = -glm::dot(position, normal);
-			quadric += glm::mat4{
-				a * a, b * a, c * a, d * a,
-				a * b, b * b, c * b, d * b,
-				a * c, b * c, c * c, d * c,
-				a * d, b * d, c * d, d * d};
+			const glm::vec4 plane{normal, -glm::dot(position, normal)};
+			quadric += glm::outerProduct(plane, plane);
 			iterator = iterator->Next()->Flip();
 		} while (iterator != vertex.Edge());
 		return quadric;
@@ -136,7 +128,7 @@ namespace {
 		return false;
 	}
 
-	/** \brief Represents an edge contraction candidate priority queue entry. */
+	/** \brief Represents an edge contraction. */
 	struct EdgeContraction {
 
 		explicit EdgeContraction(
@@ -155,14 +147,14 @@ namespace {
 		/** \brief The associated cost of collapsing this edge. */
 		float cost = std::numeric_limits<float>::infinity();
 
-		/** \brief Indicates this edge contraction candidate is not valid. See priority queue invalidation comment. */
+		/** \brief Indicates this edge contraction candidate is valid. See comment on priority queue invalidation. */
 		bool valid = true;
 	};
 }
 
 gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 
-	if (rate < 0.f || rate > 1.f) throw std::invalid_argument{std::format("Invalid reduction rate {}", rate)};
+	if (rate < 0.f || rate > 1.f) throw std::invalid_argument{std::format("Invalid mesh simplification rate {}", rate)};
 
 	const auto start_time = std::chrono::high_resolution_clock::now();
 	HalfEdgeMesh half_edge_mesh{mesh};
@@ -212,10 +204,10 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 			const auto v0 = edge01->Flip()->Vertex();
 			const auto v1 = edge01->Vertex();
 
-			// remove the edge from the mesh and attach incident edges to the new vertex position
+			// remove the edge from the mesh and attach incident edges to the new vertex
 			half_edge_mesh.CollapseEdge(edge01, v_new);
 
-			// compute the error quadric for the new vertex position
+			// compute the error quadric for the new vertex
 			const auto& q0 = quadrics.at(v0->Id());
 			const auto& q1 = quadrics.at(v1->Id());
 			quadrics.emplace(v_new->Id(), q0 + q1);
