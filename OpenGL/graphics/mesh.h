@@ -16,11 +16,11 @@ namespace gfx {
 	public:
 		/**
 		 * \brief Initializes a triangle mesh.
-		 * \param positions The mesh vertex positions.
-		 * \param texture_coordinates The mesh texture coordinates.
-		 * \param normals The mesh normals.
+		 * \param positions The mesh vertex 3D positions.
+		 * \param texture_coordinates The mesh 2D texture coordinates.
+		 * \param normals The mesh 3D normals.
 		 * \param indices Element indices such that each three consecutive integers define a triangle face in the mesh.
-		 * \param model The mesh transformation in model space.
+		 * \param model A 4x4 matrix representing an affine transform to apply to the mesh in model space.
 		 * \throw std::invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
 		 * \note If \p indices is empty, \p positions must describe a triangle mesh (i.e., be a nonzero multiple of 3).
 		 *       If nonempty, \p texture_coordinates and \p normals must be the same size as \p positions so that data
@@ -42,31 +42,19 @@ namespace gfx {
 		Mesh(Mesh&& mesh) noexcept;
 		Mesh& operator=(Mesh&& mesh) noexcept;
 
-		/**
-		 * \brief Gets the mesh vertex positions.
-		 * \return A vector of 3D vertex positions.
-		 */
+		/** \brief Gets the mesh 3D vertex positions. */
 		[[nodiscard]] const std::vector<glm::vec3>& Positions() const { return positions_; }
 
-		/**
-		 * \brief Gets the mesh texture coordinates.
-		 * \return A vector of 2D texture coordinates.
-		 */
+		/** \brief Gets the mesh 2D texture coordinates. */
 		[[nodiscard]] const std::vector<glm::vec2>& TextureCoordinates() const { return texture_coordinates_; }
 
-		/**
-		 * \brief Gets the mesh normals.
-		 * \return A vector of 3D vertex normals.
-		 */
+		/** \brief Gets the mesh 3D normals. */
 		[[nodiscard]] const std::vector<glm::vec3>& Normals() const { return normals_; }
 
-		/**
-		 * \brief Gets the mesh indices.
-		 * \return A vector of indices corresponding to a triangle face for every three consecutive integers.
-		 */
+		/** \brief Gets the mesh indices corresponding to a triangle face for every three consecutive integers. */
 		[[nodiscard]] const std::vector<GLuint>& Indices() const { return indices_; }
 
-		/** \brief Gets the mesh model transform in local object space. */
+		/** \brief Gets the affine transform to apply to the mesh in model space. */
 		[[nodiscard]] const glm::mat4& Model() const { return model_; }
 
 		/** \brief Renders the mesh to the current framebuffer. */
