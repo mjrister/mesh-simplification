@@ -87,7 +87,7 @@ namespace gfx {
 			if (const auto iterator = uniform_locations_.find(name); iterator == uniform_locations_.end()) {
 				const auto location = glGetUniformLocation(id_, name.data());
 				if (location == -1) {
-					std::cerr << std::format("{} is not an active uniform variable", name) << std::endl;
+					std::cerr << std::format("{} is not an active uniform variable\n", name);
 				}
 				return uniform_locations_[std::string{name}] = location;
 			} else {
