@@ -7,6 +7,14 @@
 #include <glm/glm.hpp>
 
 namespace {
+
+	/**
+	 * \brief Gets a canonical ordering of face vertices such that the vertex with the lowest ID appears first while
+	 *        preserving the face winding order.
+	 * \param v0,v1,v2 The face vertices.
+	 * \return A tuple consisting of \p v0, \p v1, \p v2 ordered by the lowest ID.
+	 * \note The is necessary to disambiguate equivalent queries for face elements in a mesh.
+	 */
 	auto GetMinVertexOrder(
 		const std::shared_ptr<const geometry::Vertex>& v0,
 		const std::shared_ptr<const geometry::Vertex>& v1,
@@ -21,6 +29,13 @@ namespace {
 		}
 	}
 
+	/**
+	 * \brief Gets the face normal.
+	 * \param v0,v1,v2 The face vertices.
+	 * \return The 3D vector representing the face normal.
+	 * \throw std::invalid_argument Indicates the face vertices do not represent a triangle. This can happen if \p v0,
+	 *        \p v1, \p v2 are collinear or contains duplicates.
+	 */
 	glm::vec3 GetFaceNormal(const geometry::Vertex& v0, const geometry::Vertex& v1, const geometry::Vertex& v2) {
 		const glm::vec3 edge01 = v1.Position() - v0.Position();
 		const glm::vec3 edge02 = v2.Position() - v0.Position();
