@@ -226,7 +226,6 @@ geometry::HalfEdgeMesh::operator gfx::Mesh() const {
 	std::vector<GLuint> indices;
 	indices.reserve(faces_.size() * 3);
 
-	// because vertices may have been removed, remap vertex IDs based on their new index positions.
 	std::unordered_map<std::size_t, GLuint> index_map;
 	for (GLuint i = 0; const auto & vertex : vertices_ | std::views::values) {
 		positions.push_back(vertex->Position());
