@@ -19,7 +19,7 @@ namespace geometry {
 	 * \brief An edge centric data structure used to represent a triangle mesh.
 	 * \details A half-edge mesh is comprised of directional half-edges that refer to the next edge in a triangle in
 	 *          counter-clockwise order in addition to the vertex at the head of the edge. A half-edge also provides a
-	 *          pointer to its flip edge which represents the same half-edge in the opposite direction. Using just these
+	 *          pointer to its flip edge which represents the same edge in the opposite direction. Using just these
 	 *          three pointers, one can effectively traverse and modify edges in a triangle mesh.
 	 */
 	class HalfEdgeMesh {
@@ -27,7 +27,7 @@ namespace geometry {
 	public:
 		/**
 		 * \brief Initializes a half-edge mesh.
-		 * \param mesh The triangle mesh to create the half-edge mesh from.
+		 * \param mesh The triangle mesh to construct the half-edge mesh from.
 		 */
 		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
 

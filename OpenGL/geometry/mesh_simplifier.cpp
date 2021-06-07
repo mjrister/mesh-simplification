@@ -86,7 +86,7 @@ namespace {
 		const glm::vec3 b = glm::column(q01, 3);
 		const auto d = q01[3][3];
 
-		// if the upper 3x3 matrix of the error quadric is not invertible just use the average between the edge vertices
+		// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
 		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
 			return {AverageVertices(vertex_id, *v0, *v1), 0.f};
 		}
@@ -212,7 +212,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 			const auto& q1 = quadrics.at(v1->Id());
 			quadrics.emplace(v_new->Id(), q0 + q1);
 
-			// invalidate edge entries in the priority queue that were removed during the edge contraction
+			// invalidate entries in the priority queue that were removed during the previous edge contraction
 			for (const auto& vertex : {v0, v1}) {
 				auto edge = vertex->Edge();
 				do {
