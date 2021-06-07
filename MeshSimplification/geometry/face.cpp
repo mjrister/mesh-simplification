@@ -40,7 +40,7 @@ namespace {
 		const glm::vec3 edge01 = v1.Position() - v0.Position();
 		const glm::vec3 edge02 = v2.Position() - v0.Position();
 		const auto normal = glm::normalize(glm::cross(edge01, edge02));
-		if (std::isnan(normal.x) || std::isnan(normal.y) || std::isnan(normal.z)) {
+		if (glm::any(glm::isnan(normal))) {
 			std::ostringstream oss;
 			oss << '(' << v0 << ',' << v1 << ',' << v2 << ") is not a triangle";
 			throw std::invalid_argument{oss.str()};
