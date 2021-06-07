@@ -54,8 +54,6 @@ namespace {
 		edge20->SetNext(edge01);
 
 		auto face012 = std::make_shared<geometry::Face>(v0, v1, v2);
-		face012->SetEdge(edge01);
-
 		edge01->SetFace(face012);
 		edge12->SetFace(face012);
 		edge20->SetFace(face012);

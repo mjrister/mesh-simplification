@@ -123,7 +123,6 @@ namespace {
 			ASSERT_EQ(edge01->Face(), face012);
 			ASSERT_EQ(edge12->Face(), face012);
 			ASSERT_EQ(edge20->Face(), face012);
-			ASSERT_TRUE(face012->Edge() == edge01 || face012->Edge() == edge12 || face012->Edge() == edge20);
 		}
 	}
 
