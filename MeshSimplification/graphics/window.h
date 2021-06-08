@@ -42,7 +42,7 @@ namespace gfx {
 		[[nodiscard]] std::pair<const std::int32_t, const std::int32_t> Size() const noexcept {
 			std::int32_t width, height;
 			glfwGetWindowSize(window_, &width, &height);
-			return { width, height };
+			return {width, height};
 		}
 
 		/**
@@ -78,7 +78,7 @@ namespace gfx {
 		[[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
 			double x, y;
 			glfwGetCursorPos(window_, &x, &y);
-			return { x, y };
+			return {x, y};
 		}
 
 		/** \brief Updates the window for the next iteration of main render loop. */
