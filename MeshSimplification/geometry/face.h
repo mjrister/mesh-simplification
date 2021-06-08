@@ -32,12 +32,12 @@ namespace geometry {
 		/** \brief  Gets the face normal. */
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
-		/** \brief Sends a string representation of a face to an output stream. */
+		/** \brief Defines the face insertion operator. */
 		friend std::ostream& operator<<(std::ostream& os, const Face& face) {
 			return os << '(' << *face.v0_ << ',' << *face.v1_ << ',' << *face.v2_ << ')';
 		}
 
-		/** \brief Gets the hash value for a face. */
+		/** \brief Gets the face hash value. */
 		friend std::size_t hash_value(const Face& face) {
 			return hash_value(*face.v0_, *face.v1_, *face.v2_);
 		}

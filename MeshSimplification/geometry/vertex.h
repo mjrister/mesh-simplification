@@ -8,13 +8,13 @@
 namespace geometry {
 	class HalfEdge;
 
-	/** \brief A vertex in a half-edge mesh. */
+	/** \brief A half-edge mesh vertex. */
 	class Vertex {
 
 	public:
 		/**
 		 * \brief Initializes a vertex.
-		 * \param id The unique vertex ID.
+		 * \param id The vertex ID.
 		 * \param position The vertex position.
 		 * \param normal The vertex normal.
 		 */
@@ -30,11 +30,13 @@ namespace geometry {
 		/** \brief Gets the vertex normal .*/
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
-		/** \brief Gets a half-edge that points to this vertex. */
+		/** \brief Gets the last created half-edge that points to this vertex. */
 		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
+
+		/** \brief Sets the vertex half-edge. */
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
-		/** \brief Sends the string representation of a vertex to an output stream. */
+		/** \brief Defines the vertex insertion operator. */
 		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) { return os << vertex.id_; }
 
 		/** \brief Gets the hash value for a vertex. */
