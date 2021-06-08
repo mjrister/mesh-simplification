@@ -26,7 +26,8 @@ namespace {
 		if (window.IsKeyPressed(GLFW_KEY_W)) {
 			const glm::vec3 translate{0.f, translate_step, 0.f};
 			mesh.Translate(translate);
-		} else if (window.IsKeyPressed(GLFW_KEY_X)) {
+		}
+		else if (window.IsKeyPressed(GLFW_KEY_X)) {
 			const glm::vec3 translate{0.f, -translate_step, 0.f};
 			mesh.Translate(translate);
 		}
@@ -34,7 +35,8 @@ namespace {
 		if (window.IsKeyPressed(GLFW_KEY_A)) {
 			const glm::vec3 translate{-translate_step, 0.f, 0.f};
 			mesh.Translate(translate);
-		} else if (window.IsKeyPressed(GLFW_KEY_D)) {
+		}
+		else if (window.IsKeyPressed(GLFW_KEY_D)) {
 			const glm::vec3 translate{translate_step, 0.f, 0.f};
 			mesh.Translate(translate);
 		}
@@ -42,7 +44,8 @@ namespace {
 		if (window.IsKeyPressed(GLFW_KEY_LEFT_SHIFT) && window.IsKeyPressed(GLFW_KEY_EQUAL)) {
 			const glm::vec3 scale{1.f + scale_step};
 			mesh.Scale(scale);
-		} else if (window.IsKeyPressed(GLFW_KEY_MINUS)) {
+		}
+		else if (window.IsKeyPressed(GLFW_KEY_MINUS)) {
 			const glm::vec3 scale{1.f - scale_step};
 			mesh.Scale(scale);
 		}
@@ -50,14 +53,16 @@ namespace {
 		if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			const auto cursor_position = window.GetCursorPosition();
 			if (prev_cursor_position) {
-				if (const auto axis_and_angle = gfx::arcball::GetRotation(*prev_cursor_position, cursor_position, window.Size())) {
+				if (const auto axis_and_angle = gfx::arcball::GetRotation(
+					*prev_cursor_position, cursor_position, window.Size())) {
 					const auto& [view_rotation_axis, angle] = *axis_and_angle;
-					const auto model_rotation_axis = glm::mat3{glm::inverse(view_model_transform)} * view_rotation_axis;
-					mesh.Rotate(glm::normalize(model_rotation_axis), angle);
+					const auto model_rotation_axis = glm::mat3{inverse(view_model_transform)} * view_rotation_axis;
+					mesh.Rotate(normalize(model_rotation_axis), angle);
 				}
 			}
 			prev_cursor_position = cursor_position;
-		} else if (prev_cursor_position.has_value()) {
+		}
+		else if (prev_cursor_position.has_value()) {
 			prev_cursor_position = std::nullopt;
 		}
 	}
@@ -72,12 +77,12 @@ int main() {
 		gfx::Window window{"OpenGL", window_dimensions, opengl_version};
 
 		auto mesh = gfx::obj_loader::LoadMesh("models/bunny.obj");
-		mesh.Scale(glm::vec3{.25f});
+		mesh.Scale(glm::vec3{.3f});
 		mesh.Translate({glm::vec3{.5f, -.9f, 0.f}});
 
 		window.HandleKeyPress([&](const auto& key) {
 			if (key == GLFW_KEY_S) {
-				mesh = geometry::mesh::Simplify(mesh, .95f);
+				mesh = geometry::mesh::Simplify(mesh, .8f);
 			}
 		});
 
@@ -90,7 +95,7 @@ int main() {
 		shader_program.SetUniform("projection_transform", projection_transform);
 
 		constexpr glm::vec3 eye{0.f, 0.f, 2.f}, center{0.f}, up{0.f, 1.f, 0.f};
-		const auto view_transform = glm::lookAt(eye, center, up);
+		const auto view_transform = lookAt(eye, center, up);
 
 		GLfloat point_light_angle = 0.f;
 		shader_program.SetUniform("point_light.color", glm::vec3{1.f});
@@ -120,7 +125,7 @@ int main() {
 			shader_program.SetUniform("view_model_transform", view_model_transform);
 			shader_program.SetUniform("normal_transform", glm::mat3{view_model_transform});
 
-			point_light_angle += .5f * delta_time;
+			point_light_angle = glm::radians(45.f); //+= .5f * delta_time;
 			const glm::vec4 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 1.5f, 1.f};
 			shader_program.SetUniform("point_light.position", view_transform * point_light_position);
 
@@ -130,7 +135,8 @@ int main() {
 			mesh.Render();
 			window.Update();
 		}
-	} catch (const std::exception& e) {
+	}
+	catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
 		return EXIT_FAILURE;
 	}
