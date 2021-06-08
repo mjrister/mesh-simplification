@@ -19,6 +19,7 @@
 #include "graphics/mesh.h"
 
 namespace {
+
 	/**
 	 * \brief Gets a canonical representation of a half-edge used to disambiguate between its flip edge.
 	 * \param edge The half-edge to disambiguate.
