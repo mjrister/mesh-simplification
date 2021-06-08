@@ -16,9 +16,9 @@ namespace gfx {
 	public:
 		/**
 		 * \brief Initializes a triangle mesh.
-		 * \param positions The mesh vertex 3D positions.
-		 * \param texture_coordinates The mesh 2D texture coordinates.
-		 * \param normals The mesh 3D normals.
+		 * \param positions The mesh vertex positions.
+		 * \param texture_coordinates The mesh texture coordinates.
+		 * \param normals The mesh normals.
 		 * \param indices Element indices such that each three consecutive integers define a triangle face in the mesh.
 		 * \param model A 4x4 matrix representing an affine transform to apply to the mesh in model space.
 		 * \throw std::invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
@@ -42,13 +42,13 @@ namespace gfx {
 		Mesh(Mesh&& mesh) noexcept;
 		Mesh& operator=(Mesh&& mesh) noexcept;
 
-		/** \brief Gets the mesh 3D vertex positions. */
+		/** \brief Gets the mesh vertex positions. */
 		[[nodiscard]] const std::vector<glm::vec3>& Positions() const { return positions_; }
 
-		/** \brief Gets the mesh 2D texture coordinates. */
+		/** \brief Gets the mesh texture coordinates. */
 		[[nodiscard]] const std::vector<glm::vec2>& TextureCoordinates() const { return texture_coordinates_; }
 
-		/** \brief Gets the mesh 3D normals. */
+		/** \brief Gets the mesh normals. */
 		[[nodiscard]] const std::vector<glm::vec3>& Normals() const { return normals_; }
 
 		/** \brief Gets the mesh indices corresponding to a triangle face for every three consecutive integers. */
