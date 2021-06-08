@@ -1,5 +1,6 @@
 #include "graphics/window.h"
 
+#include <format>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -66,7 +67,7 @@ namespace {
 #ifdef _DEBUG
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 		glfwSetErrorCallback([](const std::int32_t error_code, const char* const description) {
-			std::cerr << "GLFW Error (" << error_code << "): " << description << std::endl;
+			std::cerr << std::format("GLFW Error ({}): {}\n", error_code, description);
 		});
 #endif
 	}
@@ -75,11 +76,8 @@ namespace {
 
 		if (gl3wInit()) throw std::runtime_error{"OpenGL initialization failed"};
 
-		const auto [major_version, minor_version] = opengl_version;
-		if (!gl3wIsSupported(major_version, minor_version)) {
-			std::ostringstream oss;
-			oss << "OpenGL " << major_version << "." << minor_version << " not supported";
-			throw std::runtime_error{oss.str()};
+		if (const auto [major_version, minor_version] = opengl_version; !gl3wIsSupported(major_version, minor_version)) {
+			throw std::runtime_error{std::format("OpenGL {}.{} not supported", major_version, minor_version)};
 		}
 
 #if _DEBUG
