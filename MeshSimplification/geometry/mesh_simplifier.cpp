@@ -147,7 +147,11 @@ namespace {
 		/** \brief The associated cost of collapsing this edge. */
 		float cost = std::numeric_limits<float>::infinity();
 
-		/** \brief Indicates this edge contraction candidate is valid. See comment on priority queue invalidation. */
+		/**
+		 * \brief This is used as a workaround for std::priority_queue not providing an method to update an existing
+		 *        entry's priority. As edges are updated in the mesh, duplicated entries may be inserted in the queue
+		 *        and this property will be used to determine if this entry refers to the most recent edge update.
+		 */
 		bool valid = true;
 	};
 }
@@ -174,8 +178,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 		std::vector<std::shared_ptr<EdgeContraction>>,
 		decltype(min_heap_comparator)> edge_contractions{min_heap_comparator};
 
-	// to work around the limitation of std::priority_queue not providing an API to update an existing entry's priority,
-	// duplicate entries may be inserted and this map will be used to invalidate previous entries in the priority queue
+	// this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
 	std::unordered_map<std::size_t, std::shared_ptr<EdgeContraction>> valid_edges;
 
 	// compute the optimal vertex position that minimizes the cost of collapsing each edge
@@ -199,7 +202,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 	while (!edge_contractions.empty() && !should_stop()) {
 		const auto& edge_contraction = edge_contractions.top();
 
-		if (const auto & edge01 = edge_contraction->edge; edge_contraction->valid && !WillDegenerate(edge01)) {
+		if (const auto& edge01 = edge_contraction->edge; edge_contraction->valid && !WillDegenerate(edge01)) {
 			const auto& v_new = edge_contraction->vertex;
 			const auto v0 = edge01->Flip()->Vertex();
 			const auto v1 = edge01->Vertex();
