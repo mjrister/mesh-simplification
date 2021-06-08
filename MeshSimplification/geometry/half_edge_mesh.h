@@ -27,7 +27,7 @@ namespace geometry {
 	public:
 		/**
 		 * \brief Initializes a half-edge mesh.
-		 * \param mesh The triangle mesh to construct the half-edge mesh from.
+		 * \param mesh An indexed triangle mesh to construct the half-edge mesh from.
 		 */
 		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
 

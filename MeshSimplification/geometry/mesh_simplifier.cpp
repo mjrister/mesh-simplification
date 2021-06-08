@@ -22,7 +22,7 @@ namespace {
 	constexpr auto epsilon = std::numeric_limits<float>::epsilon();
 
 	/**
-	 * \brief Gets a canonical representation of a half-edge. Used to disambiguate between its flip edge.
+	 * \brief Gets a canonical representation of a half-edge used to disambiguate between its flip edge.
 	 * \param edge The half-edge to disambiguate.
 	 * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
 	 */
@@ -47,7 +47,7 @@ namespace {
 
 	/**
 	 * \brief Computes the error quadric for a vertex.
-	 * \param vertex The vertex to compute the error quadric for.
+	 * \param vertex The vertex to evaluate.
 	 * \return The summation of quadrics for all triangles incident to \p vertex.
 	 */
 	glm::mat4 ComputeQuadric(const geometry::Vertex& vertex) {
@@ -128,7 +128,7 @@ namespace {
 		return false;
 	}
 
-	/** \brief Represents an edge contraction candidate. */
+	/** \brief Represents an edge contraction priority queue entry. */
 	struct EdgeContraction {
 
 		explicit EdgeContraction(
@@ -212,7 +212,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 			const auto& q1 = quadrics.at(v1->Id());
 			quadrics.emplace(v_new->Id(), q0 + q1);
 
-			// invalidate entries in the priority queue that were removed during the previous edge contraction
+			// invalidate entries in the priority queue that were removed during the edge contraction
 			for (const auto& vertex : {v0, v1}) {
 				auto edge = vertex->Edge();
 				do {
@@ -225,7 +225,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 				} while (edge != vertex->Edge());
 			}
 
-			// add new edge contraction candidates for edges affected by the previous edge contraction
+			// add new edge contraction candidates for edges affected by the edge contraction
 			std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> visited_edges;
 			const auto& vi = v_new;
 			auto edgeji = vi->Edge();
