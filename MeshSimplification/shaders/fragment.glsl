@@ -1,4 +1,4 @@
-#version 410 core
+#version 460 core
 
 // interpolated data from the vertex shader
 in Vertex {
