@@ -19,8 +19,6 @@
 #include "graphics/mesh.h"
 
 namespace {
-	constexpr auto epsilon = std::numeric_limits<float>::epsilon();
-
 	/**
 	 * \brief Gets a canonical representation of a half-edge used to disambiguate between its flip edge.
 	 * \param edge The half-edge to disambiguate.
@@ -87,6 +85,7 @@ namespace {
 		const auto d = q01[3][3];
 
 		// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
+		static constexpr auto epsilon = std::numeric_limits<float>::epsilon();
 		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
 			return {AverageVertices(vertex_id, *v0, *v1), 0.f};
 		}
