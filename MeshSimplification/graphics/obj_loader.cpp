@@ -28,7 +28,7 @@ namespace {
 	 * \warning Generally, returning a \c string_view is unsafe since it may lead to a dangling pointer if a temporary
 	 *          is passed in to \p line. This is guaranteed to \b not happen in this context because \p line will always
 	 *          refer to a dynamically allocated string created by reading the .obj file. Furthermore, preventing
-	 *          unnecessary copies of \p line can reduce the total time needed to parse an .obj file by half.
+	 *          unnecessary copies of \p line can reduce the total time needed to parse an .obj file by more than half.
 	 */
 	std::string_view Trim(std::string_view line, const std::string_view delimiter = " \t") {
 		line.remove_prefix(std::min<>(line.find_first_not_of(delimiter), line.size()));
@@ -44,7 +44,7 @@ namespace {
 	 * \warning Generally, returning a \c string_view is unsafe since it may lead to a dangling pointer if a temporary
 	 *          is passed in to \p line. This is guaranteed to \b not happen in this context because \p line will always
 	 *          refer to a dynamically allocated string created by reading the .obj file. Furthermore, preventing
-	 *          unnecessary copies of \p line can reduce the total time needed to parse an .obj file by half.
+	 *          unnecessary copies of \p line can reduce the total time needed to parse an .obj file by more than half.
 	 */
 	std::vector<std::string_view> Split(const std::string_view line, const std::string_view delimiter = " \t") {
 		std::vector<std::string_view> tokens;
