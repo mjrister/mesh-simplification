@@ -166,13 +166,13 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 	}
 
 	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
-	constexpr auto comparator = [](
+	constexpr auto min_heap_comparator = [](
 		const std::shared_ptr<EdgeContraction>& lhs,
 		const std::shared_ptr<EdgeContraction>& rhs) { return lhs->cost > rhs->cost; };
 	std::priority_queue<
 		std::shared_ptr<EdgeContraction>,
 		std::vector<std::shared_ptr<EdgeContraction>>,
-		decltype(comparator)> edge_contractions{comparator};
+		decltype(min_heap_comparator)> edge_contractions{min_heap_comparator};
 
 	// to work around the limitation of std::priority_queue not providing an API to update an existing entry's priority,
 	// duplicate entries may be inserted and this map will be used to invalidate previous entries in the priority queue
