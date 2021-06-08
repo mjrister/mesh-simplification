@@ -11,7 +11,7 @@ The following images presents the results of reducing a triangle mesh consisting
 
 Original Mesh (69630 Triangles)           |  Simplified Mesh (17406 Triangles)
 :-------------------------:|:-------------------------:
-![](img/bunny_original_69630.png)  |  ![](img/bunny_simplified_17406.png)
+![](https://github.com/matthew-rister/mesh_simplification/blob/main/bunny_original_69630.PNG)  |  ![](https://github.com/matthew-rister/mesh_simplification/blob/main/bunny_simplified_17406.PNG)
 
 ## Additional Features
 
