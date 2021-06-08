@@ -11,7 +11,7 @@ The following images present a comparison of reducing a triangle mesh consisting
 
 Original Mesh (69630 Triangles)           |  Simplified Mesh (13924 Triangles) | Simplified Mesh (2784 Triangles)
 :-------------------------:|:-------------------------: | :-------------------------:
-![](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/img/bunny_original_69630.PNG)  |  ![](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/img/bunny_simplified1_13924.PNG) | ![](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/img/bunny_simplified2_2784.PNG)
+![](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/img/bunny_original_69630.PNG)  |  ![](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/img/bunny_simplified1_13924.PNG) | ![](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/img/bunny_simplified1_2784.PNG)
 
 ## How To Run
 This project was building using C++20 and OpenGL 4.6. To build it, you will need a version of Visual Studio that supports the latest language standard (e.g., Visual Studio 2019 v16.10.0). Additionally, this project uses [vcpkg](https://vcpkg.io/en/index.html) to manage 3rd party dependencies. To get started, clone the [vcpkg repository](https://github.com/microsoft/vcpkg) on Github and run `bootstrap-vcpkg.bat` followed by `vcpkg integrate install`. After this, you should be ready to build and run the project using Visual Studio which will install dependencies from the [vcpkg.json](https://github.com/matthew-rister/mesh_simplification/blob/main/vcpkg.json) package manifest on first build. _At this time, only x64 architecture is supported._
