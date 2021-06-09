@@ -148,9 +148,9 @@ namespace {
 		float cost = std::numeric_limits<float>::infinity();
 
 		/**
-		 * \brief This is used as a workaround for std::priority_queue not providing an method to update an existing
+		 * \brief This is used as a workaround for std::priority_queue not providing a method to update an existing
 		 *        entry's priority. As edges are updated in the mesh, duplicated entries may be inserted in the queue
-		 *        and this property will be used to determine if this entry refers to the most recent edge update.
+		 *        and this property will be used to determine if an entry refers to the most recent edge update.
 		 */
 		bool valid = true;
 	};
