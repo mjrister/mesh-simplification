@@ -1,7 +1,7 @@
 # Mesh Simplification
 
 ## Introduction
-In computer graphics applications, performance is often directly tied to the number of triangles rendered in the scene. This project presents an effective algorithm first presented by Garland-Heckbert in a seminal research paper entitled [Surface Simplification Using Quadric Error Metrics](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/docs/surface_simplification.pdf) for reducing the total number of triangles in a polygon mesh while preserving its original shape as much as possible.
+In computer graphics applications, performance is often directly tied to the number of triangles rendered in the scene. This project presents an effective algorithm first described by Garland-Heckbert in a seminal research paper entitled [Surface Simplification Using Quadric Error Metrics](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/docs/surface_simplification.pdf) for reducing the total number of triangles in a polygon mesh while preserving its original shape as much as possible.
 
 The core idea of the algorithm is to compute the optimal vertex position to collapse an edge into by measuring how much the mesh changes after the edge has been collapsed. It then iteratively removes edges with the lowest cost using a priority queue to collapses edges until a user-provided stopping criterion is met. To facilitate the implementation of this algorithm, a data structure known as a [half-edge mesh](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/geometry/half_edge_mesh.h) is employed to efficiently traverse and modify edges in the mesh.
 
