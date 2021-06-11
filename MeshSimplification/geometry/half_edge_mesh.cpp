@@ -227,7 +227,7 @@ geometry::HalfEdgeMesh::operator gfx::Mesh() const {
 	indices.reserve(faces_.size() * 3);
 
 	std::unordered_map<std::size_t, GLuint> index_map;
-	for (GLuint i = 0; const auto & vertex : vertices_ | std::views::values) {
+	for (GLuint i = 0; const auto& vertex : vertices_ | std::views::values) {
 		positions.push_back(vertex->Position());
 		normals.push_back(vertex->Normal());
 		index_map.emplace(vertex->Id(), i++);

@@ -1,6 +1,6 @@
 {
-    "name": "opengl",
-    "version-string": "0.1.0",
+    "name": "mesh_simplification",
+    "version-string": "1.0.0",
     "dependencies": [
         "gl3w",
         "glfw3",
