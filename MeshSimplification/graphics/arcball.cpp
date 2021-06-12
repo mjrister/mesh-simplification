@@ -11,7 +11,7 @@ namespace {
 
 	/**
 	 * \brief Gets the cursor position in normalized device coordinates (e.g., \f$(x,y) \in [-1, 1]\f$).
-	 * \param cursor_position The cursor position in the window (e.g., \f$(x,y) \in [0, 1]\f$).
+	 * \param cursor_position The cursor position in the window.
 	 * \param window_size The window width and height.
 	 * \return The cursor position in normalized device coordinates.
 	 */
