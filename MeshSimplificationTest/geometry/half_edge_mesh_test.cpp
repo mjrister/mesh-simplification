@@ -14,7 +14,6 @@ namespace {
 
 		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
 		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{}, glm::vec3{});
-		const auto v2 = std::make_shared<Vertex>(2, glm::vec3{}, glm::vec3{});
 
 		auto edge01 = std::make_shared<HalfEdge>(v1);
 		const auto edge10 = std::make_shared<HalfEdge>(v0);
