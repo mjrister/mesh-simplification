@@ -38,12 +38,12 @@ gfx::Mesh::Mesh(
 	std::vector<glm::vec2> texture_coordinates,
 	std::vector<glm::vec3> normals,
 	std::vector<GLuint> indices,
-	glm::mat4 model)
+	glm::mat4 model_transform)
 	: positions_{std::move(positions)},
 	  texture_coordinates_{std::move(texture_coordinates)},
 	  normals_{std::move(normals)},
 	  indices_{std::move(indices)},
-	  model_{std::move(model)} {
+	  model_transform_{std::move(model_transform)} {
 
 	Validate(positions_, texture_coordinates_, normals_, indices_);
 
@@ -117,7 +117,7 @@ gfx::Mesh& gfx::Mesh::operator=(Mesh&& mesh) noexcept {
 	texture_coordinates_ = std::move(mesh.texture_coordinates_);
 	normals_ = std::move(mesh.normals_);
 	indices_ = std::move(mesh.indices_);
-	model_ = std::move(mesh.model_);
+	model_transform_ = std::move(mesh.model_transform_);
 
 	return *this;
 }

@@ -20,7 +20,7 @@ namespace gfx {
 		 * \param texture_coordinates The mesh texture coordinates.
 		 * \param normals The mesh normals.
 		 * \param indices Element indices such that each three consecutive integers define a triangle face in the mesh.
-		 * \param model A 4x4 matrix representing an affine transform to apply to the mesh in model space.
+		 * \param model_transform A 4x4 matrix representing an affine transform to apply to the mesh in model space.
 		 * \throw std::invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
 		 * \note If \p indices is empty, \p positions must describe a triangle mesh (i.e., be a nonzero multiple of 3).
 		 *       If nonempty, \p texture_coordinates and \p normals must be the same size as \p positions so that data
@@ -33,7 +33,7 @@ namespace gfx {
 			std::vector<glm::vec2> texture_coordinates = {},
 			std::vector<glm::vec3> normals = {},
 			std::vector<GLuint> indices = {},
-			glm::mat4 model = glm::mat4{1.f});
+			glm::mat4 model_transform = glm::mat4{1.f});
 		~Mesh();
 
 		Mesh(const Mesh&) = delete;
@@ -55,9 +55,9 @@ namespace gfx {
 		[[nodiscard]] const std::vector<GLuint>& Indices() const { return indices_; }
 
 		/** \brief Gets the affine transform to apply to the mesh in model space. */
-		[[nodiscard]] const glm::mat4& Model() const { return model_; }
+		[[nodiscard]] const glm::mat4& ModelTransform() const { return model_transform_; }
 
-		/** \brief Renders the mesh to the current framebuffer. */
+		/** \brief Renders the mesh to the current render target. */
 		void Render() const {
 			glBindVertexArray(vertex_array_);
 			if (element_buffer_) {
@@ -72,20 +72,26 @@ namespace gfx {
 		 * \brief Scales the mesh in local object space.
 		 * \param xyz The x,y,z directions to scale the mesh.
 		 */
-		void Scale(const glm::vec3& xyz) { model_ = glm::scale(model_, xyz); }
+		void Scale(const glm::vec3& xyz) {
+			model_transform_ = glm::scale(model_transform_, xyz);
+		}
 
 		/**
 		 * \brief Rotates the mesh in local object space.
 		 * \param axis The axis to rotate the mesh about.
 		 * \param angle The rotation angle specified in radians.
 		 */
-		void Rotate(const glm::vec3& axis, const GLfloat angle) { model_ = glm::rotate(model_, angle, axis); }
+		void Rotate(const glm::vec3& axis, const GLfloat angle) {
+			model_transform_ = glm::rotate(model_transform_, angle, axis);
+		}
 
 		/**
 		 * \brief Translates the mesh in local object space.
 		 * \param xyz The x,y,z directions to translate the mesh.
 		 */
-		void Translate(const glm::vec3& xyz) { model_ = glm::translate(model_, xyz); }
+		void Translate(const glm::vec3& xyz) {
+			model_transform_ = glm::translate(model_transform_, xyz);
+		}
 
 	private:
 		GLuint vertex_array_{}, vertex_buffer_{}, element_buffer_{};
@@ -93,6 +99,6 @@ namespace gfx {
 		std::vector<glm::vec2> texture_coordinates_;
 		std::vector<glm::vec3> normals_;
 		std::vector<GLuint> indices_;
-		glm::mat4 model_;
+		glm::mat4 model_transform_;
 	};
 }

@@ -116,7 +116,7 @@ int main() {
 				shader_program.SetUniform("projection_transform", projection_transform);
 			}
 
-			const auto view_model_transform = view_transform * mesh.Model();
+			const auto view_model_transform = view_transform * mesh.ModelTransform();
 			shader_program.SetUniform("view_model_transform", view_model_transform);
 			shader_program.SetUniform("normal_transform", glm::mat3{view_model_transform});
 

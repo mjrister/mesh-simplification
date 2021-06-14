@@ -57,7 +57,7 @@ namespace geometry {
 		std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;
 		std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
 		std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
-		glm::mat4 model_;
+		glm::mat4 model_transform_;
 		std::size_t next_vertex_id_;
 	};
 }

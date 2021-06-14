@@ -145,7 +145,7 @@ namespace {
 		ASSERT_EQ(mesh_a.Positions(), mesh_b.Positions());
 		ASSERT_EQ(mesh_a.TextureCoordinates(), mesh_b.TextureCoordinates());
 		ASSERT_EQ(mesh_a.Normals(), mesh_b.Normals());
-		ASSERT_EQ(mesh_a.Model(), mesh_b.Model());
+		ASSERT_EQ(mesh_a.ModelTransform(), mesh_b.ModelTransform());
 	}
 
 	TEST(HalfEdgeMeshTest, TestCollapseEdge) {
