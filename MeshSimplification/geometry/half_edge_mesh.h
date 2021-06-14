@@ -34,13 +34,13 @@ namespace geometry {
 		/** \brief Defines the conversion operator back to a triangle mesh. */
 		operator gfx::Mesh() const;
 
-		/** \brief Gets the half-edge mesh vertices. */
+		/** \brief Gets a mapping of mesh vertices by ID. */
 		[[nodiscard]] const auto& Vertices() const { return vertices_; }
 
-		/** \brief Gets the half-edge mesh edges. */
+		/** \brief Gets a mapping of mesh half-edges by ID. */
 		[[nodiscard]] const auto& Edges() const { return edges_; }
 
-		/** \brief Gets the half-edge mesh faces. */
+		/** \brief Gets a mapping of mesh faces by ID. */
 		[[nodiscard]] const auto& Faces() const { return faces_; }
 
 		/** \brief Gets a unique vertex ID that can be used to construct a new vertex in the half-edge mesh. */
