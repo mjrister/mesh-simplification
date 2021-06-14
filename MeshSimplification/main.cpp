@@ -84,9 +84,9 @@ int main() {
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 
-		constexpr GLfloat field_of_view{glm::radians(45.f)}, z_near{.1f}, z_far{100.f};
+		constexpr GLfloat field_of_view_y{glm::radians(45.f)}, z_near{.1f}, z_far{100.f};
 		auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
-		auto projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
+		auto projection_transform = glm::perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
 		constexpr glm::vec3 eye{0.f, 0.f, 2.f}, center{0.f}, up{0.f, 1.f, 0.f};
@@ -112,7 +112,7 @@ int main() {
 				window_width = width;
 				window_height = height;
 				aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
-				projection_transform = glm::perspective(field_of_view, aspect_ratio, z_near, z_far);
+				projection_transform = glm::perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 				shader_program.SetUniform("projection_transform", projection_transform);
 			}
 
