@@ -9,9 +9,8 @@ in Vertex {
 
 // a light source at a fixed position in space whose rays shine in all directions
 uniform struct PointLight {
-	vec4 position; // in view space
+	vec4 position; // in camera space
 	vec3 color;
-	float intensity;
 	vec3 attenuation;
 } point_light;
 
@@ -50,8 +49,8 @@ vec4 GetFragmentColor() {
 		vec3 specular_color = specular_intensity * material.specular;
 
 		// account for light attenuation
-		float attenuation = dot(point_light.attenuation, vec3(1.f, light_distance, light_distance * light_distance));
-		fragment_color += point_light.color * point_light.intensity * (diffuse_color + specular_color) / attenuation;
+		float attenuation = 1.f / dot(point_light.attenuation, vec3(1.f, light_distance, pow(light_distance, 2.f)));
+		fragment_color += point_light.color * attenuation * (diffuse_color + specular_color);
 	}
 
 	return vec4(fragment_color, 1.f);

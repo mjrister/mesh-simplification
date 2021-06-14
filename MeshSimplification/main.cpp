@@ -94,7 +94,6 @@ int main() {
 
 		GLfloat point_light_angle = 0.f;
 		shader_program.SetUniform("point_light.color", glm::vec3{1.f});
-		shader_program.SetUniform("point_light.intensity", 1.f);
 		shader_program.SetUniform("point_light.attenuation", glm::vec3{0.f, 0.f, 1.f});
 
 		constexpr auto material = gfx::Material::Jade();
