@@ -4,7 +4,7 @@ In computer graphics, performance is often directly correlated to the complexity
 
 The core idea of the algorithm is to compute the optimal vertex position to collapse an edge into that minimizes how much the mesh changes using quadric error metrics. It then iteratively removes edges with the lowest cost using a priority queue to collapses edges until the mesh is sufficiently simplified. To facilitate the implementation of this algorithm, a data structure known as a [half-edge mesh](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/geometry/half_edge_mesh.h) is employed to efficiently traverse and modify edges in the mesh.
 
-The following GIF demonstrates several iterations of mesh simplification on a complex polygon mesh consisting of nearly 70,000 triangles. At each iteration, the number of triangles is reduced by 50% eventually resulting in a mesh consisting of only 1,086 triangles. Although fidelity is reduced, the mesh retains an overall high-quality appearance that nicely approximates the original shape the mesh.
+The following GIF demonstrates several iterations of mesh simplification on a complex polygon mesh consisting of nearly 70,000 triangles. At each iteration, the number of triangles is reduced by 50% eventually reducing to a mesh consisting of only 1,086 triangles. Although fidelity is reduced, the mesh retains an overall high-quality appearance that nicely approximates the original shape the mesh.
 
 ![](https://github.com/matthew-rister/mesh_simplification/blob/main/bunny.gif)
 
