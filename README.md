@@ -6,7 +6,7 @@ The core idea of the algorithm is to compute the optimal vertex position to coll
 
 ## Results
 
-The following images present a comparison of reducing a triangle mesh consisting of nearly 70,000 triangles (left) by 95% (right). Although fidelity is somewhat reduced, the mesh retains an overall high-quality appearance that nicely approximates the original shape the mesh. 
+The following images present a comparison of reducing a triangle mesh consisting of nearly 70,000 triangles (left) by 95% (right). Although fidelity is reduced, the mesh retains an overall high-quality appearance that nicely approximates the original shape the mesh. 
 
 Original Mesh (69630 Triangles)           |  Simplified Mesh (3480 Triangles)
 :-------------------------:|:-------------------------:
