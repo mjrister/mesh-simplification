@@ -40,8 +40,24 @@ namespace {
 	std::shared_ptr<geometry::Vertex> AverageVertices(
 		const std::size_t vertex_id, const geometry::Vertex& v0, const geometry::Vertex& v1) {
 		const auto position = (v0.Position() + v1.Position()) / 2.f;
-		const auto normal = (v0.Normal() + v1.Normal()) / 2.f;
-		return std::make_shared<geometry::Vertex>(vertex_id, position, normal);
+		return std::make_shared<geometry::Vertex>(vertex_id, position);
+	}
+
+	/**
+	 * \brief Computes a vertex normal by averaging its face normals.
+	 * \param v0 The vertex to evaluate.
+	 * \return The vertex normal.
+	 */
+	glm::vec3 AverageFaceNormals(const std::shared_ptr<geometry::Vertex>& v0) {
+		glm::vec3 normal{0.f};
+		float face_count = 0.f;
+		auto edgei0 = v0->Edge();
+		do {
+			normal += edgei0->Face()->Normal();
+			edgei0 = edgei0->Next()->Flip();
+			++face_count;
+		} while (edgei0 != v0->Edge());
+		return glm::normalize(normal / face_count);
 	}
 
 	/**
@@ -51,14 +67,14 @@ namespace {
 	 */
 	glm::mat4 ComputeQuadric(const geometry::Vertex& vertex) {
 		glm::mat4 quadric{0.f};
-		auto iterator = vertex.Edge();
+		auto edgei0 = vertex.Edge();
 		do {
 			const auto& position = vertex.Position();
-			const auto& normal = iterator->Face()->Normal();
+			const auto& normal = edgei0->Face()->Normal();
 			const glm::vec4 plane{normal, -glm::dot(position, normal)};
 			quadric += glm::outerProduct(plane, plane);
-			iterator = iterator->Next()->Flip();
-		} while (iterator != vertex.Edge());
+			edgei0 = edgei0->Next()->Flip();
+		} while (edgei0 != vertex.Edge());
 		return quadric;
 	}
 
@@ -96,10 +112,9 @@ namespace {
 
 		auto position = D_inv * glm::vec4{0.f, 0.f, 0.f, 1.f};
 		position /= position.w;
-		const auto normal = (v0->Normal() + v1->Normal()) / 2.f;
 		const auto cost = glm::dot(position, q01 * position);
 
-		return {std::make_shared<geometry::Vertex>(vertex_id, position, normal), cost};
+		return {std::make_shared<geometry::Vertex>(vertex_id, position), cost};
 	}
 
 	/**
@@ -209,6 +224,9 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 
 			// remove the edge from the mesh and attach incident edges to the new vertex
 			half_edge_mesh.CollapseEdge(edge01, v_new);
+
+			// now that new triangles have been created, compute the vertex normal by averaging its face normals
+			v_new->SetNormal(AverageFaceNormals(v_new));
 
 			// compute the error quadric for the new vertex
 			const auto& q0 = quadrics.at(v0->Id());
