@@ -30,12 +30,12 @@ vec4 GetFragmentColor() {
 	// start initial light contribution off with ambient intensity
 	vec3 fragment_color = material.ambient;
 
-	vec3 light_direction = (point_light.position - vertex.position).xyz;
+	vec3 light_direction = point_light.position.xyz - vertex.position.xyz;
 	float light_distance = length(light_direction);
 	light_direction = normalize(light_direction);
 
 	// calculate angle between light source and vertex normal
-	vec3 vertex_normal = normalize(vertex.normal);
+	vec3 vertex_normal = normalize(cross(dFdx(vertex.position.xyz), dFdy(vertex.position.xyz)));
 	float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
 
 	// avoid calculating specular intensity if angle between light source and vertex position is greater than 90 degrees

@@ -121,7 +121,7 @@ namespace {
 	/**
 	 * \brief Determines if the removal of an edge will cause the mesh to degenerate.
 	 * \param edge01 The half-edge to evaluate.
-	 * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
+	 * \return \c true if the removal of \p edge01 will result in a non-manifold, otherwise \c false.
 	 */
 	bool WillDegenerate(const std::shared_ptr<geometry::HalfEdge>& edge01) {
 		const auto v0 = edge01->Flip()->Vertex();
