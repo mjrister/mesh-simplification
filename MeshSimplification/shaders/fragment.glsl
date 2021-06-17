@@ -34,16 +34,16 @@ vec4 GetFragmentColor() {
 	float light_distance = length(light_direction);
 	light_direction = normalize(light_direction);
 
-	// calculate angle between light source and vertex normal
-	vec3 vertex_normal = normalize(vertex.normal);
-	float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
+	// calculate angle between light source and triangle normal
+	vec3 triangle_normal = normalize(cross(dFdx(vertex.position.xyz), dFdy(vertex.position.xyz)));
+	float diffuse_intensity = max(dot(light_direction, triangle_normal), 0.f);
 
 	// avoid calculating specular intensity if angle between light source and vertex position is greater than 90 degrees
 	if (diffuse_intensity > 0.f) {
 		vec3 diffuse_color = diffuse_intensity * material.diffuse;
 
 		// calculate the angle between the reflected light and view direction
-		vec3 reflect_direction = normalize(reflect(-light_direction, vertex_normal));
+		vec3 reflect_direction = normalize(reflect(-light_direction, triangle_normal));
 		vec3 view_direction = normalize(-vertex.position.xyz);
 		float specular_intensity = pow(max(dot(reflect_direction, view_direction), 0.f), material.shininess);
 		vec3 specular_color = specular_intensity * material.specular;
