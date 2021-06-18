@@ -155,7 +155,7 @@ namespace {
 	}
 
 	/**
-	 * \brief Attaches edges incident to a vertex to be removed onto a new vertex.
+	 * \brief Attaches triangles incident to an edge's vertex to a new vertex.
 	 * \param v_target The vertex to be removed whose incident edges require updating.
 	 * \param v_start The vertex opposite of \p v_target representing the first half-edge to process.
 	 * \param v_end The vertex opposite of \p v_target representing the last half-edge to process.
@@ -163,7 +163,7 @@ namespace {
 	 * \param edges A mapping of mesh half-edges by ID.
 	 * \param faces A mapping of mesh faces by ID.
 	 */
-	void UpdateIncidentEdges(
+	void UpdateIncidentTriangles(
 		const std::shared_ptr<geometry::Vertex>& v_target,
 		const std::shared_ptr<geometry::Vertex>& v_start,
 		const std::shared_ptr<geometry::Vertex>& v_end,
@@ -251,8 +251,8 @@ void geometry::HalfEdgeMesh::CollapseEdge(
 	const auto v0_next = edge10->Next()->Vertex();
 	const auto v1_next = edge01->Next()->Vertex();
 
-	UpdateIncidentEdges(v0, v1_next, v0_next, v_new, edges_, faces_);
-	UpdateIncidentEdges(v1, v0_next, v1_next, v_new, edges_, faces_);
+	UpdateIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
+	UpdateIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
 
 	DeleteEdge(*edge01, edges_);
 
