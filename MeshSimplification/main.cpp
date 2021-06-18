@@ -78,8 +78,11 @@ int main() {
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
 
-		bool use_flat_shading = true;
-		shader_program.SetUniform("use_flat_shading", use_flat_shading);
+		window.OnKeyPress([&](const auto& key) {
+			if (key == GLFW_KEY_S) {
+				mesh = geometry::mesh::Simplify(mesh, .5f);
+			}
+		});
 
 		constexpr GLfloat field_of_view_y{glm::radians(45.f)}, z_near{.1f}, z_far{100.f};
 		auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
@@ -99,16 +102,6 @@ int main() {
 		shader_program.SetUniform("material.specular", material.Specular());
 		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
 
-		window.OnKeyPress([&](const auto& key) {
-			if (key == GLFW_KEY_S) {
-				mesh = geometry::mesh::Simplify(mesh, .5f);
-			}
-			if (key == GLFW_KEY_F) {
-				use_flat_shading = !use_flat_shading;
-				shader_program.SetUniform("use_flat_shading", use_flat_shading);
-			}
-		});
-
 		for (double previous_time = glfwGetTime(); !window.Closed();) {
 			const double current_time = glfwGetTime();
 			const auto delta_time = static_cast<GLfloat>(current_time - previous_time);
@@ -124,7 +117,7 @@ int main() {
 
 			const auto view_model_transform = view_transform * mesh.ModelTransform();
 			shader_program.SetUniform("view_model_transform", view_model_transform);
-			shader_program.SetUniform("normal_transform", glm::mat3{view_model_transform});
+			shader_program.SetUniform("normal_transform", glm::inverse(glm::transpose(view_model_transform)));
 
 			point_light_angle += .5f * delta_time;
 			const glm::vec4 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 1.5f, 1.f};

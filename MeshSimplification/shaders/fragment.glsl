@@ -9,7 +9,7 @@ in Vertex {
 
 // a light source at a fixed position in space whose rays shine in all directions
 uniform struct PointLight {
-	vec4 position; // in camera space
+	vec3 position; // in camera space
 	vec3 color;
 	vec3 attenuation;
 } point_light;
@@ -22,45 +22,30 @@ uniform struct Material {
 	float shininess;
 } material;
 
-uniform bool use_flat_shading;
-
 out vec4 fragment_color;
 
-// evaluates the fragment color using the Phong reflection model
-vec4 GetFragmentColor() {
-
-	// start initial light contribution off with ambient intensity
-	vec3 fragment_color = material.ambient;
-
-	vec3 light_direction = point_light.position.xyz - vertex.position.xyz;
-	float light_distance = length(light_direction);
-	light_direction = normalize(light_direction);
-
-	// calculate angle between light source and normal
-	vec3 vertex_normal = use_flat_shading
-		? normalize(cross(dFdx(vertex.position.xyz), dFdy(vertex.position.xyz)))
-		: normalize(vertex.normal);
-	float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
-
-	// avoid calculating specular intensity if angle between light source and normal is greater than 90 degrees
-	if (diffuse_intensity > 0.f) {
-		vec3 diffuse_color = diffuse_intensity * material.diffuse;
-
-		// calculate the angle between the reflected light and view direction
-		vec3 reflect_direction = normalize(reflect(-light_direction, vertex_normal));
-		vec3 view_direction = normalize(-vertex.position.xyz);
-		float specular_intensity = pow(max(dot(reflect_direction, view_direction), 0.f), material.shininess);
-		vec3 specular_color = specular_intensity * material.specular;
-
-		// account for light attenuation
-		float attenuation = 1.f / dot(point_light.attenuation, vec3(1.f, light_distance, pow(light_distance, 2.f)));
-		fragment_color += point_light.color * attenuation * (diffuse_color + specular_color);
-	}
-
-	return vec4(fragment_color, 1.f);
-}
-
-
 void main() {
-	fragment_color = GetFragmentColor();
+
+	// use triangle normal to give a more flat effect
+	vec3 vertex_position = vertex.position.xyz;
+	vec3 vertex_normal =  normalize(cross(dFdx(vertex_position), dFdy(vertex_position)));
+
+	// calculate light attenuation
+	vec3 light_direction = point_light.position - vertex_position;
+	float light_distance = length(light_direction);
+	float attenuation = 1.f / dot(point_light.attenuation, vec3(1.f, light_distance, pow(light_distance, 2.f)));
+
+	// calculate angle between light source and vertex normal
+	light_direction = normalize(light_direction);
+	float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
+	vec3 diffuse_color = diffuse_intensity * material.diffuse;
+
+	// calculate the angle between the reflected light and view direction
+	vec3 reflect_direction = normalize(reflect(-light_direction, vertex_normal));
+	vec3 view_direction = normalize(-vertex_position);
+	float specular_intensity = pow(max(dot(reflect_direction, view_direction), 0.f), material.shininess);
+	vec3 specular_color = specular_intensity * material.specular;
+
+	// calculate light contributing using the Phong reflection model
+	fragment_color = vec4(material.ambient + point_light.color * attenuation * (diffuse_color + specular_color), 1.f);
 }
