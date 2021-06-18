@@ -33,18 +33,6 @@ namespace {
 	}
 
 	/**
-	 * \brief Averages two vertices.
-	 * \param vertex_id The ID of the vertex to be created.
-	 * \param v0,v1 The vertices to average.
-	 * \return A new vertex containing the averaged position and normal between \p v0 and \p v1.
-	 */
-	std::shared_ptr<geometry::Vertex> AverageVertices(
-		const std::size_t vertex_id, const geometry::Vertex& v0, const geometry::Vertex& v1) {
-		const auto position = (v0.Position() + v1.Position()) / 2.f;
-		return std::make_shared<geometry::Vertex>(vertex_id, position);
-	}
-
-	/**
 	 * \brief Computes a vertex normal by averaging its face normals.
 	 * \param v0 The vertex to evaluate.
 	 * \return The vertex normal.
@@ -83,7 +71,7 @@ namespace {
 	 * \brief Determines the optimal vertex position for an edge contraction.
 	 * \param vertex_id The ID to use for the newly created vertex.
 	 * \param edge01 The half-edge to evaluate.
-	 * \param quadrics A mapping of error quadrics by vertex.
+	 * \param quadrics A mapping of error quadrics by vertex ID.
 	 * \return The optimal vertex and cost associated with collapsing \p edge01.
 	 */
 	std::pair<std::shared_ptr<geometry::Vertex>, float> GetOptimalEdgeContractionVertex(
@@ -105,7 +93,8 @@ namespace {
 		// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
 		static constexpr auto epsilon = std::numeric_limits<float>::epsilon();
 		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
-			return {AverageVertices(vertex_id, *v0, *v1), 0.f};
+			const auto position = (v0->Position() + v1->Position()) / 2.f;
+			return {std::make_shared<geometry::Vertex>(vertex_id, position), 0.f};
 		}
 
 		const auto Q_inv = glm::inverse(Q);
@@ -121,7 +110,7 @@ namespace {
 	/**
 	 * \brief Determines if the removal of an edge will cause the mesh to degenerate.
 	 * \param edge01 The half-edge to evaluate.
-	 * \return \c true if the removal of \p edge01 will result in a non-manifold, otherwise \c false.
+	 * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
 	 */
 	bool WillDegenerate(const std::shared_ptr<geometry::HalfEdge>& edge01) {
 		const auto v0 = edge01->Flip()->Vertex();
@@ -226,8 +215,6 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 
 			// remove the edge from the mesh and attach incident edges to the new vertex
 			half_edge_mesh.CollapseEdge(edge01, v_new);
-
-			// now that new triangles have been created, compute the vertex normal by averaging its face normals
 			v_new->SetNormal(AverageFaceNormals(v_new));
 
 			// compute the error quadric for the new vertex
