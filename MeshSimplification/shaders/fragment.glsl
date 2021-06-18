@@ -7,9 +7,9 @@ in Vertex {
 	vec3 normal;
 } vertex;
 
-// a light source at a fixed position in space whose rays shine in all directions
+// a light source at a fixed position in camera space whose rays shine in all directions
 uniform struct PointLight {
-	vec3 position; // in camera space
+	vec3 position;
 	vec3 color;
 	vec3 attenuation;
 } point_light;
