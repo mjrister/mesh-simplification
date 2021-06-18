@@ -22,6 +22,8 @@ uniform struct Material {
 	float shininess;
 } material;
 
+uniform bool use_flat_shading;
+
 out vec4 fragment_color;
 
 // evaluates the fragment color using the Phong reflection model
@@ -34,11 +36,13 @@ vec4 GetFragmentColor() {
 	float light_distance = length(light_direction);
 	light_direction = normalize(light_direction);
 
-	// calculate angle between light source and vertex normal
-	vec3 vertex_normal = normalize(cross(dFdx(vertex.position.xyz), dFdy(vertex.position.xyz)));
+	// calculate angle between light source and normal
+	vec3 vertex_normal = use_flat_shading
+		? normalize(cross(dFdx(vertex.position.xyz), dFdy(vertex.position.xyz)))
+		: normalize(vertex.normal);
 	float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
 
-	// avoid calculating specular intensity if angle between light source and vertex position is greater than 90 degrees
+	// avoid calculating specular intensity if angle between light source and normal is greater than 90 degrees
 	if (diffuse_intensity > 0.f) {
 		vec3 diffuse_color = diffuse_intensity * material.diffuse;
 

@@ -119,7 +119,7 @@ gfx::Window::Window(
 			}
 			if (action == GLFW_PRESS) {
 				if (const auto self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
-					self->GetHandleKeyPress()(key);
+					self->GetOnKeyPress()(key);
 				}
 			}
 		});

@@ -75,14 +75,11 @@ int main() {
 		mesh.Scale(glm::vec3{.25f});
 		mesh.Translate({glm::vec3{.5f, -.9f, 0.f}});
 
-		window.HandleKeyPress([&](const auto& key) {
-			if (key == GLFW_KEY_S) {
-				mesh = geometry::mesh::Simplify(mesh, .5f);
-			}
-		});
-
 		gfx::ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		shader_program.Enable();
+
+		bool use_flat_shading = true;
+		shader_program.SetUniform("use_flat_shading", use_flat_shading);
 
 		constexpr GLfloat field_of_view_y{glm::radians(45.f)}, z_near{.1f}, z_far{100.f};
 		auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
@@ -101,6 +98,16 @@ int main() {
 		shader_program.SetUniform("material.diffuse", material.Diffuse());
 		shader_program.SetUniform("material.specular", material.Specular());
 		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
+
+		window.OnKeyPress([&](const auto& key) {
+			if (key == GLFW_KEY_S) {
+				mesh = geometry::mesh::Simplify(mesh, .5f);
+			}
+			if (key == GLFW_KEY_F) {
+				use_flat_shading = !use_flat_shading;
+				shader_program.SetUniform("use_flat_shading", use_flat_shading);
+			}
+		});
 
 		for (double previous_time = glfwGetTime(); !window.Closed();) {
 			const double current_time = glfwGetTime();
