@@ -77,7 +77,7 @@ int main() {
 
 		window.HandleKeyPress([&](const auto& key) {
 			if (key == GLFW_KEY_S) {
-				mesh = geometry::mesh::Simplify(mesh, .95f);
+				mesh = geometry::mesh::Simplify(mesh, .5f);
 			}
 		});
 
@@ -119,7 +119,7 @@ int main() {
 			shader_program.SetUniform("view_model_transform", view_model_transform);
 			shader_program.SetUniform("normal_transform", glm::mat3{view_model_transform});
 
-			point_light_angle = glm::radians(45.f); // += .25f * delta_time;
+			point_light_angle += .5f * delta_time;
 			const glm::vec4 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 1.5f, 1.f};
 			shader_program.SetUniform("point_light.position", view_transform * point_light_position);
 
