@@ -144,40 +144,6 @@ namespace {
 		return false;
 	}
 
-	/**
-	 * \brief Ensures that triangles created by performing an edge contraction have a "nice" shape.
-	 * \param edge01 The edge contraction candidate to evaluate.
-	 * \param v_new The vertex to collapse the edge into.
-	 * \return \c true if contracting \p edge01 results in triangles with a sufficient area relative to their perimeter.
-	 */
-	bool VerifyTriangleFairness(
-		const std::shared_ptr<geometry::HalfEdge>& edge01, const std::shared_ptr<geometry::Vertex>& v_new) {
-
-		static const auto get_fairness = [](const glm::vec3& v0, const glm::vec3& v1, const glm::vec3& v2) {
-			const auto edge0 = v1 - v0;
-			const auto edge1 = v2 - v1;
-			const auto cross = glm::cross(edge0, edge1);
-			const auto area = .5f * glm::length(cross);
-			const auto perimeter = glm::distance2(v0, v1) + glm::distance2(v1, v2) + glm::distance2(v2, v0);
-			return 4.f * std::sqrt(3.f) * area / perimeter;
-		};
-
-		for (const auto& edge : {edge01, edge01->Flip()}) {
-			for (auto prev = edge->Next(), current = prev->Flip()->Next(); current != edge->Flip();) {
-				const auto& v0 = v_new->Position();
-				const auto& v1 = current->Vertex()->Position();
-				const auto& v2 = prev->Vertex()->Position();
-				if (static constexpr auto fairness_threshold = .45f; get_fairness(v0, v1, v2) < fairness_threshold) {
-					return false;
-				}
-				prev = current;
-				current = prev->Flip()->Next();
-			}
-		}
-
-		return true;
-	}
-
 	/** \brief Represents an edge contraction priority queue entry. */
 	struct EdgeContraction {
 
@@ -254,7 +220,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 		const auto& edge01 = edge_contraction->edge;
 		const auto& v_new = edge_contraction->vertex;
 
-		if (edge_contraction->valid && !WillDegenerate(edge01) && VerifyTriangleFairness(edge01, v_new)) {
+		if (edge_contraction->valid && !WillDegenerate(edge01)) {
 			const auto v0 = edge01->Flip()->Vertex();
 			const auto v1 = edge01->Vertex();
 
