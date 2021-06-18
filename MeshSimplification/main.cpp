@@ -121,7 +121,7 @@ int main() {
 
 			point_light_angle += .5f * delta_time;
 			const glm::vec4 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 1.5f, 1.f};
-			shader_program.SetUniform("point_light.position", view_transform * point_light_position);
+			shader_program.SetUniform("point_light.position", glm::vec3{view_transform * point_light_position});
 
 			HandleInput(window, delta_time, view_model_transform, mesh);
 
