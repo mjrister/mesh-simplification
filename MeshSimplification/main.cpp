@@ -26,7 +26,7 @@ namespace {
 		if (window.IsKeyPressed(GLFW_KEY_W)) {
 			const glm::vec3 translate{0.f, translate_step, 0.f};
 			mesh.Translate(translate);
-		} else if (window.IsKeyPressed(GLFW_KEY_X)) {
+		} else if (window.IsKeyPressed(GLFW_KEY_S)) {
 			const glm::vec3 translate{0.f, -translate_step, 0.f};
 			mesh.Translate(translate);
 		}
