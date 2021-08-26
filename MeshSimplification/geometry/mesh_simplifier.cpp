@@ -136,7 +136,7 @@ namespace {
 	/** \brief Represents an edge contraction priority queue entry. */
 	struct EdgeContraction {
 
-		explicit EdgeContraction(
+		EdgeContraction(
 			geometry::HalfEdgeMesh& mesh,
 			const std::shared_ptr<geometry::HalfEdge>& edge,
 			const std::unordered_map<std::size_t, glm::mat4>& quadrics) : edge{edge} {
