@@ -24,7 +24,7 @@ using namespace std;
 namespace {
 	void HandleInput(
 		const Window& window, const GLfloat delta_time, const mat4 view_model_transform, Mesh& mesh) {
-		static std::optional<dvec2> prev_cursor_position{};
+		static optional<dvec2> prev_cursor_position{};
 		const GLfloat translate_step = 1.25f * delta_time;
 		const GLfloat scale_step = .75f * delta_time;
 
@@ -63,7 +63,7 @@ namespace {
 			}
 			prev_cursor_position = cursor_position;
 		} else if (prev_cursor_position.has_value()) {
-			prev_cursor_position = std::nullopt;
+			prev_cursor_position = nullopt;
 		}
 	}
 }
@@ -71,9 +71,9 @@ namespace {
 int main() {
 
 	try {
-		std::int32_t window_width = 1280, window_height = 960;
-		const auto window_dimensions = std::make_pair(window_width, window_height);
-		constexpr auto opengl_version = std::make_pair(4, 6);
+		int32_t window_width = 1280, window_height = 960;
+		const auto window_dimensions = make_pair(window_width, window_height);
+		constexpr auto opengl_version = make_pair(4, 6);
 		Window window{"Mesh Simplification", window_dimensions, opengl_version};
 
 		auto mesh = obj_loader::LoadMesh("models/bunny.obj");
@@ -125,7 +125,7 @@ int main() {
 			shader_program.SetUniform("normal_transform", inverse(transpose(view_model_transform)));
 
 			point_light_angle += .5f * delta_time;
-			const vec4 point_light_position{std::cos(point_light_angle), std::sin(point_light_angle), 1.5f, 1.f};
+			const vec4 point_light_position{cos(point_light_angle), sin(point_light_angle), 1.5f, 1.f};
 			shader_program.SetUniform("point_light.position", vec3{view_transform * point_light_position});
 
 			HandleInput(window, delta_time, view_model_transform, mesh);
@@ -134,8 +134,8 @@ int main() {
 			mesh.Render();
 			window.Update();
 		}
-	} catch (const std::exception& e) {
-		std::cerr << e.what() << std::endl;
+	} catch (const exception& e) {
+		cerr << e.what() << endl;
 		return EXIT_FAILURE;
 	}
 
