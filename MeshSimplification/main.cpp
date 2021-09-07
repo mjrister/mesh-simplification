@@ -23,10 +23,10 @@ using namespace std;
 
 namespace {
 	void HandleInput(
-		const Window& window, const GLfloat delta_time, const mat4 view_model_transform, Mesh& mesh) {
+		const Window& window, const float delta_time, const mat4 view_model_transform, Mesh& mesh) {
 		static optional<dvec2> prev_cursor_position{};
-		const GLfloat translate_step = 1.25f * delta_time;
-		const GLfloat scale_step = .75f * delta_time;
+		const auto translate_step = 1.25f * delta_time;
+		const auto scale_step = .75f * delta_time;
 
 		if (window.IsKeyPressed(GLFW_KEY_W)) {
 			const vec3 translate{0.f, translate_step, 0.f};
@@ -89,15 +89,15 @@ int main() {
 			}
 		});
 
-		constexpr GLfloat field_of_view_y{radians(45.f)}, z_near{.1f}, z_far{100.f};
-		auto aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
+		constexpr float field_of_view_y{radians(45.f)}, z_near{.1f}, z_far{100.f};
+		auto aspect_ratio = static_cast<float>(window_width) / window_height;
 		auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
 		constexpr vec3 eye{0.f, 0.f, 2.f}, center{0.f}, up{0.f, 1.f, 0.f};
 		const auto view_transform = lookAt(eye, center, up);
 
-		GLfloat point_light_angle = 0.f;
+		float point_light_angle = 0.f;
 		shader_program.SetUniform("point_light.color", vec3{1.f});
 		shader_program.SetUniform("point_light.attenuation", vec3{0.f, 0.f, 1.f});
 
@@ -109,13 +109,13 @@ int main() {
 
 		for (double previous_time = glfwGetTime(); !window.Closed();) {
 			const double current_time = glfwGetTime();
-			const auto delta_time = static_cast<GLfloat>(current_time - previous_time);
+			const auto delta_time = static_cast<float>(current_time - previous_time);
 			previous_time = current_time;
 
 			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
 				window_width = width;
 				window_height = height;
-				aspect_ratio = static_cast<GLfloat>(window_width) / window_height;
+				aspect_ratio = static_cast<float>(window_width) / window_height;
 				projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 				shader_program.SetUniform("projection_transform", projection_transform);
 			}
