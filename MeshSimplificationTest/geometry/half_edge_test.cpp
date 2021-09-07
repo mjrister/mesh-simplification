@@ -6,20 +6,22 @@
 #include "geometry/vertex.h"
 
 using namespace geometry;
+using namespace glm;
+using namespace std;
 
 namespace {
-	std::shared_ptr<HalfEdge> MakeHalfEdge() {
-		const auto v0 = std::make_shared<Vertex>(0, glm::vec3{}, glm::vec3{});
-		const auto v1 = std::make_shared<Vertex>(1, glm::vec3{}, glm::vec3{});
-		auto edge01 = std::make_shared<HalfEdge>(v1);
-		const auto edge10 = std::make_shared<HalfEdge>(v0);
+	shared_ptr<HalfEdge> MakeHalfEdge() {
+		const auto v0 = make_shared<Vertex>(0, vec3{}, vec3{});
+		const auto v1 = make_shared<Vertex>(1, vec3{}, vec3{});
+		auto edge01 = make_shared<HalfEdge>(v1);
+		const auto edge10 = make_shared<HalfEdge>(v0);
 		edge01->SetFlip(edge10);
 		edge10->SetFlip(edge01);
 		return edge01;
 	}
 
 	TEST(HalfEdgeTest, TestInsertionOperator) {
-		std::ostringstream oss;
+		ostringstream oss;
 		oss << *MakeHalfEdge();
 		ASSERT_EQ(oss.str(), "(0,1)");
 	}
