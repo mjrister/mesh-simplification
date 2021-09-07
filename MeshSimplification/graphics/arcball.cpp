@@ -3,9 +3,14 @@
 #include <cmath>
 #include <algorithm>
 
-#include <glm/glm.hpp>
+#include <glm/geometric.hpp>
+#include <glm/vec2.hpp>
 
 #include "window.h"
+
+using namespace gfx;
+using namespace glm;
+using namespace std;
 
 namespace {
 
@@ -15,8 +20,8 @@ namespace {
 	 * \param window_size The window width and height.
 	 * \return The cursor position in normalized device coordinates.
 	 */
-	constexpr glm::vec2 GetNormalizedDeviceCoordinates(
-		const glm::dvec2& cursor_position, const std::pair<const std::int32_t, const std::int32_t>& window_size) {
+	constexpr vec2 GetNormalizedDeviceCoordinates(
+		const dvec2& cursor_position, const pair<const int32_t, const int32_t>& window_size) {
 
 		// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
 		const auto [width, height] = window_size;
@@ -34,24 +39,24 @@ namespace {
 	 * \param cursor_position_ndc The cursor position in normalized device coordinates.
 	 * \return The cursor position on the arcball.
 	 */
-	glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
+	vec3 GetArcballPosition(const vec2& cursor_position_ndc) {
 		const auto x = cursor_position_ndc.x;
 		const auto y = cursor_position_ndc.y;
 
 		// compute z using the standard equation for a unit sphere (x^2 + y^2 + z^2 = 1)
 		if (const auto c = x * x + y * y; c <= 1.f) {
-			return glm::vec3{x, y, std::sqrt(1.f - c)};
+			return vec3{x, y, sqrt(1.f - c)};
 		}
 
 		// get nearest position on the arcball
-		return glm::normalize(glm::vec3{x, y, 0.f});
+		return normalize(vec3{x, y, 0.f});
 	}
 }
 
-std::optional<const std::pair<const glm::vec3, const GLfloat>> gfx::arcball::GetRotation(
-	const glm::dvec2& cursor_position_start,
-	const glm::dvec2& cursor_position_end,
-	const std::pair<const std::int32_t, const std::int32_t>& window_size) {
+optional<const pair<const vec3, const GLfloat>> arcball::GetRotation(
+	const dvec2& cursor_position_start,
+	const dvec2& cursor_position_end,
+	const pair<const int32_t, const int32_t>& window_size) {
 
 	const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_size);
 	const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_size);
@@ -60,12 +65,12 @@ std::optional<const std::pair<const glm::vec3, const GLfloat>> gfx::arcball::Get
 	const auto arcball_position_end = GetArcballPosition(cursor_position_end_ndc);
 
 	// use min to account for numerical issues where the dot product is greater than 1 causing acos to produce NaN
-	const auto angle = std::acos(std::min<>(1.f, glm::dot(arcball_position_start, arcball_position_end)));
+	const auto angle = acos(std::min<>(1.f, dot(arcball_position_start, arcball_position_end)));
 
 	if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
-		const auto axis = glm::cross(arcball_position_start, arcball_position_end);
-		return std::make_pair(axis, angle);
+		const auto axis = cross(arcball_position_start, arcball_position_end);
+		return make_pair(axis, angle);
 	}
 
-	return std::nullopt;
+	return nullopt;
 }

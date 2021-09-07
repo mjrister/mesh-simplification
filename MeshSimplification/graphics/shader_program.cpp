@@ -4,33 +4,36 @@
 #include <stdexcept>
 #include <vector>
 
+using namespace gfx;
+using namespace std;
+
 namespace {
 
 	/**
 	 * \brief Retrieves the contents of a file.
 	 * \param filepath The filepath to load contents from.
 	 * \return A string containing the file contents.
-	 * \throw std::runtime_error Indicates there was an error opening the file.
+	 * \throw runtime_error Indicates there was an error opening the file.
 	 */
-	std::string Read(const std::string_view filepath) {
+	string Read(const string_view filepath) {
 
-		if (std::ifstream ifs{filepath.data()}; ifs.good()) {
-			std::string source;
-			ifs.seekg(0, std::ios::end);
-			source.reserve(static_cast<std::size_t>(ifs.tellg()));
-			ifs.seekg(0, std::ios::beg);
-			source.assign(std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{});
+		if (ifstream ifs{filepath.data()}; ifs.good()) {
+			string source;
+			ifs.seekg(0, ios::end);
+			source.reserve(static_cast<size_t>(ifs.tellg()));
+			ifs.seekg(0, ios::beg);
+			source.assign(istreambuf_iterator<char>{ifs}, istreambuf_iterator<char>{});
 			return source;
 		}
 
-		throw std::runtime_error{std::format("Unable to open {}", filepath)};
+		throw runtime_error{format("Unable to open {}", filepath)};
 	}
 
 	/**
 	 * \brief Verifies the status of a shader.
 	 * \param shader_id The shader ID.
 	 * \param status_type The status type to verify.
-	 * \throw std::runtime_error if shader verification failed.
+	 * \throw runtime_error if shader verification failed.
 	 */
 	void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
 		GLint success;
@@ -39,9 +42,9 @@ namespace {
 		if (!success) {
 			GLsizei log_length;
 			glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
-			std::vector<GLchar> info_log(log_length);
+			vector<GLchar> info_log(log_length);
 			glGetShaderInfoLog(shader_id, log_length, &log_length, info_log.data());
-			throw std::runtime_error{info_log.data()};
+			throw runtime_error{info_log.data()};
 		}
 	}
 
@@ -49,7 +52,7 @@ namespace {
 	 * \brief Verifies the status of a shader program.
 	 * \param shader_program_id The shader program ID.
 	 * \param status_type The shader program status type to verify.
-	 * \throw std::runtime_error if shader program verification failed.
+	 * \throw runtime_error if shader program verification failed.
 	 */
 	void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum status_type) {
 		GLint success;
@@ -58,30 +61,30 @@ namespace {
 		if (!success) {
 			GLsizei log_length;
 			glGetProgramiv(shader_program_id, GL_INFO_LOG_LENGTH, &log_length);
-			std::vector<GLchar> info_log(log_length);
+			vector<GLchar> info_log(log_length);
 			glGetProgramInfoLog(shader_program_id, log_length, &log_length, info_log.data());
-			throw std::runtime_error{info_log.data()};
+			throw runtime_error{info_log.data()};
 		}
 	}
 }
 
-gfx::ShaderProgram::Shader::Shader(const GLenum shader_type, const GLchar* const shader_source)
+ShaderProgram::Shader::Shader(const GLenum shader_type, const GLchar* const shader_source)
 	: id{glCreateShader(shader_type)} {
 
-	if (!id) throw std::runtime_error{"Shader creation failed"};
+	if (!id) throw runtime_error{"Shader creation failed"};
 
 	glShaderSource(id, 1, &shader_source, nullptr);
 	glCompileShader(id);
 	VerifyShaderStatus(id, GL_COMPILE_STATUS);
 }
 
-gfx::ShaderProgram::ShaderProgram(
-	const std::string_view vertex_shader_filepath, const std::string_view fragment_shader_filepath)
+ShaderProgram::ShaderProgram(
+	const string_view vertex_shader_filepath, const string_view fragment_shader_filepath)
 	: id_{glCreateProgram()},
 	  vertex_shader_{GL_VERTEX_SHADER, Read(vertex_shader_filepath).c_str()},
 	  fragment_shader_{GL_FRAGMENT_SHADER, Read(fragment_shader_filepath).c_str()} {
 
-	if (!id_) throw std::runtime_error{"Shader program creation failed"};
+	if (!id_) throw runtime_error{"Shader program creation failed"};
 
 	glAttachShader(id_, vertex_shader_.id);
 	glAttachShader(id_, fragment_shader_.id);

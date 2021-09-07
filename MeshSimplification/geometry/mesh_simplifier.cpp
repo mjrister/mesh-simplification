@@ -19,6 +19,10 @@
 #include "geometry/vertex.h"
 #include "graphics/mesh.h"
 
+using namespace geometry;
+using namespace glm;
+using namespace std;
+
 namespace {
 
 	/**
@@ -26,8 +30,8 @@ namespace {
 	 * \param edge The half-edge to disambiguate.
 	 * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
 	 */
-	std::shared_ptr<geometry::HalfEdge> GetMinEdge(const std::shared_ptr<geometry::HalfEdge>& edge) {
-		return std::min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
+	shared_ptr<HalfEdge> GetMinEdge(const shared_ptr<HalfEdge>& edge) {
+		return min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
 			return edge01->Vertex()->Id() < edge10->Vertex()->Id();
 		});
 	}
@@ -37,16 +41,16 @@ namespace {
 	 * \param v0 The vertex to evaluate.
 	 * \return The vertex normal.
 	 */
-	glm::vec3 AverageFaceNormals(const std::shared_ptr<geometry::Vertex>& v0) {
-		glm::vec3 normal{0.f};
-		float face_count = 0.f;
+	vec3 AverageFaceNormals(const shared_ptr<Vertex>& v0) {
+		vec3 normal{0.f};
+		uint8_t face_count = 0;
 		auto edgei0 = v0->Edge();
 		do {
 			normal += edgei0->Face()->Normal();
 			edgei0 = edgei0->Next()->Flip();
 			++face_count;
 		} while (edgei0 != v0->Edge());
-		return glm::normalize(normal / face_count);
+		return normalize(normal / static_cast<float>(face_count));
 	}
 
 	/**
@@ -54,14 +58,14 @@ namespace {
 	 * \param vertex The vertex to evaluate.
 	 * \return The summation of quadrics for all triangles incident to \p vertex.
 	 */
-	glm::mat4 ComputeQuadric(const geometry::Vertex& vertex) {
-		glm::mat4 quadric{0.f};
+	mat4 ComputeQuadric(const Vertex& vertex) {
+		mat4 quadric{0.f};
 		auto edgei0 = vertex.Edge();
 		do {
 			const auto& position = vertex.Position();
 			const auto& normal = edgei0->Face()->Normal();
-			const glm::vec4 plane{normal, -glm::dot(position, normal)};
-			quadric += glm::outerProduct(plane, plane);
+			const vec4 plane{normal, -dot(position, normal)};
+			quadric += outerProduct(plane, plane);
 			edgei0 = edgei0->Next()->Flip();
 		} while (edgei0 != vertex.Edge());
 		return quadric;
@@ -74,10 +78,8 @@ namespace {
 	 * \param quadrics A mapping of error quadrics by vertex ID.
 	 * \return The optimal vertex and cost associated with collapsing \p edge01.
 	 */
-	std::pair<std::shared_ptr<geometry::Vertex>, float> GetOptimalEdgeContractionVertex(
-		const std::size_t vertex_id,
-		const geometry::HalfEdge& edge01,
-		const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
+	pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
+		const size_t vertex_id, const HalfEdge& edge01, const unordered_map<size_t, mat4>& quadrics) {
 
 		const auto v0 = edge01.Flip()->Vertex();
 		const auto v1 = edge01.Vertex();
@@ -86,25 +88,25 @@ namespace {
 		const auto& q1 = quadrics.at(v1->Id());
 		const auto q01 = q0 + q1;
 
-		const glm::mat3 Q{q01};
-		const glm::vec3 b = glm::column(q01, 3);
+		const mat3 Q{q01};
+		const vec3 b = column(q01, 3);
 		const auto d = q01[3][3];
 
 		// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
-		static constexpr auto epsilon = std::numeric_limits<float>::epsilon();
-		if (std::abs(glm::determinant(Q)) < epsilon || std::abs(d) < epsilon) {
+		static constexpr auto epsilon = numeric_limits<float>::epsilon();
+		if (abs(determinant(Q)) < epsilon || abs(d) < epsilon) {
 			const auto position = (v0->Position() + v1->Position()) / 2.f;
-			return {std::make_shared<geometry::Vertex>(vertex_id, position), 0.f};
+			return {make_shared<Vertex>(vertex_id, position), 0.f};
 		}
 
-		const auto Q_inv = glm::inverse(Q);
-		const auto D_inv = glm::column(glm::mat4{Q_inv}, 3, glm::vec4{-1.f / d * Q_inv * b, 1.f / d});
+		const auto Q_inv = inverse(Q);
+		const auto D_inv = column(mat4{Q_inv}, 3, vec4{-1.f / d * Q_inv * b, 1.f / d});
 
-		auto position = D_inv * glm::vec4{0.f, 0.f, 0.f, 1.f};
+		auto position = D_inv * vec4{0.f, 0.f, 0.f, 1.f};
 		position /= position.w;
-		const auto cost = glm::dot(position, q01 * position);
+		const auto cost = dot(position, q01 * position);
 
-		return {std::make_shared<geometry::Vertex>(vertex_id, position), cost};
+		return {make_shared<Vertex>(vertex_id, position), cost};
 	}
 
 	/**
@@ -112,11 +114,11 @@ namespace {
 	 * \param edge01 The half-edge to evaluate.
 	 * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
 	 */
-	bool WillDegenerate(const std::shared_ptr<geometry::HalfEdge>& edge01) {
+	bool WillDegenerate(const shared_ptr<HalfEdge>& edge01) {
 		const auto v0 = edge01->Flip()->Vertex();
 		const auto v1_next = edge01->Next()->Vertex();
 		const auto v0_next = edge01->Flip()->Next()->Vertex();
-		std::unordered_map<std::size_t, std::shared_ptr<geometry::Vertex>> neighborhood;
+		unordered_map<size_t, shared_ptr<Vertex>> neighborhood;
 
 		for (auto iterator = edge01->Next(); iterator != edge01->Flip(); iterator = iterator->Flip()->Next()) {
 			if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
@@ -137,23 +139,23 @@ namespace {
 	struct EdgeContraction {
 
 		EdgeContraction(
-			geometry::HalfEdgeMesh& mesh,
-			const std::shared_ptr<geometry::HalfEdge>& edge,
-			const std::unordered_map<std::size_t, glm::mat4>& quadrics) : edge{edge} {
-			std::tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
+			HalfEdgeMesh& mesh,
+			const shared_ptr<HalfEdge>& edge,
+			const unordered_map<size_t, mat4>& quadrics) : edge{edge} {
+			tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
 		}
 
 		/** \brief The edge to be collapsed. */
-		const std::shared_ptr<geometry::HalfEdge> edge;
+		const shared_ptr<HalfEdge> edge;
 
 		/** \brief The optimal vertex position that minimizes the cost of collapsing this edge. */
-		std::shared_ptr<geometry::Vertex> vertex;
+		shared_ptr<Vertex> vertex;
 
 		/** \brief The associated cost of collapsing this edge. */
-		float cost = std::numeric_limits<float>::infinity();
+		float cost = numeric_limits<float>::infinity();
 
 		/**
-		 * \brief This is used as a workaround for std::priority_queue not providing a method to update an existing
+		 * \brief This is used as a workaround for priority_queue not providing a method to update an existing
 		 *        entry's priority. As edges are updated in the mesh, duplicated entries may be inserted in the queue
 		 *        and this property will be used to determine if an entry refers to the most recent edge update.
 		 */
@@ -161,36 +163,36 @@ namespace {
 	};
 }
 
-gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
+gfx::Mesh mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 
-	if (rate < 0.f || rate > 1.f) throw std::invalid_argument{std::format("Invalid mesh simplification rate {}", rate)};
+	if (rate < 0.f || rate > 1.f) throw invalid_argument{format("Invalid mesh simplification rate {}", rate)};
 
-	const auto start_time = std::chrono::high_resolution_clock::now();
+	const auto start_time = chrono::high_resolution_clock::now();
 	HalfEdgeMesh half_edge_mesh{mesh};
 
 	// compute error quadrics for each vertex
-	std::unordered_map<std::size_t, glm::mat4> quadrics;
+	unordered_map<size_t, mat4> quadrics;
 	for (const auto& [vertex_id, vertex] : half_edge_mesh.Vertices()) {
 		quadrics.emplace(vertex_id, ComputeQuadric(*vertex));
 	}
 
 	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
 	constexpr auto min_heap_comparator = [](
-		const std::shared_ptr<EdgeContraction>& lhs,
-		const std::shared_ptr<EdgeContraction>& rhs) { return lhs->cost > rhs->cost; };
-	std::priority_queue<
-		std::shared_ptr<EdgeContraction>,
-		std::vector<std::shared_ptr<EdgeContraction>>,
+		const shared_ptr<EdgeContraction>& lhs,
+		const shared_ptr<EdgeContraction>& rhs) { return lhs->cost > rhs->cost; };
+	priority_queue<
+		shared_ptr<EdgeContraction>,
+		vector<shared_ptr<EdgeContraction>>,
 		decltype(min_heap_comparator)> edge_contractions{min_heap_comparator};
 
 	// this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
-	std::unordered_map<std::size_t, std::shared_ptr<EdgeContraction>> valid_edges;
+	unordered_map<size_t, shared_ptr<EdgeContraction>> valid_edges;
 
 	// compute the optimal vertex position that minimizes the cost of collapsing each edge
-	for (const auto& edge : half_edge_mesh.Edges() | std::views::values) {
+	for (const auto& edge : half_edge_mesh.Edges() | views::values) {
 		const auto min_edge = GetMinEdge(edge);
 		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
-			const auto edge_contraction = std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
+			const auto edge_contraction = make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
 			edge_contractions.push(edge_contraction);
 			valid_edges.emplace(min_edge_key, edge_contraction);
 		}
@@ -236,7 +238,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 			}
 
 			// add new edge contraction candidates for edges affected by the edge contraction
-			std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> visited_edges;
+			unordered_map<size_t, shared_ptr<HalfEdge>> visited_edges;
 			const auto& vi = v_new;
 			auto edgeji = vi->Edge();
 			do {
@@ -250,7 +252,7 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 							iterator->second->valid = false;
 						}
 						const auto new_edge_contraction =
-							std::make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
+							make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
 						valid_edges[min_edge_key] = new_edge_contraction;
 						edge_contractions.emplace(new_edge_contraction);
 						visited_edges.emplace(min_edge_key, min_edge);
@@ -264,12 +266,12 @@ gfx::Mesh geometry::mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
 		edge_contractions.pop();
 	}
 
-	const auto end_time = std::chrono::high_resolution_clock::now();
-	std::cout << std::format(
+	const auto end_time = chrono::high_resolution_clock::now();
+	cout << std::format(
 		"Mesh simplified from {} to {} triangles in {} seconds\n",
 		initial_face_count,
 		half_edge_mesh.Faces().size(),
-		std::chrono::duration<float>{end_time - start_time}.count());
+		chrono::duration<float>{end_time - start_time}.count());
 
 	return half_edge_mesh;
 }

@@ -3,12 +3,14 @@
 #include <ranges>
 #include <sstream>
 
-#include <glm/glm.hpp>
-
 #include "geometry/face.h"
 #include "geometry/half_edge.h"
 #include "geometry/vertex.h"
 #include "graphics/mesh.h"
+
+using namespace geometry;
+using namespace gfx;
+using namespace std;
 
 namespace {
 
@@ -18,10 +20,10 @@ namespace {
 	 * \param edges A mapping of mesh half-edges by ID.
 	 * \return The half-edge connecting vertex \p v0 to \p v1.
 	 */
-	std::shared_ptr<geometry::HalfEdge> CreateHalfEdge(
-		const std::shared_ptr<geometry::Vertex>& v0,
-		const std::shared_ptr<geometry::Vertex>& v1,
-		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
+	shared_ptr<HalfEdge> CreateHalfEdge(
+		const shared_ptr<Vertex>& v0,
+		const shared_ptr<Vertex>& v1,
+		unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
 
 		const auto edge01_key = hash_value(*v0, *v1);
 		const auto edge10_key = hash_value(*v1, *v0);
@@ -31,8 +33,8 @@ namespace {
 			return iterator->second;
 		}
 
-		auto edge01 = std::make_shared<geometry::HalfEdge>(v1);
-		const auto edge10 = std::make_shared<geometry::HalfEdge>(v0);
+		auto edge01 = make_shared<HalfEdge>(v1);
+		const auto edge10 = make_shared<HalfEdge>(v0);
 
 		edge01->SetFlip(edge10);
 		edge10->SetFlip(edge01);
@@ -49,11 +51,11 @@ namespace {
 	 * \param edges A mapping of mesh half-edges by ID.
 	 * \return A triangle face representing vertices \p v0, \p v1, \p v2 in the half-edge mesh.
 	 */
-	std::shared_ptr<geometry::Face> CreateTriangle(
-		const std::shared_ptr<geometry::Vertex>& v0,
-		const std::shared_ptr<geometry::Vertex>& v1,
-		const std::shared_ptr<geometry::Vertex>& v2,
-		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
+	shared_ptr<Face> CreateTriangle(
+		const shared_ptr<Vertex>& v0,
+		const shared_ptr<Vertex>& v1,
+		const shared_ptr<Vertex>& v2,
+		unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
 
 		const auto edge01 = CreateHalfEdge(v0, v1, edges);
 		const auto edge12 = CreateHalfEdge(v1, v2, edges);
@@ -67,7 +69,7 @@ namespace {
 		edge12->SetNext(edge20);
 		edge20->SetNext(edge01);
 
-		auto face012 = std::make_shared<geometry::Face>(v0, v1, v2);
+		auto face012 = make_shared<Face>(v0, v1, v2);
 		edge01->SetFace(face012);
 		edge12->SetFace(face012);
 		edge20->SetFace(face012);
@@ -80,17 +82,15 @@ namespace {
 	 * \param v0,v1 The half-edge vertices.
 	 * \param edges A mapping of mesh half-edges by ID.
 	 * \return The half-edge connecting \p v0 to \p v1.
-	 * \throw std::invalid_argument Indicates no edge connecting \p v0 to \p v1 exists in \p edges.
+	 * \throw invalid_argument Indicates no edge connecting \p v0 to \p v1 exists in \p edges.
 	 */
-	std::shared_ptr<geometry::HalfEdge> GetHalfEdge(
-		const geometry::Vertex& v0,
-		const geometry::Vertex& v1,
-		const std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
+	shared_ptr<HalfEdge> GetHalfEdge(
+		const Vertex& v0, const Vertex& v1, const unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
 
 		if (const auto iterator = edges.find(hash_value(v0, v1)); iterator == edges.end()) {
-			std::ostringstream oss;
+			ostringstream oss;
 			oss << "Attempted to retrieve a nonexistent edge (" << v0 << ',' << v1 << ')';
-			throw std::invalid_argument(oss.str());
+			throw invalid_argument(oss.str());
 		} else {
 			return iterator->second;
 		}
@@ -100,16 +100,14 @@ namespace {
 	 * \brief Deletes a vertex in the half-edge mesh.
 	 * \param vertex The vertex to delete.
 	 * \param vertices A mapping of mesh vertices by ID.
-	 * \throw std::invalid_argument Indicates \p vertex does not exist in \p vertices.
+	 * \throw invalid_argument Indicates \p vertex does not exist in \p vertices.
 	 */
-	void DeleteVertex(
-		const geometry::Vertex& vertex,
-		std::map<std::size_t, std::shared_ptr<geometry::Vertex>>& vertices) {
+	void DeleteVertex(const Vertex& vertex, map<size_t, shared_ptr<Vertex>>& vertices) {
 
 		if (const auto iterator = vertices.find(vertex.Id()); iterator == vertices.end()) {
-			std::ostringstream oss;
+			ostringstream oss;
 			oss << "Attempted to delete a nonexistent vertex " << vertex;
-			throw std::invalid_argument{oss.str()};
+			throw invalid_argument{oss.str()};
 		} else {
 			vertices.erase(iterator);
 		}
@@ -119,17 +117,15 @@ namespace {
 	 * \brief Deletes an edge in the half-edge mesh.
 	 * \param edge The half-edge to delete.
 	 * \param edges A mapping of mesh half-edges by ID.
-	 * \throw std::invalid_argument Indicates \p edge does not exist in \p edges.
+	 * \throw invalid_argument Indicates \p edge does not exist in \p edges.
 	 */
-	void DeleteEdge(
-		const geometry::HalfEdge& edge,
-		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges) {
+	void DeleteEdge(const HalfEdge& edge, unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
 
 		for (const auto& edge_key : {hash_value(edge), hash_value(*edge.Flip())}) {
 			if (const auto iterator = edges.find(edge_key); iterator == edges.end()) {
-				std::ostringstream oss;
+				ostringstream oss;
 				oss << "Attempted to delete a nonexistent edge " << edge;
-				throw std::invalid_argument{oss.str()};
+				throw invalid_argument{oss.str()};
 			} else {
 				edges.erase(iterator);
 			}
@@ -140,15 +136,14 @@ namespace {
 	 * \brief Deletes a face in the half-edge mesh.
 	 * \param face The face to delete.
 	 * \param faces A mapping of mesh faces by ID.
-	 * \throw std::invalid_argument Indicates \p face does not exist in \p faces.
+	 * \throw invalid_argument Indicates \p face does not exist in \p faces.
 	 */
-	void DeleteFace(
-		const geometry::Face& face, std::unordered_map<std::size_t, std::shared_ptr<geometry::Face>>& faces) {
+	void DeleteFace(const Face& face, unordered_map<size_t, shared_ptr<Face>>& faces) {
 
 		if (const auto iterator = faces.find(hash_value(face)); iterator == faces.end()) {
-			std::ostringstream oss;
+			ostringstream oss;
 			oss << "Attempted to delete a nonexistent face " << face;
-			throw std::invalid_argument{oss.str()};
+			throw invalid_argument{oss.str()};
 		} else {
 			faces.erase(iterator);
 		}
@@ -164,12 +159,12 @@ namespace {
 	 * \param faces A mapping of mesh faces by ID.
 	 */
 	void UpdateIncidentTriangles(
-		const std::shared_ptr<geometry::Vertex>& v_target,
-		const std::shared_ptr<geometry::Vertex>& v_start,
-		const std::shared_ptr<geometry::Vertex>& v_end,
-		const std::shared_ptr<geometry::Vertex>& v_new,
-		std::unordered_map<std::size_t, std::shared_ptr<geometry::HalfEdge>>& edges,
-		std::unordered_map<std::size_t, std::shared_ptr<geometry::Face>>& faces) {
+		const shared_ptr<Vertex>& v_target,
+		const shared_ptr<Vertex>& v_start,
+		const shared_ptr<Vertex>& v_end,
+		const shared_ptr<Vertex>& v_new,
+		unordered_map<size_t, shared_ptr<HalfEdge>>& edges,
+		unordered_map<size_t, shared_ptr<Face>>& faces) {
 
 		const auto edge_start = GetHalfEdge(*v_target, *v_start, edges);
 		const auto edge_end = GetHalfEdge(*v_target, *v_end, edges);
@@ -195,16 +190,16 @@ namespace {
 	}
 }
 
-geometry::HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) : model_transform_{mesh.ModelTransform()} {
+HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransform()} {
 	const auto& positions = mesh.Positions();
 	const auto& normals = mesh.Normals();
 	const auto& indices = mesh.Indices();
 
-	for (std::size_t i = 0; i < positions.size(); ++i) {
-		vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i], normals[i]));
+	for (size_t i = 0; i < positions.size(); ++i) {
+		vertices_.emplace(i, make_shared<Vertex>(i, positions[i], normals[i]));
 	}
 
-	for (std::size_t i = 0; i < indices.size(); i += 3) {
+	for (size_t i = 0; i < indices.size(); i += 3) {
 		const auto v0 = vertices_[indices[i]];
 		const auto v1 = vertices_[indices[i + 1]];
 		const auto v2 = vertices_[indices[i + 2]];
@@ -215,35 +210,35 @@ geometry::HalfEdgeMesh::HalfEdgeMesh(const gfx::Mesh& mesh) : model_transform_{m
 	next_vertex_id_ = positions.size();
 }
 
-geometry::HalfEdgeMesh::operator gfx::Mesh() const {
+HalfEdgeMesh::operator Mesh() const {
 
-	std::vector<glm::vec3> positions;
+	vector<glm::vec3> positions;
 	positions.reserve(vertices_.size());
 
-	std::vector<glm::vec3> normals;
+	vector<glm::vec3> normals;
 	normals.reserve(vertices_.size());
 
-	std::vector<GLuint> indices;
+	vector<GLuint> indices;
 	indices.reserve(faces_.size() * 3);
 
-	std::unordered_map<std::size_t, GLuint> index_map;
-	for (GLuint i = 0; const auto& vertex : vertices_ | std::views::values) {
+	unordered_map<size_t, GLuint> index_map;
+	for (GLuint i = 0; const auto& vertex : vertices_ | views::values) {
 		positions.push_back(vertex->Position());
 		normals.push_back(vertex->Normal());
 		index_map.emplace(vertex->Id(), i++);
 	}
 
-	for (const auto& face : faces_ | std::views::values) {
+	for (const auto& face : faces_ | views::values) {
 		indices.push_back(index_map.at(face->V0()->Id()));
 		indices.push_back(index_map.at(face->V1()->Id()));
 		indices.push_back(index_map.at(face->V2()->Id()));
 	}
 
-	return gfx::Mesh{positions, {}, normals, indices, model_transform_};
+	return Mesh{positions, {}, normals, indices, model_transform_};
 }
 
-void geometry::HalfEdgeMesh::CollapseEdge(
-	const std::shared_ptr<HalfEdge>& edge01, const std::shared_ptr<Vertex>& v_new) {
+void HalfEdgeMesh::CollapseEdge(
+	const shared_ptr<HalfEdge>& edge01, const shared_ptr<Vertex>& v_new) {
 
 	const auto edge10 = edge01->Flip();
 	const auto v0 = edge10->Vertex();

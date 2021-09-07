@@ -5,6 +5,9 @@
 
 #include "stb_image.h"
 
+using namespace gfx;
+using namespace std;
+
 namespace {
 
 	/** \brief Gets the maximum number of texture units allowed by the host GPU. */
@@ -17,12 +20,11 @@ namespace {
 	}
 }
 
-gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t texture_unit_index)
+Texture2d::Texture2d(const string_view filepath, const uint8_t texture_unit_index)
 	: texture_unit_index_{texture_unit_index} {
 
 	if (const auto max_texture_units = GetMaxTextureUnits();  texture_unit_index >= max_texture_units) {
-		throw std::out_of_range{
-			std::format("{} exceeds maximum texture unit index {}", texture_unit_index, max_texture_units - 1)};
+		throw out_of_range{format("{} exceeds maximum texture unit index {}", texture_unit_index, max_texture_units - 1)};
 	}
 
 	glActiveTexture(GL_TEXTURE0 + texture_unit_index_);
@@ -40,6 +42,6 @@ gfx::Texture2d::Texture2d(const std::string_view filepath, const std::uint8_t te
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(data);
 	} else {
-		throw std::runtime_error{std::format("Unable to open {}", filepath)};
+		throw runtime_error{format("Unable to open {}", filepath)};
 	}
 }

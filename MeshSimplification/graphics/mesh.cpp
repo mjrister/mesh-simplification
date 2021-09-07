@@ -5,45 +5,49 @@
 
 #include <GLFW/glfw3.h>
 
+using namespace gfx;
+using namespace glm;
+using namespace std;
+
 namespace {
 
 	/**
 	 * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
 	 *        triangle mesh in addition to enforcing alignment between vertex attribute.
-	 * \throw std::invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
+	 * \throw invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
 	 */
 	void Validate(
-		const std::vector<glm::vec3>& positions,
-		const std::vector<glm::vec2>& texture_coordinates,
-		const std::vector<glm::vec3>& normals,
-		const std::vector<GLuint>& indices) {
+		const vector<vec3>& positions,
+		const vector<vec2>& texture_coordinates,
+		const vector<vec3>& normals,
+		const vector<GLuint>& indices) {
 
 		if (positions.empty()) {
-			throw std::invalid_argument{"Vertex positions must be specified"};
+			throw invalid_argument{"Vertex positions must be specified"};
 		}
 		if (indices.empty() && positions.size() % 3 != 0 || indices.size() % 3 != 0) {
-			throw std::invalid_argument{"Object must be a triangle mesh"};
+			throw invalid_argument{"Object must be a triangle mesh"};
 		}
 		if (indices.empty() && !texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
-			throw std::invalid_argument{"Texture coordinates must align with position data"};
+			throw invalid_argument{"Texture coordinates must align with position data"};
 		}
 		if (indices.empty() && !normals.empty() && positions.size() != normals.size()) {
-			throw std::invalid_argument{"Vertex normals must align with position data"};
+			throw invalid_argument{"Vertex normals must align with position data"};
 		}
 	}
 }
 
-gfx::Mesh::Mesh(
-	std::vector<glm::vec3> positions,
-	std::vector<glm::vec2> texture_coordinates,
-	std::vector<glm::vec3> normals,
-	std::vector<GLuint> indices,
-	glm::mat4 model_transform)
-	: positions_{std::move(positions)},
-	  texture_coordinates_{std::move(texture_coordinates)},
-	  normals_{std::move(normals)},
-	  indices_{std::move(indices)},
-	  model_transform_{std::move(model_transform)} {
+Mesh::Mesh(
+	vector<vec3> positions,
+	vector<vec2> texture_coordinates,
+	vector<vec3> normals,
+	vector<GLuint> indices,
+	mat4 model_transform)
+	: positions_{move(positions)},
+	  texture_coordinates_{move(texture_coordinates)},
+	  normals_{move(normals)},
+	  indices_{move(indices)},
+	  model_transform_{move(model_transform)} {
 
 	Validate(positions_, texture_coordinates_, normals_, indices_);
 
@@ -54,10 +58,10 @@ gfx::Mesh::Mesh(
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
 
 	// allocate memory for the vertex buffer
-	const std::size_t positions_size = sizeof(glm::vec3) * positions_.size();
-	const std::size_t texture_coordinates_size = sizeof(glm::vec2) * texture_coordinates_.size();
-	const std::size_t normals_size = sizeof(glm::vec3) * normals_.size();
-	const std::size_t buffer_size = positions_size + texture_coordinates_size + normals_size;
+	const size_t positions_size = sizeof(vec3) * positions_.size();
+	const size_t texture_coordinates_size = sizeof(vec2) * texture_coordinates_.size();
+	const size_t normals_size = sizeof(vec3) * normals_.size();
+	const size_t buffer_size = positions_size + texture_coordinates_size + normals_size;
 	glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
 
 	// copy positions to the vertex buffer
@@ -74,7 +78,7 @@ gfx::Mesh::Mesh(
 
 	// copy normals to the vertex buffer
 	if (!normals_.empty()) {
-		const std::size_t offset = positions_size + texture_coordinates_size;
+		const size_t offset = positions_size + texture_coordinates_size;
 		glBufferSubData(GL_ARRAY_BUFFER, offset, normals_size, normals_.data());
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(offset));
 		glEnableVertexAttribArray(2);
@@ -82,24 +86,24 @@ gfx::Mesh::Mesh(
 
 	// copy indices to the element buffer
 	if (!indices_.empty()) {
-		const std::size_t indices_size = sizeof(GLuint) * indices_.size();
+		const size_t indices_size = sizeof(GLuint) * indices_.size();
 		glGenBuffers(1, &element_buffer_);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size, indices_.data(), GL_STATIC_DRAW);
 	}
 }
 
-gfx::Mesh::~Mesh() {
+Mesh::~Mesh() {
 	glDeleteVertexArrays(1, &vertex_array_);
 	glDeleteBuffers(1, &vertex_buffer_);
 	glDeleteBuffers(1, &element_buffer_);
 }
 
-gfx::Mesh::Mesh(Mesh&& mesh) noexcept {
-	*this = std::move(mesh);
+Mesh::Mesh(Mesh&& mesh) noexcept {
+	*this = move(mesh);
 }
 
-gfx::Mesh& gfx::Mesh::operator=(Mesh&& mesh) noexcept {
+Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
 
 	if (this == &mesh) return *this;
 
@@ -113,11 +117,11 @@ gfx::Mesh& gfx::Mesh::operator=(Mesh&& mesh) noexcept {
 
 	mesh.vertex_array_ = mesh.vertex_buffer_ = mesh.element_buffer_ = 0;
 
-	positions_ = std::move(mesh.positions_);
-	texture_coordinates_ = std::move(mesh.texture_coordinates_);
-	normals_ = std::move(mesh.normals_);
-	indices_ = std::move(mesh.indices_);
-	model_transform_ = std::move(mesh.model_transform_);
+	positions_ = move(mesh.positions_);
+	texture_coordinates_ = move(mesh.texture_coordinates_);
+	normals_ = move(mesh.normals_);
+	indices_ = move(mesh.indices_);
+	model_transform_ = move(mesh.model_transform_);
 
 	return *this;
 }
