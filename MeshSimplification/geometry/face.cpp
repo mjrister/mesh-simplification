@@ -4,7 +4,11 @@
 #include <sstream>
 #include <tuple>
 
-#include <glm/glm.hpp>
+#include <glm/geometric.hpp>
+
+using namespace geometry;
+using namespace glm;
+using namespace std;
 
 namespace {
 
@@ -15,16 +19,14 @@ namespace {
 	 * \note Preserves winding order. The is necessary to disambiguate equivalent face elements queries.
 	 */
 	auto GetMinVertexOrder(
-		const std::shared_ptr<const geometry::Vertex>& v0,
-		const std::shared_ptr<const geometry::Vertex>& v1,
-		const std::shared_ptr<const geometry::Vertex>& v2) {
+		const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v1, const shared_ptr<const Vertex>& v2) {
 
-		if (const auto min_id = std::min<>({v0->Id(), v1->Id(), v2->Id()}); min_id == v0->Id()) {
-			return std::make_tuple(v0, v1, v2);
+		if (const auto min_id = min<>({v0->Id(), v1->Id(), v2->Id()}); min_id == v0->Id()) {
+			return make_tuple(v0, v1, v2);
 		} else if (min_id == v1->Id()) {
-			return std::make_tuple(v1, v2, v0);
+			return make_tuple(v1, v2, v0);
 		} else {
-			return std::make_tuple(v2, v0, v1);
+			return make_tuple(v2, v0, v1);
 		}
 	}
 
@@ -35,11 +37,11 @@ namespace {
 	 * \throw std::invalid_argument Indicates the face vertices do not represent a triangle. This can happen if \p v0,
 	 *        \p v1, \p v2 are collinear or contains duplicates.
 	 */
-	glm::vec3 GetFaceNormal(const geometry::Vertex& v0, const geometry::Vertex& v1, const geometry::Vertex& v2) {
-		const glm::vec3 edge01 = v1.Position() - v0.Position();
-		const glm::vec3 edge02 = v2.Position() - v0.Position();
-		const auto normal = glm::normalize(glm::cross(edge01, edge02));
-		if (glm::any(glm::isnan(normal))) {
+	vec3 GetFaceNormal(const Vertex& v0, const Vertex& v1, const Vertex& v2) {
+		const vec3 edge01 = v1.Position() - v0.Position();
+		const vec3 edge02 = v2.Position() - v0.Position();
+		const auto normal = normalize(cross(edge01, edge02));
+		if (any(isnan(normal))) {
 			std::ostringstream oss;
 			oss << '(' << v0 << ',' << v1 << ',' << v2 << ") is not a triangle";
 			throw std::invalid_argument{oss.str()};
@@ -48,9 +50,9 @@ namespace {
 	}
 }
 
-geometry::Face::Face(
-	const std::shared_ptr<const Vertex>& v0,
-	const std::shared_ptr<const Vertex>& v1,
-	const std::shared_ptr<const Vertex>& v2) : normal_{GetFaceNormal(*v0, *v1, *v2)} {
-	std::tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
+Face::Face(
+	const shared_ptr<const Vertex>& v0,
+	const shared_ptr<const Vertex>& v1,
+	const shared_ptr<const Vertex>& v2) : normal_{GetFaceNormal(*v0, *v1, *v2)} {
+	tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
 }

@@ -3,6 +3,8 @@
 #include <memory>
 #include <ostream>
 
+#include <glm/vec3.hpp>
+
 #include "geometry/vertex.h"
 
 namespace geometry {
