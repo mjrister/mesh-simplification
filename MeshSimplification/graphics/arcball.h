@@ -3,7 +3,6 @@
 #include <optional>
 #include <utility>
 
-#include <GL/gl3w.h>
 #include <glm/fwd.hpp>
 
 namespace gfx::arcball {
@@ -17,7 +16,7 @@ namespace gfx::arcball {
 	 *         \p cursor_position_start and \p cursor_position_end is nonzero, otherwise \c std::nullopt.
 	 * \see docs/arcball.pdf for a detailed description of the arcball interface.
 	 */
-	std::optional<const std::pair<const glm::vec3, const GLfloat>> GetRotation(
+	std::optional<const std::pair<const glm::vec3, const float>> GetRotation(
 		const glm::dvec2& cursor_position_start,
 		const glm::dvec2& cursor_position_end,
 		const std::pair<const std::int32_t, const std::int32_t>& window_size);

@@ -26,8 +26,8 @@ namespace {
 		// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
 		const auto [width, height] = window_size;
 		constexpr auto min = -1.f, max = 1.f;
-		const auto x_ndc = std::clamp(static_cast<GLfloat>(cursor_position.x * 2.0 / width - 1.0), min, max);
-		const auto y_ndc = std::clamp(static_cast<GLfloat>(cursor_position.y * 2.0 / height - 1.0), min, max);
+		const auto x_ndc = std::clamp(static_cast<float>(cursor_position.x * 2.0 / width - 1.0), min, max);
+		const auto y_ndc = std::clamp(static_cast<float>(cursor_position.y * 2.0 / height - 1.0), min, max);
 
 		// because window coordinates start with (0,0) in the top-left corner which becomes (-1,-1) after normalization,
 		// the y-coordinate needs to be negated to align with the OpenGL convention of the top-left residing at (-1,1)
@@ -53,7 +53,7 @@ namespace {
 	}
 }
 
-optional<const pair<const vec3, const GLfloat>> arcball::GetRotation(
+optional<const pair<const vec3, const float>> arcball::GetRotation(
 	const dvec2& cursor_position_start,
 	const dvec2& cursor_position_end,
 	const pair<const int32_t, const int32_t>& window_size) {
@@ -67,7 +67,7 @@ optional<const pair<const vec3, const GLfloat>> arcball::GetRotation(
 	// use min to account for numerical issues where the dot product is greater than 1 causing acos to produce NaN
 	const auto angle = acos(std::min<>(1.f, dot(arcball_position_start, arcball_position_end)));
 
-	if (static constexpr GLfloat epsilon = 1e-3f; angle > epsilon) {
+	if (static constexpr float epsilon = 1e-3f; angle > epsilon) {
 		const auto axis = cross(arcball_position_start, arcball_position_end);
 		return make_pair(axis, angle);
 	}

@@ -9,7 +9,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <GL/gl3w.h>
 #include <glm/gtx/hash.hpp>
 
 #include "graphics/mesh.h"
@@ -21,7 +20,7 @@ using namespace std;
 namespace {
 
 	// sentinel value indicating an unspecified face element index position
-	constexpr GLint npos_index = -1;
+	constexpr int32_t npos_index = -1;
 
 	/**
 	 * \brief Removes a set of characters from the beginning and end of the string.
@@ -103,27 +102,27 @@ namespace {
 		switch (delimiter_count) {
 			case 0:
 				if (tokens.size() == 1) {
-					const auto x = ParseToken<GLint>(tokens[0]) - 1;
+					const auto x = ParseToken<int32_t>(tokens[0]) - 1;
 					return {x, npos_index, npos_index};
 				}
 				break;
 			case 1:
 				if (tokens.size() == 2) {
-					const auto x = ParseToken<GLint>(tokens[0]) - 1;
-					const auto y = ParseToken<GLint>(tokens[1]) - 1;
+					const auto x = ParseToken<int32_t>(tokens[0]) - 1;
+					const auto y = ParseToken<int32_t>(tokens[1]) - 1;
 					return {x, y, npos_index};
 				}
 				break;
 			case 2:
 				if (tokens.size() == 2 && *token.cbegin() != '/' && *(token.cend() - 1) != '/') {
-					const auto x = ParseToken<GLint>(tokens[0]) - 1;
-					const auto z = ParseToken<GLint>(tokens[1]) - 1;
+					const auto x = ParseToken<int32_t>(tokens[0]) - 1;
+					const auto z = ParseToken<int32_t>(tokens[1]) - 1;
 					return {x, npos_index, z};
 				}
 				if (tokens.size() == 3) {
-					const auto x = ParseToken<GLint>(tokens[0]) - 1;
-					const auto y = ParseToken<GLint>(tokens[1]) - 1;
-					const auto z = ParseToken<GLint>(tokens[2]) - 1;
+					const auto x = ParseToken<int32_t>(tokens[0]) - 1;
+					const auto y = ParseToken<int32_t>(tokens[1]) - 1;
+					const auto z = ParseToken<int32_t>(tokens[2]) - 1;
 					return {x, y, z};
 				}
 				break;
@@ -160,11 +159,11 @@ namespace {
 		for (string line; getline(is, line);) {
 			if (line = Trim(line); !line.empty() && !line.starts_with('#')) {
 				if (line.starts_with("v ")) {
-					positions.push_back(ParseLine<GLfloat, 3>(line));
+					positions.push_back(ParseLine<float, 3>(line));
 				} else if (line.starts_with("vt ")) {
-					texture_coordinates.push_back(ParseLine<GLfloat, 2>(line));
+					texture_coordinates.push_back(ParseLine<float, 2>(line));
 				} else if (line.starts_with("vn ")) {
-					normals.push_back(ParseLine<GLfloat, 3>(line));
+					normals.push_back(ParseLine<float, 3>(line));
 				} else if (line.starts_with("f ")) {
 					faces.push_back(ParseFace(line));
 				}
@@ -176,7 +175,7 @@ namespace {
 		vector<vec3> ordered_positions;
 		vector<vec2> ordered_texture_coordinates;
 		vector<vec3> ordered_normals;
-		vector<GLuint> indices;
+		vector<uint32_t> indices;
 		indices.reserve(faces.size() * 3);
 
 		// For each index group, store texture coordinate and normals at the same index as the vertex position so that
@@ -184,7 +183,7 @@ namespace {
 		// coordinates or normals for the same vertex position. To handle this situation, an unordered map is used to
 		// keep track of unique index groups and appends new position, texture coordinate, and normal triples to the end
 		// of each respective ordered array as necessary.
-		for (unordered_map<ivec3, GLuint> unique_index_groups; const auto& face : faces) {
+		for (unordered_map<ivec3, uint32_t> unique_index_groups; const auto& face : faces) {
 			for (const auto& index_group : face) {
 				if (const auto iterator = unique_index_groups.find(index_group); iterator == unique_index_groups.end()) {
 					const auto position_index = index_group[0];
@@ -195,7 +194,7 @@ namespace {
 					if (const auto normal_index = index_group[2]; normal_index != npos_index) {
 						ordered_normals.push_back(normals.at(normal_index));
 					}
-					const auto index = static_cast<GLuint>(ordered_positions.size()) - 1u;
+					const auto index = static_cast<uint32_t>(ordered_positions.size()) - 1u;
 					indices.push_back(index);
 					unique_index_groups.emplace(index_group, index);
 				} else {
