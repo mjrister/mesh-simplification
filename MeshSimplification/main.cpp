@@ -1,6 +1,4 @@
-#include <algorithm>
 #include <cmath>
-#include <iostream>
 #include <optional>
 
 #include <GL/gl3w.h>
