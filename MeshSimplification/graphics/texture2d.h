@@ -33,7 +33,7 @@ namespace gfx {
 		}
 
 	private:
-		GLuint id_{};
+		GLuint id_ = 0;
 		const std::uint8_t texture_unit_index_;
 	};
 }

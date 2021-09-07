@@ -88,7 +88,7 @@ namespace gfx {
 		}
 
 	private:
-		GLFWwindow* window_{};
+		GLFWwindow* window_ = nullptr;
 		std::function<void(std::int32_t)> handle_key_press_;
 	};
 }
