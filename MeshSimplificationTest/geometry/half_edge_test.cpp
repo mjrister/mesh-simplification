@@ -1,9 +1,8 @@
+#include "geometry/half_edge.h"
+
 #include <format>
 
 #include <gtest/gtest.h>
-
-#include "geometry/half_edge.h"
-#include "geometry/vertex.h"
 
 using namespace geometry;
 using namespace glm;

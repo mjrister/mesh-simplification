@@ -1,10 +1,9 @@
+#include "geometry/face.cpp"
+
 #include <array>
 #include <format>
 
 #include <gtest/gtest.h>
-
-#include "geometry/face.cpp"
-#include "geometry/vertex.h"
 
 using namespace geometry;
 using namespace glm;

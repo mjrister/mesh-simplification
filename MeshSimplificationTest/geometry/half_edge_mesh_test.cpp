@@ -1,10 +1,9 @@
+#include "geometry/half_edge_mesh.cpp"
+
 #include <vector>
 
 #include <GL/gl3w.h>
 #include <gtest/gtest.h>
-
-#include "geometry/half_edge_mesh.cpp"
-#include "graphics/mesh.h"
 
 using namespace geometry;
 using namespace gfx;

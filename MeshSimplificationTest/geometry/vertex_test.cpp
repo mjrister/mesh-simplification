@@ -1,8 +1,8 @@
+#include "geometry/vertex.h"
+
 #include <format>
 
 #include <gtest/gtest.h>
-
-#include "geometry/vertex.h"
 
 using namespace geometry;
 using namespace glm;

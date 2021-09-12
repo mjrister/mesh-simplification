@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
-
 #include "graphics/arcball.cpp"
+
+#include <gtest/gtest.h>
 
 using namespace gfx;
 using namespace glm;

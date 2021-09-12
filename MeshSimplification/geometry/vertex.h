@@ -27,7 +27,7 @@ namespace geometry {
 		/** \brief Gets the vertex position. */
 		[[nodiscard]] const glm::vec3& Position() const { return position_; }
 
-		/** \brief Gets the vertex normal .*/
+		/** \brief Gets the vertex normal. */
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
 		/** Sets the vertex normal. */
@@ -67,6 +67,7 @@ namespace geometry {
 	};
 }
 
+// provides a specialization for use with std::format
 template<>
 struct std::formatter<geometry::Vertex> : std::formatter<std::string> {
 	auto format(const geometry::Vertex& vertex, std::format_context& context) {

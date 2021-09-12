@@ -1,9 +1,8 @@
+#include "graphics/mesh.cpp"
+
 #include <vector>
 
-#include <glm/glm.hpp>
 #include <gtest/gtest.h>
-
-#include "graphics/mesh.cpp"
 
 using namespace gfx;
 using namespace glm;
