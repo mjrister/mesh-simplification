@@ -1,7 +1,7 @@
 #include "geometry/half_edge_mesh.h"
 
+#include <format>
 #include <ranges>
-#include <sstream>
 
 #include "geometry/face.h"
 #include "geometry/half_edge.h"
@@ -88,9 +88,7 @@ namespace {
 		const Vertex& v0, const Vertex& v1, const unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
 
 		if (const auto iterator = edges.find(hash_value(v0, v1)); iterator == edges.end()) {
-			ostringstream oss;
-			oss << "Attempted to retrieve a nonexistent edge (" << v0 << ',' << v1 << ')';
-			throw invalid_argument(oss.str());
+			throw invalid_argument(format("Attempted to retrieve a nonexistent edge: ({},{})", v0, v1));
 		} else {
 			return iterator->second;
 		}
@@ -105,9 +103,7 @@ namespace {
 	void DeleteVertex(const Vertex& vertex, map<size_t, shared_ptr<Vertex>>& vertices) {
 
 		if (const auto iterator = vertices.find(vertex.Id()); iterator == vertices.end()) {
-			ostringstream oss;
-			oss << "Attempted to delete a nonexistent vertex " << vertex;
-			throw invalid_argument{oss.str()};
+			throw invalid_argument{format("Attempted to delete a nonexistent vertex: {}", vertex)};
 		} else {
 			vertices.erase(iterator);
 		}
@@ -123,9 +119,7 @@ namespace {
 
 		for (const auto& edge_key : {hash_value(edge), hash_value(*edge.Flip())}) {
 			if (const auto iterator = edges.find(edge_key); iterator == edges.end()) {
-				ostringstream oss;
-				oss << "Attempted to delete a nonexistent edge " << edge;
-				throw invalid_argument{oss.str()};
+				throw invalid_argument{format("Attempted to delete a nonexistent edge: {}", edge)};
 			} else {
 				edges.erase(iterator);
 			}
@@ -141,9 +135,7 @@ namespace {
 	void DeleteFace(const Face& face, unordered_map<size_t, shared_ptr<Face>>& faces) {
 
 		if (const auto iterator = faces.find(hash_value(face)); iterator == faces.end()) {
-			ostringstream oss;
-			oss << "Attempted to delete a nonexistent face " << face;
-			throw invalid_argument{oss.str()};
+			throw invalid_argument{format("Attempted to delete a nonexistent face: {}", face)};
 		} else {
 			faces.erase(iterator);
 		}

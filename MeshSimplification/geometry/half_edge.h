@@ -1,7 +1,7 @@
 #pragma once
 
+#include <format>
 #include <memory>
-#include <ostream>
 
 #include "geometry/face.h"
 #include "geometry/vertex.h"
@@ -39,15 +39,8 @@ namespace geometry {
 		/** Sets the half-edge face. */
 		void SetFace(const std::shared_ptr<geometry::Face>& face) { face_ = face; }
 
-		/** \brief Defines the half-edge insertion operator. */
-		friend std::ostream& operator<<(std::ostream& os, const HalfEdge& edge) {
-			return os << '(' << *edge.flip_->vertex_ << ',' << *edge.vertex_ << ')';
-		}
-
 		/** \brief Gets the half-edge hash value. */
-		friend std::size_t hash_value(const HalfEdge& edge) {
-			return hash_value(*edge.flip_->vertex_, *edge.vertex_);
-		}
+		friend std::size_t hash_value(const HalfEdge& edge) { return hash_value(*edge.flip_->vertex_, *edge.vertex_); }
 
 	private:
 		const std::shared_ptr<geometry::Vertex> vertex_;
@@ -55,3 +48,11 @@ namespace geometry {
 		std::shared_ptr<geometry::Face> face_;
 	};
 }
+
+template<>
+struct std::formatter<geometry::HalfEdge> : std::formatter<std::string> {
+	auto format(const geometry::HalfEdge& half_edge, std::format_context& context) {
+		return formatter<std::string>::format(
+			std::format("({},{})", *half_edge.Flip()->Vertex(), *half_edge.Vertex()), context);
+	}
+};

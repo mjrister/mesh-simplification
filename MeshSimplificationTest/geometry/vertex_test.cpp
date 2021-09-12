@@ -1,3 +1,5 @@
+#include <format>
+
 #include <gtest/gtest.h>
 
 #include "geometry/vertex.h"
@@ -8,9 +10,7 @@ using namespace std;
 
 namespace {
 	TEST(VertexTest, TestInsertionOperator) {
-		ostringstream oss;
-		oss << Vertex{42, vec3{}, vec3{}};
-		ASSERT_EQ("42", oss.str());
+		ASSERT_EQ("42", format("{}", Vertex{42, vec3{}, vec3{}}));
 	}
 
 	TEST(VertexTest, TestEqualVerticesProduceTheSameHashValue) {

@@ -1,7 +1,7 @@
 #pragma once
 
+#include <format>
 #include <memory>
-#include <ostream>
 
 #include <glm/vec3.hpp>
 
@@ -39,9 +39,6 @@ namespace geometry {
 		/** \brief Sets the vertex half-edge. */
 		void SetEdge(const std::shared_ptr<HalfEdge>& edge) { edge_ = edge; }
 
-		/** \brief Defines the vertex insertion operator. */
-		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex) { return os << vertex.id_; }
-
 		/** \brief Gets the hash value for a vertex. */
 		friend std::size_t hash_value(const Vertex& v0) { return std::hash<std::size_t>{}(v0.id_); }
 
@@ -69,3 +66,10 @@ namespace geometry {
 		std::shared_ptr<HalfEdge> edge_;
 	};
 }
+
+template<>
+struct std::formatter<geometry::Vertex> : std::formatter<std::string> {
+	auto format(const geometry::Vertex& vertex, std::format_context& context) {
+		return formatter<std::string>::format(to_string(vertex.Id()), context);
+	}
+};

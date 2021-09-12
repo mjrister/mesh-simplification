@@ -42,9 +42,7 @@ namespace {
 		const vec3 edge02 = v2.Position() - v0.Position();
 		const auto normal = normalize(cross(edge01, edge02));
 		if (any(isnan(normal))) {
-			std::ostringstream oss;
-			oss << '(' << v0 << ',' << v1 << ',' << v2 << ") is not a triangle";
-			throw std::invalid_argument{oss.str()};
+			throw std::invalid_argument{format("({},{},{}) is not a triangle", v0, v1, v2)};
 		}
 		return normal;
 	}

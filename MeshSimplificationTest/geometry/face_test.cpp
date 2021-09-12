@@ -1,4 +1,5 @@
 #include <array>
+#include <format>
 
 #include <gtest/gtest.h>
 
@@ -46,9 +47,7 @@ namespace {
 
 	TEST(FaceTest, TestInsertionOperator) {
 		const auto [v0, v1, v2] = MakeTriangleVertices();
-		ostringstream oss;
-		oss << Face{v0, v1, v2};
-		ASSERT_EQ("(0,1,2)", oss.str());
+		ASSERT_EQ("(0,1,2)", format("{}", Face{v0, v1, v2}));
 	}
 
 	TEST(FaceTest, TestEqualFacesProduceTheSameHashValue) {

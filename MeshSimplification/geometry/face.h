@@ -1,7 +1,7 @@
 #pragma once
 
+#include <format>
 #include <memory>
-#include <ostream>
 
 #include <glm/vec3.hpp>
 
@@ -34,18 +34,19 @@ namespace geometry {
 		/** \brief  Gets the face normal. */
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
-		/** \brief Defines the face insertion operator. */
-		friend std::ostream& operator<<(std::ostream& os, const Face& face) {
-			return os << '(' << *face.v0_ << ',' << *face.v1_ << ',' << *face.v2_ << ')';
-		}
-
 		/** \brief Gets the face hash value. */
-		friend std::size_t hash_value(const Face& face) {
-			return hash_value(*face.v0_, *face.v1_, *face.v2_);
-		}
+		friend std::size_t hash_value(const Face& face) { return hash_value(*face.v0_, *face.v1_, *face.v2_); }
 
 	private:
 		std::shared_ptr<const Vertex> v0_, v1_, v2_;
 		glm::vec3 normal_;
 	};
 }
+
+template<>
+struct std::formatter<geometry::Face> : std::formatter<std::string> {
+	auto format(const geometry::Face& face, std::format_context& context) {
+		return formatter<std::string>::format(
+			std::format("({},{},{})", *face.V0(), *face.V1(), *face.V2()), context);
+	}
+};

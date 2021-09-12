@@ -1,4 +1,4 @@
-#include <sstream>
+#include <format>
 
 #include <gtest/gtest.h>
 
@@ -21,9 +21,8 @@ namespace {
 	}
 
 	TEST(HalfEdgeTest, TestInsertionOperator) {
-		ostringstream oss;
-		oss << *MakeHalfEdge();
-		ASSERT_EQ(oss.str(), "(0,1)");
+		const auto edge01 = MakeHalfEdge();
+		ASSERT_EQ("(0,1)", format("{}", *edge01));
 	}
 
 	TEST(HalfEdgeTest, TestEqualHalfEdgesProduceTheSameHashValue) {
