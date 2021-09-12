@@ -49,6 +49,7 @@ namespace geometry {
 	};
 }
 
+// provides a specialization for use with std::format
 template<>
 struct std::formatter<geometry::HalfEdge> : std::formatter<std::string> {
 	auto format(const geometry::HalfEdge& half_edge, std::format_context& context) {

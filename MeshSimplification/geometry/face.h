@@ -43,6 +43,7 @@ namespace geometry {
 	};
 }
 
+// provides a specialization for use with std::format
 template<>
 struct std::formatter<geometry::Face> : std::formatter<std::string> {
 	auto format(const geometry::Face& face, std::format_context& context) {
