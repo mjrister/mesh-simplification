@@ -67,7 +67,7 @@ namespace geometry {
 	};
 }
 
-// provides a specialization for use with std::format
+// defines an explicit specialization for use with std::format
 template<>
 struct std::formatter<geometry::Vertex> : std::formatter<std::string> {
 	auto format(const geometry::Vertex& vertex, std::format_context& context) {
