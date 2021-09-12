@@ -21,6 +21,7 @@
 
 using namespace geometry;
 using namespace glm;
+using namespace gfx;
 using namespace std;
 
 namespace {
@@ -163,7 +164,7 @@ namespace {
 	};
 }
 
-gfx::Mesh mesh::Simplify(const gfx::Mesh& mesh, const float rate) {
+Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 	if (rate < 0.f || rate > 1.f) throw invalid_argument{format("Invalid mesh simplification rate {}", rate)};
 

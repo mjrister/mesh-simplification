@@ -1,4 +1,4 @@
-#include "graphics/mesh.cpp"
+#include "graphics/mesh.h"
 
 #include <vector>
 
