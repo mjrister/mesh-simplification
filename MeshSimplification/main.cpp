@@ -29,7 +29,7 @@ namespace {
 		if (window.IsKeyPressed(GLFW_KEY_W)) {
 			const vec3 translate{0.f, translate_step, 0.f};
 			mesh.Translate(translate);
-		} else if (window.IsKeyPressed(GLFW_KEY_S)) {
+		} else if (window.IsKeyPressed(GLFW_KEY_X)) {
 			const vec3 translate{0.f, -translate_step, 0.f};
 			mesh.Translate(translate);
 		}
