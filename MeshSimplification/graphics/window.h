@@ -32,8 +32,8 @@ namespace gfx {
 		Window(Window&&) noexcept = delete;
 		Window& operator=(Window&&) noexcept = delete;
 
-		[[nodiscard]] const std::function<void(std::int32_t)>& GetOnKeyPress() const { return handle_key_press_; }
-		void OnKeyPress(const std::function<void(std::int32_t)>& event) { handle_key_press_ = event; }
+		[[nodiscard]] const std::function<void(std::int32_t)>& GetOnKeyPress() const { return on_key_press_; }
+		void OnKeyPress(const std::function<void(std::int32_t)>& event) { on_key_press_ = event; }
 
 		/**
 		 * \brief Gets the window size.
@@ -89,6 +89,6 @@ namespace gfx {
 
 	private:
 		GLFWwindow* window_ = nullptr;
-		std::function<void(std::int32_t)> handle_key_press_;
+		std::function<void(std::int32_t)> on_key_press_;
 	};
 }
