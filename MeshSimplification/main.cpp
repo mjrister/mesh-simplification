@@ -21,7 +21,7 @@ using namespace std;
 
 namespace {
 	void HandleInput(
-		const Window& window, const float delta_time, const mat4 view_model_transform, Mesh& mesh) {
+		const Window& window, const float delta_time, const mat4& view_model_transform, Mesh& mesh) {
 		static optional<dvec2> prev_cursor_position{};
 		const auto translate_step = 1.25f * delta_time;
 		const auto scale_step = .75f * delta_time;
