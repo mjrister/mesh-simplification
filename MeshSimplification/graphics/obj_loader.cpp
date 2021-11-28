@@ -21,7 +21,7 @@ using namespace std;
 
 namespace {
 
-	// sentinel value indicating an unspecified face element index position
+	// indicates an unspecified face element index position
 	constexpr int32_t npos_index = -1;
 
 	/**
