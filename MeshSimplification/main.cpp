@@ -78,24 +78,25 @@ int main() {
 		mesh.Scale(vec3{.25f});
 		mesh.Translate({vec3{.5f, -.9f, 0.f}});
 
-		ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
-		shader_program.Enable();
-
 		window.OnKeyPress([&](const auto& key) {
 			if (key == GLFW_KEY_S) {
 				mesh = mesh::Simplify(mesh, .5f);
 			}
 		});
 
-		constexpr float field_of_view_y{radians(45.f)}, z_near{.1f}, z_far{100.f};
+		ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
+		shader_program.Enable();
+
+		constexpr auto field_of_view_y = radians(45.f), z_near = .1f, z_far = 100.f;
 		auto aspect_ratio = static_cast<float>(window_width) / window_height;
 		auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
 		constexpr vec3 eye{0.f, 0.f, 2.f}, center{0.f}, up{0.f, 1.f, 0.f};
 		const auto view_transform = lookAt(eye, center, up);
+		auto view_model_transform = view_transform * mesh.ModelTransform();
 
-		float point_light_angle = 0.f;
+		auto point_light_angle = 0.f;
 		shader_program.SetUniform("point_light.color", vec3{1.f});
 		shader_program.SetUniform("point_light.attenuation", vec3{0.f, 0.f, 1.f});
 
@@ -105,10 +106,12 @@ int main() {
 		shader_program.SetUniform("material.specular", material.Specular());
 		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
 
-		for (double previous_time = glfwGetTime(); !window.Closed();) {
-			const double current_time = glfwGetTime();
-			const auto delta_time = static_cast<float>(current_time - previous_time);
-			previous_time = current_time;
+		auto previous_time = glfwGetTime();
+		auto delta_time = 0.f;
+
+		while (!window.Closed()) {
+
+			HandleInput(window, delta_time, view_model_transform, mesh);
 
 			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
 				window_width = width;
@@ -118,7 +121,7 @@ int main() {
 				shader_program.SetUniform("projection_transform", projection_transform);
 			}
 
-			const auto view_model_transform = view_transform * mesh.ModelTransform();
+			view_model_transform = view_transform * mesh.ModelTransform();
 			shader_program.SetUniform("view_model_transform", view_model_transform);
 			shader_program.SetUniform("normal_transform", inverse(transpose(view_model_transform)));
 
@@ -126,11 +129,13 @@ int main() {
 			const vec4 point_light_position{cos(point_light_angle), sin(point_light_angle), 1.5f, 1.f};
 			shader_program.SetUniform("point_light.position", vec3{view_transform * point_light_position});
 
-			HandleInput(window, delta_time, view_model_transform, mesh);
-
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			mesh.Render();
 			window.Update();
+
+			const auto current_time = glfwGetTime();
+			delta_time = static_cast<float>(current_time - previous_time);
+			previous_time = current_time;
 		}
 	} catch (const exception& e) {
 		cerr << e.what() << endl;
