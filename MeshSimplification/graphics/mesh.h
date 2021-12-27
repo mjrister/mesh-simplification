@@ -3,14 +3,14 @@
 #include <vector>
 
 #include <GL/gl3w.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace gfx {
 
-	/** \brief A renderable triangle mesh in OpenGL. */
+	/** \brief A renderable triangle mesh. */
 	class Mesh {
 
 	public:

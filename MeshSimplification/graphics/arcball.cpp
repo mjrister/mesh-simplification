@@ -1,7 +1,7 @@
 #include "graphics/arcball.h"
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 #include <glm/geometric.hpp>
 #include <glm/vec2.hpp>
@@ -25,9 +25,9 @@ namespace {
 
 		// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
 		const auto [width, height] = window_size;
-		constexpr auto min = -1.f, max = 1.f;
-		const auto x_ndc = std::clamp(static_cast<float>(cursor_position.x * 2.0 / width - 1.0), min, max);
-		const auto y_ndc = std::clamp(static_cast<float>(cursor_position.y * 2.0 / height - 1.0), min, max);
+		constexpr auto min = -1., max = 1.;
+		const auto x_ndc = std::clamp(cursor_position.x * 2. / width - 1., min, max);
+		const auto y_ndc = std::clamp(cursor_position.y * 2. / height - 1., min, max);
 
 		// because window coordinates start with (0,0) in the top-left corner which becomes (-1,-1) after normalization,
 		// the y-coordinate needs to be negated to align with the OpenGL convention of the top-left residing at (-1,1)

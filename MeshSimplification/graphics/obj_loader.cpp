@@ -9,9 +9,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include <glm/gtx/hash.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/gtx/hash.hpp>
 
 #include "graphics/mesh.h"
 
@@ -159,15 +159,15 @@ namespace {
 		vector<array<ivec3, 3>> faces;
 
 		for (string line; getline(is, line);) {
-			if (line = Trim(line); !line.empty() && !line.starts_with('#')) {
-				if (line.starts_with("v ")) {
-					positions.push_back(ParseLine<float, 3>(line));
-				} else if (line.starts_with("vt ")) {
-					texture_coordinates.push_back(ParseLine<float, 2>(line));
-				} else if (line.starts_with("vn ")) {
-					normals.push_back(ParseLine<float, 3>(line));
-				} else if (line.starts_with("f ")) {
-					faces.push_back(ParseFace(line));
+			if (const auto line_view = Trim(line); !line_view.empty() && !line_view.starts_with('#')) {
+				if (line_view.starts_with("v ")) {
+					positions.push_back(ParseLine<float, 3>(line_view));
+				} else if (line_view.starts_with("vt ")) {
+					texture_coordinates.push_back(ParseLine<float, 2>(line_view));
+				} else if (line_view.starts_with("vn ")) {
+					normals.push_back(ParseLine<float, 3>(line_view));
+				} else if (line_view.starts_with("f ")) {
+					faces.push_back(ParseFace(line_view));
 				}
 			}
 		}

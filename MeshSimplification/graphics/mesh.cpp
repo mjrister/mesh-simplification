@@ -58,10 +58,10 @@ Mesh::Mesh(
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
 
 	// allocate memory for the vertex buffer
-	const size_t positions_size = sizeof(vec3) * positions_.size();
-	const size_t texture_coordinates_size = sizeof(vec2) * texture_coordinates_.size();
-	const size_t normals_size = sizeof(vec3) * normals_.size();
-	const size_t buffer_size = positions_size + texture_coordinates_size + normals_size;
+	const auto positions_size = sizeof(vec3) * positions_.size();
+	const auto texture_coordinates_size = sizeof(vec2) * texture_coordinates_.size();
+	const auto normals_size = sizeof(vec3) * normals_.size();
+	const auto buffer_size = positions_size + texture_coordinates_size + normals_size;
 	glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
 
 	// copy positions to the vertex buffer
@@ -115,7 +115,7 @@ Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
 	vertex_buffer_ = mesh.vertex_buffer_;
 	element_buffer_ = mesh.element_buffer_;
 
-	mesh.vertex_array_ = mesh.vertex_buffer_ = mesh.element_buffer_ = 0;
+	mesh.vertex_array_ = mesh.vertex_buffer_ = mesh.element_buffer_ = 0u;
 
 	positions_ = move(mesh.positions_);
 	texture_coordinates_ = move(mesh.texture_coordinates_);
