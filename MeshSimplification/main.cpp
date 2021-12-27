@@ -64,15 +64,20 @@ namespace {
 			prev_cursor_position = nullopt;
 		}
 	}
+
+	constexpr float GetAspectRatio(const pair<int32_t, int32_t>& window_dimensions) {
+		const auto width = static_cast<float>(window_dimensions.first);
+		const auto height = static_cast<float>(window_dimensions.second);
+		return width / height;
+	}
 }
 
 int main() {
 
 	try {
-		int32_t window_width = 1280, window_height = 960;
-		const auto window_dimensions = make_pair(window_width, window_height);
+		constexpr auto original_window_dimensions = make_pair(1280, 960);
 		constexpr auto opengl_version = make_pair(4, 6);
-		Window window{"Mesh Simplification", window_dimensions, opengl_version};
+		Window window{"Mesh Simplification", original_window_dimensions, opengl_version};
 
 		auto mesh = obj_loader::LoadMesh("models/bunny.obj");
 		mesh.Scale(vec3{.25f});
@@ -88,8 +93,8 @@ int main() {
 		shader_program.Enable();
 
 		constexpr auto field_of_view_y = radians(45.f), z_near = .1f, z_far = 100.f;
-		auto aspect_ratio = static_cast<float>(window_width) / window_height;
-		auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
+		constexpr auto original_aspect_ratio = GetAspectRatio(original_window_dimensions);
+		auto projection_transform = perspective(field_of_view_y, original_aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
 
 		constexpr vec3 eye{0.f, 0.f, 2.f}, center{0.f}, up{0.f, 1.f, 0.f};
@@ -106,6 +111,7 @@ int main() {
 		shader_program.SetUniform("material.specular", material.Specular());
 		shader_program.SetUniform("material.shininess", material.Shininess() * 128.f);
 
+		auto previous_window_dimensions = original_window_dimensions;
 		auto previous_time = glfwGetTime();
 		auto delta_time = 0.f;
 
@@ -113,12 +119,10 @@ int main() {
 
 			HandleInput(window, delta_time, view_model_transform, mesh);
 
-			if (const auto [width, height] = window.Size(); width != window_width || height != window_height) {
-				window_width = width;
-				window_height = height;
-				aspect_ratio = static_cast<float>(window_width) / window_height;
-				projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
+			if (const auto window_dimensions = window.Size(); previous_window_dimensions != window_dimensions) {
+				projection_transform = perspective(field_of_view_y, GetAspectRatio(window_dimensions), z_near, z_far);
 				shader_program.SetUniform("projection_transform", projection_transform);
+				previous_window_dimensions = window_dimensions;
 			}
 
 			view_model_transform = view_transform * mesh.ModelTransform();

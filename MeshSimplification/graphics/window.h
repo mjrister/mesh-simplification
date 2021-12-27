@@ -39,7 +39,7 @@ namespace gfx {
 		 * \brief Gets the window size.
 		 * \return A pair representing the window width and height.
 		 */
-		[[nodiscard]] std::pair<const std::int32_t, const std::int32_t> Size() const noexcept {
+		[[nodiscard]] std::pair<std::int32_t, std::int32_t> Size() const noexcept {
 			std::int32_t width, height;
 			glfwGetWindowSize(window_, &width, &height);
 			return {width, height};
