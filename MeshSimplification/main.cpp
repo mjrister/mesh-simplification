@@ -123,7 +123,7 @@ int main() {
 
 			view_model_transform = view_transform * mesh.ModelTransform();
 			shader_program.SetUniform("view_model_transform", view_model_transform);
-			shader_program.SetUniform("normal_transform", inverse(transpose(view_model_transform)));
+			shader_program.SetUniform("normal_transform", mat3{view_model_transform});
 
 			point_light_angle += .5f * delta_time;
 			const vec4 point_light_position{cos(point_light_angle), sin(point_light_angle), 1.5f, 1.f};
