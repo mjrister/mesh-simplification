@@ -1,11 +1,11 @@
-#include "graphics/window.h"
+#include "app/window.h"
 
 #include <format>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
 
-using namespace gfx;
+using namespace app;
 using namespace std;
 
 namespace {

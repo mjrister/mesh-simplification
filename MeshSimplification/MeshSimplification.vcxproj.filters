@@ -26,8 +26,11 @@
     <ClCompile Include="geometry\mesh_simplifier.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\window.cpp">
-      <Filter>graphics</Filter>
+    <ClCompile Include="app\scene.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="app\window.cpp">
+      <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -64,8 +67,11 @@
     <ClInclude Include="geometry\mesh_simplifier.h">
       <Filter>geometry</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\window.h">
-      <Filter>graphics</Filter>
+    <ClInclude Include="app\scene.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\window.h">
+      <Filter>app</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +94,9 @@
     </Filter>
     <Filter Include="geometry">
       <UniqueIdentifier>{a63d86ff-a6ba-4e0f-b5b7-0e6345a41a0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{b6a1698d-fea4-4111-b257-31ce25b52565}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

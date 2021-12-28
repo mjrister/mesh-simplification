@@ -6,8 +6,9 @@
 #include <glm/geometric.hpp>
 #include <glm/vec2.hpp>
 
-#include "window.h"
+#include "app/window.h"
 
+using namespace app;
 using namespace gfx;
 using namespace glm;
 using namespace std;

@@ -222,8 +222,9 @@
     <ClCompile Include="graphics\shader_program.cpp" />
     <ClCompile Include="graphics\texture2d.cpp" />
     <ClCompile Include="geometry\mesh_simplifier.cpp" />
-    <ClCompile Include="graphics\window.cpp" />
+    <ClCompile Include="app\window.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="app\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry\face.h" />
@@ -237,7 +238,8 @@
     <ClInclude Include="graphics\obj_loader.h" />
     <ClInclude Include="graphics\shader_program.h" />
     <ClInclude Include="geometry\vertex.h" />
-    <ClInclude Include="graphics\window.h" />
+    <ClInclude Include="app\window.h" />
+    <ClInclude Include="app\scene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl" />

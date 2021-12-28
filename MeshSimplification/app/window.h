@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
-namespace gfx {
+namespace app {
 
 	/** \brief An abstraction for a GLFW window. */
 	class Window {
@@ -64,11 +64,11 @@ namespace gfx {
 
 		/**
 		 * \brief Determines if a key is pressed.
-		 * \param key The key code to evaluate (e.g., GLFW_KEY_W).
+		 * \param key_code The key code to evaluate (e.g., GLFW_KEY_W).
 		 * \return \c true if \p key is pressed, otherwise \c false.
 		 */
-		[[nodiscard]] bool IsKeyPressed(const std::int32_t key) const noexcept {
-			return glfwGetKey(window_, key) == GLFW_PRESS;
+		[[nodiscard]] bool IsKeyPressed(const std::int32_t key_code) const noexcept {
+			return glfwGetKey(window_, key_code) == GLFW_PRESS;
 		}
 
 		/**
