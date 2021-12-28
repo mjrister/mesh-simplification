@@ -33,7 +33,12 @@ Scene::Scene(Window& window)
 	  point_lights_{
 		  {
 			  PointLight{
-				  .position = vec4{glm::radians(45.f), glm::radians(45.5), 1.f, 1.f},
+				  .position = vec4{1.f, 1.f, 1.f, 1.f},
+				  .color = vec3{1.f},
+				  .attenuation = vec3{0.f, 0.f, 1.f}
+			  },
+			  PointLight{
+				  .position = vec4{-1.f, 1.f, 2.f, 1.f},
 				  .color = vec3{1.f},
 				  .attenuation = vec3{0.f, 0.f, 1.f}
 			  }
@@ -65,10 +70,11 @@ void Scene::Render(ShaderProgram& shader_program, const float delta_time) {
 	const auto view_transform = glm::lookAt(eye, center, up);
 	shader_program.SetUniform("view_transform", view_transform);
 
-	for (const auto& [position, color, attenuation] : point_lights_) {
-		shader_program.SetUniform("point_light.position", vec3{view_transform * position});
-		shader_program.SetUniform("point_light.color", color);
-		shader_program.SetUniform("point_light.attenuation", attenuation);
+	for (size_t i = 0; i < point_lights_.size(); ++i) {
+		const auto& [position, color, attenuation] = point_lights_[i];
+		shader_program.SetUniform(format("point_lights[{}].position", i), vec3{view_transform * position});
+		shader_program.SetUniform(format("point_lights[{}].color", i), color);
+		shader_program.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
 
 	for (const auto& [mesh, material] : scene_objects_) {
