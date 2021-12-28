@@ -22,7 +22,6 @@ int main() {
 		Scene scene{window, shader_program};
 
 		for (auto previous_time = glfwGetTime(), delta_time = 0.; !window.Closed();) {
-
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			scene.Render(static_cast<float>(delta_time));
 			window.Update();
