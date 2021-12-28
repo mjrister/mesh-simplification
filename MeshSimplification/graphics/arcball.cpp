@@ -67,7 +67,7 @@ optional<const pair<const vec3, const float>> arcball::GetRotation(
 	// use min to account for numerical issues where the dot product is greater than 1 causing acos to produce NaN
 	const auto angle = acos(std::min<>(1.f, dot(arcball_position_start, arcball_position_end)));
 
-	if (static constexpr float epsilon = 1e-3f; angle > epsilon) {
+	if (static constexpr auto epsilon = 1e-3f; angle > epsilon) {
 		const auto axis = cross(arcball_position_start, arcball_position_end);
 		return make_pair(axis, angle);
 	}
