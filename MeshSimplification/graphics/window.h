@@ -46,6 +46,15 @@ namespace gfx {
 		}
 
 		/**
+		 * Gets the window aspect ratio.
+		 * \return A floating point number representing the window width divided by the window height.
+		 */
+		[[nodiscard]] float AspectRatio() const noexcept {
+			const auto [width, height] = Size();
+			return static_cast<float>(width) / static_cast<float>(height);
+		}
+
+		/**
 		 * \brief Determines if the window is closed.
 		 * \return \c true if the window is closed, otherwise \c false.
 		 */
