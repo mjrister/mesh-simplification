@@ -69,7 +69,6 @@ void Scene::Render(const float delta_time) {
 
 	const auto& [eye, center, up] = camera_;
 	const auto view_transform = glm::lookAt(eye, center, up);
-	shader_program_.SetUniform("view_transform", view_transform);
 
 	for (size_t i = 0; i < point_lights_.size(); ++i) {
 		const auto& [position, color, attenuation] = point_lights_[i];
@@ -112,6 +111,7 @@ void Scene::OnKeyPress(const int32_t key_code) {
 			static auto use_phong_shading = false;
 			use_phong_shading = !use_phong_shading;
 			shader_program_.SetUniform("use_phong_shading", use_phong_shading);
+			break;
 		}
 		case GLFW_KEY_N:
 			if (++active_scene_object_ >= scene_objects_size) {
