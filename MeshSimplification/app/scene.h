@@ -8,18 +8,14 @@
 #include "app/window.h"
 #include "graphics/material.h"
 #include "graphics/mesh.h"
-
-namespace gfx {
-	class ShaderProgram;
-}
-
+#include "graphics/shader_program.h"
 namespace app {
 
 	class Scene {
 
 	public:
-		explicit Scene(Window& window);
-		void Render(gfx::ShaderProgram& shader_program, float delta_time);
+		explicit Scene(Window& window, gfx::ShaderProgram& shader_program);
+		void Render(float delta_time);
 
 	private:
 		struct ViewFrustum {
@@ -49,6 +45,7 @@ namespace app {
 		void HandleInput(float delta_time);
 
 		Window& window_;
+		gfx::ShaderProgram& shader_program_;
 		ViewFrustum view_frustum_;
 		Camera camera_;
 		std::vector<PointLight> point_lights_;
