@@ -42,6 +42,7 @@ namespace app {
 			glm::vec3 attenuation;
 		};
 
+		void UpdateProjectionTransform();
 		void HandleDiscreteKeyPress(int32_t key_code);
 		void HandleContinuousInput(float delta_time);
 

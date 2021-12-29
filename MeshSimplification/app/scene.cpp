@@ -16,11 +16,6 @@ using namespace std;
 namespace {
 	mat4 view_transform;
 	pair<int32_t, int32_t> prev_window_dimensions;
-
-	constexpr float AspectRatio(const pair<int32_t, int32_t> window_dimensions) {
-		const auto [width, height] = window_dimensions;
-		return static_cast<float>(width) / static_cast<float>(height);
-	}
 }
 
 Scene::Scene(Window& window, ShaderProgram& shader_program)
@@ -28,7 +23,6 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 	  shader_program_{shader_program} {
 
 	window.OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
-	shader_program_.Enable();
 
 	auto mesh = obj_loader::LoadMesh("models/bunny.obj");
 	mesh.Scale(vec3{.25f});
@@ -40,10 +34,8 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 			.material = Material::FromType(MaterialType::Jade)
 		});
 
-	const auto [field_of_view_y, z_near, z_far] = view_frustum_;
-	prev_window_dimensions = window.Size();
-	const auto projection_transform = perspective(field_of_view_y, AspectRatio(prev_window_dimensions), z_near, z_far);
-	shader_program_.SetUniform("projection_transform", projection_transform);
+	shader_program_.Enable();
+	UpdateProjectionTransform();
 
 	const auto& [eye, center, up] = camera_;
 	view_transform = lookAt(eye, center, up);
@@ -64,15 +56,8 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 }
 
 void Scene::Render(const float delta_time) {
-
-	if (const auto window_dimensions = window_.Size(); window_dimensions != prev_window_dimensions) {
-		const auto [field_of_view_y, z_near, z_far] = view_frustum_;
-		const auto projection_transform = perspective(field_of_view_y, AspectRatio(window_dimensions), z_near, z_far);
-		shader_program_.SetUniform("projection_transform", projection_transform);
-		prev_window_dimensions = window_dimensions;
-	}
-
 	HandleContinuousInput(delta_time);
+	UpdateProjectionTransform();
 
 	for (const auto& [mesh, material] : scene_objects_) {
 
@@ -84,6 +69,18 @@ void Scene::Render(const float delta_time) {
 		shader_program_.SetUniform("view_model_transform", view_model_transform);
 		shader_program_.SetUniform("normal_transform", mat3{view_model_transform});
 		mesh.Render();
+	}
+}
+
+void Scene::UpdateProjectionTransform() {
+
+	if (const auto window_dimensions = window_.Size(); window_dimensions != prev_window_dimensions) {
+		const auto [field_of_view_y, z_near, z_far] = view_frustum_;
+		const auto [width, height] = window_dimensions;
+		const auto aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
+		shader_program_.SetUniform("projection_transform", projection_transform);
+		prev_window_dimensions = window_dimensions;
 	}
 }
 
@@ -143,8 +140,7 @@ void Scene::HandleContinuousInput(const float delta_time) {
 	if (window_.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		const auto cursor_position = window_.GetCursorPosition();
 		if (prev_cursor_position) {
-			const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, prev_window_dimensions);
-			if (axis_and_angle) {
+			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.Size())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
 				const auto view_model_transform = view_transform * mesh.ModelTransform();
 				const auto model_rotation_axis = mat3{transpose(view_model_transform)} * view_rotation_axis;
