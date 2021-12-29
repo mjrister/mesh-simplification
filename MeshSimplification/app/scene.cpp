@@ -17,7 +17,7 @@ namespace {
 	mat4 view_transform;
 	pair<int32_t, int32_t> prev_window_dimensions;
 
-	float AspectRatio(const pair<int32_t, int32_t> window_dimensions) {
+	constexpr float AspectRatio(const pair<int32_t, int32_t> window_dimensions) {
 		const auto [width, height] = window_dimensions;
 		return static_cast<float>(width) / static_cast<float>(height);
 	}
