@@ -103,5 +103,17 @@
     <Object Include="models\bunny.obj">
       <Filter>models</Filter>
     </Object>
+    <Object Include="models\armadillo.obj">
+      <Filter>models</Filter>
+    </Object>
+    <Object Include="models\buddha.obj">
+      <Filter>models</Filter>
+    </Object>
+    <Object Include="models\dragon.obj">
+      <Filter>models</Filter>
+    </Object>
+    <Object Include="models\horse.obj">
+      <Filter>models</Filter>
+    </Object>
   </ItemGroup>
 </Project>
