@@ -42,15 +42,15 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 
 	const auto [field_of_view_y, z_near, z_far] = view_frustum_;
 	prev_window_dimensions = window.Size();
-	const auto projection_transform = glm::perspective(field_of_view_y, AspectRatio(prev_window_dimensions), z_near, z_far);
+	const auto projection_transform = perspective(field_of_view_y, AspectRatio(prev_window_dimensions), z_near, z_far);
 	shader_program_.SetUniform("projection_transform", projection_transform);
 
 	const auto& [eye, center, up] = camera_;
-	view_transform = glm::lookAt(eye, center, up);
+	view_transform = lookAt(eye, center, up);
 
 	for (size_t i = 0; i < point_lights_.size(); ++i) {
 		const auto& [position, color, attenuation] = point_lights_[i];
-		shader_program_.SetUniform(format("point_lights[{}].position", i), vec3{view_transform * position });
+		shader_program_.SetUniform(format("point_lights[{}].position", i), vec3{view_transform * position});
 		shader_program_.SetUniform(format("point_lights[{}].color", i), color);
 		shader_program_.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
@@ -65,14 +65,14 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 
 void Scene::Render(const float delta_time) {
 
-	HandleContinuousInput(delta_time);
-
 	if (const auto window_dimensions = window_.Size(); window_dimensions != prev_window_dimensions) {
 		const auto [field_of_view_y, z_near, z_far] = view_frustum_;
-		const auto projection_transform = glm::perspective(field_of_view_y, AspectRatio(window_dimensions), z_near, z_far);
+		const auto projection_transform = perspective(field_of_view_y, AspectRatio(window_dimensions), z_near, z_far);
 		shader_program_.SetUniform("projection_transform", projection_transform);
 		prev_window_dimensions = window_dimensions;
 	}
+
+	HandleContinuousInput(delta_time);
 
 	for (const auto& [mesh, material] : scene_objects_) {
 
@@ -143,10 +143,11 @@ void Scene::HandleContinuousInput(const float delta_time) {
 	if (window_.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		const auto cursor_position = window_.GetCursorPosition();
 		if (prev_cursor_position) {
-			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.Size())) {
+			const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, prev_window_dimensions);
+			if (axis_and_angle) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
 				const auto view_model_transform = view_transform * mesh.ModelTransform();
-				const auto model_rotation_axis = mat3{glm::inverse(view_model_transform)} * view_rotation_axis;
+				const auto model_rotation_axis = mat3{transpose(view_model_transform)} * view_rotation_axis;
 				mesh.Rotate(normalize(model_rotation_axis), angle);
 			}
 		}
