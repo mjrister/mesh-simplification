@@ -27,7 +27,7 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 	: window_{window},
 	  shader_program_{shader_program} {
 
-	window.OnKeyPress([this](const auto key) { HandleDiscreteKeyPress(key); });
+	window.OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
 	shader_program_.Enable();
 
 	auto mesh = obj_loader::LoadMesh("models/bunny.obj");
