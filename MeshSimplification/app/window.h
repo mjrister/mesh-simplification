@@ -17,12 +17,12 @@ namespace app {
 		/**
 		 * \brief Initializes a window.
 		 * \param title The window title.
-		 * \param window_size The window width and height.
+		 * \param window_dimensions The window width and height.
 		 * \param opengl_version The OpenGL major and minor version.
 		 */
 		Window(
 			std::string_view title,
-			const std::pair<const std::int32_t, const std::int32_t>& window_size,
+			const std::pair<const std::int32_t, const std::int32_t>& window_dimensions,
 			const std::pair<const std::int32_t, const std::int32_t>& opengl_version);
 		~Window();
 
