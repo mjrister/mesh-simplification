@@ -180,7 +180,9 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
 	constexpr auto min_heap_comparator = [](
 		const shared_ptr<EdgeContraction>& lhs,
-		const shared_ptr<EdgeContraction>& rhs) { return lhs->cost > rhs->cost; };
+		const shared_ptr<EdgeContraction>& rhs) {
+		return lhs->cost > rhs->cost;
+	};
 	priority_queue<
 		shared_ptr<EdgeContraction>,
 		vector<shared_ptr<EdgeContraction>>,
@@ -252,8 +254,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 							// invalidate existing edge contraction candidate in the priority queue
 							iterator->second->valid = false;
 						}
-						const auto new_edge_contraction =
-							make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
+						const auto new_edge_contraction = make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
 						valid_edges[min_edge_key] = new_edge_contraction;
 						edge_contractions.emplace(new_edge_contraction);
 						visited_edges.emplace(min_edge_key, min_edge);
