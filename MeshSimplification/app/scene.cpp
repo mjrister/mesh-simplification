@@ -46,13 +46,6 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 		shader_program_.SetUniform(format("point_lights[{}].color", i), color);
 		shader_program_.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
-
-	for (const auto& [_, material] : scene_objects_) {
-		shader_program_.SetUniform("material.ambient", material.Ambient());
-		shader_program_.SetUniform("material.diffuse", material.Diffuse());
-		shader_program_.SetUniform("material.specular", material.Specular());
-		shader_program_.SetUniform("material.shininess", material.Shininess() * 128.f);
-	}
 }
 
 void Scene::Render(const float delta_time) {
@@ -68,6 +61,12 @@ void Scene::Render(const float delta_time) {
 		const auto view_model_transform = view_transform * mesh.ModelTransform();
 		shader_program_.SetUniform("view_model_transform", view_model_transform);
 		shader_program_.SetUniform("normal_transform", mat3{view_model_transform});
+
+		shader_program_.SetUniform("material.ambient", material.Ambient());
+		shader_program_.SetUniform("material.diffuse", material.Diffuse());
+		shader_program_.SetUniform("material.specular", material.Specular());
+		shader_program_.SetUniform("material.shininess", material.Shininess() * 128.f);
+
 		mesh.Render();
 	}
 }
