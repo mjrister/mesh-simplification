@@ -3,6 +3,8 @@
 #include <format>
 #include <ranges>
 
+#include <glm/vec3.hpp>
+
 #include "geometry/face.h"
 #include "geometry/half_edge.h"
 #include "geometry/vertex.h"
@@ -10,6 +12,7 @@
 
 using namespace geometry;
 using namespace gfx;
+using namespace glm;
 using namespace std;
 
 namespace {
@@ -188,7 +191,7 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransf
 	const auto& indices = mesh.Indices();
 
 	for (size_t i = 0; i < positions.size(); ++i) {
-		vertices_.emplace(i, make_shared<Vertex>(i, positions[i], normals[i]));
+		vertices_.emplace(i, make_shared<Vertex>(i, positions[i], i < normals.size() ? normals[i] : vec3{}));
 	}
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
