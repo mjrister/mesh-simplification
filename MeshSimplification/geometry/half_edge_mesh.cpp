@@ -187,11 +187,10 @@ namespace {
 
 HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransform()} {
 	const auto& positions = mesh.Positions();
-	const auto& normals = mesh.Normals();
 	const auto& indices = mesh.Indices();
 
 	for (size_t i = 0; i < positions.size(); ++i) {
-		vertices_.emplace(i, make_shared<Vertex>(i, positions[i], i < normals.size() ? normals[i] : vec3{}));
+		vertices_.emplace(i, make_shared<Vertex>(i, positions[i]));
 	}
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
@@ -207,17 +206,17 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransf
 
 HalfEdgeMesh::operator Mesh() const {
 
-	vector<glm::vec3> positions;
+	vector<vec3> positions;
 	positions.reserve(vertices_.size());
 
-	vector<glm::vec3> normals;
+	vector<vec3> normals;
 	normals.reserve(vertices_.size());
 
-	vector<GLuint> indices;
+	vector<uint32_t> indices;
 	indices.reserve(faces_.size() * 3);
 
-	unordered_map<size_t, GLuint> index_map;
-	for (GLuint i = 0; const auto& vertex : vertices_ | views::values) {
+	unordered_map<size_t, uint32_t> index_map;
+	for (uint32_t i = 0; const auto& vertex : vertices_ | views::values) {
 		positions.push_back(vertex->Position());
 		normals.push_back(vertex->Normal());
 		index_map.emplace(vertex->Id(), i++);

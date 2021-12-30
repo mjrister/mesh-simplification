@@ -16,10 +16,9 @@ namespace geometry {
 		 * \brief Initializes a vertex.
 		 * \param id The vertex ID.
 		 * \param position The vertex position.
-		 * \param normal The vertex normal.
 		 */
-		Vertex(const std::size_t id, const glm::vec3& position, const glm::vec3& normal = {})
-			: id_{id}, position_{position}, normal_{normal} {}
+		Vertex(const std::size_t id, const glm::vec3& position)
+			: id_{id}, position_{position}{}
 
 		/** \brief Gets the vertex ID. */
 		[[nodiscard]] std::size_t Id() const { return id_; }
@@ -27,11 +26,8 @@ namespace geometry {
 		/** \brief Gets the vertex position. */
 		[[nodiscard]] const glm::vec3& Position() const { return position_; }
 
-		/** \brief Gets the vertex normal. */
-		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
-
-		/** Sets the vertex normal. */
-		void SetNormal(const glm::vec3& normal) { normal_ = normal; }
+		/** \brief Computes the vertex normal by averaging adjacent face normals. */
+		[[nodiscard]] glm::vec3 Normal() const;
 
 		/** \brief Gets the last created half-edge that points to this vertex. */
 		[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const { return edge_; }
@@ -62,7 +58,6 @@ namespace geometry {
 	private:
 		const std::size_t id_;
 		const glm::vec3 position_;
-		glm::vec3 normal_;
 		std::shared_ptr<HalfEdge> edge_;
 	};
 }
