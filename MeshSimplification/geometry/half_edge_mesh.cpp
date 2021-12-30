@@ -175,8 +175,8 @@ namespace {
 			const auto face_new = CreateTriangle(v_new, vi, vj, edges);
 			faces.emplace(hash_value(*face_new), face_new);
 
-			DeleteEdge(*edge0i, edges);
 			DeleteFace(*edge0i->Face(), faces);
+			DeleteEdge(*edge0i, edges);
 
 			edge0i = edgej0->Flip();
 		}
@@ -195,9 +195,9 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransf
 	}
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
-		const auto v0 = vertices_[indices[i]];
-		const auto v1 = vertices_[indices[i + 1]];
-		const auto v2 = vertices_[indices[i + 2]];
+		const auto& v0 = vertices_[indices[i]];
+		const auto& v1 = vertices_[indices[i + 1]];
+		const auto& v2 = vertices_[indices[i + 2]];
 		const auto face012 = CreateTriangle(v0, v1, v2, edges_);
 		faces_.emplace(hash_value(*face012), face012);
 	}
@@ -244,10 +244,10 @@ void HalfEdgeMesh::CollapseEdge(
 	UpdateIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
 	UpdateIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
 
-	DeleteEdge(*edge01, edges_);
-
 	DeleteFace(*edge01->Face(), faces_);
 	DeleteFace(*edge10->Face(), faces_);
+
+	DeleteEdge(*edge01, edges_);
 
 	DeleteVertex(*v0, vertices_);
 	DeleteVertex(*v1, vertices_);
