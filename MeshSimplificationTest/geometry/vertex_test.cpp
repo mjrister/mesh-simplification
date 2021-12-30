@@ -9,7 +9,7 @@ using namespace glm;
 using namespace std;
 
 namespace {
-	TEST(VertexTest, TestInsertionOperator) {
+	TEST(VertexTest, TestFormatVertex) {
 		ASSERT_EQ("42", format("{}", Vertex{42, vec3{}, vec3{}}));
 	}
 

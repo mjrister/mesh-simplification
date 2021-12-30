@@ -72,8 +72,8 @@ namespace {
 		ASSERT_NE(edge01_iterator, edges.end());
 		ASSERT_NE(edge10_iterator, edges.end());
 
-		const auto edge01 = edge01_iterator->second;
-		const auto edge10 = edge10_iterator->second;
+		const auto& edge01 = edge01_iterator->second;
+		const auto& edge10 = edge10_iterator->second;
 
 		ASSERT_EQ(v0, edge10->Vertex());
 		ASSERT_EQ(v1, edge01->Vertex());
@@ -100,9 +100,9 @@ namespace {
 			ASSERT_NE(v1_iterator, vertices.end());
 			ASSERT_NE(v2_iterator, vertices.end());
 
-			const auto v0 = v0_iterator->second;
-			const auto v1 = v1_iterator->second;
-			const auto v2 = v2_iterator->second;
+			const auto& v0 = v0_iterator->second;
+			const auto& v1 = v1_iterator->second;
+			const auto& v2 = v2_iterator->second;
 
 			VerifyEdge(v0, v1, edges);
 			VerifyEdge(v1, v2, edges);
@@ -154,9 +154,9 @@ namespace {
 		auto half_edge_mesh = MakeHalfEdgeMesh();
 		const auto& vertices = half_edge_mesh.Vertices();
 		const auto& edges = half_edge_mesh.Edges();
-		const auto v0 = vertices.at(0);
-		const auto v1 = vertices.at(1);
-		const auto edge01 = edges.at(hash_value(*v0, *v1));
+		const auto& v0 = vertices.at(0);
+		const auto& v1 = vertices.at(1);
+		const auto& edge01 = edges.at(hash_value(*v0, *v1));
 		const Vertex v_new{half_edge_mesh.NextVertexId(), (v0->Position() + v1->Position() / 2.f), vec3{0.f}};
 
 		half_edge_mesh.CollapseEdge(edge01, make_shared<Vertex>(v_new));
