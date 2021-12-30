@@ -29,11 +29,10 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 	mesh.Scale(vec3{.25f});
 	mesh.Translate(vec3{.5f, -.9f, 0.f});
 
-	scene_objects_.push_back(
-		SceneObject{
-			.mesh = move(mesh),
-			.material = Material::FromType(MaterialType::Jade)
-		});
+	scene_objects_.push_back(SceneObject{
+		.mesh = move(mesh),
+		.material = Material::FromType(MaterialType::Jade)
+	});
 
 	shader_program_.Enable();
 	UpdateProjectionTransform();
