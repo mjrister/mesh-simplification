@@ -207,10 +207,10 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransf
 
 HalfEdgeMesh::operator Mesh() const {
 
-	vector<glm::vec3> positions;
+	vector<vec3> positions;
 	positions.reserve(vertices_.size());
 
-	vector<glm::vec3> normals;
+	vector<vec3> normals;
 	normals.reserve(vertices_.size());
 
 	vector<GLuint> indices;
