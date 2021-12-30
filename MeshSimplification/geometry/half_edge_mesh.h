@@ -32,7 +32,7 @@ namespace geometry {
 		explicit HalfEdgeMesh(const gfx::Mesh& mesh);
 
 		/** \brief Defines the conversion operator back to a triangle mesh. */
-		explicit operator gfx::Mesh() const;
+		operator gfx::Mesh() const;
 
 		/** \brief Gets a mapping of mesh vertices by ID. */
 		[[nodiscard]] const auto& Vertices() const { return vertices_; }

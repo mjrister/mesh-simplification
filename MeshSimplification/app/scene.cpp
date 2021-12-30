@@ -14,7 +14,6 @@ using namespace glm;
 using namespace std;
 
 namespace {
-	bool use_phong_shading = false;
 	mat4 view_transform;
 	pair<int32_t, int32_t> prev_window_dimensions;
 }
@@ -94,10 +93,6 @@ void Scene::HandleDiscreteKeyPress(const int32_t key_code) {
 			mesh = mesh::Simplify(mesh, .5f);
 			break;
 		}
-		case GLFW_KEY_P:
-			use_phong_shading = !use_phong_shading;
-			shader_program_.SetUniform("use_phong_shading", use_phong_shading);
-			break;
 		case GLFW_KEY_N:
 			if (++active_scene_object_ >= scene_objects_size) {
 				active_scene_object_ = 0;

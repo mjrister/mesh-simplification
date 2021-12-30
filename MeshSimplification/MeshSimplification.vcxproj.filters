@@ -32,9 +32,6 @@
     <ClCompile Include="app\window.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="geometry\vertex.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics\shader_program.h">

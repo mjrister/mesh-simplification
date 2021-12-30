@@ -225,7 +225,6 @@
     <ClCompile Include="app\window.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="app\scene.cpp" />
-    <ClCompile Include="geometry\vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry\face.h" />

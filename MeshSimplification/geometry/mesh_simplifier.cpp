@@ -38,6 +38,23 @@ namespace {
 	}
 
 	/**
+	 * \brief Computes a vertex normal by averaging its face normals.
+	 * \param v0 The vertex to evaluate.
+	 * \return The vertex normal.
+	 */
+	vec3 AverageFaceNormals(const shared_ptr<Vertex>& v0) {
+		vec3 normal{0.f};
+		uint8_t face_count = 0;
+		auto edgei0 = v0->Edge();
+		do {
+			normal += edgei0->Face()->Normal();
+			edgei0 = edgei0->Next()->Flip();
+			++face_count;
+		} while (edgei0 != v0->Edge());
+		return normalize(normal / static_cast<float>(face_count));
+	}
+
+	/**
 	 * \brief Computes the error quadric for a vertex.
 	 * \param vertex The vertex to evaluate.
 	 * \return The summation of quadrics for all triangles incident to \p vertex.
@@ -203,6 +220,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 			// remove the edge from the mesh and attach incident edges to the new vertex
 			half_edge_mesh.CollapseEdge(edge01, v_new);
+			v_new->SetNormal(AverageFaceNormals(v_new));
 
 			// compute the error quadric for the new vertex
 			const auto& q0 = quadrics.at(v0->Id());
@@ -257,5 +275,5 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		half_edge_mesh.Faces().size(),
 		chrono::duration<float>{end_time - start_time}.count());
 
-	return static_cast<Mesh>(half_edge_mesh);
+	return half_edge_mesh;
 }
