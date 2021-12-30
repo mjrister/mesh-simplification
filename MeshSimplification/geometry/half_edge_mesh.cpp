@@ -244,10 +244,10 @@ void HalfEdgeMesh::CollapseEdge(
 	UpdateIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
 	UpdateIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
 
-	DeleteEdge(*edge01, edges_);
-
 	DeleteFace(*edge01->Face(), faces_);
 	DeleteFace(*edge10->Face(), faces_);
+
+	DeleteEdge(*edge01, edges_);
 
 	DeleteVertex(*v0, vertices_);
 	DeleteVertex(*v1, vertices_);
