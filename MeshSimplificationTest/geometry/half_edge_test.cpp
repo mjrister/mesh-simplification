@@ -10,8 +10,8 @@ using namespace std;
 
 namespace {
 	shared_ptr<HalfEdge> MakeHalfEdge() {
-		const auto v0 = make_shared<Vertex>(0, vec3{}, vec3{});
-		const auto v1 = make_shared<Vertex>(1, vec3{}, vec3{});
+		const auto v0 = make_shared<Vertex>(0, vec3{});
+		const auto v1 = make_shared<Vertex>(1, vec3{});
 		auto edge01 = make_shared<HalfEdge>(v1);
 		const auto edge10 = make_shared<HalfEdge>(v0);
 		edge01->SetFlip(edge10);
