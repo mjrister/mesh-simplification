@@ -1,6 +1,7 @@
 #include "geometry/face.h"
 
 #include <algorithm>
+#include <limits>
 #include <tuple>
 
 #include <glm/geometric.hpp>
@@ -28,29 +29,21 @@ namespace {
 			return make_tuple(v2, v0, v1);
 		}
 	}
-
-	/**
-	 * \brief Gets the face normal.
-	 * \param v0,v1,v2 The face vertices.
-	 * \return The 3D vector representing the face normal.
-	 * \throw std::invalid_argument Indicates the face vertices do not represent a triangle. This can happen if \p v0,
-	 *                              \p v1, \p v2 are collinear or contains duplicates.
-	 */
-	vec3 GetFaceNormal(const Vertex& v0, const Vertex& v1, const Vertex& v2) {
-		const auto edge01 = v1.Position() - v0.Position();
-		const auto edge02 = v2.Position() - v0.Position();
-		const auto normal = normalize(cross(edge01, edge02));
-		if (any(isnan(normal))) {
-			throw std::invalid_argument{format("({},{},{}) is not a triangle", v0, v1, v2)};
-		}
-		return normal;
-	}
 }
 
-Face::Face(
-	const shared_ptr<const Vertex>& v0,
-	const shared_ptr<const Vertex>& v1,
-	const shared_ptr<const Vertex>& v2)
-	: normal_{GetFaceNormal(*v0, *v1, *v2)} {
+Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v1, const shared_ptr<const Vertex>& v2) {
+
 	tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
+
+	const auto edge01 = v1_->Position() - v0_->Position();
+	const auto edge02 = v2_->Position() - v0_->Position();
+	const auto normal = cross(edge01, edge02);
+	const auto magnitude = length(normal);
+
+	if (magnitude < numeric_limits<float>::epsilon()) {
+		throw std::invalid_argument{format("({},{},{}) is not a triangle", *v0, *v1, *v2)};
+	}
+
+	normal_ = normal / magnitude;
+	area_ = .5f * magnitude;
 }

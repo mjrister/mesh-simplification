@@ -34,12 +34,16 @@ namespace geometry {
 		/** \brief  Gets the face normal. */
 		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
 
+		/** \brief Gets the face area. */
+		[[nodiscard]] float Area() const { return area_; }
+
 		/** \brief Gets the face hash value. */
 		friend std::size_t hash_value(const Face& face) { return hash_value(*face.v0_, *face.v1_, *face.v2_); }
 
 	private:
 		std::shared_ptr<const Vertex> v0_, v1_, v2_;
 		glm::vec3 normal_;
+		float area_;
 	};
 }
 
