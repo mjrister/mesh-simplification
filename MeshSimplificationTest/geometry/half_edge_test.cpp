@@ -10,13 +10,18 @@ using namespace std;
 
 namespace {
 	shared_ptr<HalfEdge> MakeHalfEdge() {
-		const auto v0 = make_shared<Vertex>(0, vec3{});
-		const auto v1 = make_shared<Vertex>(1, vec3{});
+		const auto v0 = make_shared<Vertex>(0, vec3{1.f});
+		const auto v1 = make_shared<Vertex>(1, vec3{2.f, 0.f, 0.f});
 		auto edge01 = make_shared<HalfEdge>(v1);
 		const auto edge10 = make_shared<HalfEdge>(v0);
 		edge01->SetFlip(edge10);
 		edge10->SetFlip(edge01);
 		return edge01;
+	}
+
+	TEST(HalfEdgeTest, TestHalfEdgeConversionToVector) {
+		const auto edge01 = MakeHalfEdge();
+		ASSERT_EQ((vec3{1.f, -1.f, -1.f}), static_cast<vec3>(*edge01));
 	}
 
 	TEST(HalfEdgeTest, TestFormatHalfEdge) {
