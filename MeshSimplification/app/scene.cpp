@@ -54,12 +54,13 @@ void Scene::Render(const float delta_time) {
 
 	for (const auto& [mesh, material] : scene_objects_) {
 
+		const auto view_model_transform = view_transform * mesh.ModelTransform();
+		shader_program_.SetUniform("view_model_transform", view_model_transform);
+
 		// generally, normals should be transformed by the upper 3x3 inverse transpose of the view-model matrix, however,
 		// this is unnecessary in this context because meshes are only transformed by rotations and translations (which are
 		// orthogonal matrices and therefore the inverse transpose of the view-model matrix is to view-model matrix itself)
 		// in addition to uniform scaling (which is undone when the transformed normal is renormalized in the vertex shader)
-		const auto view_model_transform = view_transform * mesh.ModelTransform();
-		shader_program_.SetUniform("view_model_transform", view_model_transform);
 		shader_program_.SetUniform("normal_transform", mat3{view_model_transform});
 
 		shader_program_.SetUniform("material.ambient", material.Ambient());
