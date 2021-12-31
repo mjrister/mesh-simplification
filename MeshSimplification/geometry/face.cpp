@@ -1,7 +1,6 @@
 #include "geometry/face.h"
 
 #include <algorithm>
-#include <limits>
 #include <tuple>
 
 #include <glm/geometric.hpp>
@@ -40,7 +39,7 @@ Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v
 	const auto normal = cross(edge01, edge02);
 	const auto magnitude = length(normal);
 
-	if (magnitude < numeric_limits<float>::epsilon()) {
+	if (magnitude == 0.f) {
 		throw std::invalid_argument{format("({},{},{}) is not a triangle", *v0, *v1, *v2)};
 	}
 
