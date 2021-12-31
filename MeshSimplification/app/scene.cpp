@@ -71,10 +71,10 @@ void Scene::Render(const float delta_time) {
 }
 
 void Scene::UpdateProjectionTransform() {
+	const auto window_dimensions = window_.Size();
 
-	if (const auto window_dimensions = window_.Size(); window_dimensions != prev_window_dimensions) {
+	if (const auto [width, height] = window_dimensions; width && height && window_dimensions != prev_window_dimensions) {
 		const auto [field_of_view_y, z_near, z_far] = view_frustum_;
-		const auto [width, height] = window_dimensions;
 		const auto aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
 		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 		shader_program_.SetUniform("projection_transform", projection_transform);
