@@ -19,11 +19,6 @@ namespace {
 		return edge01;
 	}
 
-	TEST(HalfEdgeTest, TestHalfEdgeConversionToVector) {
-		const auto edge01 = MakeHalfEdge();
-		ASSERT_EQ((vec3{1.f, -1.f, -1.f}), static_cast<vec3>(*edge01));
-	}
-
 	TEST(HalfEdgeTest, TestFormatHalfEdge) {
 		const auto edge01 = MakeHalfEdge();
 		ASSERT_EQ("(0,1)", format("{}", *edge01));

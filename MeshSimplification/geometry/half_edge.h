@@ -20,12 +20,6 @@ namespace geometry {
 		 */
 		explicit HalfEdge(std::shared_ptr<Vertex> vertex) : vertex_{std::move(vertex)} {}
 
-		/**
-		 * \brief Defines the conversion operator to a vector.
-		 * \return A vector from the vertex at the tail of the half-edge to its head.
-		 */
-		explicit operator glm::vec3() const { return vertex_->Position() - flip_->vertex_->Position(); }
-
 		/** \brief Gets the vertex at the head of this half-edge. */
 		[[nodiscard]] std::shared_ptr<Vertex> Vertex() const { return vertex_; }
 

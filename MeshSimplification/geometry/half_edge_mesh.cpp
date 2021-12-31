@@ -183,15 +183,30 @@ namespace {
 
 		DeleteEdge(*edge_end, edges);
 	}
+
+	/**
+	 * \brief Computes a vertex normal by averaging its face normals weighted by surface area.
+	 * \param v0 The vertex to compute the normal for.
+	 * \return The weighted vertex normal.
+	 */
+	vec3 ComputeWeightedVertexNormal(const Vertex& v0) {
+		vec3 normal{0.f};
+		auto edgei0 = v0.Edge();
+		do {
+			const auto& face = edgei0->Face();
+			normal += face->Normal() * face->Area();
+			edgei0 = edgei0->Next()->Flip();
+		} while (edgei0 != v0.Edge());
+		return normalize(normal);
+	}
 }
 
 HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransform()} {
 	const auto& positions = mesh.Positions();
-	const auto& normals = mesh.Normals();
 	const auto& indices = mesh.Indices();
 
 	for (size_t i = 0; i < positions.size(); ++i) {
-		vertices_.emplace(i, make_shared<Vertex>(i, positions[i], i < normals.size() ? normals[i] : vec3{}));
+		vertices_.emplace(i, make_shared<Vertex>(i, positions[i]));
 	}
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
@@ -217,9 +232,9 @@ HalfEdgeMesh::operator Mesh() const {
 	indices.reserve(faces_.size() * 3);
 
 	unordered_map<size_t, GLuint> index_map;
-	for (GLuint i = 0; const auto& vertex : vertices_ | views::values) {
+	for (GLuint i = 0; const auto& [_, vertex] : vertices_) {
 		positions.push_back(vertex->Position());
-		normals.push_back(vertex->Normal());
+		normals.push_back(ComputeWeightedVertexNormal(*vertex));
 		index_map.emplace(vertex->Id(), i++);
 	}
 

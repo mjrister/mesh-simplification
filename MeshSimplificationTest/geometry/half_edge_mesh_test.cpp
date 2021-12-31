@@ -138,17 +138,6 @@ namespace {
 		VerifyTriangles(half_edge_mesh, mesh.Indices());
 	}
 
-	TEST(HalfEdgeMeshTest, TestHalfEdgeMeshConversionToMesh) {
-
-		const auto mesh_a = MakeMesh();
-		const Mesh mesh_b = HalfEdgeMesh{mesh_a};
-
-		ASSERT_EQ(mesh_a.Positions(), mesh_b.Positions());
-		ASSERT_EQ(mesh_a.TextureCoordinates(), mesh_b.TextureCoordinates());
-		ASSERT_EQ(mesh_a.Normals(), mesh_b.Normals());
-		ASSERT_EQ(mesh_a.ModelTransform(), mesh_b.ModelTransform());
-	}
-
 	TEST(HalfEdgeMeshTest, TestCollapseEdge) {
 
 		auto half_edge_mesh = MakeHalfEdgeMesh();
@@ -157,7 +146,7 @@ namespace {
 		const auto& v0 = vertices.at(0);
 		const auto& v1 = vertices.at(1);
 		const auto& edge01 = edges.at(hash_value(*v0, *v1));
-		const Vertex v_new{half_edge_mesh.NextVertexId(), (v0->Position() + v1->Position() / 2.f), vec3{0.f}};
+		const Vertex v_new{half_edge_mesh.NextVertexId(), (v0->Position() + v1->Position() / 2.f)};
 
 		half_edge_mesh.CollapseEdge(edge01, make_shared<Vertex>(v_new));
 
