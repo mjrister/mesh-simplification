@@ -147,7 +147,7 @@ void Scene::HandleContinuousInput(const float delta_time) {
 			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.Size())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
 				const auto view_model_transform = view_transform * mesh.ModelTransform();
-				const auto model_rotation_axis = mat3{transpose(view_model_transform)} *view_rotation_axis;
+				const auto model_rotation_axis = mat3{transpose(view_model_transform)} * view_rotation_axis;
 				mesh.Rotate(normalize(model_rotation_axis), angle);
 			}
 		}
