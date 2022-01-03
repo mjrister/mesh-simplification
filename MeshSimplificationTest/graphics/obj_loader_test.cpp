@@ -10,12 +10,12 @@ using namespace std;
 namespace {
 	TEST(StringTest, TestTrimWhitespaceString) {
 		constexpr auto* line = "     ";
-		ASSERT_TRUE(Trim(line).empty());
+		static_assert(Trim(line).empty());
 	}
 
 	TEST(StringTest, TestTrimString) {
-		const auto* line = "\t  Hello, World!  \t";
-		ASSERT_EQ("Hello, World!", Trim(line));
+		constexpr auto* line = "\t  Hello, World!  \t";
+		static_assert("Hello, World!" == Trim(line));
 	}
 
 	TEST(StringTest, TestSplitEmptyString) {
