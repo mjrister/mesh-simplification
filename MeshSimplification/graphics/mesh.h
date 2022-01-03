@@ -43,22 +43,22 @@ namespace gfx {
 		Mesh& operator=(Mesh&& mesh) noexcept;
 
 		/** \brief Gets the mesh vertex positions. */
-		[[nodiscard]] const std::vector<glm::vec3>& Positions() const { return positions_; }
+		[[nodiscard]] const std::vector<glm::vec3>& Positions() const noexcept { return positions_; }
 
 		/** \brief Gets the mesh texture coordinates. */
-		[[nodiscard]] const std::vector<glm::vec2>& TextureCoordinates() const { return texture_coordinates_; }
+		[[nodiscard]] const std::vector<glm::vec2>& TextureCoordinates() const noexcept { return texture_coordinates_; }
 
 		/** \brief Gets the mesh normals. */
-		[[nodiscard]] const std::vector<glm::vec3>& Normals() const { return normals_; }
+		[[nodiscard]] const std::vector<glm::vec3>& Normals() const noexcept { return normals_; }
 
 		/** \brief Gets the mesh indices corresponding to a triangle face for every three consecutive integers. */
-		[[nodiscard]] const std::vector<GLuint>& Indices() const { return indices_; }
+		[[nodiscard]] const std::vector<GLuint>& Indices() const noexcept { return indices_; }
 
 		/** \brief Gets the affine transform to apply to the mesh in model space. */
-		[[nodiscard]] const glm::mat4& ModelTransform() const { return model_transform_; }
+		[[nodiscard]] const glm::mat4& ModelTransform() const noexcept { return model_transform_; }
 
 		/** \brief Renders the mesh to the current render target. */
-		void Render() const {
+		void Render() const noexcept {
 			glBindVertexArray(vertex_array_);
 			if (element_buffer_) {
 				glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_.size()), GL_UNSIGNED_INT, nullptr);

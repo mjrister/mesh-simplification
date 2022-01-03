@@ -10,10 +10,10 @@
 #include <unordered_map>
 #include <vector>
 
-#pragma warning(disable:4701) // potentially uninitialized local variable in GLM using /W4
+#pragma warning(disable:4701 6001)
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
-#pragma warning(default:4701)
+#pragma warning(default:4701 6001)
 
 #include "geometry/half_edge.h"
 #include "geometry/half_edge_mesh.h"
@@ -32,7 +32,7 @@ namespace {
 	 * \param edge The half-edge to disambiguate.
 	 * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
 	 */
-	shared_ptr<HalfEdge> GetMinEdge(const shared_ptr<HalfEdge>& edge) {
+	shared_ptr<HalfEdge> GetMinEdge(const shared_ptr<HalfEdge>& edge) noexcept {
 		return min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
 			return edge01->Vertex()->Id() < edge10->Vertex()->Id();
 		});
@@ -233,7 +233,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 				do {
 					const auto min_edge = GetMinEdge(edgekj);
 					if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.contains(min_edge_key)) {
-						if (auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
+						if (const auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
 							// invalidate existing edge contraction candidate in the priority queue
 							iterator->second->valid = false;
 						}

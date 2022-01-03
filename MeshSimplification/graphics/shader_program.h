@@ -52,7 +52,7 @@ namespace gfx {
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
 		/** \brief Enables this shader program for immediate use in rendering. */
-		void Enable() const { glUseProgram(id_); }
+		void Enable() const noexcept { glUseProgram(id_); }
 
 		/**
 		 * \brief Sets a uniform variable in the shader program.
@@ -106,7 +106,9 @@ namespace gfx {
 		// degrade performance on the critical rendering path.
 		struct string_view_hash {
 			using is_transparent = void;
-			std::size_t operator()(const std::string_view value) const { return std::hash<std::string_view>{}(value); }
+			std::size_t operator()(const std::string_view value) const noexcept {
+				return std::hash<std::string_view>{}(value);
+			}
 		};
 		std::unordered_map<std::string, GLint, string_view_hash, std::equal_to<>> uniform_locations_;
 	};

@@ -16,31 +16,33 @@ namespace geometry {
 		 * \brief Initializes a half-edge.
 		 * \param vertex The vertex the half-edge will point to.
 		 */
-		explicit HalfEdge(std::shared_ptr<Vertex> vertex) : vertex_{std::move(vertex)} {}
+		explicit HalfEdge(std::shared_ptr<Vertex> vertex) noexcept : vertex_{std::move(vertex)} {}
 
 		/** \brief Gets the vertex at the head of this half-edge. */
-		[[nodiscard]] std::shared_ptr<Vertex> Vertex() const { return vertex_; }
+		[[nodiscard]] std::shared_ptr<Vertex> Vertex() const noexcept { return vertex_; }
 
 		/** \brief Gets the next half-edge of a triangle in counter-clockwise order. */
-		[[nodiscard]] std::shared_ptr<HalfEdge> Next() const { return next_; }
+		[[nodiscard]] std::shared_ptr<HalfEdge> Next() const noexcept { return next_; }
 
 		/** \brief Sets the next half-edge. */
-		void SetNext(const std::shared_ptr<HalfEdge>& next) { next_ = next; }
+		void SetNext(const std::shared_ptr<HalfEdge>& next) noexcept { next_ = next; }
 
 		/** \brief Gets the half-edge that shares this edge's vertices in the opposite direction. */
-		[[nodiscard]] std::shared_ptr<HalfEdge> Flip() const { return flip_; }
+		[[nodiscard]] std::shared_ptr<HalfEdge> Flip() const noexcept { return flip_; }
 
 		/** \brief Sets the flip half-edge. */
-		void SetFlip(const std::shared_ptr<HalfEdge>& flip) { flip_ = flip; }
+		void SetFlip(const std::shared_ptr<HalfEdge>& flip) noexcept { flip_ = flip; }
 
 		/** \brief Gets the face created by three counter-clockwise \c next iterations starting from this half-edge. */
-		[[nodiscard]] std::shared_ptr<Face> Face() const { return face_; }
+		[[nodiscard]] std::shared_ptr<Face> Face() const noexcept { return face_; }
 
 		/** Sets the half-edge face. */
-		void SetFace(const std::shared_ptr<geometry::Face>& face) { face_ = face; }
+		void SetFace(const std::shared_ptr<geometry::Face>& face) noexcept { face_ = face; }
 
 		/** \brief Gets the half-edge hash value. */
-		friend std::size_t hash_value(const HalfEdge& edge) { return hash_value(*edge.flip_->vertex_, *edge.vertex_); }
+		friend std::size_t hash_value(const HalfEdge& edge) noexcept {
+			return hash_value(*edge.flip_->vertex_, *edge.vertex_);
+		}
 
 	private:
 		const std::shared_ptr<geometry::Vertex> vertex_;

@@ -30,7 +30,7 @@ namespace {
 	 * \param delimiter A set of characters (in any order) to remove from the beginning and end of the string.
 	 * \return A view of the characters in \p delimiter removed from the beginning and end of \p line.
 	 */
-	string_view Trim(string_view line, const string_view delimiter = " \t") {
+	constexpr string_view Trim(string_view line, const string_view delimiter = " \t") noexcept {
 		line.remove_prefix(std::min<>(line.find_first_not_of(delimiter), line.size()));
 		line.remove_suffix(line.size() - line.find_last_not_of(delimiter) - 1);
 		return line;

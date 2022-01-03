@@ -121,7 +121,7 @@ Window::Window(
 				glfwSetWindowShouldClose(window, true);
 			}
 			if (action == GLFW_PRESS) {
-				if (const auto self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
+				if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
 					self->GetOnKeyPress()(key);
 				}
 			}

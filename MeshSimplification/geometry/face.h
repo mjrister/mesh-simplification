@@ -23,22 +23,22 @@ namespace geometry {
 		     const std::shared_ptr<const Vertex>& v2);
 
 		/** \brief Gets the first face vertex. */
-		[[nodiscard]] std::shared_ptr<const Vertex> V0() const { return v0_; }
+		[[nodiscard]] std::shared_ptr<const Vertex> V0() const noexcept { return v0_; }
 
 		/** \brief  Gets the second face vertex. */
-		[[nodiscard]] std::shared_ptr<const Vertex> V1() const { return v1_; }
+		[[nodiscard]] std::shared_ptr<const Vertex> V1() const noexcept { return v1_; }
 
 		/** \brief Gets the third face vertex. */
-		[[nodiscard]] std::shared_ptr<const Vertex> V2() const { return v2_; }
+		[[nodiscard]] std::shared_ptr<const Vertex> V2() const noexcept { return v2_; }
 
 		/** \brief  Gets the face normal. */
-		[[nodiscard]] const glm::vec3& Normal() const { return normal_; }
+		[[nodiscard]] const glm::vec3& Normal() const noexcept { return normal_; }
 
 		/** \brief Gets the face area. */
-		[[nodiscard]] float Area() const { return area_; }
+		[[nodiscard]] float Area() const noexcept { return area_; }
 
 		/** \brief Gets the face hash value. */
-		friend std::size_t hash_value(const Face& face) { return hash_value(*face.v0_, *face.v1_, *face.v2_); }
+		friend std::size_t hash_value(const Face& face) noexcept { return hash_value(*face.v0_, *face.v1_, *face.v2_); }
 
 	private:
 		std::shared_ptr<const Vertex> v0_, v1_, v2_;
