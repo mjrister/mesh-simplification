@@ -10,9 +10,10 @@
 #include <unordered_map>
 #include <vector>
 
+#pragma warning(disable:4701) // potentially uninitialized local variable in GLM using /W4
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
-#include <glm/gtx/norm.hpp>
+#pragma warning(default:4701)
 
 #include "geometry/half_edge.h"
 #include "geometry/half_edge_mesh.h"
