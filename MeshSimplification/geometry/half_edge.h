@@ -3,8 +3,6 @@
 #include <format>
 #include <memory>
 
-#include <glm/vec3.hpp>
-
 #include "geometry/face.h"
 #include "geometry/vertex.h"
 
