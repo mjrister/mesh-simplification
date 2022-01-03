@@ -87,7 +87,7 @@ void Scene::UpdateProjectionTransform() {
 void Scene::HandleDiscreteKeyPress(const int32_t key_code) {
 
 	const auto scene_objects_size = static_cast<int32_t>(scene_objects_.size());
-	if (active_scene_object_ >= scene_objects_size) return;
+	if (!scene_objects_size) return;
 
 	switch (key_code) {
 		case GLFW_KEY_S: {
@@ -106,7 +106,7 @@ void Scene::HandleDiscreteKeyPress(const int32_t key_code) {
 			break;
 		case GLFW_KEY_B:
 			if (--active_scene_object_ < 0) {
-				active_scene_object_ = std::min<>(0, scene_objects_size - 1);
+				active_scene_object_ = scene_objects_size - 1;
 			}
 			break;
 		default:
