@@ -79,7 +79,7 @@ namespace {
 
 		// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
 		static constexpr auto epsilon = numeric_limits<float>::epsilon();
-		if (fabs(determinant(Q)) < epsilon || fabs(d) < epsilon) {
+		if (std::abs(determinant(Q)) < epsilon || std::abs(d) < epsilon) {
 			const auto position = (v0->Position() + v1->Position()) / 2.f;
 			return {make_shared<Vertex>(vertex_id, position), 0.f};
 		}
