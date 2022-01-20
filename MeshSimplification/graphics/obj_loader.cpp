@@ -128,9 +128,9 @@ namespace {
 					return {x, y, z};
 				}
 				break;
+			default:
+				throw invalid_argument{format("Unsupported format {}", token)};
 		}
-
-		throw invalid_argument{format("Unsupported format {}", token)};
 	}
 
 	/**
