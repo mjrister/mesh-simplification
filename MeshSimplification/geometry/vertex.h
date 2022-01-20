@@ -52,8 +52,8 @@ namespace geometry {
 		}
 
 	private:
-		const std::size_t id_;
-		const glm::vec3 position_;
+		std::size_t id_;
+		glm::vec3 position_;
 		std::shared_ptr<HalfEdge> edge_;
 	};
 }

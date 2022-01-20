@@ -45,7 +45,7 @@ namespace geometry {
 		}
 
 	private:
-		const std::shared_ptr<geometry::Vertex> vertex_;
+		std::shared_ptr<geometry::Vertex> vertex_;
 		std::shared_ptr<HalfEdge> next_, flip_;
 		std::shared_ptr<geometry::Face> face_;
 	};
