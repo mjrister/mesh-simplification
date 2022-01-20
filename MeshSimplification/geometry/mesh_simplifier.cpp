@@ -33,7 +33,7 @@ namespace {
 	 * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
 	 */
 	shared_ptr<HalfEdge> GetMinEdge(const shared_ptr<HalfEdge>& edge) noexcept {
-		return min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) {
+		return min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) noexcept {
 			return edge01->Vertex()->Id() < edge10->Vertex()->Id();
 		});
 	}
@@ -163,14 +163,14 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
 	constexpr auto min_heap_comparator = [](
-		const shared_ptr<EdgeContraction>& lhs,
-		const shared_ptr<EdgeContraction>& rhs) {
+		const shared_ptr<EdgeContraction>& lhs, const shared_ptr<EdgeContraction>& rhs) noexcept {
 		return lhs->cost > rhs->cost;
 	};
 	priority_queue<
 		shared_ptr<EdgeContraction>,
 		vector<shared_ptr<EdgeContraction>>,
-		decltype(min_heap_comparator)> edge_contractions{min_heap_comparator};
+		decltype(min_heap_comparator)
+	> edge_contractions{min_heap_comparator};
 
 	// this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
 	unordered_map<size_t, shared_ptr<EdgeContraction>> valid_edges;
@@ -188,7 +188,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	// stop mesh simplification if the number of triangles has been sufficiently reduced
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
 	const auto target_face_count = initial_face_count * (1.f - rate);
-	const auto should_stop = [&]() {
+	const auto should_stop = [&]() noexcept {
 		const auto face_count = static_cast<float>(half_edge_mesh.Faces().size());
 		return face_count < target_face_count;
 	};
