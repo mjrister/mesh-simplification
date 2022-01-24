@@ -11,18 +11,18 @@ namespace gfx {
  * \see Material::FromType
  */
 enum class MaterialType :uint8_t {
-	Brass,
-	Bronze,
-	Chrome,
-	Copper,
-	Emerald,
-	Gold,
-	Jade,
-	Obsidian,
-	Pearl,
-	Ruby,
-	Silver,
-	Turquoise
+	kBrass,
+	kBronze,
+	kChrome,
+	kCopper,
+	kEmerald,
+	kGold,
+	kJade,
+	kObsidian,
+	kPearl,
+	kRuby,
+	kSilver,
+	kTurquoise
 };
 
 /** \brief A type of material with light reflectance properties. */
@@ -36,84 +36,84 @@ public:
 	 */
 	static constexpr Material FromType(const MaterialType material_type) {
 		switch (material_type) {
-			case MaterialType::Brass: {
+			case MaterialType::kBrass: {
 				constexpr glm::vec3 kAmbient{.329412f, .223529f, .027451f};
 				constexpr glm::vec3 kDiffuse{.780392f, .568627f, .113725f};
 				constexpr glm::vec3 kSpecular{.992157f, .941176f, .807843f};
 				constexpr auto kShininess = .21794872f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Bronze: {
+			case MaterialType::kBronze: {
 				constexpr glm::vec3 kAmbient{.2125f, .1275f, .054f};
 				constexpr glm::vec3 kDiffuse{.714f, .4284f, .18144f};
 				constexpr glm::vec3 kSpecular{.393548f, .271906f, .166721f};
 				constexpr auto kShininess = .2f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			};
-			case MaterialType::Chrome: {
+			case MaterialType::kChrome: {
 				constexpr glm::vec3 kAmbient{.25f, .25f, .25f};
 				constexpr glm::vec3 kDiffuse{.4f, .4f, .4f};
 				constexpr glm::vec3 kSpecular{.774597f, .774597f, .774597f};
 				constexpr auto kShininess = .6f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Copper: {
+			case MaterialType::kCopper: {
 				constexpr glm::vec3 kAmbient{.19125f, .0735f, .0225f};
 				constexpr glm::vec3 kDiffuse{.7038f, .27048f, .0828f};
 				constexpr glm::vec3 kSpecular{.256777f, .137622f, .086014f};
 				constexpr auto kShininess = .1f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Emerald: {
+			case MaterialType::kEmerald: {
 				constexpr glm::vec3 kAmbient{.0215f, .1745f, .0215f};
 				constexpr glm::vec3 kDiffuse{.07568f, .61424f, .07568f};
 				constexpr glm::vec3 kSpecular{.633f, .727811f, .633f};
 				constexpr auto kShininess = .6f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Gold: {
+			case MaterialType::kGold: {
 				constexpr glm::vec3 kAmbient{.24725f, .1995f, .0745f};
 				constexpr glm::vec3 kDiffuse{.75164f, .60648f, .22648f};
 				constexpr glm::vec3 kSpecular{.628281f, .555802f, .366065f};
 				constexpr auto kShininess = .4f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Jade: {
+			case MaterialType::kJade: {
 				constexpr glm::vec3 kAmbient{.135f, .2225f, .1575f};
 				constexpr glm::vec3 kDiffuse{.54f, .89f, .63f};
 				constexpr glm::vec3 kSpecular{.316228f, .316228f, .316228f};
 				constexpr auto kShininess = .1f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Obsidian: {
+			case MaterialType::kObsidian: {
 				constexpr glm::vec3 kAmbient{.05375f, .05f, .06625f};
 				constexpr glm::vec3 kDiffuse{.18275f, .17f, .22525f};
 				constexpr glm::vec3 kSpecular{.332741f, .328634f, .346435f};
 				constexpr auto kShininess = .3f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Pearl: {
+			case MaterialType::kPearl: {
 				constexpr glm::vec3 kAmbient{.25f, .20725f, .20725f};
 				constexpr glm::vec3 kDiffuse{1.f, .829f, .829f};
 				constexpr glm::vec3 kSpecular{.296648f, .296648f, .296648f};
 				constexpr auto kShininess = .088f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Ruby: {
+			case MaterialType::kRuby: {
 				constexpr glm::vec3 kAmbient{.1745f, .01175f, .01175f};
 				constexpr glm::vec3 kDiffuse{.61424f, .04136f, .04136f};
 				constexpr glm::vec3 kSpecular{.727811f, .626959f, .626959f};
 				constexpr auto kShininess = .6f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Silver: {
+			case MaterialType::kSilver: {
 				constexpr glm::vec3 kAmbient{.19225f, .19225f, .19225f};
 				constexpr glm::vec3 kDiffuse{.50754f, .50754f, .50754f};
 				constexpr glm::vec3 kSpecular{.508273f, .508273f, .508273f};
 				constexpr auto kShininess = .4f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
-			case MaterialType::Turquoise: {
+			case MaterialType::kTurquoise: {
 				constexpr glm::vec3 kAmbient{.1f, .18725f, .1745f};
 				constexpr glm::vec3 kDiffuse{.396f, .74151f, .69102f};
 				constexpr glm::vec3 kSpecular{.297254f, .30829f, .306678f};

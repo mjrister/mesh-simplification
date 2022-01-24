@@ -29,7 +29,7 @@ Scene::Scene(Window& window, ShaderProgram& shader_program) : window_{window}, s
 
 	scene_objects_.push_back(SceneObject{
 		.mesh = move(mesh),
-		.material = Material::FromType(MaterialType::Jade)
+		.material = Material::FromType(MaterialType::kJade)
 	});
 
 	shader_program_.Enable();
