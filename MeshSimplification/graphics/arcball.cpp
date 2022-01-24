@@ -25,10 +25,10 @@ constexpr vec2 GetNormalizedDeviceCoordinates(
 	const dvec2& cursor_position, const pair<const int32_t, const int32_t>& window_size) {
 
 	// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
-	const auto [width, height] = window_size;
-	constexpr auto min = -1., max = 1.;
-	const auto x_ndc = std::clamp(cursor_position.x * 2. / width - 1., min, max);
-	const auto y_ndc = std::clamp(cursor_position.y * 2. / height - 1., min, max);
+	constexpr auto kMinCoordinateValue = -1., kMaxCoordinateValue = 1.;
+	const auto [window_width, window_height] = window_size;
+	const auto x_ndc = std::clamp(cursor_position.x * 2. / window_width - 1., kMinCoordinateValue, kMaxCoordinateValue);
+	const auto y_ndc = std::clamp(cursor_position.y * 2. / window_height - 1., kMinCoordinateValue, kMaxCoordinateValue);
 
 	// because window coordinates start with (0,0) in the top-left corner which becomes (-1,-1) after normalization,
 	// the y-coordinate needs to be negated to align with the OpenGL convention of the top-left residing at (-1,1)
@@ -68,7 +68,7 @@ optional<const pair<const vec3, const float>> arcball::GetRotation(
 	// use min to account for numerical issues where the dot product is greater than 1 causing acos to produce NaN
 	const auto angle = acos(std::min<>(1.f, dot(arcball_position_start, arcball_position_end)));
 
-	if (static constexpr auto epsilon = 1e-3f; angle > epsilon) {
+	if (static constexpr auto kEpsilon = 1e-3f; angle > kEpsilon) {
 		const auto axis = cross(arcball_position_start, arcball_position_end);
 		return make_pair(axis, angle);
 	}

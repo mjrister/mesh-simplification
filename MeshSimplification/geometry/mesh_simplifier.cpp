@@ -78,8 +78,8 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 	const auto d = q01[3][3];
 
 	// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
-	static constexpr auto epsilon = numeric_limits<float>::epsilon();
-	if (std::abs(determinant(Q)) < epsilon || std::abs(d) < epsilon) {
+	static constexpr auto kEpsilon = numeric_limits<float>::epsilon();
+	if (std::abs(determinant(Q)) < kEpsilon || std::abs(d) < kEpsilon) {
 		const auto position = (v0->position() + v1->position()) / 2.f;
 		return {make_shared<Vertex>(vertex_id, position), 0.f};
 	}
@@ -112,7 +112,7 @@ bool WillDegenerate(const shared_ptr<HalfEdge>& edge01) {
 	}
 
 	for (auto iterator = edge01->flip()->next(); iterator != edge01; iterator = iterator->flip()->next()) {
-		if (const auto vertex = iterator->vertex(); neighborhood.count(hash_value(*vertex))) {
+		if (const auto vertex = iterator->vertex(); neighborhood.contains(hash_value(*vertex))) {
 			return true;
 		}
 	}
@@ -158,15 +158,15 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	}
 
 	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
-	constexpr auto min_heap_comparator = [](
+	constexpr auto kMinHeapComparator = [](
 		const shared_ptr<EdgeContraction>& lhs, const shared_ptr<EdgeContraction>& rhs) noexcept {
 		return lhs->cost > rhs->cost;
 	};
 	priority_queue<
 		shared_ptr<EdgeContraction>,
 		vector<shared_ptr<EdgeContraction>>,
-		decltype(min_heap_comparator)
-	> edge_contractions{min_heap_comparator};
+		decltype(kMinHeapComparator)
+	> edge_contractions{kMinHeapComparator};
 
 	// this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
 	unordered_map<size_t, shared_ptr<EdgeContraction>> valid_edges;

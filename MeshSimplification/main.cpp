@@ -14,9 +14,9 @@ using namespace std;
 int main() {
 
 	try {
-		constexpr auto window_dimensions = make_pair(1280, 960);
-		constexpr auto opengl_version = make_pair(4, 6);
-		Window window{"Mesh Simplification", window_dimensions, opengl_version};
+		constexpr auto kWindowDimensions = make_pair(1280, 960);
+		constexpr auto kOpenGlVersion = make_pair(4, 6);
+		Window window{"Mesh Simplification", kWindowDimensions, kOpenGlVersion};
 		ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
 		Scene scene{window, shader_program};
 

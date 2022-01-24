@@ -22,7 +22,7 @@ using namespace std;
 namespace {
 
 // indicates an unspecified face element index position
-constexpr int32_t npos_index = -1;
+constexpr int32_t kInvalidFaceElementIndex = -1;
 
 /**
  * \brief Removes a set of characters from the beginning and end of the string.
@@ -97,29 +97,28 @@ vec<N, T> ParseLine(const string_view line) {
  * \throw invalid_argument Indicates the index group format is unsupported.
  */
 ivec3 ParseIndexGroup(const string_view token) {
-	static constexpr auto delimiter = "/";
-	const auto tokens = Split(token, delimiter);
-	const auto delimiter_count = ranges::count(token, *delimiter);
+	static constexpr auto kIndexDelimiter = "/";
+	const auto tokens = Split(token, kIndexDelimiter);
 
-	switch (delimiter_count) {
+	switch (ranges::count(token, *kIndexDelimiter)) {
 		case 0:
 			if (tokens.size() == 1) {
 				const auto x = ParseToken<int32_t>(tokens[0]) - 1;
-				return {x, npos_index, npos_index};
+				return {x, kInvalidFaceElementIndex, kInvalidFaceElementIndex};
 			}
 			break;
 		case 1:
 			if (tokens.size() == 2) {
 				const auto x = ParseToken<int32_t>(tokens[0]) - 1;
 				const auto y = ParseToken<int32_t>(tokens[1]) - 1;
-				return {x, y, npos_index};
+				return {x, y, kInvalidFaceElementIndex};
 			}
 			break;
 		case 2:
 			if (tokens.size() == 2 && *token.cbegin() != '/' && *(token.cend() - 1) != '/') {
 				const auto x = ParseToken<int32_t>(tokens[0]) - 1;
 				const auto z = ParseToken<int32_t>(tokens[1]) - 1;
-				return {x, npos_index, z};
+				return {x, kInvalidFaceElementIndex, z};
 			}
 			if (tokens.size() == 3) {
 				const auto x = ParseToken<int32_t>(tokens[0]) - 1;
@@ -190,10 +189,10 @@ Mesh LoadMesh(istream& is) {
 			if (const auto iterator = unique_index_groups.find(index_group); iterator == unique_index_groups.end()) {
 				const auto position_index = index_group[0];
 				ordered_positions.push_back(positions.at(position_index));
-				if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != npos_index) {
+				if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != kInvalidFaceElementIndex) {
 					ordered_texture_coordinates.push_back(texture_coordinates.at(texture_coordinate_index));
 				}
-				if (const auto normal_index = index_group[2]; normal_index != npos_index) {
+				if (const auto normal_index = index_group[2]; normal_index != kInvalidFaceElementIndex) {
 					ordered_normals.push_back(normals.at(normal_index));
 				}
 				const auto index = static_cast<uint32_t>(ordered_positions.size()) - 1u;

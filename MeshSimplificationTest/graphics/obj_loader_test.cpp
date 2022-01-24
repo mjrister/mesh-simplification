@@ -72,15 +72,15 @@ TEST(ObjLoaderTest, TestParseLine) {
 }
 
 TEST(ObjLoaderTest, TestParseIndexGroupWithPositionIndex) {
-	ASSERT_EQ((ivec3{0, npos_index, npos_index}), ParseIndexGroup("1"));
+	ASSERT_EQ((ivec3{0, kInvalidFaceElementIndex, kInvalidFaceElementIndex}), ParseIndexGroup("1"));
 }
 
 TEST(ObjLoaderTest, TestParseIndexGroupWithPositionAndTextureCoordinatesIndices) {
-	ASSERT_EQ((ivec3{0, 1, npos_index}), ParseIndexGroup("1/2"));
+	ASSERT_EQ((ivec3{0, 1, kInvalidFaceElementIndex}), ParseIndexGroup("1/2"));
 }
 
 TEST(ObjLoaderTest, TestParseIndexGroupWithPositionAndNormalIndices) {
-	ASSERT_EQ((ivec3{0, npos_index, 1}), ParseIndexGroup("1//2"));
+	ASSERT_EQ((ivec3{0, kInvalidFaceElementIndex, 1}), ParseIndexGroup("1//2"));
 }
 
 TEST(ObjLoaderTest, TestParseIndexGroupWithPositionTextureCoordinateAndNormalIndices) {
