@@ -20,16 +20,16 @@ public:
 	Vertex(const std::size_t id, const glm::vec3& position) noexcept : id_{id}, position_{position} {}
 
 	/** \brief Gets the vertex ID. */
-	[[nodiscard]] std::size_t Id() const noexcept { return id_; }
+	[[nodiscard]] std::size_t id() const noexcept { return id_; }
 
 	/** \brief Gets the vertex position. */
-	[[nodiscard]] const glm::vec3& Position() const noexcept { return position_; }
+	[[nodiscard]] const glm::vec3& position() const noexcept { return position_; }
 
 	/** \brief Gets the last created half-edge that points to this vertex. */
-	[[nodiscard]] std::shared_ptr<HalfEdge> Edge() const noexcept { return edge_; }
+	[[nodiscard]] std::shared_ptr<HalfEdge> edge() const noexcept { return edge_; }
 
 	/** \brief Sets the vertex half-edge. */
-	void SetEdge(const std::shared_ptr<HalfEdge>& edge) noexcept { edge_ = edge; }
+	void set_edge(const std::shared_ptr<HalfEdge>& edge) noexcept { edge_ = edge; }
 
 	/** \brief Gets the hash value for a vertex. */
 	friend std::size_t hash_value(const Vertex& v0) noexcept { return std::hash<std::size_t>{}(v0.id_); }
@@ -62,6 +62,6 @@ private:
 template <>
 struct std::formatter<geometry::Vertex> : std::formatter<std::string> {
 	auto format(const geometry::Vertex& vertex, std::format_context& context) {
-		return formatter<std::string>::format(to_string(vertex.Id()), context);
+		return formatter<std::string>::format(to_string(vertex.id()), context);
 	}
 };

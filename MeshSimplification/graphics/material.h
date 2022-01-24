@@ -140,16 +140,16 @@ public:
 		  shininess_{shininess} {}
 
 	/** \brief Gets the ambient light reflected. */
-	[[nodiscard]] constexpr glm::vec3 Ambient() const { return ambient_; }
+	[[nodiscard]] constexpr glm::vec3 ambient() const { return ambient_; }
 
 	/** \brief Gets the diffuse light reflected. */
-	[[nodiscard]] constexpr glm::vec3 Diffuse() const { return diffuse_; }
+	[[nodiscard]] constexpr glm::vec3 diffuse() const { return diffuse_; }
 
 	/** \brief Gets the specular light reflected. */
-	[[nodiscard]] constexpr glm::vec3 Specular() const { return specular_; }
+	[[nodiscard]] constexpr glm::vec3 specular() const { return specular_; }
 
 	/** \brief Gets the  degree of shininess reflected from specular highlights. */
-	[[nodiscard]] constexpr float Shininess() const { return shininess_; }
+	[[nodiscard]] constexpr float shininess() const { return shininess_; }
 
 private:
 	const glm::vec3 ambient_;

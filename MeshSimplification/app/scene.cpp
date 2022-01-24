@@ -21,7 +21,7 @@ bool use_phong_shading = false;
 
 Scene::Scene(Window& window, ShaderProgram& shader_program) : window_{window}, shader_program_{shader_program} {
 
-	window.OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
+	window.set_on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
 
 	auto mesh = obj_loader::LoadMesh("models/bunny.obj");
 	mesh.Scale(vec3{.25f});
@@ -52,7 +52,7 @@ void Scene::Render(const float delta_time) {
 
 	for (const auto& [mesh, material] : scene_objects_) {
 
-		const auto view_model_transform = view_transform * mesh.ModelTransform();
+		const auto view_model_transform = view_transform * mesh.model_transform();
 		shader_program_.SetUniform("view_model_transform", view_model_transform);
 
 		// generally, normals should be transformed by the upper 3x3 inverse transpose of the view-model matrix, however,
@@ -61,10 +61,10 @@ void Scene::Render(const float delta_time) {
 		// in addition to uniform scaling (which is undone when the transformed normal is renormalized in the vertex shader)
 		shader_program_.SetUniform("normal_transform", mat3{view_model_transform});
 
-		shader_program_.SetUniform("material.ambient", material.Ambient());
-		shader_program_.SetUniform("material.diffuse", material.Diffuse());
-		shader_program_.SetUniform("material.specular", material.Specular());
-		shader_program_.SetUniform("material.shininess", material.Shininess() * 128.f);
+		shader_program_.SetUniform("material.ambient", material.ambient());
+		shader_program_.SetUniform("material.diffuse", material.diffuse());
+		shader_program_.SetUniform("material.specular", material.specular());
+		shader_program_.SetUniform("material.shininess", material.shininess() * 128.f);
 
 		mesh.Render();
 	}
@@ -144,7 +144,7 @@ void Scene::HandleContinuousInput(const float delta_time) {
 		if (prev_cursor_position) {
 			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.GetSize())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = view_transform * mesh.ModelTransform();
+				const auto view_model_transform = view_transform * mesh.model_transform();
 				const auto model_rotation_axis = mat3{transpose(view_model_transform)} * view_rotation_axis;
 				mesh.Rotate(normalize(model_rotation_axis), angle);
 			}

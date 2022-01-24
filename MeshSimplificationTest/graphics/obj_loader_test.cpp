@@ -137,10 +137,10 @@ TEST(ObjLoaderTest, TestLoadMeshWithoutFaceIndices) {
 	constexpr vec2 vt0{3.f, 3.1f}, vt1{4.f, 4.1f}, vt2{5.f, 5.1f};
 	constexpr vec3 vn0{6.f, 6.1f, 6.2f}, vn1{7.f, 7.1f, 7.2f}, vn2{8.f, 8.1f, 8.2f};
 
-	ASSERT_EQ((vector{v0, v1, v2}), mesh.Positions());
-	ASSERT_EQ((vector{vt0, vt1, vt2}), mesh.TextureCoordinates());
-	ASSERT_EQ((vector{vn0, vn1, vn2}), mesh.Normals());
-	ASSERT_TRUE(mesh.Indices().empty());
+	ASSERT_EQ((vector{v0, v1, v2}), mesh.positions());
+	ASSERT_EQ((vector{vt0, vt1, vt2}), mesh.texture_coordinates());
+	ASSERT_EQ((vector{vn0, vn1, vn2}), mesh.normals());
+	ASSERT_TRUE(mesh.indices().empty());
 }
 
 TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
@@ -172,9 +172,9 @@ TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
 	constexpr vec2 vt0{4.f, 4.1f}, vt1{5.f, 5.1f}, vt2{6.f, 6.1f}, vt3{7.f, 7.1f};
 	constexpr vec3 vn0{8.f, 8.1f, 8.2f}, vn1{9.f, 9.1f, 9.2f}, vn2{10.f, 10.1f, 10.2f};
 
-	ASSERT_EQ((vector{v0, v1, v2, v0, v3}), mesh.Positions());
-	ASSERT_EQ((vector{vt3, vt0, vt1, vt1, vt2}), mesh.TextureCoordinates());
-	ASSERT_EQ((vector{vn1, vn2, vn0, vn1, vn0}), mesh.Normals());
-	ASSERT_EQ((vector{0u, 1u, 2u, 3u, 1u, 4u}), mesh.Indices());
+	ASSERT_EQ((vector{v0, v1, v2, v0, v3}), mesh.positions());
+	ASSERT_EQ((vector{vt3, vt0, vt1, vt1, vt2}), mesh.texture_coordinates());
+	ASSERT_EQ((vector{vn1, vn2, vn0, vn1, vn0}), mesh.normals());
+	ASSERT_EQ((vector{0u, 1u, 2u, 3u, 1u, 4u}), mesh.indices());
 }
 }

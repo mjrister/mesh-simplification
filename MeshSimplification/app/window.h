@@ -32,8 +32,8 @@ public:
 	Window(Window&&) noexcept = delete;
 	Window& operator=(Window&&) noexcept = delete;
 
-	[[nodiscard]] const std::function<void(std::int32_t)>& GetOnKeyPress() const noexcept { return on_key_press_; }
-	void OnKeyPress(const std::function<void(std::int32_t)>& event) { on_key_press_ = event; }
+	[[nodiscard]] const std::function<void(std::int32_t)>& on_key_press() const noexcept { return on_key_press_; }
+	void set_on_key_press(const std::function<void(std::int32_t)>& on_key_press) { on_key_press_ = on_key_press; }
 
 	/**
 	 * \brief Gets the window size.
@@ -46,10 +46,20 @@ public:
 	}
 
 	/**
+	 * \brief Gets the cursor position.
+	 * \return The (x,y) coordinates of the cursor in the window.
+	 */
+	[[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
+		double x, y;
+		glfwGetCursorPos(window_, &x, &y);
+		return {x, y};
+	}
+
+	/**
 	 * \brief Determines if the window is closed.
 	 * \return \c true if the window is closed, otherwise \c false.
 	 */
-	[[nodiscard]] bool Closed() const noexcept {
+	[[nodiscard]] bool IsClosed() const noexcept {
 		return glfwWindowShouldClose(window_);
 	}
 
@@ -69,16 +79,6 @@ public:
 	 */
 	[[nodiscard]] bool IsMouseButtonPressed(const std::int32_t button) const noexcept {
 		return glfwGetMouseButton(window_, button);
-	}
-
-	/**
-	 * \brief Gets the cursor position.
-	 * \return The (x,y) coordinates of the cursor in the window.
-	 */
-	[[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
-		double x, y;
-		glfwGetCursorPos(window_, &x, &y);
-		return {x, y};
 	}
 
 	/** \brief Updates the window for the next iteration of main render loop. */

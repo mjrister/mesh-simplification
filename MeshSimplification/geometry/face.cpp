@@ -20,9 +20,9 @@ namespace {
 auto GetMinVertexOrder(
 	const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v1, const shared_ptr<const Vertex>& v2) {
 
-	if (const auto min_id = min<>({v0->Id(), v1->Id(), v2->Id()}); min_id == v0->Id()) {
+	if (const auto min_id = min<>({v0->id(), v1->id(), v2->id()}); min_id == v0->id()) {
 		return make_tuple(v0, v1, v2);
-	} else if (min_id == v1->Id()) {
+	} else if (min_id == v1->id()) {
 		return make_tuple(v1, v2, v0);
 	} else {
 		return make_tuple(v2, v0, v1);
@@ -34,8 +34,8 @@ Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v
 
 	tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
 
-	const auto edge01 = v1_->Position() - v0_->Position();
-	const auto edge02 = v2_->Position() - v0_->Position();
+	const auto edge01 = v1_->position() - v0_->position();
+	const auto edge02 = v2_->position() - v0_->position();
 	const auto normal = cross(edge01, edge02);
 	const auto magnitude = length(normal);
 

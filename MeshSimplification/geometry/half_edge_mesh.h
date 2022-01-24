@@ -35,16 +35,16 @@ public:
 	explicit operator gfx::Mesh() const;
 
 	/** \brief Gets a mapping of mesh vertices by ID. */
-	[[nodiscard]] const auto& Vertices() const noexcept { return vertices_; }
+	[[nodiscard]] const std::map<std::size_t, std::shared_ptr<Vertex>>& vertices() const noexcept { return vertices_; }
 
 	/** \brief Gets a mapping of mesh half-edges by ID. */
-	[[nodiscard]] const auto& Edges() const noexcept { return edges_; }
+	[[nodiscard]] const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges() const noexcept { return edges_; }
 
 	/** \brief Gets a mapping of mesh faces by ID. */
-	[[nodiscard]] const auto& Faces() const noexcept { return faces_; }
+	[[nodiscard]] const std::unordered_map<std::size_t, std::shared_ptr<Face>>& faces() const noexcept { return faces_; }
 
 	/** \brief Gets a unique vertex ID that can be used to construct a new vertex in the half-edge mesh. */
-	[[nodiscard]] std::size_t NextVertexId() noexcept { return next_vertex_id_++; }
+	[[nodiscard]] std::size_t next_vertex_id() noexcept { return next_vertex_id_++; }
 
 	/**
 	 * \brief Collapses an edge into a single vertex and updates all incident edges to connect to that vertex.
