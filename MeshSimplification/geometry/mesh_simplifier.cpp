@@ -27,125 +27,121 @@ using namespace std;
 
 namespace {
 
-	/**
-	 * \brief Gets a canonical representation of a half-edge used to disambiguate between its flip edge.
-	 * \param edge The half-edge to disambiguate.
-	 * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
-	 */
-	shared_ptr<HalfEdge> GetMinEdge(const shared_ptr<HalfEdge>& edge) noexcept {
-		return min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) noexcept {
-			return edge01->Vertex()->Id() < edge10->Vertex()->Id();
-		});
+/**
+ * \brief Gets a canonical representation of a half-edge used to disambiguate between its flip edge.
+ * \param edge The half-edge to disambiguate.
+ * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
+ */
+shared_ptr<HalfEdge> GetMinEdge(const shared_ptr<HalfEdge>& edge) noexcept {
+	return min<>(edge, edge->Flip(), [](const auto& edge01, const auto& edge10) noexcept {
+		return edge01->Vertex()->Id() < edge10->Vertex()->Id();
+	});
+}
+
+/**
+ * \brief Computes the error quadric for a vertex.
+ * \param vertex The vertex to evaluate.
+ * \return The summation of quadrics for all triangles incident to \p vertex.
+ */
+mat4 ComputeQuadric(const Vertex& vertex) {
+	mat4 quadric{0.f};
+	auto edgei0 = vertex.Edge();
+	do {
+		const auto& position = vertex.Position();
+		const auto& normal = edgei0->Face()->Normal();
+		const vec4 plane{normal, -dot(position, normal)};
+		quadric += outerProduct(plane, plane);
+		edgei0 = edgei0->Next()->Flip();
+	} while (edgei0 != vertex.Edge());
+	return quadric;
+}
+
+/**
+ * \brief Determines the optimal vertex position for an edge contraction.
+ * \param vertex_id The ID to use for the newly created vertex.
+ * \param edge01 The half-edge to evaluate.
+ * \param quadrics A mapping of error quadrics by vertex ID.
+ * \return The optimal vertex and cost associated with collapsing \p edge01.
+ */
+pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
+	const size_t vertex_id, const HalfEdge& edge01, const unordered_map<size_t, mat4>& quadrics) {
+
+	const auto v0 = edge01.Flip()->Vertex();
+	const auto v1 = edge01.Vertex();
+
+	const auto& q0 = quadrics.at(v0->Id());
+	const auto& q1 = quadrics.at(v1->Id());
+	const auto q01 = q0 + q1;
+
+	const mat3 Q{q01};
+	const vec3 b = column(q01, 3);
+	const auto d = q01[3][3];
+
+	// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
+	static constexpr auto epsilon = numeric_limits<float>::epsilon();
+	if (std::abs(determinant(Q)) < epsilon || std::abs(d) < epsilon) {
+		const auto position = (v0->Position() + v1->Position()) / 2.f;
+		return {make_shared<Vertex>(vertex_id, position), 0.f};
 	}
 
-	/**
-	 * \brief Computes the error quadric for a vertex.
-	 * \param vertex The vertex to evaluate.
-	 * \return The summation of quadrics for all triangles incident to \p vertex.
-	 */
-	mat4 ComputeQuadric(const Vertex& vertex) {
-		mat4 quadric{0.f};
-		auto edgei0 = vertex.Edge();
-		do {
-			const auto& position = vertex.Position();
-			const auto& normal = edgei0->Face()->Normal();
-			const vec4 plane{normal, -dot(position, normal)};
-			quadric += outerProduct(plane, plane);
-			edgei0 = edgei0->Next()->Flip();
-		} while (edgei0 != vertex.Edge());
-		return quadric;
+	const auto Q_inv = inverse(Q);
+	const auto D_inv = column(mat4{Q_inv}, 3, vec4{-1.f / d * Q_inv * b, 1.f / d});
+
+	auto position = D_inv * vec4{0.f, 0.f, 0.f, 1.f};
+	position /= position.w;
+	const auto cost = dot(position, q01 * position);
+
+	return {make_shared<Vertex>(vertex_id, position), cost};
+}
+
+/**
+ * \brief Determines if the removal of an edge will cause the mesh to degenerate.
+ * \param edge01 The half-edge to evaluate.
+ * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
+ */
+bool WillDegenerate(const shared_ptr<HalfEdge>& edge01) {
+	const auto v0 = edge01->Flip()->Vertex();
+	const auto v1_next = edge01->Next()->Vertex();
+	const auto v0_next = edge01->Flip()->Next()->Vertex();
+	unordered_map<size_t, shared_ptr<Vertex>> neighborhood;
+
+	for (auto iterator = edge01->Next(); iterator != edge01->Flip(); iterator = iterator->Flip()->Next()) {
+		if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
+			neighborhood.emplace(hash_value(*vertex), vertex);
+		}
 	}
 
-	/**
-	 * \brief Determines the optimal vertex position for an edge contraction.
-	 * \param vertex_id The ID to use for the newly created vertex.
-	 * \param edge01 The half-edge to evaluate.
-	 * \param quadrics A mapping of error quadrics by vertex ID.
-	 * \return The optimal vertex and cost associated with collapsing \p edge01.
-	 */
-	pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
-		const size_t vertex_id, const HalfEdge& edge01, const unordered_map<size_t, mat4>& quadrics) {
-
-		const auto v0 = edge01.Flip()->Vertex();
-		const auto v1 = edge01.Vertex();
-
-		const auto& q0 = quadrics.at(v0->Id());
-		const auto& q1 = quadrics.at(v1->Id());
-		const auto q01 = q0 + q1;
-
-		const mat3 Q{q01};
-		const vec3 b = column(q01, 3);
-		const auto d = q01[3][3];
-
-		// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
-		static constexpr auto epsilon = numeric_limits<float>::epsilon();
-		if (std::abs(determinant(Q)) < epsilon || std::abs(d) < epsilon) {
-			const auto position = (v0->Position() + v1->Position()) / 2.f;
-			return {make_shared<Vertex>(vertex_id, position), 0.f};
+	for (auto iterator = edge01->Flip()->Next(); iterator != edge01; iterator = iterator->Flip()->Next()) {
+		if (const auto vertex = iterator->Vertex(); neighborhood.count(hash_value(*vertex))) {
+			return true;
 		}
-
-		const auto Q_inv = inverse(Q);
-		const auto D_inv = column(mat4{Q_inv}, 3, vec4{-1.f / d * Q_inv * b, 1.f / d});
-
-		auto position = D_inv * vec4{0.f, 0.f, 0.f, 1.f};
-		position /= position.w;
-		const auto cost = dot(position, q01 * position);
-
-		return {make_shared<Vertex>(vertex_id, position), cost};
 	}
 
+	return false;
+}
+
+/** \brief Represents an edge contraction priority queue entry. */
+struct EdgeContraction {
+
+	EdgeContraction(HalfEdgeMesh& mesh, const shared_ptr<HalfEdge>& edge, const unordered_map<size_t, mat4>& quadrics)
+		: edge{edge} { tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics); }
+
+	/** \brief The edge to be collapsed. */
+	const shared_ptr<HalfEdge> edge;
+
+	/** \brief The optimal vertex position that minimizes the cost of collapsing this edge. */
+	shared_ptr<Vertex> vertex;
+
+	/** \brief The associated cost of collapsing this edge. */
+	float cost = numeric_limits<float>::infinity();
+
 	/**
-	 * \brief Determines if the removal of an edge will cause the mesh to degenerate.
-	 * \param edge01 The half-edge to evaluate.
-	 * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
+	 * \brief This is used as a workaround for priority_queue not providing a method to update an existing
+	 *        entry's priority. As edges are updated in the mesh, duplicated entries may be inserted in the queue
+	 *        and this property will be used to determine if an entry refers to the most recent edge update.
 	 */
-	bool WillDegenerate(const shared_ptr<HalfEdge>& edge01) {
-		const auto v0 = edge01->Flip()->Vertex();
-		const auto v1_next = edge01->Next()->Vertex();
-		const auto v0_next = edge01->Flip()->Next()->Vertex();
-		unordered_map<size_t, shared_ptr<Vertex>> neighborhood;
-
-		for (auto iterator = edge01->Next(); iterator != edge01->Flip(); iterator = iterator->Flip()->Next()) {
-			if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
-				neighborhood.emplace(hash_value(*vertex), vertex);
-			}
-		}
-
-		for (auto iterator = edge01->Flip()->Next(); iterator != edge01; iterator = iterator->Flip()->Next()) {
-			if (const auto vertex = iterator->Vertex(); neighborhood.count(hash_value(*vertex))) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/** \brief Represents an edge contraction priority queue entry. */
-	struct EdgeContraction {
-
-		EdgeContraction(
-			HalfEdgeMesh& mesh,
-			const shared_ptr<HalfEdge>& edge,
-			const unordered_map<size_t, mat4>& quadrics) : edge{edge} {
-			tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
-		}
-
-		/** \brief The edge to be collapsed. */
-		const shared_ptr<HalfEdge> edge;
-
-		/** \brief The optimal vertex position that minimizes the cost of collapsing this edge. */
-		shared_ptr<Vertex> vertex;
-
-		/** \brief The associated cost of collapsing this edge. */
-		float cost = numeric_limits<float>::infinity();
-
-		/**
-		 * \brief This is used as a workaround for priority_queue not providing a method to update an existing
-		 *        entry's priority. As edges are updated in the mesh, duplicated entries may be inserted in the queue
-		 *        and this property will be used to determine if an entry refers to the most recent edge update.
-		 */
-		bool valid = true;
-	};
+	bool valid = true;
+};
 }
 
 Mesh mesh::Simplify(const Mesh& mesh, const float rate) {

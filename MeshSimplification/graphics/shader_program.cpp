@@ -9,63 +9,63 @@ using namespace std;
 
 namespace {
 
-	/**
-	 * \brief Retrieves the contents of a file.
-	 * \param filepath The filepath to load contents from.
-	 * \return A string containing the file contents.
-	 * \throw runtime_error Indicates there was an error opening the file.
-	 */
-	string Read(const string_view filepath) {
+/**
+ * \brief Retrieves the contents of a file.
+ * \param filepath The filepath to load contents from.
+ * \return A string containing the file contents.
+ * \throw runtime_error Indicates there was an error opening the file.
+ */
+string Read(const string_view filepath) {
 
-		if (ifstream ifs{filepath.data()}; ifs.good()) {
-			string source;
-			ifs.seekg(0, ios::end);
-			source.reserve(static_cast<size_t>(ifs.tellg()));
-			ifs.seekg(0, ios::beg);
-			source.assign(istreambuf_iterator<char>{ifs}, istreambuf_iterator<char>{});
-			return source;
-		}
-
-		throw runtime_error{format("Unable to open {}", filepath)};
+	if (ifstream ifs{filepath.data()}; ifs.good()) {
+		string source;
+		ifs.seekg(0, ios::end);
+		source.reserve(static_cast<size_t>(ifs.tellg()));
+		ifs.seekg(0, ios::beg);
+		source.assign(istreambuf_iterator<char>{ifs}, istreambuf_iterator<char>{});
+		return source;
 	}
 
-	/**
-	 * \brief Verifies the status of a shader.
-	 * \param shader_id The shader ID.
-	 * \param status_type The status type to verify.
-	 * \throw runtime_error if shader verification failed.
-	 */
-	void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
-		GLint success;
-		glGetShaderiv(shader_id, status_type, &success);
+	throw runtime_error{format("Unable to open {}", filepath)};
+}
 
-		if (!success) {
-			GLsizei log_length;
-			glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
-			vector<GLchar> info_log(log_length);
-			glGetShaderInfoLog(shader_id, log_length, &log_length, info_log.data());
-			throw runtime_error{info_log.data()};
-		}
+/**
+ * \brief Verifies the status of a shader.
+ * \param shader_id The shader ID.
+ * \param status_type The status type to verify.
+ * \throw runtime_error if shader verification failed.
+ */
+void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
+	GLint success;
+	glGetShaderiv(shader_id, status_type, &success);
+
+	if (!success) {
+		GLsizei log_length;
+		glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
+		vector<GLchar> info_log(log_length);
+		glGetShaderInfoLog(shader_id, log_length, &log_length, info_log.data());
+		throw runtime_error{info_log.data()};
 	}
+}
 
-	/**
-	 * \brief Verifies the status of a shader program.
-	 * \param shader_program_id The shader program ID.
-	 * \param status_type The shader program status type to verify.
-	 * \throw runtime_error if shader program verification failed.
-	 */
-	void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum status_type) {
-		GLint success;
-		glGetProgramiv(shader_program_id, status_type, &success);
+/**
+ * \brief Verifies the status of a shader program.
+ * \param shader_program_id The shader program ID.
+ * \param status_type The shader program status type to verify.
+ * \throw runtime_error if shader program verification failed.
+ */
+void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum status_type) {
+	GLint success;
+	glGetProgramiv(shader_program_id, status_type, &success);
 
-		if (!success) {
-			GLsizei log_length;
-			glGetProgramiv(shader_program_id, GL_INFO_LOG_LENGTH, &log_length);
-			vector<GLchar> info_log(log_length);
-			glGetProgramInfoLog(shader_program_id, log_length, &log_length, info_log.data());
-			throw runtime_error{info_log.data()};
-		}
+	if (!success) {
+		GLsizei log_length;
+		glGetProgramiv(shader_program_id, GL_INFO_LOG_LENGTH, &log_length);
+		vector<GLchar> info_log(log_length);
+		glGetProgramInfoLog(shader_program_id, log_length, &log_length, info_log.data());
+		throw runtime_error{info_log.data()};
 	}
+}
 }
 
 ShaderProgram::Shader::Shader(const GLenum shader_type, const GLchar* const shader_source)

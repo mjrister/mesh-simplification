@@ -10,20 +10,20 @@ using namespace std;
 
 namespace {
 
-	/** \brief Gets the maximum number of texture units allowed by the host GPU. */
-	GLint GetMaxTextureUnits() noexcept {
-		static GLint max_texture_units = 0;
-		if (!max_texture_units) {
-			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
-		}
-		return max_texture_units;
+/** \brief Gets the maximum number of texture units allowed by the host GPU. */
+GLint GetMaxTextureUnits() noexcept {
+	static GLint max_texture_units = 0;
+	if (!max_texture_units) {
+		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
 	}
+	return max_texture_units;
+}
 }
 
 Texture2d::Texture2d(const string_view filepath, const uint8_t texture_unit_index)
 	: texture_unit_index_{texture_unit_index} {
 
-	if (const auto max_texture_units = GetMaxTextureUnits();  texture_unit_index >= max_texture_units) {
+	if (const auto max_texture_units = GetMaxTextureUnits(); texture_unit_index >= max_texture_units) {
 		throw out_of_range{format("{} exceeds maximum texture unit index {}", texture_unit_index, max_texture_units - 1)};
 	}
 

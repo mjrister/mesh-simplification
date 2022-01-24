@@ -1,8 +1,7 @@
+#include <exception>
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
-
-#include <exception>
 
 #include "app/scene.h"
 #include "app/window.h"

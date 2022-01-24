@@ -14,14 +14,12 @@ using namespace glm;
 using namespace std;
 
 namespace {
-	mat4 view_transform;
-	pair<int32_t, int32_t> prev_window_dimensions;
-	bool use_phong_shading = false;
+mat4 view_transform;
+pair<int32_t, int32_t> prev_window_dimensions;
+bool use_phong_shading = false;
 }
 
-Scene::Scene(Window& window, ShaderProgram& shader_program)
-	: window_{window},
-	  shader_program_{shader_program} {
+Scene::Scene(Window& window, ShaderProgram& shader_program) : window_{window}, shader_program_{shader_program} {
 
 	window.OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
 
@@ -73,7 +71,7 @@ void Scene::Render(const float delta_time) {
 }
 
 void Scene::UpdateProjectionTransform() {
-	const auto window_dimensions = window_.Size();
+	const auto window_dimensions = window_.GetSize();
 
 	if (const auto [width, height] = window_dimensions; width && height && window_dimensions != prev_window_dimensions) {
 		const auto [field_of_view_y, z_near, z_far] = view_frustum_;
@@ -144,7 +142,7 @@ void Scene::HandleContinuousInput(const float delta_time) {
 	if (window_.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		const auto cursor_position = window_.GetCursorPosition();
 		if (prev_cursor_position) {
-			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.Size())) {
+			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.GetSize())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
 				const auto view_model_transform = view_transform * mesh.ModelTransform();
 				const auto model_rotation_axis = mat3{transpose(view_model_transform)} * view_rotation_axis;
