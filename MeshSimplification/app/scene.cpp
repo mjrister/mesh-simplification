@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <optional>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "geometry/mesh_simplifier.h"
 #include "graphics/arcball.h"
 #include "graphics/obj_loader.h"
@@ -13,7 +15,8 @@ using namespace gfx;
 using namespace glm;
 using namespace std;
 
-Scene::Scene(Window& window, ShaderProgram& shader_program) : window_{window}, shader_program_{shader_program} {
+Scene::Scene(Window& window, ShaderProgram& shader_program)
+	: window_{window}, shader_program_{shader_program}, view_transform_{lookAt(kCamera.eye, kCamera.center, kCamera.up)} {
 
 	window.set_on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
 
@@ -29,11 +32,8 @@ Scene::Scene(Window& window, ShaderProgram& shader_program) : window_{window}, s
 	shader_program_.Enable();
 	UpdateProjectionTransform();
 
-	const auto& [eye, center, up] = camera_;
-	view_transform_ = lookAt(eye, center, up);
-
-	for (size_t i = 0; i < point_lights_.size(); ++i) {
-		const auto& [position, color, attenuation] = point_lights_[i];
+	for (size_t i = 0; i < kPointLights.size(); ++i) {
+		const auto& [position, color, attenuation] = kPointLights[i];
 		shader_program_.SetUniform(format("point_lights[{}].position", i), vec3{view_transform_ * position});
 		shader_program_.SetUniform(format("point_lights[{}].color", i), color);
 		shader_program_.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
@@ -69,7 +69,7 @@ void Scene::UpdateProjectionTransform() {
 	const auto window_dimensions = window_.GetSize();
 
 	if (const auto [width, height] = window_dimensions; width && height && window_dimensions != prev_window_dimensions) {
-		const auto [field_of_view_y, z_near, z_far] = view_frustum_;
+		const auto [field_of_view_y, z_near, z_far] = kViewFrustrum;
 		const auto aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
 		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 		shader_program_.SetUniform("projection_transform", projection_transform);
