@@ -13,12 +13,6 @@ using namespace gfx;
 using namespace glm;
 using namespace std;
 
-namespace {
-mat4 view_transform;
-pair<int32_t, int32_t> prev_window_dimensions;
-bool use_phong_shading = false;
-}
-
 Scene::Scene(Window& window, ShaderProgram& shader_program) : window_{window}, shader_program_{shader_program} {
 
 	window.set_on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
@@ -36,11 +30,11 @@ Scene::Scene(Window& window, ShaderProgram& shader_program) : window_{window}, s
 	UpdateProjectionTransform();
 
 	const auto& [eye, center, up] = camera_;
-	view_transform = lookAt(eye, center, up);
+	view_transform_ = lookAt(eye, center, up);
 
 	for (size_t i = 0; i < point_lights_.size(); ++i) {
 		const auto& [position, color, attenuation] = point_lights_[i];
-		shader_program_.SetUniform(format("point_lights[{}].position", i), vec3{view_transform * position});
+		shader_program_.SetUniform(format("point_lights[{}].position", i), vec3{view_transform_ * position});
 		shader_program_.SetUniform(format("point_lights[{}].color", i), color);
 		shader_program_.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
@@ -52,7 +46,7 @@ void Scene::Render(const float delta_time) {
 
 	for (const auto& [mesh, material] : scene_objects_) {
 
-		const auto view_model_transform = view_transform * mesh.model_transform();
+		const auto view_model_transform = view_transform_ * mesh.model_transform();
 		shader_program_.SetUniform("view_model_transform", view_model_transform);
 
 		// generally, normals should be transformed by the upper 3x3 inverse transpose of the view-model matrix, however,
@@ -71,6 +65,7 @@ void Scene::Render(const float delta_time) {
 }
 
 void Scene::UpdateProjectionTransform() {
+	static std::pair<int, int> prev_window_dimensions;
 	const auto window_dimensions = window_.GetSize();
 
 	if (const auto [width, height] = window_dimensions; width && height && window_dimensions != prev_window_dimensions) {
@@ -82,9 +77,9 @@ void Scene::UpdateProjectionTransform() {
 	}
 }
 
-void Scene::HandleDiscreteKeyPress(const int32_t key_code) {
+void Scene::HandleDiscreteKeyPress(const int key_code) {
 
-	const auto scene_objects_size = static_cast<int32_t>(scene_objects_.size());
+	const auto scene_objects_size = static_cast<int>(scene_objects_.size());
 	if (!scene_objects_size) return;
 
 	switch (key_code) {
@@ -93,10 +88,12 @@ void Scene::HandleDiscreteKeyPress(const int32_t key_code) {
 			mesh = mesh::Simplify(mesh, .5f);
 			break;
 		}
-		case GLFW_KEY_P:
+		case GLFW_KEY_P: {
+			static auto use_phong_shading = false;
 			use_phong_shading = !use_phong_shading;
 			shader_program_.SetUniform("use_phong_shading", use_phong_shading);
 			break;
+		}
 		case GLFW_KEY_N:
 			if (++active_scene_object_ >= scene_objects_size) {
 				active_scene_object_ = 0;
@@ -114,7 +111,7 @@ void Scene::HandleDiscreteKeyPress(const int32_t key_code) {
 
 void Scene::HandleContinuousInput(const float delta_time) {
 
-	if (active_scene_object_ >= static_cast<int32_t>(scene_objects_.size())) return;
+	if (active_scene_object_ >= static_cast<int>(scene_objects_.size())) return;
 
 	static optional<dvec2> prev_cursor_position{};
 	const auto translate_step = 1.25f * delta_time;
@@ -144,8 +141,9 @@ void Scene::HandleContinuousInput(const float delta_time) {
 		if (prev_cursor_position) {
 			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.GetSize())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = view_transform * mesh.model_transform();
-				const auto model_rotation_axis = mat3{transpose(view_model_transform)} * view_rotation_axis;
+				const auto view_model_transform = view_transform_ * mesh.model_transform();
+				const auto view_model_inverse = mat3{transpose(view_model_transform)}; // for the same reasons noted above
+				const auto model_rotation_axis = view_model_inverse * view_rotation_axis;
 				mesh.Rotate(normalize(model_rotation_axis), angle);
 			}
 		}

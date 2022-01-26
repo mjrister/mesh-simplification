@@ -43,7 +43,7 @@ private:
 	};
 
 	void UpdateProjectionTransform();
-	void HandleDiscreteKeyPress(int32_t key_code);
+	void HandleDiscreteKeyPress(int key_code);
 	void HandleContinuousInput(float delta_time);
 
 	Window& window_;
@@ -71,6 +71,7 @@ private:
 		}
 	};
 	std::vector<SceneObject> scene_objects_;
-	std::int32_t active_scene_object_ = 0;
+	int active_scene_object_ = 0;
+	glm::mat4 view_transform_;
 };
 }
