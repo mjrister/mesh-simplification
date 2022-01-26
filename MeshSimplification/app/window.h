@@ -74,11 +74,11 @@ public:
 
 	/**
 	 * \brief Determines if a mouse button is pressed.
-	 * \param button The mouse button code (e.g., GLFW_MOUSE_BUTTON_LEFT).
+	 * \param button_code The mouse button code (e.g., GLFW_MOUSE_BUTTON_LEFT).
 	 * \return \c true if \p button is pressed, otherwise \c false.
 	 */
-	[[nodiscard]] bool IsMouseButtonPressed(const int button) const noexcept {
-		return glfwGetMouseButton(window_, button);
+	[[nodiscard]] bool IsMouseButtonPressed(const int button_code) const noexcept {
+		return glfwGetMouseButton(window_, button_code);
 	}
 
 	/** \brief Updates the window for the next iteration of main render loop. */
