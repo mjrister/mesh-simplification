@@ -9,6 +9,7 @@ using namespace app;
 using namespace std;
 
 namespace {
+
 void APIENTRY HandleDebugMessageReceived(
 	const GLenum source,
 	const GLenum type,
