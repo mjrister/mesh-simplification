@@ -16,7 +16,7 @@ namespace app {
 class Scene {
 
 public:
-	explicit Scene(Window& window, gfx::ShaderProgram& shader_program);
+	Scene(Window& window, gfx::ShaderProgram& shader_program);
 	void Render(float delta_time);
 
 private:
