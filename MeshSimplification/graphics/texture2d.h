@@ -17,8 +17,10 @@ public:
 	 * \throw std::out_of_range Indicates \p index exceeds the maximum number of allowed texture units.
 	 * \throw std::runtime_error Indicates the file cannot be opened.
 	 */
-	explicit Texture2d(std::string_view filepath, std::uint8_t texture_unit_index = 0);
-	~Texture2d() { glDeleteTextures(1, &id_); }
+	explicit Texture2d(std::string_view filepath, int texture_unit_index = 0);
+	~Texture2d() {
+		glDeleteTextures(1, &id_);
+	}
 
 	Texture2d(const Texture2d&) = delete;
 	Texture2d& operator=(const Texture2d&) = delete;
@@ -34,6 +36,6 @@ public:
 
 private:
 	GLuint id_ = 0;
-	const std::uint8_t texture_unit_index_;
+	int texture_unit_index_;
 };
 }

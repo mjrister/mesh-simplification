@@ -22,7 +22,7 @@ namespace {
  * \return The cursor position in normalized device coordinates.
  */
 constexpr vec2 GetNormalizedDeviceCoordinates(
-	const dvec2& cursor_position, const pair<const int32_t, const int32_t>& window_size) {
+	const dvec2& cursor_position, const pair<const int, const int>& window_size) {
 
 	// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
 	constexpr auto kMinCoordinateValue = -1., kMaxCoordinateValue = 1.;

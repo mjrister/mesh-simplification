@@ -22,8 +22,8 @@ public:
 	 */
 	Window(
 		std::string_view title,
-		const std::pair<const std::int32_t, const std::int32_t>& window_dimensions,
-		const std::pair<const std::int32_t, const std::int32_t>& opengl_version);
+		const std::pair<const int, const int>& window_dimensions,
+		const std::pair<const int, const int>& opengl_version);
 	~Window();
 
 	Window(const Window&) = delete;
@@ -32,15 +32,15 @@ public:
 	Window(Window&&) noexcept = delete;
 	Window& operator=(Window&&) noexcept = delete;
 
-	[[nodiscard]] const std::function<void(std::int32_t)>& on_key_press() const noexcept { return on_key_press_; }
-	void set_on_key_press(const std::function<void(std::int32_t)>& on_key_press) { on_key_press_ = on_key_press; }
+	[[nodiscard]] const std::function<void(int)>& on_key_press() const noexcept { return on_key_press_; }
+	void set_on_key_press(const std::function<void(int)>& on_key_press) { on_key_press_ = on_key_press; }
 
 	/**
 	 * \brief Gets the window size.
 	 * \return A pair representing the window width and height.
 	 */
-	[[nodiscard]] std::pair<std::int32_t, std::int32_t> GetSize() const noexcept {
-		std::int32_t width, height;
+	[[nodiscard]] std::pair<int, int> GetSize() const noexcept {
+		int width, height;
 		glfwGetWindowSize(window_, &width, &height);
 		return {width, height};
 	}
@@ -68,7 +68,7 @@ public:
 	 * \param key_code The key code to evaluate (e.g., GLFW_KEY_W).
 	 * \return \c true if \p key is pressed, otherwise \c false.
 	 */
-	[[nodiscard]] bool IsKeyPressed(const std::int32_t key_code) const noexcept {
+	[[nodiscard]] bool IsKeyPressed(const int key_code) const noexcept {
 		return glfwGetKey(window_, key_code) == GLFW_PRESS;
 	}
 
@@ -77,7 +77,7 @@ public:
 	 * \param button The mouse button code (e.g., GLFW_MOUSE_BUTTON_LEFT).
 	 * \return \c true if \p button is pressed, otherwise \c false.
 	 */
-	[[nodiscard]] bool IsMouseButtonPressed(const std::int32_t button) const noexcept {
+	[[nodiscard]] bool IsMouseButtonPressed(const int button) const noexcept {
 		return glfwGetMouseButton(window_, button);
 	}
 
@@ -89,6 +89,6 @@ public:
 
 private:
 	GLFWwindow* window_ = nullptr;
-	std::function<void(std::int32_t)> on_key_press_;
+	std::function<void(int)> on_key_press_;
 };
 }

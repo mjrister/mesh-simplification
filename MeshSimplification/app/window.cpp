@@ -73,7 +73,7 @@ void APIENTRY HandleDebugMessageReceived(
 		<< message << endl;
 }
 
-void InitializeGlfw(const pair<const int32_t, const int32_t>& opengl_version) {
+void InitializeGlfw(const pair<const int, const int>& opengl_version) {
 
 	if (!glfwInit()) throw runtime_error{"GLFW initialization failed"};
 
@@ -86,13 +86,13 @@ void InitializeGlfw(const pair<const int32_t, const int32_t>& opengl_version) {
 
 #ifdef _DEBUG
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-		glfwSetErrorCallback([](const int32_t error_code, const char* const description) {
+		glfwSetErrorCallback([](const int error_code, const char* const description) {
 			cerr << format("GLFW Error ({}): {}\n", error_code, description);
 		});
 #endif
 }
 
-void InitializeGl3w(const pair<const int32_t, const int32_t>& opengl_version) {
+void InitializeGl3w(const pair<const int, const int>& opengl_version) {
 
 	if (gl3wInit()) throw runtime_error{"OpenGL initialization failed"};
 
@@ -112,8 +112,8 @@ void InitializeGl3w(const pair<const int32_t, const int32_t>& opengl_version) {
 
 Window::Window(
 	const string_view title,
-	const pair<const int32_t, const int32_t>& window_dimensions,
-	const pair<const int32_t, const int32_t>& opengl_version) {
+	const pair<const int, const int>& window_dimensions,
+	const pair<const int, const int>& opengl_version) {
 
 	InitializeGlfw(opengl_version);
 
@@ -123,17 +123,12 @@ Window::Window(
 
 	glfwSetWindowUserPointer(window_, this);
 	glfwMakeContextCurrent(window_);
-	glfwSetFramebufferSizeCallback(
-		window_, [](GLFWwindow* const /*window*/, const int32_t width, const int32_t height) noexcept {
-			glViewport(0, 0, width, height);
-		});
+	glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* /*window*/, const int width, const int height) noexcept {
+		glViewport(0, 0, width, height);
+	});
 	glfwSetKeyCallback(
 		window_,
-		[](GLFWwindow* const window,
-		   const int32_t key,
-		   const int32_t /*scancode*/,
-		   const int32_t action,
-		   const int32_t /*modifiers*/) noexcept {
+		[](GLFWwindow* window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) noexcept {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 				glfwSetWindowShouldClose(window, true);
 			}

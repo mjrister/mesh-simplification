@@ -21,8 +21,8 @@ using namespace std;
 
 namespace {
 
-// indicates an unspecified face element index position
-constexpr int32_t kInvalidFaceElementIndex = -1;
+// sentinel value indicating an unspecified face index
+constexpr int kInvalidFaceElementIndex = -1;
 
 /**
  * \brief Removes a set of characters from the beginning and end of the string.
@@ -77,11 +77,11 @@ T ParseToken(const string_view token) {
  * \return A vector of size \p N containing each item in \p line converted to type \p T.
  * \throw invalid_argument Indicates if the line format is unsupported.
  */
-template <typename T, uint8_t N>
+template <typename T, int N>
 vec<N, T> ParseLine(const string_view line) {
 	if (const auto tokens = Split(line); tokens.size() == N + 1) {
 		vec<N, T> vec{};
-		for (uint8_t i = 1; i <= N; ++i) {
+		for (auto i = 1; i <= N; ++i) {
 			vec[i - 1] = ParseToken<T>(tokens[i]);
 		}
 		return vec;
@@ -103,27 +103,27 @@ ivec3 ParseIndexGroup(const string_view token) {
 	switch (ranges::count(token, *kIndexDelimiter)) {
 		case 0:
 			if (tokens.size() == 1) {
-				const auto x = ParseToken<int32_t>(tokens[0]) - 1;
+				const auto x = ParseToken<int>(tokens[0]) - 1;
 				return {x, kInvalidFaceElementIndex, kInvalidFaceElementIndex};
 			}
 			break;
 		case 1:
 			if (tokens.size() == 2) {
-				const auto x = ParseToken<int32_t>(tokens[0]) - 1;
-				const auto y = ParseToken<int32_t>(tokens[1]) - 1;
+				const auto x = ParseToken<int>(tokens[0]) - 1;
+				const auto y = ParseToken<int>(tokens[1]) - 1;
 				return {x, y, kInvalidFaceElementIndex};
 			}
 			break;
 		case 2:
 			if (tokens.size() == 2 && *token.cbegin() != '/' && *(token.cend() - 1) != '/') {
-				const auto x = ParseToken<int32_t>(tokens[0]) - 1;
-				const auto z = ParseToken<int32_t>(tokens[1]) - 1;
+				const auto x = ParseToken<int>(tokens[0]) - 1;
+				const auto z = ParseToken<int>(tokens[1]) - 1;
 				return {x, kInvalidFaceElementIndex, z};
 			}
 			if (tokens.size() == 3) {
-				const auto x = ParseToken<int32_t>(tokens[0]) - 1;
-				const auto y = ParseToken<int32_t>(tokens[1]) - 1;
-				const auto z = ParseToken<int32_t>(tokens[2]) - 1;
+				const auto x = ParseToken<int>(tokens[0]) - 1;
+				const auto y = ParseToken<int>(tokens[1]) - 1;
+				const auto z = ParseToken<int>(tokens[2]) - 1;
 				return {x, y, z};
 			}
 			break;
@@ -176,7 +176,7 @@ Mesh LoadMesh(istream& is) {
 	vector<vec3> ordered_positions;
 	vector<vec2> ordered_texture_coordinates;
 	vector<vec3> ordered_normals;
-	vector<uint32_t> indices;
+	vector<GLuint> indices;
 	indices.reserve(faces.size() * 3);
 
 	// For each index group, store texture coordinate and normals at the same index as the vertex position so that
@@ -184,7 +184,7 @@ Mesh LoadMesh(istream& is) {
 	// coordinates or normals for the same vertex position. To handle this situation, an unordered map is used to
 	// keep track of unique index groups and appends new position, texture coordinate, and normal triples to the end
 	// of each respective ordered array as necessary.
-	for (unordered_map<ivec3, uint32_t> unique_index_groups; const auto& face : faces) {
+	for (unordered_map<ivec3, GLuint> unique_index_groups; const auto& face : faces) {
 		for (const auto& index_group : face) {
 			if (const auto iterator = unique_index_groups.find(index_group); iterator == unique_index_groups.end()) {
 				const auto position_index = index_group[0];
@@ -195,7 +195,7 @@ Mesh LoadMesh(istream& is) {
 				if (const auto normal_index = index_group[2]; normal_index != kInvalidFaceElementIndex) {
 					ordered_normals.push_back(normals.at(normal_index));
 				}
-				const auto index = static_cast<uint32_t>(ordered_positions.size()) - 1u;
+				const auto index = static_cast<GLuint>(ordered_positions.size()) - 1u;
 				indices.push_back(index);
 				unique_index_groups.emplace(index_group, index);
 			} else {

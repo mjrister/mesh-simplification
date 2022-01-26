@@ -10,7 +10,7 @@ namespace gfx {
  * \brief An enumeration for various material types.
  * \see Material::FromType
  */
-enum class MaterialType :uint8_t {
+enum class MaterialType {
 	kBrass,
 	kBronze,
 	kChrome,

@@ -20,7 +20,7 @@ GLint GetMaxTextureUnits() noexcept {
 }
 }
 
-Texture2d::Texture2d(const string_view filepath, const uint8_t texture_unit_index)
+Texture2d::Texture2d(const string_view filepath, const int texture_unit_index)
 	: texture_unit_index_{texture_unit_index} {
 
 	if (const auto max_texture_units = GetMaxTextureUnits(); texture_unit_index >= max_texture_units) {
