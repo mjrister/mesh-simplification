@@ -147,8 +147,6 @@ Window::Window(
 }
 
 Window::~Window() {
-	if (window_) {
-		glfwDestroyWindow(window_);
-	}
+	if (window_) glfwDestroyWindow(window_);
 	glfwTerminate();
 }
