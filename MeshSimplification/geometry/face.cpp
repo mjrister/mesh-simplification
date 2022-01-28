@@ -37,12 +37,12 @@ Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v
 	const auto edge01 = v1_->position() - v0_->position();
 	const auto edge02 = v2_->position() - v0_->position();
 	const auto normal = cross(edge01, edge02);
-	const auto magnitude = length(normal);
+	const auto normal_magnitude = length(normal);
 
-	if (magnitude == 0.f) {
+	if (normal_magnitude == 0.f) {
 		throw invalid_argument{format("({},{},{}) is not a triangle", *v0, *v1, *v2)};
 	}
 
-	normal_ = normal / magnitude;
-	area_ = .5f * magnitude;
+	normal_ = normal / normal_magnitude;
+	area_ = .5f * normal_magnitude;
 }
