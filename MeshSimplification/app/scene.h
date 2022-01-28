@@ -34,11 +34,11 @@ private:
 		glm::vec3 attenuation;
 	};
 
-	void InitializeCamera();
 	void InitializeMesh();
 	void InitializePointLights();
 
 	void UpdateProjectionTransform();
+
 	void HandleDiscreteKeyPress(int key_code);
 	void HandleContinuousInput(float delta_time);
 
@@ -47,6 +47,7 @@ private:
 		.center = glm::vec3{0.f},
 		.up = glm::vec3{0.f, 1.f, 0.f}
 	};
+
 	Window& window_;
 	gfx::ShaderProgram& shader_program_;
 	gfx::Mesh mesh_;
