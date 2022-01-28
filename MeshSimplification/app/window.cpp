@@ -135,7 +135,7 @@ Window::Window(
 			}
 			if (action == GLFW_PRESS) {
 				if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
-					self->on_key_press()(key);
+					self->on_key_press_(key);
 				}
 			}
 		});

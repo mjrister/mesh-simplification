@@ -32,8 +32,11 @@ public:
 	Window(Window&&) noexcept = delete;
 	Window& operator=(Window&&) noexcept = delete;
 
-	[[nodiscard]] const std::function<void(int)>& on_key_press() const noexcept { return on_key_press_; }
-	void set_on_key_press(const std::function<void(int)>& on_key_press) { on_key_press_ = on_key_press; }
+	/**
+	 * \brief Sets an event handler to be called when a discrete key press is detected.
+	 * \param on_key_press The event handler to invoke on key press.
+	 */
+	void on_key_press(const std::function<void(int)>& on_key_press) { on_key_press_ = on_key_press; }
 
 	/**
 	 * \brief Gets the window size.

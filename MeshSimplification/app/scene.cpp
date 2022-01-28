@@ -23,7 +23,7 @@ Scene::Scene(Window& window, ShaderProgram& shader_program)
 	  mesh_{obj_loader::LoadMesh("models/bunny.obj")},
 	  view_transform_{lookAt(kCamera.eye, kCamera.center, kCamera.up)} {
 
-	window.set_on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
+	window.on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
 	shader_program_.Enable();
 
 	InitializeMesh();
