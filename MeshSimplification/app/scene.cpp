@@ -53,7 +53,7 @@ void Scene::InitializeMesh() {
 
 void Scene::InitializePointLights() {
 
-	constexpr std::array kPointLights{
+	constexpr array kPointLights{
 		PointLight{
 			.position = vec4{1.f, 1.f, 1.f, 1.f},
 			.color = vec3{1.f},
@@ -82,7 +82,7 @@ void Scene::UpdateProjectionTransform() {
 		.z_far = 100.f
 	};
 
-	static std::pair<int, int> prev_window_dimensions;
+	static pair<int, int> prev_window_dimensions;
 	const auto window_dimensions = window_.GetSize();
 
 	if (const auto [width, height] = window_.GetSize(); width && height && window_dimensions != prev_window_dimensions) {
