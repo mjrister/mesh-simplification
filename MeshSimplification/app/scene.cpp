@@ -4,6 +4,7 @@
 #include <array>
 #include <optional>
 
+#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "geometry/mesh_simplifier.h"
@@ -17,13 +18,38 @@ using namespace gfx;
 using namespace glm;
 using namespace std;
 
-Scene::Scene(Window& window, ShaderProgram& shader_program)
-	: window_{window},
-	  shader_program_{shader_program},
-	  mesh_{obj_loader::LoadMesh("models/bunny.obj")},
-	  view_transform_{lookAt(kCamera.eye, kCamera.center, kCamera.up)} {
+namespace {
 
-	window.on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
+struct ViewFrustum {
+	float field_of_view_y;
+	float z_near;
+	float z_far;
+};
+
+struct Camera {
+	vec3 look_from;
+	vec3 look_at;
+	vec3 up;
+	mat4 view_transform;
+} camera = {
+	.look_from = vec3{0., 0., 2.f},
+	.look_at = vec3{0.f},
+	.up = vec3{0.f, 1.f, 0.f}
+};
+
+struct PointLight {
+	vec4 position;
+	vec3 color;
+	vec3 attenuation;
+};
+}
+
+Scene::Scene(Window& window, ShaderProgram& shader_program)
+	: window_{window}, shader_program_{shader_program}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
+
+	camera.view_transform = lookAt(camera.look_from, camera.look_at, camera.up);
+
+	window_.on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
 	shader_program_.Enable();
 
 	InitializeMesh();
@@ -35,7 +61,7 @@ void Scene::Render(const float delta_time) {
 	HandleContinuousInput(delta_time);
 	UpdateProjectionTransform();
 
-	shader_program_.SetUniform("view_model_transform", view_transform_ * mesh_.model_transform());
+	shader_program_.SetUniform("view_model_transform", camera.view_transform * mesh_.model_transform());
 	mesh_.Render();
 }
 
@@ -68,7 +94,7 @@ void Scene::InitializePointLights() {
 
 	for (size_t i = 0; i < kPointLights.size(); ++i) {
 		const auto& [position, color, attenuation] = kPointLights[i];
-		shader_program_.SetUniform(format("point_lights[{}].position", i), vec3{view_transform_ * position});
+		shader_program_.SetUniform(format("point_lights[{}].position", i), vec3{camera.view_transform * position});
 		shader_program_.SetUniform(format("point_lights[{}].color", i), color);
 		shader_program_.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
@@ -97,10 +123,9 @@ void Scene::UpdateProjectionTransform() {
 void Scene::HandleDiscreteKeyPress(const int key_code) {
 
 	switch (key_code) {
-		case GLFW_KEY_S: {
+		case GLFW_KEY_S:
 			mesh_ = mesh::Simplify(mesh_, .5f);
 			break;
-		}
 		case GLFW_KEY_P: {
 			static auto use_phong_shading = false;
 			use_phong_shading = !use_phong_shading;
@@ -118,16 +143,16 @@ void Scene::HandleContinuousInput(const float delta_time) {
 	const auto translate_step = 1.25f * delta_time;
 	const auto scale_step = .75f * delta_time;
 
-	if (window_.IsKeyPressed(GLFW_KEY_W)) {
-		mesh_.Translate(vec3{0.f, translate_step, 0.f});
-	} else if (window_.IsKeyPressed(GLFW_KEY_X)) {
-		mesh_.Translate(vec3{0.f, -translate_step, 0.f});
+	if (window_.IsKeyPressed(GLFW_KEY_LEFT)) {
+		mesh_.Translate(vec3{-translate_step, 0.f, 0.f});
+	} else if (window_.IsKeyPressed(GLFW_KEY_RIGHT)) {
+		mesh_.Translate(vec3{translate_step, 0.f, 0.f});
 	}
 
-	if (window_.IsKeyPressed(GLFW_KEY_A)) {
-		mesh_.Translate(vec3{-translate_step, 0.f, 0.f});
-	} else if (window_.IsKeyPressed(GLFW_KEY_D)) {
-		mesh_.Translate(vec3{translate_step, 0.f, 0.f});
+	if (window_.IsKeyPressed(GLFW_KEY_UP)) {
+		mesh_.Translate(vec3{0.f, translate_step, 0.f});
+	} else if (window_.IsKeyPressed(GLFW_KEY_DOWN)) {
+		mesh_.Translate(vec3{0.f, -translate_step, 0.f});
 	}
 
 	if (window_.IsKeyPressed(GLFW_KEY_LEFT_SHIFT) && window_.IsKeyPressed(GLFW_KEY_EQUAL)) {
@@ -141,7 +166,7 @@ void Scene::HandleContinuousInput(const float delta_time) {
 		if (prev_cursor_position) {
 			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.GetSize())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = view_transform_ * mesh_.model_transform();
+				const auto view_model_transform = camera.view_transform * mesh_.model_transform();
 				const auto model_rotation_axis = mat3{inverse(view_model_transform)} * view_rotation_axis;
 				mesh_.Rotate(normalize(model_rotation_axis), angle);
 			}
