@@ -152,15 +152,15 @@ void DeleteFace(const Face& face, unordered_map<size_t, shared_ptr<Face>>& faces
  * \param faces A mapping of mesh faces by ID.
  */
 void UpdateIncidentTriangles(
-	const shared_ptr<Vertex>& v_target,
-	const shared_ptr<Vertex>& v_start,
-	const shared_ptr<Vertex>& v_end,
+	const Vertex& v_target,
+	const Vertex& v_start,
+	const Vertex& v_end,
 	const shared_ptr<Vertex>& v_new,
 	unordered_map<size_t, shared_ptr<HalfEdge>>& edges,
 	unordered_map<size_t, shared_ptr<Face>>& faces) {
 
-	const auto edge_start = GetHalfEdge(*v_target, *v_start, edges);
-	const auto edge_end = GetHalfEdge(*v_target, *v_end, edges);
+	const auto edge_start = GetHalfEdge(v_target, v_start, edges);
+	const auto edge_end = GetHalfEdge(v_target, v_end, edges);
 
 	for (auto edge0i = edge_start; edge0i != edge_end;) {
 
@@ -245,23 +245,23 @@ HalfEdgeMesh::operator Mesh() const {
 	return Mesh{positions, {}, normals, indices, model_transform_};
 }
 
-void HalfEdgeMesh::CollapseEdge(const shared_ptr<HalfEdge>& edge01, const shared_ptr<Vertex>& v_new) {
-	const auto edge10 = edge01->flip();
-	const auto v0 = edge10->vertex();
-	const auto v1 = edge01->vertex();
-	const auto v0_next = edge10->next()->vertex();
-	const auto v1_next = edge01->next()->vertex();
+void HalfEdgeMesh::CollapseEdge(const HalfEdge& edge01, const shared_ptr<Vertex>& v_new) {
+	const auto& edge10 = *edge01.flip();
+	const auto& v0 = *edge10.vertex();
+	const auto& v1 = *edge01.vertex();
+	const auto& v0_next = *edge10.next()->vertex();
+	const auto& v1_next = *edge01.next()->vertex();
 
 	UpdateIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
 	UpdateIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
 
-	DeleteFace(*edge01->face(), faces_);
-	DeleteFace(*edge10->face(), faces_);
+	DeleteFace(*edge01.face(), faces_);
+	DeleteFace(*edge10.face(), faces_);
 
-	DeleteEdge(*edge01, edges_);
+	DeleteEdge(edge01, edges_);
 
-	DeleteVertex(*v0, vertices_);
-	DeleteVertex(*v1, vertices_);
+	DeleteVertex(v0, vertices_);
+	DeleteVertex(v1, vertices_);
 
 	vertices_.emplace(v_new->id(), v_new);
 }

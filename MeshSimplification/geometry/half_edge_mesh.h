@@ -51,7 +51,7 @@ public:
 	 * \param edge01 The edge from vertex \c v0 to \c v1 to collapse.
 	 * \param v_new The vertex to collapse the edge onto.
 	 */
-	void CollapseEdge(const std::shared_ptr<HalfEdge>& edge01, const std::shared_ptr<Vertex>& v_new);
+	void CollapseEdge(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new);
 
 private:
 	std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;

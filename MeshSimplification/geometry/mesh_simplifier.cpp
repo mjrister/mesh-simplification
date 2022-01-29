@@ -199,7 +199,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 			const auto v1 = edge01->vertex();
 
 			// remove the edge from the mesh and attach incident edges to the new vertex
-			half_edge_mesh.CollapseEdge(edge01, v_new);
+			half_edge_mesh.CollapseEdge(*edge01, v_new);
 
 			// compute the error quadric for the new vertex
 			const auto& q0 = quadrics.at(v0->id());

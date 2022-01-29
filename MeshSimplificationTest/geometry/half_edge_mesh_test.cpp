@@ -149,7 +149,7 @@ TEST(HalfEdgeMeshTest, TestCollapseEdge) {
 	const auto& edge01 = edges.at(hash_value(*v0, *v1));
 	const Vertex v_new{half_edge_mesh.next_vertex_id(), (v0->position() + v1->position() / 2.f)};
 
-	half_edge_mesh.CollapseEdge(edge01, make_shared<Vertex>(v_new));
+	half_edge_mesh.CollapseEdge(*edge01, make_shared<Vertex>(v_new));
 
 	ASSERT_EQ(9, half_edge_mesh.vertices().size());
 	ASSERT_EQ(32, half_edge_mesh.edges().size());
