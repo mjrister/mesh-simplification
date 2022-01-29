@@ -21,8 +21,8 @@ private:
 	void HandleDiscreteKeyPress(int key_code);
 	void HandleContinuousInput(float delta_time);
 
-	Window* window_;
-	gfx::ShaderProgram* shader_program_;
+	Window* const window_;
+	gfx::ShaderProgram* const shader_program_;
 	gfx::Mesh mesh_;
 };
 }

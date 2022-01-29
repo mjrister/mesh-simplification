@@ -44,7 +44,7 @@ struct PointLight {
 };
 }
 
-Scene::Scene(Window* window, ShaderProgram* shader_program)
+Scene::Scene(Window* const window, ShaderProgram* const shader_program)
 	: window_{window}, shader_program_{shader_program}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
 	camera.view_transform = lookAt(camera.look_from, camera.look_at, camera.up);
@@ -61,7 +61,14 @@ void Scene::Render(const float delta_time) {
 	HandleContinuousInput(delta_time);
 	UpdateProjectionTransform();
 
+	// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In this context,
+	// it is sufficient to use the view-model matrix to transform normals because meshes are only transformed by rotations
+	// and translations (which are orthogonal matrices with the property that their inverse is equal to their transpose) in
+	// addition to uniform scaling which is undone when the transformed normal is renomalized in the vertex shader.
+	const auto view_model_transform = camera.view_transform * mesh_.model_transform();
 	shader_program_->SetUniform("view_model_transform", camera.view_transform * mesh_.model_transform());
+	shader_program_->SetUniform("normal_transform", mat3{view_model_transform});
+
 	mesh_.Render();
 }
 
