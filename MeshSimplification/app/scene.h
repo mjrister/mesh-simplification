@@ -13,16 +13,8 @@ public:
 	void Render(float delta_time);
 
 private:
-	void InitializeMesh();
-	void InitializePointLights();
-
-	void UpdateProjectionTransform();
-
-	void HandleDiscreteKeyPress(int key_code);
-	void HandleContinuousInput(float delta_time);
-
-	Window* const window_;
-	gfx::ShaderProgram* const shader_program_;
+	Window* window_;
+	gfx::ShaderProgram* shader_program_;
 	gfx::Mesh mesh_;
 };
 }

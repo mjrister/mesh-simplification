@@ -57,22 +57,117 @@ struct PointLight {
 		.attenuation = vec3{0.f, 0.f, 1.f}
 	}
 };
+
+void InitializeMesh(ShaderProgram& shader_program, Mesh& mesh) {
+	constexpr auto kMeshMaterial = Material::FromType(MaterialType::kJade);
+
+	shader_program.SetUniform("material.ambient", kMeshMaterial.ambient());
+	shader_program.SetUniform("material.diffuse", kMeshMaterial.diffuse());
+	shader_program.SetUniform("material.specular", kMeshMaterial.specular());
+	shader_program.SetUniform("material.shininess", kMeshMaterial.shininess() * 128.f);
+
+	mesh.Scale(vec3{.25f});
+	mesh.Translate(vec3{.5f, -.9f, 0.f});
+}
+
+void InitializePointLights(ShaderProgram& shader_program) {
+	constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
+
+	for (size_t i = 0; i < kPointLightsSize; ++i) {
+		const auto& [position, color, attenuation] = kPointLights[i];
+		shader_program.SetUniform(format("point_lights[{}].position", i), vec3{kCamera.view_transform * position});
+		shader_program.SetUniform(format("point_lights[{}].color", i), color);
+		shader_program.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
+	}
+}
+
+void UpdateProjectionTransform(const Window& window, ShaderProgram& shader_program) {
+	static pair<int, int> prev_window_dimensions;
+	const auto window_dimensions = window.GetDimensions();
+
+	if (const auto [width, height] = window_dimensions; width && height && window_dimensions != prev_window_dimensions) {
+		const auto [field_of_view_y, z_near, z_far] = kViewFrustrum;
+		const auto aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
+		shader_program.SetUniform("projection_transform", projection_transform);
+		prev_window_dimensions = window_dimensions;
+	}
+}
+
+void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, Mesh& mesh) {
+
+	switch (key_code) {
+		case GLFW_KEY_S:
+			mesh = mesh::Simplify(mesh, .5f);
+			break;
+		case GLFW_KEY_P: {
+			static auto use_phong_shading = false;
+			use_phong_shading = !use_phong_shading;
+			shader_program.SetUniform("use_phong_shading", use_phong_shading);
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+void HandleContinuousInput(const Window& window, const float delta_time, Mesh& mesh) {
+	static optional<dvec2> prev_cursor_position;
+	const auto translate_step = 1.25f * delta_time;
+	const auto scale_step = .75f * delta_time;
+
+	if (window.IsKeyPressed(GLFW_KEY_LEFT)) {
+		mesh.Translate(vec3{-translate_step, 0.f, 0.f});
+	} else if (window.IsKeyPressed(GLFW_KEY_RIGHT)) {
+		mesh.Translate(vec3{translate_step, 0.f, 0.f});
+	}
+
+	if (window.IsKeyPressed(GLFW_KEY_UP)) {
+		mesh.Translate(vec3{0.f, translate_step, 0.f});
+	} else if (window.IsKeyPressed(GLFW_KEY_DOWN)) {
+		mesh.Translate(vec3{0.f, -translate_step, 0.f});
+	}
+
+	if (window.IsKeyPressed(GLFW_KEY_LEFT_SHIFT) && window.IsKeyPressed(GLFW_KEY_EQUAL)) {
+		mesh.Scale(vec3{1.f + scale_step});
+	} else if (window.IsKeyPressed(GLFW_KEY_MINUS)) {
+		mesh.Scale(vec3{1.f - scale_step});
+	}
+
+	if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+		const auto cursor_position = window.GetCursorPosition();
+
+		if (prev_cursor_position) {
+			const auto window_dimensions = window.GetDimensions();
+
+			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_dimensions)) {
+				const auto& [view_rotation_axis, angle] = *axis_and_angle;
+				const auto view_model_transform = kCamera.view_transform * mesh.model_transform();
+				const auto model_rotation_axis = mat3{inverse(view_model_transform)} * view_rotation_axis;
+				mesh.Rotate(normalize(model_rotation_axis), angle);
+			}
+		}
+		prev_cursor_position = cursor_position;
+	} else if (prev_cursor_position.has_value()) {
+		prev_cursor_position = nullopt;
+	}
+}
 }
 
 Scene::Scene(Window* const window, ShaderProgram* const shader_program)
 	: window_{window}, shader_program_{shader_program}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
-	window_->on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
+	window_->on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code, *shader_program_, mesh_); });
 	shader_program_->Enable();
 
-	InitializeMesh();
-	InitializePointLights();
+	InitializeMesh(*shader_program_, mesh_);
+	InitializePointLights(*shader_program_);
 }
 
 void Scene::Render(const float delta_time) {
 
-	HandleContinuousInput(delta_time);
-	UpdateProjectionTransform();
+	HandleContinuousInput(*window_, delta_time, mesh_);
+	UpdateProjectionTransform(*window_, *shader_program_);
 
 	// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In this context,
 	// it is sufficient to use the view-model matrix to transform normals because meshes are only transformed by rotations
@@ -83,99 +178,4 @@ void Scene::Render(const float delta_time) {
 	shader_program_->SetUniform("normal_transform", mat3{view_model_transform});
 
 	mesh_.Render();
-}
-
-void Scene::InitializeMesh() {
-
-	mesh_.Scale(vec3{.25f});
-	mesh_.Translate(vec3{.5f, -.9f, 0.f});
-
-	constexpr auto kMeshMaterial = Material::FromType(MaterialType::kJade);
-	shader_program_->SetUniform("material.ambient", kMeshMaterial.ambient());
-	shader_program_->SetUniform("material.diffuse", kMeshMaterial.diffuse());
-	shader_program_->SetUniform("material.specular", kMeshMaterial.specular());
-	shader_program_->SetUniform("material.shininess", kMeshMaterial.shininess() * 128.f);
-}
-
-void Scene::InitializePointLights() {
-	constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
-
-	for (size_t i = 0; i < kPointLightsSize; ++i) {
-		const auto& [position, color, attenuation] = kPointLights[i];
-		shader_program_->SetUniform(format("point_lights[{}].position", i), vec3{kCamera.view_transform * position});
-		shader_program_->SetUniform(format("point_lights[{}].color", i), color);
-		shader_program_->SetUniform(format("point_lights[{}].attenuation", i), attenuation);
-	}
-}
-
-void Scene::UpdateProjectionTransform() {
-	static pair<int, int> prev_window_dimensions;
-	const auto window_dimensions = window_->GetDimensions();
-
-	if (const auto [width, height] = window_dimensions; width && height && window_dimensions != prev_window_dimensions) {
-		const auto [field_of_view_y, z_near, z_far] = kViewFrustrum;
-		const auto aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
-		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
-		shader_program_->SetUniform("projection_transform", projection_transform);
-		prev_window_dimensions = window_dimensions;
-	}
-}
-
-void Scene::HandleDiscreteKeyPress(const int key_code) {
-
-	switch (key_code) {
-		case GLFW_KEY_S:
-			mesh_ = mesh::Simplify(mesh_, .5f);
-			break;
-		case GLFW_KEY_P: {
-			static auto use_phong_shading = false;
-			use_phong_shading = !use_phong_shading;
-			shader_program_->SetUniform("use_phong_shading", use_phong_shading);
-			break;
-		}
-		default:
-			break;
-	}
-}
-
-void Scene::HandleContinuousInput(const float delta_time) {
-	static optional<dvec2> prev_cursor_position;
-	const auto translate_step = 1.25f * delta_time;
-	const auto scale_step = .75f * delta_time;
-
-	if (window_->IsKeyPressed(GLFW_KEY_LEFT)) {
-		mesh_.Translate(vec3{-translate_step, 0.f, 0.f});
-	} else if (window_->IsKeyPressed(GLFW_KEY_RIGHT)) {
-		mesh_.Translate(vec3{translate_step, 0.f, 0.f});
-	}
-
-	if (window_->IsKeyPressed(GLFW_KEY_UP)) {
-		mesh_.Translate(vec3{0.f, translate_step, 0.f});
-	} else if (window_->IsKeyPressed(GLFW_KEY_DOWN)) {
-		mesh_.Translate(vec3{0.f, -translate_step, 0.f});
-	}
-
-	if (window_->IsKeyPressed(GLFW_KEY_LEFT_SHIFT) && window_->IsKeyPressed(GLFW_KEY_EQUAL)) {
-		mesh_.Scale(vec3{1.f + scale_step});
-	} else if (window_->IsKeyPressed(GLFW_KEY_MINUS)) {
-		mesh_.Scale(vec3{1.f - scale_step});
-	}
-
-	if (window_->IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-		const auto cursor_position = window_->GetCursorPosition();
-
-		if (prev_cursor_position) {
-			const auto window_dimensions = window_->GetDimensions();
-
-			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_dimensions)) {
-				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = kCamera.view_transform * mesh_.model_transform();
-				const auto model_rotation_axis = mat3{inverse(view_model_transform)} * view_rotation_axis;
-				mesh_.Rotate(normalize(model_rotation_axis), angle);
-			}
-		}
-		prev_cursor_position = cursor_position;
-	} else if (prev_cursor_position.has_value()) {
-		prev_cursor_position = nullopt;
-	}
 }
