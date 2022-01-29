@@ -12,7 +12,7 @@ class Scene {
 public:
 	/**
 	 * \brief Initializes the scene.
-	 * \param window A reference to the window to render to.
+	 * \param window The window to render to.
 	 * \param shader_program The shader shader program to use for rendering.
 	 */
 	Scene(Window* window, gfx::ShaderProgram* shader_program);
