@@ -98,7 +98,7 @@ void Scene::InitializeMesh() {
 }
 
 void Scene::InitializePointLights() {
-	static constexpr auto kPointLightsSize = sizeof kPointLights / sizeof PointLight;
+	constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
 
 	for (size_t i = 0; i < kPointLightsSize; ++i) {
 		const auto& [position, color, attenuation] = kPointLights[i];
