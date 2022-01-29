@@ -1,7 +1,6 @@
 #include "scene.h"
 
 #include <algorithm>
-#include <array>
 #include <optional>
 
 #include <glm/glm.hpp>
@@ -20,10 +19,14 @@ using namespace std;
 
 namespace {
 
-struct ViewFrustum {
+struct ViewFrustrum {
 	float field_of_view_y;
 	float z_near;
 	float z_far;
+} constexpr kViewFrustrum = {
+	.field_of_view_y = radians(45.f),
+	.z_near = .1f,
+	.z_far = 100.f
 };
 
 struct Camera {
@@ -31,23 +34,33 @@ struct Camera {
 	vec3 look_at;
 	vec3 up;
 	mat4 view_transform;
-} camera = {
+} const kCamera = {
 	.look_from = vec3{0., 0., 2.f},
 	.look_at = vec3{0.f},
-	.up = vec3{0.f, 1.f, 0.f}
+	.up = vec3{0.f, 1.f, 0.f},
+	.view_transform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up)
 };
 
 struct PointLight {
 	vec4 position;
 	vec3 color;
 	vec3 attenuation;
+} constexpr kPointLights[] = {
+	PointLight{
+		.position = vec4{1.f, 1.f, 1.f, 1.f},
+		.color = vec3{1.f},
+		.attenuation = vec3{0.f, 0.f, 1.f}
+	},
+	PointLight{
+		.position = vec4{-1.f, 1.f, 2.f, 1.f},
+		.color = vec3{1.f},
+		.attenuation = vec3{0.f, 0.f, 1.f}
+	}
 };
 }
 
 Scene::Scene(Window* const window, ShaderProgram* const shader_program)
 	: window_{window}, shader_program_{shader_program}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
-
-	camera.view_transform = lookAt(camera.look_from, camera.look_at, camera.up);
 
 	window_->on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code); });
 	shader_program_->Enable();
@@ -65,8 +78,8 @@ void Scene::Render(const float delta_time) {
 	// it is sufficient to use the view-model matrix to transform normals because meshes are only transformed by rotations
 	// and translations (which are orthogonal matrices with the property that their inverse is equal to their transpose) in
 	// addition to uniform scaling which is undone when the transformed normal is renomalized in the vertex shader.
-	const auto view_model_transform = camera.view_transform * mesh_.model_transform();
-	shader_program_->SetUniform("view_model_transform", camera.view_transform * mesh_.model_transform());
+	const auto view_model_transform = kCamera.view_transform * mesh_.model_transform();
+	shader_program_->SetUniform("view_model_transform", view_model_transform);
 	shader_program_->SetUniform("normal_transform", mat3{view_model_transform});
 
 	mesh_.Render();
@@ -85,36 +98,17 @@ void Scene::InitializeMesh() {
 }
 
 void Scene::InitializePointLights() {
+	static constexpr auto kPointLightsSize = sizeof kPointLights / sizeof PointLight;
 
-	constexpr array kPointLights{
-		PointLight{
-			.position = vec4{1.f, 1.f, 1.f, 1.f},
-			.color = vec3{1.f},
-			.attenuation = vec3{0.f, 0.f, 1.f}
-		},
-		PointLight{
-			.position = vec4{-1.f, 1.f, 2.f, 1.f},
-			.color = vec3{1.f},
-			.attenuation = vec3{0.f, 0.f, 1.f}
-		}
-	};
-
-	for (size_t i = 0; i < kPointLights.size(); ++i) {
+	for (size_t i = 0; i < kPointLightsSize; ++i) {
 		const auto& [position, color, attenuation] = kPointLights[i];
-		shader_program_->SetUniform(format("point_lights[{}].position", i), vec3{camera.view_transform * position});
+		shader_program_->SetUniform(format("point_lights[{}].position", i), vec3{kCamera.view_transform * position});
 		shader_program_->SetUniform(format("point_lights[{}].color", i), color);
 		shader_program_->SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
 }
 
 void Scene::UpdateProjectionTransform() {
-
-	static constexpr ViewFrustum kViewFrustrum{
-		.field_of_view_y = radians(45.f),
-		.z_near = .1f,
-		.z_far = 100.f
-	};
-
 	static pair<int, int> prev_window_dimensions;
 	const auto window_dimensions = window_->GetSize();
 
@@ -173,7 +167,7 @@ void Scene::HandleContinuousInput(const float delta_time) {
 		if (prev_cursor_position) {
 			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_->GetSize())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = camera.view_transform * mesh_.model_transform();
+				const auto view_model_transform = kCamera.view_transform * mesh_.model_transform();
 				const auto model_rotation_axis = mat3{inverse(view_model_transform)} * view_rotation_axis;
 				mesh_.Rotate(normalize(model_rotation_axis), angle);
 			}
