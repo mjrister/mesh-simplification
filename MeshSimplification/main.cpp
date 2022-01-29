@@ -18,7 +18,7 @@ int main() {
 		constexpr auto kOpenGlVersion = make_pair(4, 6);
 		Window window{"Mesh Simplification", kWindowDimensions, kOpenGlVersion};
 		ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
-		Scene scene{window, shader_program};
+		Scene scene{&window, &shader_program};
 
 		for (auto previous_time = glfwGetTime(), delta_time = 0.; !window.IsClosed();) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
