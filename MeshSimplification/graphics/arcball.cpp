@@ -18,15 +18,15 @@ namespace {
 /**
  * \brief Gets the cursor position in normalized device coordinates (e.g., \f$(x,y) \in [-1, 1]\f$).
  * \param cursor_position The cursor position in the window.
- * \param window_size The window width and height.
+ * \param window_dimensions The window width and height.
  * \return The cursor position in normalized device coordinates.
  */
 constexpr vec2 GetNormalizedDeviceCoordinates(
-	const dvec2& cursor_position, const pair<const int, const int>& window_size) {
+	const dvec2& cursor_position, const pair<const int, const int>& window_dimensions) {
 
 	// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
 	constexpr auto kMinCoordinateValue = -1., kMaxCoordinateValue = 1.;
-	const auto [window_width, window_height] = window_size;
+	const auto [window_width, window_height] = window_dimensions;
 	const auto x_ndc = std::clamp(cursor_position.x * 2. / window_width - 1., kMinCoordinateValue, kMaxCoordinateValue);
 	const auto y_ndc = std::clamp(cursor_position.y * 2. / window_height - 1., kMinCoordinateValue, kMaxCoordinateValue);
 
@@ -57,10 +57,10 @@ vec3 GetArcballPosition(const vec2& cursor_position_ndc) {
 optional<const pair<const vec3, const float>> arcball::GetRotation(
 	const dvec2& cursor_position_start,
 	const dvec2& cursor_position_end,
-	const pair<const int32_t, const int32_t>& window_size) {
+	const pair<const int32_t, const int32_t>& window_dimensions) {
 
-	const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_size);
-	const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_size);
+	const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
+	const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
 
 	const auto arcball_position_start = GetArcballPosition(cursor_position_start_ndc);
 	const auto arcball_position_end = GetArcballPosition(cursor_position_end_ndc);

@@ -39,10 +39,10 @@ public:
 	void on_key_press(const std::function<void(int)>& on_key_press) { on_key_press_ = on_key_press; }
 
 	/**
-	 * \brief Gets the window size.
-	 * \return A pair representing the window width and height.
+	 * \brief Gets the window dimensions.
+	 * \return A pair representing the window's width and height.
 	 */
-	[[nodiscard]] std::pair<int, int> GetSize() const noexcept {
+	[[nodiscard]] std::pair<int, int> GetDimensions() const noexcept {
 		int width, height;
 		glfwGetWindowSize(window_, &width, &height);
 		return {width, height};
@@ -50,7 +50,7 @@ public:
 
 	/**
 	 * \brief Gets the cursor position.
-	 * \return The (x,y) coordinates of the cursor in the window.
+	 * \return The (x,y) coordinates of the cursor position in the window.
 	 */
 	[[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
 		double x, y;
@@ -68,7 +68,7 @@ public:
 
 	/**
 	 * \brief Determines if a key is pressed.
-	 * \param key_code The key code to evaluate (e.g., GLFW_KEY_W).
+	 * \param key_code The key code to evaluate (e.g., GLFW_KEY_S).
 	 * \return \c true if \p key is pressed, otherwise \c false.
 	 */
 	[[nodiscard]] bool IsKeyPressed(const int key_code) const noexcept {
