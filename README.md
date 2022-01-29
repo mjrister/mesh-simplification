@@ -1,4 +1,4 @@
-# Mesh Simplification
+﻿# Mesh Simplification
 
 In computer graphics, performance is often directly correlated to the complexity of the scene. One technique for dealing with performance bottlenecks is to simplify a polygon mesh by reducing the number of triangles that compose it. This project presents an efficient algorithm to achieve this, first described by Garland-Heckbert in a seminal research paper entitled [Surface Simplification Using Quadric Error Metrics](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/docs/surface_simplification.pdf).
 
@@ -13,4 +13,4 @@ This project was implemented using Visual Studio in C++20 and OpenGL 4.6. To bui
 
 ## Usage
 
-Once the program is running, the mesh can be simplified by pressing the `S` key. Additionally, the mesh can be translated using the `W,A,X,D` keys, uniformly scaled using the `+,-` keys, and rotated about an arbitrary axis by dragging the cursor across the screen (implemented using an [arcball interface](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/docs/arcball.pdf)). Lastly, press the `P` key to toggle between smooth and flat shading.
+Once the program is running, the mesh can be simplified by pressing the `S` key. Additionally, the mesh can be translated using the `↑,→,↓,←` keys, uniformly scaled using the `+,-` keys, and rotated about an arbitrary axis by dragging the cursor across the screen (implemented using an [arcball interface](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/docs/arcball.pdf)). Lastly, press the `P` key to toggle between smooth and flat shading.
