@@ -246,6 +246,7 @@
     <ClInclude Include="geometry\vertex.h" />
     <ClInclude Include="app\window.h" />
     <ClInclude Include="app\scene.h" />
+    <ClInclude Include="utils\ptr_conversion.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fragment.glsl" />

@@ -198,6 +198,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 			const auto v1 = edge01->vertex();
 
 			// invalidate entries in the priority queue that will be removed during the edge contraction
+			// note this needs to happen before edge removed to ensure valid pointer lifetimes
 			for (const auto& vertex : {v0, v1}) {
 				auto edge = vertex->edge();
 				do {

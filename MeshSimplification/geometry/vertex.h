@@ -2,9 +2,10 @@
 
 #include <format>
 #include <memory>
-#include <stdexcept>
 
 #include <glm/vec3.hpp>
+
+#include "utils/ptr_conversion.h"
 
 namespace geometry {
 
@@ -28,7 +29,7 @@ public:
 	[[nodiscard]] const glm::vec3& position() const noexcept { return position_; }
 
 	/** \brief Gets the last created half-edge that points to this vertex. */
-	[[nodiscard]] std::shared_ptr<const HalfEdge> edge() const { return Get(edge_); }
+	[[nodiscard]] std::shared_ptr<const HalfEdge> edge() const { return ptr::Get(edge_); }
 
 	/** \brief Sets the vertex half-edge. */
 	void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
@@ -54,12 +55,6 @@ public:
 	}
 
 private:
-	template <typename T>
-	[[nodiscard]] static std::shared_ptr<T> Get(const std::weak_ptr<T>& weak_t) {
-		if (auto shared_t = weak_t.lock()) return shared_t;
-		throw std::runtime_error{ "Attempted to access a dangling pointer" };
-	}
-
 	std::size_t id_;
 	glm::vec3 position_;
 	std::weak_ptr<const HalfEdge> edge_;
