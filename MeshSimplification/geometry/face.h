@@ -2,6 +2,7 @@
 
 #include <format>
 #include <memory>
+#include <stdexcept>
 
 #include <glm/vec3.hpp>
 
@@ -23,13 +24,13 @@ public:
 	     const std::shared_ptr<const Vertex>& v2);
 
 	/** \brief Gets the first face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v0() const noexcept { return v0_; }
+	[[nodiscard]] std::shared_ptr<const Vertex> v0() const { return Get(v0_); }
 
 	/** \brief  Gets the second face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v1() const noexcept { return v1_; }
+	[[nodiscard]] std::shared_ptr<const Vertex> v1() const { return Get(v1_); }
 
 	/** \brief Gets the third face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v2() const noexcept { return v2_; }
+	[[nodiscard]] std::shared_ptr<const Vertex> v2() const { return Get(v2_); }
 
 	/** \brief  Gets the face normal. */
 	[[nodiscard]] const glm::vec3& normal() const noexcept { return normal_; }
@@ -38,10 +39,16 @@ public:
 	[[nodiscard]] float area() const noexcept { return area_; }
 
 	/** \brief Gets the face hash value. */
-	friend std::size_t hash_value(const Face& face) noexcept { return hash_value(*face.v0_, *face.v1_, *face.v2_); }
+	friend std::size_t hash_value(const Face& face) { return hash_value(*face.v0(), *face.v1(), *face.v2()); }
 
 private:
-	std::shared_ptr<const Vertex> v0_, v1_, v2_;
+	template <typename T>
+	[[nodiscard]] static std::shared_ptr<T> Get(const std::weak_ptr<T>& weak_t) {
+		if (auto shared_t = weak_t.lock()) return shared_t;
+		throw std::runtime_error{"Attempted to access a dangling pointer"};
+	}
+
+	std::weak_ptr<const Vertex> v0_, v1_, v2_;
 	glm::vec3 normal_;
 	float area_;
 };

@@ -32,10 +32,9 @@ namespace {
  * \param edge The half-edge to disambiguate.
  * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
  */
-shared_ptr<HalfEdge> GetMinEdge(const shared_ptr<HalfEdge>& edge) noexcept {
-	return min<>(edge, edge->flip(), [](const auto& edge01, const auto& edge10) noexcept {
-		return edge01->vertex()->id() < edge10->vertex()->id();
-	});
+shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge) {
+	return min<>(edge, std::const_pointer_cast<const HalfEdge>(edge->flip()),
+		[](const auto& edge01, const auto& edge10) { return edge01->vertex()->id() < edge10->vertex()->id(); });
 }
 
 /**
@@ -99,7 +98,7 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
  * \param edge01 The half-edge to evaluate.
  * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
  */
-bool WillDegenerate(const shared_ptr<HalfEdge>& edge01) {
+bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
 	const auto v0 = edge01->flip()->vertex();
 	const auto v1_next = edge01->next()->vertex();
 	const auto v0_next = edge01->flip()->next()->vertex();
@@ -123,11 +122,11 @@ bool WillDegenerate(const shared_ptr<HalfEdge>& edge01) {
 /** \brief Represents an edge contraction priority queue entry. */
 struct EdgeContraction {
 
-	EdgeContraction(HalfEdgeMesh& mesh, const shared_ptr<HalfEdge>& edge, const unordered_map<size_t, mat4>& quadrics)
+	EdgeContraction(HalfEdgeMesh& mesh, const shared_ptr<const HalfEdge>& edge, const unordered_map<size_t, mat4>& quadrics)
 		: edge{edge} { tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.next_vertex_id(), *edge, quadrics); }
 
 	/** \brief The edge to be collapsed. */
-	const shared_ptr<HalfEdge> edge;
+	shared_ptr<const HalfEdge> edge;
 
 	/** \brief The optimal vertex position that minimizes the cost of collapsing this edge. */
 	shared_ptr<Vertex> vertex;
@@ -198,15 +197,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 			const auto v0 = edge01->flip()->vertex();
 			const auto v1 = edge01->vertex();
 
-			// remove the edge from the mesh and attach incident edges to the new vertex
-			half_edge_mesh.CollapseEdge(*edge01, v_new);
-
-			// compute the error quadric for the new vertex
-			const auto& q0 = quadrics.at(v0->id());
-			const auto& q1 = quadrics.at(v1->id());
-			quadrics.emplace(v_new->id(), q0 + q1);
-
-			// invalidate entries in the priority queue that were removed during the edge contraction
+			// invalidate entries in the priority queue that will be removed during the edge contraction
 			for (const auto& vertex : {v0, v1}) {
 				auto edge = vertex->edge();
 				do {
@@ -219,8 +210,16 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 				} while (edge != vertex->edge());
 			}
 
+			// compute the error quadric for the new vertex
+			const auto& q0 = quadrics.at(v0->id());
+			const auto& q1 = quadrics.at(v1->id());
+			quadrics.emplace(v_new->id(), q0 + q1);
+
+			// remove the edge from the mesh and attach incident edges to the new vertex
+			half_edge_mesh.CollapseEdge(*edge01, v_new);
+
 			// add new edge contraction candidates for edges affected by the edge contraction
-			unordered_map<size_t, shared_ptr<HalfEdge>> visited_edges;
+			unordered_map<size_t, shared_ptr<const HalfEdge>> visited_edges;
 			const auto& vi = v_new;
 			auto edgeji = vi->edge();
 			do {

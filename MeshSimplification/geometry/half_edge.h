@@ -2,6 +2,7 @@
 
 #include <format>
 #include <memory>
+#include <stdexcept>
 
 #include "geometry/face.h"
 #include "geometry/vertex.h"
@@ -16,36 +17,42 @@ public:
 	 * \brief Initializes a half-edge.
 	 * \param vertex The vertex the half-edge will point to.
 	 */
-	explicit HalfEdge(std::shared_ptr<Vertex> vertex) noexcept : vertex_{std::move(vertex)} {}
+	explicit HalfEdge(const std::shared_ptr<Vertex>& vertex) noexcept : vertex_{vertex} {}
 
 	/** \brief Gets the vertex at the head of this half-edge. */
-	[[nodiscard]] std::shared_ptr<Vertex> vertex() const noexcept { return vertex_; }
+	[[nodiscard]] std::shared_ptr<Vertex> vertex() const { return Get(vertex_); }
 
 	/** \brief Gets the next half-edge of a triangle in counter-clockwise order. */
-	[[nodiscard]] std::shared_ptr<HalfEdge> next() const noexcept { return next_; }
+	[[nodiscard]] std::shared_ptr<HalfEdge> next() const { return Get(next_); }
 
 	/** \brief Sets the next half-edge. */
 	void set_next(const std::shared_ptr<HalfEdge>& next) noexcept { next_ = next; }
 
 	/** \brief Gets the half-edge that shares this edge's vertices in the opposite direction. */
-	[[nodiscard]] std::shared_ptr<HalfEdge> flip() const noexcept { return flip_; }
+	[[nodiscard]] std::shared_ptr<HalfEdge> flip() const { return Get(flip_); }
 
 	/** \brief Sets the flip half-edge. */
 	void set_flip(const std::shared_ptr<HalfEdge>& flip) noexcept { flip_ = flip; }
 
 	/** \brief Gets the face created by three counter-clockwise \c next iterations starting from this half-edge. */
-	[[nodiscard]] std::shared_ptr<Face> face() const noexcept { return face_; }
+	[[nodiscard]] std::shared_ptr<Face> face() const { return Get(face_); }
 
 	/** Sets the half-edge face. */
 	void set_face(const std::shared_ptr<Face>& face) noexcept { face_ = face; }
 
 	/** \brief Gets the half-edge hash value. */
-	friend std::size_t hash_value(const HalfEdge& edge) noexcept { return hash_value(*edge.flip_->vertex_, *edge.vertex_); }
+	friend std::size_t hash_value(const HalfEdge& edge) { return hash_value(*edge.flip()->vertex(), *edge.vertex()); }
 
 private:
-	std::shared_ptr<Vertex> vertex_;
-	std::shared_ptr<HalfEdge> next_, flip_;
-	std::shared_ptr<Face> face_;
+	template <typename T>
+	[[nodiscard]] static std::shared_ptr<T> Get(const std::weak_ptr<T>& weak_t) {
+		if (auto shared_t = weak_t.lock()) return shared_t;
+		throw std::runtime_error{ "Attempted to access a dangling pointer" };
+	}
+
+	std::weak_ptr<Vertex> vertex_;
+	std::weak_ptr<HalfEdge> next_, flip_;
+	std::weak_ptr<Face> face_;
 };
 }
 

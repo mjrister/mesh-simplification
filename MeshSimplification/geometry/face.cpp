@@ -34,8 +34,8 @@ Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v
 
 	tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
 
-	const auto edge01 = v1_->position() - v0_->position();
-	const auto edge02 = v2_->position() - v0_->position();
+	const auto edge01 = v1_.lock()->position() - v0_.lock()->position();
+	const auto edge02 = v2_.lock()->position() - v0_.lock()->position();
 	const auto normal = cross(edge01, edge02);
 	const auto normal_magnitude = length(normal);
 
