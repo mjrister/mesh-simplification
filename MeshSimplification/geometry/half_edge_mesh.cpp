@@ -246,22 +246,22 @@ HalfEdgeMesh::operator Mesh() const {
 }
 
 void HalfEdgeMesh::CollapseEdge(const HalfEdge& edge01, const shared_ptr<Vertex>& v_new) {
-	const auto& edge10 = *edge01.flip();
-	const auto& v0 = *edge10.vertex();
-	const auto& v1 = *edge01.vertex();
-	const auto& v0_next = *edge10.next()->vertex();
-	const auto& v1_next = *edge01.next()->vertex();
+	const auto edge10 = edge01.flip();
+	const auto v0 = edge10->vertex();
+	const auto v1 = edge01.vertex();
+	const auto v0_next = edge10->next()->vertex();
+	const auto v1_next = edge01.next()->vertex();
 
-	UpdateIncidentTriangles(v0, v1_next, v0_next, v_new, edges_, faces_);
-	UpdateIncidentTriangles(v1, v0_next, v1_next, v_new, edges_, faces_);
+	UpdateIncidentTriangles(*v0, *v1_next, *v0_next, v_new, edges_, faces_);
+	UpdateIncidentTriangles(*v1, *v0_next, *v1_next, v_new, edges_, faces_);
 
 	DeleteFace(*edge01.face(), faces_);
-	DeleteFace(*edge10.face(), faces_);
+	DeleteFace(*edge10->face(), faces_);
 
 	DeleteEdge(edge01, edges_);
 
-	DeleteVertex(v0, vertices_);
-	DeleteVertex(v1, vertices_);
+	DeleteVertex(*v0, vertices_);
+	DeleteVertex(*v1, vertices_);
 
 	vertices_.emplace(v_new->id(), v_new);
 }
