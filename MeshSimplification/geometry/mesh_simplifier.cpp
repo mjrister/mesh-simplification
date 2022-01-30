@@ -33,8 +33,9 @@ namespace {
  * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
  */
 shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge) {
-	return min<>(edge, std::const_pointer_cast<const HalfEdge>(edge->flip()),
-		[](const auto& edge01, const auto& edge10) { return edge01->vertex()->id() < edge10->vertex()->id(); });
+	return min<>(edge, std::const_pointer_cast<const HalfEdge>(edge->flip()), [](const auto& edge01, const auto& edge10) {
+		return edge01->vertex()->id() < edge10->vertex()->id();
+	});
 }
 
 /**
