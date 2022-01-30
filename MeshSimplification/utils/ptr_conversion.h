@@ -6,10 +6,10 @@
 namespace ptr {
 
 /**
- * \brief Converts a weak pointer to a shared pointer.
- * \tparam T The shared pointer type.
+ * \brief Coverts a weak pointer to a shared pointer.
+ * \tparam T The pointer type.
  * \param weak_t The weak pointer to convert.
- * \return The weak pointer converted to a shared pointer.
+ * \return A shared pointer that refers to the object managed by \p weak_t.
  * \throw std::runtime_error Indicates the weak pointer is expired.
  */
 template <typename T>
