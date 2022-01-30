@@ -23,6 +23,9 @@
     <ClCompile Include="geometry\half_edge_mesh_test.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
+    <ClCompile Include="ptr_conversion_test.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
