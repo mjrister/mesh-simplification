@@ -12,33 +12,35 @@ using namespace std;
 
 namespace {
 
-shared_ptr<HalfEdge> MakeHalfEdge() {
+class HalfEdgeMeshTest : public ::testing::Test {
 
-	const auto v0 = make_shared<Vertex>(0, vec3{});
-	const auto v1 = make_shared<Vertex>(1, vec3{});
+protected:
+	HalfEdgeMeshTest()
+		: v0_{make_shared<Vertex>(0, vec3{})},
+		  v1_{make_shared<Vertex>(1, vec3{})},
+		  edge01_{make_shared<HalfEdge>(v1_)},
+		  edge10_{make_shared<HalfEdge>(v0_)} {
+		edge01_->set_flip(edge10_);
+		edge10_->set_flip(edge01_);
+	}
 
-	auto edge01 = make_shared<HalfEdge>(v1);
-	const auto edge10 = make_shared<HalfEdge>(v0);
-
-	edge01->set_flip(edge10);
-	edge10->set_flip(edge01);
-
-	return edge01;
-}
+	shared_ptr<Vertex> v0_, v1_;
+	shared_ptr<HalfEdge> edge01_, edge10_;
+};
 
 Mesh MakeMesh() {
 
 	const vector<vec3> positions{
-		{1.f, 0.f, 0.f}, // v0
-		{2.f, 0.f, 0.f}, // v1
-		{.5f, -1.f, 0.f}, // v2
+		{1.f, 0.f, 0.f},   // v0
+		{2.f, 0.f, 0.f},   // v1
+		{.5f, -1.f, 0.f},  // v2
 		{1.5f, -1.f, 0.f}, // v3
 		{2.5f, -1.f, 0.f}, // v4
-		{3.f, 0.f, 0.f}, // v5
-		{2.5f, 1.f, 0.f}, // v6
-		{1.5f, 1.f, 0.f}, // v7
-		{.5f, 1.f, 0.f}, // v8
-		{0.f, 0.f, 0.f} // v9
+		{3.f, 0.f, 0.f},   // v5
+		{2.5f, 1.f, 0.f},  // v6
+		{1.5f, 1.f, 0.f},  // v7
+		{.5f, 1.f, 0.f},   // v8
+		{0.f, 0.f, 0.f}    // v9
 	};
 
 	const vector<GLuint> indices{
@@ -51,7 +53,7 @@ Mesh MakeMesh() {
 		1, 3, 4, // f6
 		1, 4, 5, // f7
 		1, 5, 6, // f8
-		1, 6, 7 // f9
+		1, 6, 7  // f9
 	};
 
 	return Mesh{positions, {}, vector(10, vec3{0.f, 0.f, 1.f}), indices};
@@ -127,7 +129,7 @@ void VerifyTriangles(const HalfEdgeMesh& half_edge_mesh, const vector<GLuint>& i
 	}
 }
 
-TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
+TEST_F(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
 
 	const auto mesh = MakeMesh();
 	const HalfEdgeMesh half_edge_mesh{mesh};
@@ -139,7 +141,7 @@ TEST(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
 	VerifyTriangles(half_edge_mesh, mesh.indices());
 }
 
-TEST(HalfEdgeMeshTest, TestCollapseEdge) {
+TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
 
 	auto half_edge_mesh = MakeHalfEdgeMesh();
 	const auto& vertices = half_edge_mesh.vertices();
@@ -147,7 +149,7 @@ TEST(HalfEdgeMeshTest, TestCollapseEdge) {
 	const auto& v0 = vertices.at(0);
 	const auto& v1 = vertices.at(1);
 	const auto& edge01 = edges.at(hash_value(*v0, *v1));
-	const Vertex v_new{half_edge_mesh.next_vertex_id(), (v0->position() + v1->position() / 2.f)};
+	const Vertex v_new{half_edge_mesh.next_vertex_id(), (v0->position() + v1->position()) / 2.f};
 
 	half_edge_mesh.CollapseEdge(*edge01, make_shared<Vertex>(v_new));
 
@@ -156,42 +158,40 @@ TEST(HalfEdgeMeshTest, TestCollapseEdge) {
 	ASSERT_EQ(8, half_edge_mesh.faces().size());
 
 	VerifyTriangles(half_edge_mesh, {
-		                2, 3, 10,
-		                3, 4, 10,
-		                4, 5, 10,
-		                5, 6, 10,
-		                6, 7, 10,
-		                7, 8, 10,
-		                8, 9, 10,
-		                2, 10, 9
-	                });
+		2, 3, 10,
+		3, 4, 10,
+		4, 5, 10,
+		5, 6, 10,
+		6, 7, 10,
+		7, 8, 10,
+		8, 9, 10,
+		2, 10, 9
+	});
 }
 
-TEST(HalfEdgeMeshTest, TestGetNextVertexId) {
+TEST_F(HalfEdgeMeshTest, TestGetNextVertexId) {
 	auto half_edge_mesh = MakeHalfEdgeMesh();
 	ASSERT_EQ(10, half_edge_mesh.next_vertex_id());
 	ASSERT_EQ(11, half_edge_mesh.next_vertex_id());
 }
 
-TEST(HalfEdgeMeshTest, TestGetHalfEdge) {
+TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {
 
-	const auto edge01 = MakeHalfEdge();
-	const auto edge10 = edge01->flip();
 	const unordered_map<size_t, shared_ptr<HalfEdge>> edges{
-		{hash_value(*edge01), edge01},
-		{hash_value(*edge10), edge10}
+		{hash_value(*edge01_), edge01_},
+		{hash_value(*edge10_), edge10_}
 	};
 
-	const auto v0 = edge10->vertex();
-	const auto v1 = edge01->vertex();
+	const auto v0 = edge10_->vertex();
+	const auto v1 = edge01_->vertex();
 	const auto v2 = make_shared<Vertex>(2, vec3{});
 
-	ASSERT_EQ(edge01, GetHalfEdge(*v0, *v1, edges));
-	ASSERT_EQ(edge10, GetHalfEdge(*v1, *v0, edges));
+	ASSERT_EQ(edge01_, GetHalfEdge(*v0, *v1, edges));
+	ASSERT_EQ(edge10_, GetHalfEdge(*v1, *v0, edges));
 	ASSERT_THROW(GetHalfEdge(*v0, *v2, edges), invalid_argument);
 }
 
-TEST(HalfEdgeMeshTest, TestDeleteVertex) {
+TEST_F(HalfEdgeMeshTest, TestDeleteVertex) {
 
 	const auto v0 = make_shared<Vertex>(0, vec3{});
 	map<size_t, shared_ptr<Vertex>> vertices{{0, v0}};
@@ -202,22 +202,20 @@ TEST(HalfEdgeMeshTest, TestDeleteVertex) {
 	ASSERT_THROW(DeleteVertex(*v0, vertices), invalid_argument);
 }
 
-TEST(HalfEdgeMeshTest, TestDeleteHalfEdge) {
+TEST_F(HalfEdgeMeshTest, TestDeleteHalfEdge) {
 
-	const auto edge01 = MakeHalfEdge();
-	const auto edge10 = edge01->flip();
 	unordered_map<size_t, shared_ptr<HalfEdge>> edges{
-		{hash_value(*edge01), edge01},
-		{hash_value(*edge10), edge10}
+		{hash_value(*edge01_), edge01_},
+		{hash_value(*edge10_), edge10_}
 	};
 
-	DeleteEdge(*edge01, edges);
+	DeleteEdge(*edge01_, edges);
 
 	ASSERT_TRUE(edges.empty());
-	ASSERT_THROW(DeleteEdge(*edge01, edges), invalid_argument);
+	ASSERT_THROW(DeleteEdge(*edge01_, edges), invalid_argument);
 }
 
-TEST(HalfEdgeMeshTest, TestDeleteFace) {
+TEST_F(HalfEdgeMeshTest, TestDeleteFace) {
 
 	const auto v0 = make_shared<Vertex>(0, vec3{-1.f, -1.f, 0.f});
 	const auto v1 = make_shared<Vertex>(1, vec3{0.f, .5f, 0.f});

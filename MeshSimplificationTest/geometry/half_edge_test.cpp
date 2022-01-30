@@ -10,31 +10,34 @@ using namespace std;
 
 namespace {
 
-shared_ptr<HalfEdge> MakeHalfEdge() {
-	const auto v0 = make_shared<Vertex>(0, vec3{1.f});
-	const auto v1 = make_shared<Vertex>(1, vec3{2.f, 0.f, 0.f});
-	auto edge01 = make_shared<HalfEdge>(v1);
-	const auto edge10 = make_shared<HalfEdge>(v0);
-	edge01->set_flip(edge10);
-	edge10->set_flip(edge01);
-	return edge01;
+class HalfEdgeTest : public ::testing::Test {
+
+protected:
+	HalfEdgeTest()
+		: v0_{make_shared<Vertex>(0, vec3{1.f})},
+		  v1_{make_shared<Vertex>(1, vec3{2.f, 0.f, 0.f})},
+		  edge01_{make_shared<HalfEdge>(v1_)},
+		  edge10_{make_shared<HalfEdge>(v0_)} {
+		edge01_->set_flip(edge10_);
+		edge10_->set_flip(edge01_);
+	}
+
+	std::shared_ptr<Vertex> v0_, v1_;
+	std::shared_ptr<HalfEdge> edge01_, edge10_;
+};
+
+TEST_F(HalfEdgeTest, TestFormatHalfEdge) {
+	ASSERT_EQ("(0,1)", format("{}", *edge01_));
 }
 
-TEST(HalfEdgeTest, TestFormatHalfEdge) {
-	const auto edge01 = MakeHalfEdge();
-	ASSERT_EQ("(0,1)", format("{}", *edge01));
+TEST_F(HalfEdgeTest, TestEqualHalfEdgesProduceTheSameHashValue) {
+	ASSERT_EQ(hash_value(*edge01_), hash_value(HalfEdge{*edge01_}));
+	ASSERT_NE(hash_value(*edge01_), hash_value(*edge01_->flip()));
 }
 
-TEST(HalfEdgeTest, TestEqualHalfEdgesProduceTheSameHashValue) {
-	const auto edge01 = MakeHalfEdge();
-	ASSERT_EQ(hash_value(*edge01), hash_value(HalfEdge{*edge01}));
-	ASSERT_NE(hash_value(*edge01), hash_value(*edge01->flip()));
-}
-
-TEST(HalfEdgeTest, TestTwoVerticesProduceSameHashValueAsHalfEdge) {
-	const auto edge01 = MakeHalfEdge();
-	const auto v0 = edge01->flip()->vertex();
-	const auto v1 = edge01->vertex();
-	ASSERT_EQ(hash_value(*v0, *v1), hash_value(*edge01));
+TEST_F(HalfEdgeTest, TestTwoVerticesProduceSameHashValueAsHalfEdge) {
+	const auto v0 = edge01_->flip()->vertex();
+	const auto v1 = edge01_->vertex();
+	ASSERT_EQ(hash_value(*v0, *v1), hash_value(*edge01_));
 }
 }
