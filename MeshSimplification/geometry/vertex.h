@@ -29,7 +29,7 @@ public:
 	[[nodiscard]] const glm::vec3& position() const noexcept { return position_; }
 
 	/** \brief Gets the last created half-edge that points to this vertex. */
-	[[nodiscard]] std::shared_ptr<const HalfEdge> edge() const { return ptr::Get(edge_); }
+	[[nodiscard]] std::shared_ptr<const HalfEdge> edge() const { return utils::Get(edge_); }
 
 	/** \brief Sets the vertex half-edge. */
 	void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
