@@ -124,12 +124,12 @@ Window::Window(
 
 	glfwSetWindowUserPointer(window_, this);
 	glfwMakeContextCurrent(window_);
-	glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* /*window*/, const int width, const int height) noexcept {
+	glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* /*window*/, const int width, const int height) {
 		glViewport(0, 0, width, height);
 	});
 	glfwSetKeyCallback(
 		window_,
-		[](GLFWwindow* window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) noexcept {
+		[](GLFWwindow* window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 				glfwSetWindowShouldClose(window, true);
 			}

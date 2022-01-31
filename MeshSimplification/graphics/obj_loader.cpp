@@ -189,12 +189,16 @@ Mesh LoadMesh(istream& is) {
 			if (const auto iterator = unique_index_groups.find(index_group); iterator == unique_index_groups.end()) {
 				const auto position_index = index_group[0];
 				ordered_positions.push_back(positions.at(position_index));
-				if (const auto texture_coordinate_index = index_group[1]; texture_coordinate_index != kInvalidFaceElementIndex) {
+
+				if (const auto texture_coordinate_index = index_group[1];
+					texture_coordinate_index != kInvalidFaceElementIndex) {
 					ordered_texture_coordinates.push_back(texture_coordinates.at(texture_coordinate_index));
 				}
+
 				if (const auto normal_index = index_group[2]; normal_index != kInvalidFaceElementIndex) {
 					ordered_normals.push_back(normals.at(normal_index));
 				}
+
 				const auto index = static_cast<GLuint>(ordered_positions.size()) - 1u;
 				indices.push_back(index);
 				unique_index_groups.emplace(index_group, index);

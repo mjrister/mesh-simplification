@@ -24,7 +24,9 @@ Texture2d::Texture2d(const string_view filepath, const int texture_unit_index)
 	: texture_unit_index_{texture_unit_index} {
 
 	if (const auto max_texture_units = GetMaxTextureUnits(); texture_unit_index >= max_texture_units) {
-		throw out_of_range{format("{} exceeds maximum texture unit index {}", texture_unit_index, max_texture_units - 1)};
+		throw out_of_range{
+			format("{} exceeds maximum texture unit index {}", texture_unit_index, max_texture_units - 1)
+		};
 	}
 
 	glActiveTexture(GL_TEXTURE0 + texture_unit_index_);

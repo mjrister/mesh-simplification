@@ -84,8 +84,9 @@ void InitializePointLights(ShaderProgram& shader_program) {
 void UpdateProjectionTransform(const Window& window, ShaderProgram& shader_program) {
 	static pair<int, int> prev_window_dimensions;
 	const auto window_dimensions = window.GetDimensions();
+	const auto [width, height] = window_dimensions;
 
-	if (const auto [width, height] = window_dimensions; width && height && window_dimensions != prev_window_dimensions) {
+	if (width && height && window_dimensions != prev_window_dimensions) {
 		const auto [field_of_view_y, z_near, z_far] = kViewFrustrum;
 		const auto aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
 		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
@@ -139,8 +140,9 @@ void HandleContinuousInput(const Window& window, const float delta_time, Mesh& m
 
 		if (prev_cursor_position) {
 			const auto window_dimensions = window.GetDimensions();
+			const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_dimensions);
 
-			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_dimensions)) {
+			if (axis_and_angle) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
 				const auto view_model_transform = kCamera.view_transform * mesh.model_transform();
 				const auto model_rotation_axis = mat3{inverse(view_model_transform)} * view_rotation_axis;
@@ -169,10 +171,11 @@ void Scene::Render(const float delta_time) {
 	HandleContinuousInput(*window_, delta_time, mesh_);
 	UpdateProjectionTransform(*window_, *shader_program_);
 
-	// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In this context,
-	// it is sufficient to use the view-model matrix to transform normals because meshes are only transformed by rotations
-	// and translations (which are orthogonal matrices with the property that their inverse is equal to their transpose) in
-	// addition to uniform scaling which is undone when the transformed normal is renormalized in the vertex shader.
+	// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In this
+	// context, it is sufficient to use the view-model matrix to transform normals because meshes are only transformed
+	// by rotations and translations (which are orthogonal matrices with the property that their inverse is equal to
+	// their transpose) in addition to uniform scaling which is undone when the transformed normal is renormalized in
+	// the vertex shader.
 	const auto view_model_transform = kCamera.view_transform * mesh_.model_transform();
 	shader_program_->SetUniform("view_model_transform", view_model_transform);
 	shader_program_->SetUniform("normal_transform", mat3{view_model_transform});

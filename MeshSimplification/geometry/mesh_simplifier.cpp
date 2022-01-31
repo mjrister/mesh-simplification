@@ -123,8 +123,13 @@ bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
 /** \brief Represents an edge contraction priority queue entry. */
 struct EdgeContraction {
 
-	EdgeContraction(HalfEdgeMesh& mesh, const shared_ptr<const HalfEdge>& edge, const unordered_map<size_t, mat4>& quadrics)
-		: edge{edge} { tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.next_vertex_id(), *edge, quadrics); }
+	EdgeContraction(
+		HalfEdgeMesh& mesh,
+		const shared_ptr<const HalfEdge>& edge,
+		const unordered_map<size_t, mat4>& quadrics)
+		: edge{edge} {
+		tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.next_vertex_id(), *edge, quadrics);
+	}
 
 	/** \brief The edge to be collapsed. */
 	shared_ptr<const HalfEdge> edge;
@@ -159,7 +164,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
 	constexpr auto kMinHeapComparator = [](
-		const shared_ptr<EdgeContraction>& lhs, const shared_ptr<EdgeContraction>& rhs) noexcept {
+		const shared_ptr<EdgeContraction>& lhs, const shared_ptr<EdgeContraction>& rhs) {
 		return lhs->cost > rhs->cost;
 	};
 	priority_queue<
@@ -184,7 +189,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	// stop mesh simplification if the number of triangles has been sufficiently reduced
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.faces().size());
 	const auto target_face_count = initial_face_count * (1.f - rate);
-	const auto should_stop = [&]() noexcept {
+	const auto should_stop = [&]() {
 		const auto face_count = static_cast<float>(half_edge_mesh.faces().size());
 		return face_count < target_face_count;
 	};
