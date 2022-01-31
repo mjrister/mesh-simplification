@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 
 namespace {
-using namespace ptr;
+using namespace utils;
 using namespace std;
 
 TEST(PtrConversion, TestValidWeakPointerConversionToSharedPointer) {
