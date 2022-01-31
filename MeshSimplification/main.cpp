@@ -3,11 +3,10 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
-#include "app/scene.h"
-#include "app/window.h"
+#include "graphics/scene.h"
 #include "graphics/shader_program.h"
+#include "graphics/window.h"
 
-using namespace app;
 using namespace gfx;
 using namespace std;
 

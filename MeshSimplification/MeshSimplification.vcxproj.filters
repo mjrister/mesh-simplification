@@ -26,10 +26,10 @@
     <ClCompile Include="geometry\mesh_simplifier.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
-    <ClCompile Include="app\scene.cpp">
+    <ClCompile Include="graphics\scene.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="app\window.cpp">
+    <ClCompile Include="graphics\window.cpp">
       <Filter>app</Filter>
     </ClCompile>
   </ItemGroup>
@@ -67,10 +67,10 @@
     <ClInclude Include="geometry\mesh_simplifier.h">
       <Filter>geometry</Filter>
     </ClInclude>
-    <ClInclude Include="app\scene.h">
+    <ClInclude Include="graphics\scene.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="app\window.h">
+    <ClInclude Include="graphics\window.h">
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="common\ptr_conversion.h">

@@ -1,6 +1,5 @@
-#include "scene.h"
+#include "graphics/scene.h"
 
-#include <algorithm>
 #include <optional>
 
 #include <glm/glm.hpp>
@@ -10,8 +9,10 @@
 #include "graphics/arcball.h"
 #include "graphics/material.h"
 #include "graphics/obj_loader.h"
+#include "graphics/shader_program.h"
+#include "graphics/window.h"
 
-using namespace app;
+using namespace gfx;
 using namespace geometry;
 using namespace gfx;
 using namespace glm;
