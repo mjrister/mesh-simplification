@@ -233,7 +233,7 @@ HalfEdgeMesh::operator Mesh() const {
 	for (GLuint i = 0; const auto& vertex : vertices_ | views::values) {
 		positions.push_back(vertex->position());
 		normals.push_back(ComputeWeightedVertexNormal(*vertex));
-		index_map.emplace(vertex->id(), i++);
+		index_map.emplace(vertex->id(), i++); // remap original vertex IDs to their new index positions
 	}
 
 	for (const auto& face : faces_ | views::values) {
