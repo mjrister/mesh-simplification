@@ -143,15 +143,15 @@ void DeleteFace(const Face& face, unordered_map<size_t, shared_ptr<Face>>& faces
 }
 
 /**
- * \brief Attaches triangles incident to an edge's vertex to a new vertex.
- * \param v_target The vertex to be removed whose incident edges require updating.
+ * \brief Attaches edges incident to a vertex to a new vertex.
+ * \param v_target The vertex whose incident edges should be updated.
  * \param v_start The vertex opposite of \p v_target representing the first half-edge to process.
  * \param v_end The vertex opposite of \p v_target representing the last half-edge to process.
- * \param v_new The new vertex to attach incident edges to.
+ * \param v_new The new vertex to attach edges to.
  * \param edges A mapping of mesh half-edges by ID.
  * \param faces A mapping of mesh faces by ID.
  */
-void UpdateIncidentTriangles(
+void UpdateIncidentEdges(
 	const Vertex& v_target,
 	const Vertex& v_start,
 	const Vertex& v_end,
@@ -252,8 +252,8 @@ void HalfEdgeMesh::CollapseEdge(const HalfEdge& edge01, const shared_ptr<Vertex>
 	const auto v0_next = edge10->next()->vertex();
 	const auto v1_next = edge01.next()->vertex();
 
-	UpdateIncidentTriangles(*v0, *v1_next, *v0_next, v_new, edges_, faces_);
-	UpdateIncidentTriangles(*v1, *v0_next, *v1_next, v_new, edges_, faces_);
+	UpdateIncidentEdges(*v0, *v1_next, *v0_next, v_new, edges_, faces_);
+	UpdateIncidentEdges(*v1, *v0_next, *v1_next, v_new, edges_, faces_);
 
 	DeleteFace(*edge01.face(), faces_);
 	DeleteFace(*edge10->face(), faces_);
