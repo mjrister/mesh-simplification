@@ -1,4 +1,4 @@
-#include "utils/ptr_conversion.h"
+#include "common/ptr_conversion.h"
 
 #include <memory>
 #include <stdexcept>
@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 
 namespace {
-using namespace utils;
+using namespace ptr;
 using namespace std;
 
 TEST(PtrConversion, TestValidWeakPointerConversionToSharedPointer) {

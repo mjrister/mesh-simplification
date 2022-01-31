@@ -73,8 +73,8 @@
     <ClInclude Include="app\window.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="utils\ptr_conversion.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="common\ptr_conversion.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -101,7 +101,7 @@
     <Filter Include="app">
       <UniqueIdentifier>{b6a1698d-fea4-4111-b257-31ce25b52565}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utils">
+    <Filter Include="common">
       <UniqueIdentifier>{6c846d83-e4bb-4062-894d-8d76838e07ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

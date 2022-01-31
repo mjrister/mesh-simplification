@@ -24,18 +24,18 @@
       <Filter>geometry</Filter>
     </ClCompile>
     <ClCompile Include="utils\ptr_conversion_test.cpp">
-      <Filter>utils</Filter>
+      <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="utils">
-      <UniqueIdentifier>{f96d5c31-664b-4b54-a68a-5152be897c41}</UniqueIdentifier>
-    </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{358dd437-5550-496d-9676-902602cd7ec3}</UniqueIdentifier>
     </Filter>
     <Filter Include="geometry">
       <UniqueIdentifier>{daec029e-b1ee-494e-a6df-6335e2413eda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{f96d5c31-664b-4b54-a68a-5152be897c41}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

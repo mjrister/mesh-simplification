@@ -5,8 +5,8 @@
 
 #include <glm/vec3.hpp>
 
+#include "common//ptr_conversion.h"
 #include "geometry/vertex.h"
-#include "utils/ptr_conversion.h"
 
 namespace geometry {
 class HalfEdge;
@@ -24,13 +24,13 @@ public:
 	     const std::shared_ptr<const Vertex>& v2);
 
 	/** \brief Gets the first face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v0() const { return utils::Get(v0_); }
+	[[nodiscard]] std::shared_ptr<const Vertex> v0() const { return ptr::Get(v0_); }
 
 	/** \brief  Gets the second face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v1() const { return utils::Get(v1_); }
+	[[nodiscard]] std::shared_ptr<const Vertex> v1() const { return ptr::Get(v1_); }
 
 	/** \brief Gets the third face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v2() const { return utils::Get(v2_); }
+	[[nodiscard]] std::shared_ptr<const Vertex> v2() const { return ptr::Get(v2_); }
 
 	/** \brief  Gets the face normal. */
 	[[nodiscard]] const glm::vec3& normal() const noexcept { return normal_; }
