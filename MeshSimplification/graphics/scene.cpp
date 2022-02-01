@@ -34,12 +34,10 @@ struct Camera {
 	vec3 look_from;
 	vec3 look_at;
 	vec3 up;
-	mat4 view_transform;
-} const kCamera = {
+} constexpr kCamera = {
 	.look_from = vec3{0.f, 0.f, 2.f},
 	.look_at = vec3{0.f},
-	.up = vec3{0.f, 1.f, 0.f},
-	.view_transform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up)
+	.up = vec3{0.f, 1.f, 0.f}
 };
 
 struct PointLight {
@@ -112,7 +110,7 @@ void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, M
 	}
 }
 
-void HandleContinuousInput(const Window& window, const float delta_time, Mesh& mesh) {
+void HandleContinuousInput(const Window& window, const float delta_time, const mat4& view_transform, Mesh& mesh) {
 	static optional<dvec2> prev_cursor_position;
 	const auto translate_step = 1.25f * delta_time;
 	const auto scale_step = .75f * delta_time;
@@ -144,7 +142,7 @@ void HandleContinuousInput(const Window& window, const float delta_time, Mesh& m
 
 			if (axis_and_angle) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = kCamera.view_transform * mesh.model_transform();
+				const auto view_model_transform = view_transform * mesh.model_transform();
 				const auto model_rotation_axis = mat3{inverse(view_model_transform)} * view_rotation_axis;
 				mesh.Rotate(normalize(model_rotation_axis), angle);
 			}
@@ -167,8 +165,8 @@ Scene::Scene(Window* const window, ShaderProgram* const shader_program)
 }
 
 void Scene::Render(const float delta_time) {
-
-	HandleContinuousInput(*window_, delta_time, mesh_);
+	static const auto kViewTransform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up);
+	HandleContinuousInput(*window_, delta_time, kViewTransform, mesh_);
 	UpdateProjectionTransform(*window_, *shader_program_);
 
 	// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In this
@@ -176,7 +174,7 @@ void Scene::Render(const float delta_time) {
 	// by rotations and translations (which are orthogonal matrices with the property that their inverse is equal to
 	// their transpose) in addition to uniform scaling which is undone when the transformed normal is renormalized in
 	// the vertex shader.
-	const auto view_model_transform = kCamera.view_transform * mesh_.model_transform();
+	const auto view_model_transform = kViewTransform * mesh_.model_transform();
 	shader_program_->SetUniform("view_model_transform", view_model_transform);
 	shader_program_->SetUniform("normal_transform", mat3{view_model_transform});
 
