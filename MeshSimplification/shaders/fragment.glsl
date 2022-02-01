@@ -31,7 +31,7 @@ void main() {
 
 		vec3 light_direction = point_light.position - vertex_position;
 		float light_distance = length(light_direction);
-		float attenuation = light_distance > 0 ? 1.f / (light_distance * light_distance) : 1.f;
+		float attenuation = 1.f / max(light_distance * light_distance, 1.f);
 		light_direction = normalize(light_direction);
 
 		float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
