@@ -62,7 +62,8 @@ public:
 	 */
 	template <typename T>
 	void SetUniform(const std::string_view name, const T& value) {
-		if constexpr (const auto location = GetUniformLocation(name); std::is_same<T, bool>::value) {
+
+		if constexpr (const auto location = GetUniformLocation(name); std::is_integral<T>::value) {
 			glUniform1i(location, value);
 		} else if constexpr (std::is_same<T, GLfloat>::value) {
 			glUniform1f(location, value);

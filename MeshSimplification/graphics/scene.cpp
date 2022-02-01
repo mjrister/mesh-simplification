@@ -36,47 +36,52 @@ struct Camera {
 	vec3 up;
 	mat4 view_transform;
 } const kCamera = {
-	.look_from = vec3{0., 0., 2.f},
+	.look_from = vec3{0.f, 0.f, 2.f},
 	.look_at = vec3{0.f},
 	.up = vec3{0.f, 1.f, 0.f},
 	.view_transform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up)
 };
 
 struct PointLight {
-	vec4 position;
+	vec3 position; // defined in camera-space coordinates
 	vec3 color;
 	vec3 attenuation;
 } constexpr kPointLights[] = {
 	{
-		.position = vec4{1.f, 1.f, 1.f, 1.f},
+		.position = vec3{1.f, 1.f, -.5f},
 		.color = vec3{1.f},
 		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
 	{
-		.position = vec4{-1.f, 1.f, 2.f, 1.f},
+		.position = vec3{-1.5f, 1.5f, -.5f},
 		.color = vec3{1.f},
 		.attenuation = vec3{0.f, 0.f, 1.f}
+	},
+	{
+		.position = vec3{0.f, 2.f, -2.f},
+		.color = vec3{.75f},
+		.attenuation = vec3{0., 0., 1.f}
 	}
 };
 
 void InitializeMesh(ShaderProgram& shader_program, Mesh& mesh) {
-	constexpr auto kMeshMaterial = Material::FromType(MaterialType::kJade);
+	mesh.Scale(vec3{.3f});
+	mesh.Translate(vec3{.5f, -1.f, 0.f});
 
+	constexpr auto kMeshMaterial = Material::FromType(MaterialType::kJade);
 	shader_program.SetUniform("material.ambient", kMeshMaterial.ambient());
 	shader_program.SetUniform("material.diffuse", kMeshMaterial.diffuse());
 	shader_program.SetUniform("material.specular", kMeshMaterial.specular());
 	shader_program.SetUniform("material.shininess", kMeshMaterial.shininess() * 128.f);
-
-	mesh.Scale(vec3{.25f});
-	mesh.Translate(vec3{.5f, -.9f, 0.f});
 }
 
 void InitializePointLights(ShaderProgram& shader_program) {
 	constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
+	shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
 	for (size_t i = 0; i < kPointLightsSize; ++i) {
 		const auto& [position, color, attenuation] = kPointLights[i];
-		shader_program.SetUniform(format("point_lights[{}].position", i), vec3{kCamera.view_transform * position});
+		shader_program.SetUniform(format("point_lights[{}].position", i), position);
 		shader_program.SetUniform(format("point_lights[{}].color", i), color);
 		shader_program.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
@@ -102,12 +107,6 @@ void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, M
 		case GLFW_KEY_S:
 			mesh = mesh::Simplify(mesh, .5f);
 			break;
-		case GLFW_KEY_P: {
-			static auto use_phong_shading = false;
-			use_phong_shading = !use_phong_shading;
-			shader_program.SetUniform("use_phong_shading", use_phong_shading);
-			break;
-		}
 		default:
 			break;
 	}
