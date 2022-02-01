@@ -96,12 +96,17 @@ void UpdateProjectionTransform(const Window& window, ShaderProgram& shader_progr
 	}
 }
 
-void HandleDiscreteKeyPress(const int key_code, Mesh& mesh) {
+void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, Mesh& mesh) {
 
 	switch (key_code) {
 		case GLFW_KEY_S:
 			mesh = mesh::Simplify(mesh, .5f);
 			break;
+		case GLFW_KEY_P: {
+			static auto use_phong_shading = false;
+			use_phong_shading = !use_phong_shading;
+			shader_program.SetUniform("use_phong_shading", use_phong_shading);
+		}
 		default:
 			break;
 	}
@@ -154,7 +159,7 @@ void HandleContinuousInput(const Window& window, const float delta_time, Mesh& m
 Scene::Scene(Window* const window, ShaderProgram* const shader_program)
 	: window_{window}, shader_program_{shader_program}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
-	window_->on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code, mesh_); });
+	window_->on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code, *shader_program_, mesh_); });
 	shader_program_->Enable();
 
 	InitializeMesh(*shader_program_, mesh_);

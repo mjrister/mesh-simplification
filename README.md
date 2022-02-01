@@ -13,4 +13,4 @@ This project was implemented using Visual Studio in C++20 and OpenGL 4.6. To bui
 
 ## Usage
 
-Once the program is running, the mesh can be simplified by pressing the `S` key. Additionally, the mesh can be translated using the `↑,→,↓,←` keys, uniformly scaled using the `+,-` keys, and rotated about an arbitrary axis by dragging the cursor across the screen (implemented using an [arcball interface](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/docs/arcball.pdf)).
+Once the program is running, the mesh can be simplified by pressing the `S` key. Additionally, the mesh can be translated using the `↑,→,↓,←` keys, uniformly scaled using the `+,-` keys, and rotated about an arbitrary axis by dragging the cursor across the screen (implemented using an [arcball interface](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/docs/arcball.pdf)). Lastly, press the `P` key to toggle between smooth and flat shading.
