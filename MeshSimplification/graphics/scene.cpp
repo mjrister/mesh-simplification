@@ -104,6 +104,7 @@ void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, M
 			static auto use_phong_shading = false;
 			use_phong_shading = !use_phong_shading;
 			shader_program.SetUniform("use_phong_shading", use_phong_shading);
+			break;
 		}
 		default:
 			break;
