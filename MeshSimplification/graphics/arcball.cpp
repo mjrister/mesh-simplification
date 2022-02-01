@@ -23,9 +23,9 @@ constexpr vec2 GetNormalizedDeviceCoordinates(
 
 	// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
 	constexpr auto kMinCoordinateValue = -1., kMaxCoordinateValue = 1.;
-	const auto [window_width, window_height] = window_dimensions;
-	const auto x_ndc = std::clamp(cursor_position.x * 2. / window_width - 1., kMinCoordinateValue, kMaxCoordinateValue);
-	const auto y_ndc = std::clamp(cursor_position.y * 2. / window_height - 1., kMinCoordinateValue, kMaxCoordinateValue);
+	const auto [width, height] = window_dimensions;
+	const auto x_ndc = std::clamp(cursor_position.x * 2. / width - 1., kMinCoordinateValue, kMaxCoordinateValue);
+	const auto y_ndc = std::clamp(cursor_position.y * 2. / height - 1., kMinCoordinateValue, kMaxCoordinateValue);
 
 	// because window coordinates start with (0,0) in the top-left corner which becomes (-1,-1) after normalization,
 	// the y-coordinate needs to be negated to align with the OpenGL convention of the top-left residing at (-1,1)
