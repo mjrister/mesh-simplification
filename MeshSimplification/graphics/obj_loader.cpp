@@ -127,6 +127,8 @@ ivec3 ParseIndexGroup(const string_view token) {
 				return {x, y, z};
 			}
 			break;
+		default:
+			break;
 	}
 
 	throw invalid_argument{format("Unsupported format {}", token)};
