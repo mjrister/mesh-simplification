@@ -8,7 +8,6 @@ in Vertex {
 struct PointLight {
 	vec3 position;
 	vec3 color;
-	vec3 attenuation;
 };
 
 struct Material {
@@ -27,8 +26,7 @@ out vec4 fragment_color;
 
 void main() {
 	vec3 vertex_position = vertex.position.xyz;
-	vec3 vertex_normal = cross(dFdx(vertex_position), dFdy(vertex_position));
-	vertex_normal = normalize(vertex_normal);
+	vec3 vertex_normal = normalize(cross(dFdx(vertex_position), dFdy(vertex_position)));
 	fragment_color = vec4(material.ambient, 1.f);
 
 	for (int i = 0; i < min(point_lights_size, kPointLightSize); ++i) {
@@ -36,7 +34,7 @@ void main() {
 
 		vec3 light_direction = point_light.position - vertex_position;
 		float light_distance = length(light_direction);
-		float attenuation = 1.f / dot(point_light.attenuation, vec3(1.f, light_distance, pow(light_distance, 2.f)));
+		float attenuation = 1.f / (light_distance * light_distance);
 		light_direction = normalize(light_direction);
 
 		float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);

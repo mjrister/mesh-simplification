@@ -45,22 +45,18 @@ struct Camera {
 struct PointLight {
 	vec3 position; // defined in camera-space coordinates
 	vec3 color;
-	vec3 attenuation;
 } constexpr kPointLights[] = {
 	{
 		.position = vec3{1.f, 1.f, -.5f},
 		.color = vec3{1.f},
-		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
 	{
 		.position = vec3{-1.5f, 1.5f, -.5f},
 		.color = vec3{1.f},
-		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
 	{
 		.position = vec3{0.f, 2.f, -2.f},
 		.color = vec3{.75f},
-		.attenuation = vec3{0., 0., 1.f}
 	}
 };
 
@@ -80,10 +76,9 @@ void InitializePointLights(ShaderProgram& shader_program) {
 	shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
 	for (size_t i = 0; i < kPointLightsSize; ++i) {
-		const auto& [position, color, attenuation] = kPointLights[i];
+		const auto& [position, color] = kPointLights[i];
 		shader_program.SetUniform(format("point_lights[{}].position", i), position);
 		shader_program.SetUniform(format("point_lights[{}].color", i), color);
-		shader_program.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
 }
 
@@ -101,7 +96,7 @@ void UpdateProjectionTransform(const Window& window, ShaderProgram& shader_progr
 	}
 }
 
-void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, Mesh& mesh) {
+void HandleDiscreteKeyPress(const int key_code, Mesh& mesh) {
 
 	switch (key_code) {
 		case GLFW_KEY_S:
@@ -159,7 +154,7 @@ void HandleContinuousInput(const Window& window, const float delta_time, Mesh& m
 Scene::Scene(Window* const window, ShaderProgram* const shader_program)
 	: window_{window}, shader_program_{shader_program}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
-	window_->on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code, *shader_program_, mesh_); });
+	window_->on_key_press([this](const auto key_code) { HandleDiscreteKeyPress(key_code, mesh_); });
 	shader_program_->Enable();
 
 	InitializeMesh(*shader_program_, mesh_);
