@@ -43,7 +43,7 @@ struct Camera {
 };
 
 struct PointLight {
-	vec3 position; // defined in camera-space coordinates
+	vec3 position; // defined in view-space coordinates
 	vec3 color;
 } constexpr kPointLights[] = {
 	{
