@@ -5,22 +5,19 @@ in Vertex {
 	vec3 normal;
 } vertex;
 
-struct PointLight {
+uniform struct PointLight {
 	vec3 position;
 	vec3 color;
-};
+} point_lights[8];
 
-struct Material {
+uniform struct Material {
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
 	float shininess;
-};
+} material;
 
-const int kPointLightSize = 8;
 uniform int point_lights_size;
-uniform PointLight point_lights[kPointLightSize];
-uniform Material material;
 
 out vec4 fragment_color;
 
@@ -29,12 +26,12 @@ void main() {
 	vec3 vertex_normal = normalize(cross(dFdx(vertex_position), dFdy(vertex_position)));
 	fragment_color = vec4(material.ambient, 1.f);
 
-	for (int i = 0; i < min(point_lights_size, kPointLightSize); ++i) {
+	for (int i = 0; i < min(point_lights_size, point_lights.length()); ++i) {
 		PointLight point_light = point_lights[i];
 
 		vec3 light_direction = point_light.position - vertex_position;
 		float light_distance = length(light_direction);
-		float attenuation = 1.f / (light_distance * light_distance);
+		float attenuation = light_distance > 0 ? 1.f / (light_distance * light_distance) : 1.f;
 		light_direction = normalize(light_direction);
 
 		float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
