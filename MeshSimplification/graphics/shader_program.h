@@ -3,6 +3,7 @@
 #include <format>
 #include <iostream>
 #include <string_view>
+#include <type_traits>
 #include <unordered_map>
 
 #include <GL/gl3w.h>
@@ -64,9 +65,9 @@ public:
 	void SetUniform(const std::string_view name, const T& value) {
 
 		if constexpr (const auto location = GetUniformLocation(name); std::is_integral<T>::value) {
-			glUniform1i(location, value);
-		} else if constexpr (std::is_same<T, GLfloat>::value) {
-			glUniform1f(location, value);
+			glUniform1i(location, static_cast<GLint>(value));
+		} else if constexpr (std::is_floating_point<T>::value) {
+			glUniform1f(location, static_cast<GLfloat>(value));
 		} else if constexpr (std::is_same<T, glm::vec3>::value) {
 			glUniform3fv(location, 1, glm::value_ptr(value));
 		} else if constexpr (std::is_same<T, glm::vec4>::value) {
