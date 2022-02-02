@@ -178,7 +178,7 @@ Mesh LoadMesh(istream& is) {
 	vector<vec3> ordered_positions;
 	vector<vec2> ordered_texture_coordinates;
 	vector<vec3> ordered_normals;
-	vector<GLuint> indices;
+	vector<unsigned> indices;
 	indices.reserve(faces.size() * 3);
 
 	// For each index group, store texture coordinate and normals at the same index as the vertex position so that

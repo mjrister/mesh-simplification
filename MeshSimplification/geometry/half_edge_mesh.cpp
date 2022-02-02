@@ -88,11 +88,11 @@ shared_ptr<Face> CreateTriangle(
 shared_ptr<HalfEdge> GetHalfEdge(
 	const Vertex& v0, const Vertex& v1, const unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
 
-	if (const auto iterator = edges.find(hash_value(v0, v1)); iterator == edges.end()) {
-		throw invalid_argument(format("Attempted to retrieve a nonexistent edge: ({},{})", v0, v1));
-	} else {
+	if (const auto iterator = edges.find(hash_value(v0, v1)); iterator != edges.end()) {
 		return iterator->second;
 	}
+
+	throw invalid_argument(format("Attempted to retrieve a nonexistent edge: ({},{})", v0, v1));
 }
 
 /**
@@ -103,10 +103,10 @@ shared_ptr<HalfEdge> GetHalfEdge(
  */
 void DeleteVertex(const Vertex& vertex, map<size_t, shared_ptr<Vertex>>& vertices) {
 
-	if (const auto iterator = vertices.find(vertex.id()); iterator == vertices.end()) {
-		throw invalid_argument{format("Attempted to delete a nonexistent vertex: {}", vertex)};
-	} else {
+	if (const auto iterator = vertices.find(vertex.id()); iterator != vertices.end()) {
 		vertices.erase(iterator);
+	} else {
+		throw invalid_argument{format("Attempted to delete a nonexistent vertex: {}", vertex)};
 	}
 }
 
@@ -119,10 +119,10 @@ void DeleteVertex(const Vertex& vertex, map<size_t, shared_ptr<Vertex>>& vertice
 void DeleteEdge(const HalfEdge& edge, unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
 
 	for (const auto& edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
-		if (const auto iterator = edges.find(edge_key); iterator == edges.end()) {
-			throw invalid_argument{format("Attempted to delete a nonexistent edge: {}", edge)};
-		} else {
+		if (const auto iterator = edges.find(edge_key); iterator != edges.end()) {
 			edges.erase(iterator);
+		} else {
+			throw invalid_argument{format("Attempted to delete a nonexistent edge: {}", edge)};
 		}
 	}
 }
@@ -135,10 +135,10 @@ void DeleteEdge(const HalfEdge& edge, unordered_map<size_t, shared_ptr<HalfEdge>
  */
 void DeleteFace(const Face& face, unordered_map<size_t, shared_ptr<Face>>& faces) {
 
-	if (const auto iterator = faces.find(hash_value(face)); iterator == faces.end()) {
-		throw invalid_argument{format("Attempted to delete a nonexistent face: {}", face)};
-	} else {
+	if (const auto iterator = faces.find(hash_value(face)); iterator != faces.end()) {
 		faces.erase(iterator);
+	} else {
+		throw invalid_argument{format("Attempted to delete a nonexistent face: {}", face)};
 	}
 }
 
@@ -226,14 +226,14 @@ HalfEdgeMesh::operator Mesh() const {
 	vector<vec3> normals;
 	normals.reserve(vertices_.size());
 
-	vector<GLuint> indices;
+	vector<unsigned> indices;
 	indices.reserve(faces_.size() * 3);
 
-	unordered_map<size_t, GLuint> index_map;
-	for (GLuint i = 0; const auto& vertex : vertices_ | views::values) {
+	unordered_map<size_t, unsigned> index_map;
+	for (auto i = 0u; const auto& vertex : vertices_ | views::values) {
 		positions.push_back(vertex->position());
 		normals.push_back(ComputeWeightedVertexNormal(*vertex));
-		index_map.emplace(vertex->id(), i++); // remap original vertex IDs to their new index positions
+		index_map.emplace(vertex->id(), i++); // map original vertex IDs to their new index positions
 	}
 
 	for (const auto& face : faces_ | views::values) {
