@@ -20,9 +20,8 @@
 #include "geometry/vertex.h"
 #include "graphics/mesh.h"
 
-using namespace geometry;
 using namespace glm;
-using namespace gfx;
+using namespace qem;
 using namespace std;
 
 namespace {

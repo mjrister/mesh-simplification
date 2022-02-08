@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
-namespace gfx {
+namespace qem {
 
 /** \brief An abstraction for a GLFW window. */
 class Window {

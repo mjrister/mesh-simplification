@@ -4,7 +4,7 @@
 
 #include <GL/gl3w.h>
 
-namespace gfx {
+namespace qem {
 
 /** \brief A 2D texture in OpenGL. */
 class Texture2d {

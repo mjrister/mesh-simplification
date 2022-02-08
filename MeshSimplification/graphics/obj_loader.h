@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-namespace gfx {
+namespace qem {
 class Mesh;
 
 namespace obj_loader {

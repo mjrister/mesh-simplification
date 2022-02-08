@@ -5,8 +5,8 @@
 
 #include <gtest/gtest.h>
 
-using namespace geometry;
 using namespace glm;
+using namespace qem;
 using namespace std;
 
 namespace {

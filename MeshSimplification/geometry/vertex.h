@@ -7,8 +7,7 @@
 
 #include "common/ptr_conversion.h"
 
-namespace geometry {
-
+namespace qem {
 class HalfEdge;
 
 /** \brief A half-edge mesh vertex. */
@@ -61,10 +60,13 @@ private:
 };
 }
 
+namespace std {
+
 // defines an explicit specialization for use with std::format
 template <>
-struct std::formatter<geometry::Vertex> : std::formatter<std::string> {
-	auto format(const geometry::Vertex& vertex, std::format_context& context) {
-		return formatter<std::string>::format(to_string(vertex.id()), context);
+struct formatter<qem::Vertex> : formatter<string> {
+	auto format(const qem::Vertex& vertex, format_context& context) {
+		return formatter<string>::format(to_string(vertex.id()), context);
 	}
 };
+}

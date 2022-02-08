@@ -3,7 +3,7 @@
 #include <memory>
 #include <stdexcept>
 
-namespace ptr {
+namespace qem::ptr {
 
 /**
  * \brief Coverts a weak pointer to a shared pointer.

@@ -7,7 +7,7 @@
 #include "graphics/shader_program.h"
 #include "graphics/window.h"
 
-using namespace gfx;
+using namespace qem;
 using namespace std;
 
 int main() {

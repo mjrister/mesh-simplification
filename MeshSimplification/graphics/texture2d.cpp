@@ -5,7 +5,7 @@
 
 #include "stb_image.h"
 
-using namespace gfx;
+using namespace qem;
 using namespace std;
 
 namespace {

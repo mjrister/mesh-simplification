@@ -5,7 +5,7 @@
 #include <sstream>
 #include <stdexcept>
 
-using namespace gfx;
+using namespace qem;
 using namespace std;
 
 namespace {

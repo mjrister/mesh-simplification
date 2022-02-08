@@ -6,13 +6,10 @@
 #include <memory>
 #include <unordered_map>
 
-namespace gfx {
-class Mesh;
-}
-
-namespace geometry {
+namespace qem {
 class Face;
 class HalfEdge;
+class Mesh;
 class Vertex;
 
 /**
@@ -29,10 +26,10 @@ public:
 	 * \brief Initializes a half-edge mesh.
 	 * \param mesh An indexed triangle mesh to construct the half-edge mesh from.
 	 */
-	explicit HalfEdgeMesh(const gfx::Mesh& mesh);
+	explicit HalfEdgeMesh(const qem::Mesh& mesh);
 
 	/** \brief Defines the conversion operator back to a triangle mesh. */
-	explicit operator gfx::Mesh() const;
+	explicit operator qem::Mesh() const;
 
 	/** \brief Gets a mapping of mesh vertices by ID. */
 	[[nodiscard]] const auto& vertices() const noexcept { return vertices_; }

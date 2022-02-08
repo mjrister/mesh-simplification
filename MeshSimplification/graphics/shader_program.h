@@ -9,7 +9,7 @@
 #include <GL/gl3w.h>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace gfx {
+namespace qem {
 
 /** \brief A program used to execute one or more OpenGL shaders on the host GPU. */
 class ShaderProgram {

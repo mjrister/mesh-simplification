@@ -5,7 +5,7 @@
 
 #include <glm/fwd.hpp>
 
-namespace gfx::arcball {
+namespace qem::arcball {
 
 /**
  * \brief Gets the axis and angle to rotate a mesh using changes in cursor position.

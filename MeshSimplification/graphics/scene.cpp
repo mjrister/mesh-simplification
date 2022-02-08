@@ -12,10 +12,8 @@
 #include "graphics/shader_program.h"
 #include "graphics/window.h"
 
-using namespace gfx;
-using namespace geometry;
-using namespace gfx;
 using namespace glm;
+using namespace qem;
 using namespace std;
 
 namespace {
@@ -54,7 +52,7 @@ struct PointLight {
 	},
 	{
 		.position = vec3{0.f, 2.f, -2.f},
-		.color = vec3{.75f},
+		.color = vec3{1.f},
 	}
 };
 

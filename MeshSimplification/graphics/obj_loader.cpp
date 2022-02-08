@@ -15,8 +15,8 @@
 
 #include "graphics/mesh.h"
 
-using namespace gfx;
 using namespace glm;
+using namespace qem;
 using namespace std;
 
 namespace {

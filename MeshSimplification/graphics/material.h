@@ -4,7 +4,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace gfx {
+namespace qem {
 
 /**
  * \brief An enumeration for various material types.
@@ -27,7 +27,7 @@ enum class MaterialType {
 
 /**
  * \brief A type of material with light reflectance properties.
- * \note  Material properties courtesy of http://devernay.free.fr/cours/opengl/materials.html
+ * \note Material properties courtesy of http://devernay.free.fr/cours/opengl/materials.html
  */
 class Material {
 

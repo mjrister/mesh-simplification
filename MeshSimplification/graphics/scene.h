@@ -2,7 +2,7 @@
 
 #include "graphics/mesh.h"
 
-namespace gfx {
+namespace qem {
 class ShaderProgram;
 class Window;
 

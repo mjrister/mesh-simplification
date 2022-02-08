@@ -5,10 +5,10 @@
 
 #include <glm/vec3.hpp>
 
-#include "common//ptr_conversion.h"
+#include "common/ptr_conversion.h"
 #include "geometry/vertex.h"
 
-namespace geometry {
+namespace qem {
 class HalfEdge;
 
 /** \brief A triangle face defined by three vertices in counter-clockwise winding order. */
@@ -48,11 +48,13 @@ private:
 };
 }
 
+namespace std {
+
 // defines an explicit specialization for use with std::format
 template <>
-struct std::formatter<geometry::Face> : std::formatter<std::string> {
-	auto format(const geometry::Face& face, std::format_context& context) {
-		return formatter<std::string>::format(
-			std::format("({},{},{})", *face.v0(), *face.v1(), *face.v2()), context);
+struct formatter<qem::Face> : formatter<string> {
+	auto format(const qem::Face& face, format_context& context) {
+		return formatter<string>::format(std::format("({},{},{})", *face.v0(), *face.v1(), *face.v2()), context);
 	}
 };
+}

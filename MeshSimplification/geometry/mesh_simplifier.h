@@ -1,10 +1,9 @@
 #pragma once
 
-namespace gfx {
+namespace qem {
 class Mesh;
-}
 
-namespace geometry::mesh {
+namespace mesh {
 
 /**
  * \brief Reduces the number of triangles in a mesh.
@@ -13,5 +12,6 @@ namespace geometry::mesh {
  * \return A triangle mesh with \p rate percent of triangles removed from \p mesh.
  * \see docs/surface_simplification for a detailed description of this mesh simplification algorithm.
  */
-gfx::Mesh Simplify(const gfx::Mesh& mesh, float rate);
+Mesh Simplify(const Mesh& mesh, float rate);
+}
 }

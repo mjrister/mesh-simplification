@@ -5,9 +5,8 @@
 #include <GL/gl3w.h>
 #include <gtest/gtest.h>
 
-using namespace geometry;
-using namespace gfx;
 using namespace glm;
+using namespace qem;
 using namespace std;
 
 namespace {

@@ -6,8 +6,8 @@
 #include <glm/geometric.hpp>
 #include <glm/vec2.hpp>
 
-using namespace gfx;
 using namespace glm;
+using namespace qem;
 using namespace std;
 
 namespace {

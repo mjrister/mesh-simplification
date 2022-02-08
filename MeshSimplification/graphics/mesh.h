@@ -8,7 +8,7 @@
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace gfx {
+namespace qem {
 
 /** \brief A renderable triangle mesh. */
 class Mesh {

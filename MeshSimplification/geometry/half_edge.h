@@ -3,11 +3,11 @@
 #include <format>
 #include <memory>
 
-#include "common//ptr_conversion.h"
+#include "common/ptr_conversion.h"
 #include "geometry/face.h"
 #include "geometry/vertex.h"
 
-namespace geometry {
+namespace qem {
 
 /** \brief A directional edge in a half-edge mesh. */
 class HalfEdge {
@@ -50,11 +50,14 @@ private:
 };
 }
 
+namespace std {
+
 // defines an explicit specialization for use with std::format
 template <>
-struct std::formatter<geometry::HalfEdge> : std::formatter<std::string> {
-	auto format(const geometry::HalfEdge& half_edge, std::format_context& context) {
-		return formatter<std::string>::format(
+struct formatter<qem::HalfEdge> : formatter<string> {
+	auto format(const qem::HalfEdge& half_edge, format_context& context) {
+		return formatter<string>::format(
 			std::format("({},{})", *half_edge.flip()->vertex(), *half_edge.vertex()), context);
 	}
 };
+}

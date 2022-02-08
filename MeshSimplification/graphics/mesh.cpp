@@ -5,8 +5,8 @@
 
 #include <GLFW/glfw3.h>
 
-using namespace gfx;
 using namespace glm;
+using namespace qem;
 using namespace std;
 
 namespace {

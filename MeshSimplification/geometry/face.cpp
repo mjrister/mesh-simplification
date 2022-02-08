@@ -5,8 +5,8 @@
 
 #include <glm/geometric.hpp>
 
-using namespace geometry;
 using namespace glm;
+using namespace qem;
 using namespace std;
 
 namespace {
@@ -30,7 +30,8 @@ auto GetMinVertexOrder(
 }
 }
 
-Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v1, const shared_ptr<const Vertex>& v2) {
+Face::Face(
+	const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v1, const shared_ptr<const Vertex>& v2) {
 
 	tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
 
