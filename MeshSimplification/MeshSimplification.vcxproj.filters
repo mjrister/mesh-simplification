@@ -115,8 +115,5 @@
     <Object Include="models\dragon.obj">
       <Filter>models</Filter>
     </Object>
-    <Object Include="models\horse.obj">
-      <Filter>models</Filter>
-    </Object>
   </ItemGroup>
 </Project>
