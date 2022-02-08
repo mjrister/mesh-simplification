@@ -6,24 +6,24 @@
 #include <GLFW/glfw3.h>
 
 namespace {
-	void InitializeGlfw() {
-		if (!glfwInit()) throw std::runtime_error{"GLFW initialization failed"};
-		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-	}
+void InitializeGlfw() {
+	if (!glfwInit()) throw std::runtime_error{"GLFW initialization failed"};
+	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+}
 
-	GLFWwindow* CreateGlfwWindow() {
-		if (const auto window = glfwCreateWindow(100, 100, "Test", nullptr, nullptr)) {
-			glfwMakeContextCurrent(window);
-			return window;
-		}
-		throw std::runtime_error{"Window creation failed"};
+GLFWwindow* CreateGlfwWindow() {
+	if (const auto window = glfwCreateWindow(100, 100, "Test", nullptr, nullptr)) {
+		glfwMakeContextCurrent(window);
+		return window;
 	}
+	throw std::runtime_error{"Window creation failed"};
+}
 
-	void InitializeGl3w() {
-		if (gl3wInit()) {
-			throw std::runtime_error{"OpenGL initialization failed"};
-		}
+void InitializeGl3w() {
+	if (gl3wInit()) {
+		throw std::runtime_error{"OpenGL initialization failed"};
 	}
+}
 }
 
 int main(int argc, char** argv) {
