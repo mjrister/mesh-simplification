@@ -25,7 +25,10 @@ enum class MaterialType {
 	kTurquoise
 };
 
-/** \brief A type of material with light reflectance properties. */
+/**
+ * \brief A type of material with light reflectance properties.
+ * \note  Material properties courtesy of http://devernay.free.fr/cours/opengl/materials.html
+ */
 class Material {
 
 public:
