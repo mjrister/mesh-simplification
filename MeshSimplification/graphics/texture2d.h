@@ -18,9 +18,7 @@ public:
 	 * \throw std::runtime_error Indicates the file cannot be opened.
 	 */
 	explicit Texture2d(std::string_view filepath, int texture_unit_index = 0);
-	~Texture2d() {
-		glDeleteTextures(1, &id_);
-	}
+	~Texture2d() { glDeleteTextures(1, &id_); }
 
 	Texture2d(const Texture2d&) = delete;
 	Texture2d& operator=(const Texture2d&) = delete;
