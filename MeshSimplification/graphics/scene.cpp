@@ -60,11 +60,11 @@ void InitializeMesh(ShaderProgram& shader_program, Mesh& mesh) {
 	mesh.Scale(vec3{.3f});
 	mesh.Translate(vec3{.5f, -1.f, 0.f});
 
-	constexpr auto kMaterial = Material::FromType(MaterialType::kJade);
-	shader_program.SetUniform("material.ambient", kMaterial.ambient);
-	shader_program.SetUniform("material.diffuse", kMaterial.diffuse);
-	shader_program.SetUniform("material.specular", kMaterial.specular);
-	shader_program.SetUniform("material.shininess", kMaterial.shininess * 128.f);
+	const auto [ambient, diffuse, specular, shininess] = Material::FromType(MaterialType::kJade);
+	shader_program.SetUniform("material.ambient", ambient);
+	shader_program.SetUniform("material.diffuse", diffuse);
+	shader_program.SetUniform("material.specular", specular);
+	shader_program.SetUniform("material.shininess", shininess * 128.f);
 }
 
 void InitializePointLights(ShaderProgram& shader_program) {
