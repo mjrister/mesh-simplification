@@ -117,7 +117,7 @@ void DeleteVertex(const Vertex& vertex, map<size_t, shared_ptr<Vertex>>& vertice
  */
 void DeleteEdge(const HalfEdge& edge, unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
 
-	for (const auto& edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
+	for (const auto edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
 		if (const auto iterator = edges.find(edge_key); iterator != edges.end()) {
 			edges.erase(iterator);
 		} else {
