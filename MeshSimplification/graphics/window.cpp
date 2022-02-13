@@ -129,15 +129,19 @@ Window::Window(
 	});
 	glfwSetKeyCallback(
 		window_,
-		[](GLFWwindow* window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) {
+		[](GLFWwindow* const window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 				glfwSetWindowShouldClose(window, true);
 			}
 			if (action == GLFW_PRESS) {
 				const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-				if (self->on_key_press_) self->on_key_press_(key);
+				if (self && self->on_key_press_) self->on_key_press_(key);
 			}
 		});
+	glfwSetScrollCallback(window_, [](GLFWwindow* const window, const double x_offset, const double y_offset) {
+		const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+		if (self && self->on_scroll_) self->on_scroll_(x_offset, y_offset);
+	});
 
 	InitializeGl3w(opengl_version);
 	glEnable(GL_DEPTH_TEST);

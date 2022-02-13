@@ -33,10 +33,16 @@ public:
 	Window& operator=(Window&&) noexcept = delete;
 
 	/**
-	 * \brief Sets an event handler to be called when a discrete key press is detected.
-	 * \param on_key_press The event handler to invoke on key press.
+	 * \brief Sets a callback to be invoked when a discrete key press is detected.
+	 * \param on_key_press The callback to be invoked on key press parameterized by the active key code.
 	 */
-	void on_key_press(const std::function<void(int)>& on_key_press) { on_key_press_ = on_key_press; }
+	void OnKeyPress(const std::function<void(int)>& on_key_press) { on_key_press_ = on_key_press; }
+
+	/**
+	 * \brief Sets a callback to be invoked when a scroll event is detected.
+	 * \param on_scroll A callback to be invoked on scroll parameterized by x/y scroll offsets (respectively).
+	 */
+	void OnScroll(const std::function<void(double, double)>& on_scroll) { on_scroll_ = on_scroll; }
 
 	/**
 	 * \brief Gets the window dimensions.
@@ -93,5 +99,6 @@ public:
 private:
 	GLFWwindow* window_ = nullptr;
 	std::function<void(int)> on_key_press_;
+	std::function<void(double, double)> on_scroll_;
 };
 }
