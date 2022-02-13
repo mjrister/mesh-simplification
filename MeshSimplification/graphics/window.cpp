@@ -134,9 +134,8 @@ Window::Window(
 				glfwSetWindowShouldClose(window, true);
 			}
 			if (action == GLFW_PRESS) {
-				if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
-					self->on_key_press_(key);
-				}
+				const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+				if (self->on_key_press_) self->on_key_press_(key);
 			}
 		});
 
