@@ -1,5 +1,6 @@
 #include "graphics/mesh.cpp"
 
+#include <array>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -53,10 +54,10 @@ TEST(MeshTest, TestValidateMeshWithCorrectNumberOfPositionsTextureCoordinatesAnd
 }
 
 TEST(MeshTest, TestValidateMeshWithCorrectNumberOfPositionsTextureCoordinatesNormalsAndIndices) {
-	const vector<vec3> positions(4);
-	const vector<vec2> texture_coordinates(2);
-	const vector<vec3> normals(5);
-	const vector<GLuint> indices(3);
+	constexpr array<vec3, 4> positions{};
+	constexpr array<vec2, 2> texture_coordinates{};
+	constexpr array<vec3, 5> normals{};
+	constexpr array<GLuint, 3> indices{};
 	ASSERT_NO_THROW((Mesh{positions, texture_coordinates, normals, indices}));
 }
 }

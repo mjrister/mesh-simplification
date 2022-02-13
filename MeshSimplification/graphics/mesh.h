@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include <vector>
 
 #include <GL/gl3w.h>
@@ -29,11 +30,11 @@ public:
 	 *       index assumes alignment between \p positions and \p texture_coordinates, \p normals.
 	 */
 	explicit Mesh(
-		std::vector<glm::vec3> positions,
-		std::vector<glm::vec2> texture_coordinates = {},
-		std::vector<glm::vec3> normals = {},
-		std::vector<GLuint> indices = {},
-		glm::mat4 model_transform = glm::mat4{1.f});
+		std::span<const glm::vec3> positions,
+		std::span<const glm::vec2> texture_coordinates = {},
+		std::span<const glm::vec3> normals = {},
+		std::span<const GLuint> indices = {},
+		const glm::mat4& model_transform = glm::mat4{1.f});
 	~Mesh();
 
 	Mesh(const Mesh&) = delete;

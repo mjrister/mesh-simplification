@@ -38,16 +38,16 @@ void Validate(
 }
 
 Mesh::Mesh(
-	vector<vec3> positions,
-	vector<vec2> texture_coordinates,
-	vector<vec3> normals,
-	vector<GLuint> indices,
-	mat4 model_transform)
-	: positions_{move(positions)},
-	  texture_coordinates_{move(texture_coordinates)},
-	  normals_{move(normals)},
-	  indices_{move(indices)},
-	  model_transform_{move(model_transform)} {
+	span<const vec3> positions,
+	span<const vec2> texture_coordinates,
+	span<const vec3> normals,
+	span<const GLuint> indices,
+	const mat4& model_transform)
+	: positions_{positions.begin(), positions.end()},
+	  texture_coordinates_{texture_coordinates.begin(), texture_coordinates.end()},
+	  normals_{normals.begin(), normals.end()},
+	  indices_{indices.begin(), indices.end()},
+	  model_transform_{model_transform} {
 
 	Validate(positions_, texture_coordinates_, normals_, indices_);
 
