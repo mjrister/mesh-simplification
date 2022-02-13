@@ -38,10 +38,10 @@ void Validate(
 }
 
 Mesh::Mesh(
-	span<const vec3> positions,
-	span<const vec2> texture_coordinates,
-	span<const vec3> normals,
-	span<const GLuint> indices,
+	const span<const vec3> positions,
+	const span<const vec2> texture_coordinates,
+	const span<const vec3> normals,
+	const span<const GLuint> indices,
 	const mat4& model_transform)
 	: positions_{positions.begin(), positions.end()},
 	  texture_coordinates_{texture_coordinates.begin(), texture_coordinates.end()},
