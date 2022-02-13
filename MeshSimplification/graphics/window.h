@@ -42,7 +42,7 @@ public:
 	 * \brief Gets the window dimensions.
 	 * \return A pair representing the window's width and height.
 	 */
-	[[nodiscard]] std::pair<int, int> GetDimensions() const noexcept {
+	[[nodiscard]] std::pair<int, int> Dimensions() const noexcept {
 		int width, height;
 		glfwGetWindowSize(window_, &width, &height);
 		return {width, height};
@@ -52,7 +52,7 @@ public:
 	 * \brief Gets the cursor position.
 	 * \return The (x,y) coordinates of the cursor position in the window.
 	 */
-	[[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
+	[[nodiscard]] glm::dvec2 CursorPosition() const noexcept {
 		double x, y;
 		glfwGetCursorPos(window_, &x, &y);
 		return {x, y};
