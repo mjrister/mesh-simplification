@@ -80,7 +80,7 @@ void InitializePointLights(ShaderProgram& shader_program) {
 
 void UpdateProjectionTransform(const Window& window, ShaderProgram& shader_program) {
 	static pair<int, int> prev_window_dimensions;
-	const auto window_dimensions = window.GetDimensions();
+	const auto window_dimensions = window.Dimensions();
 	const auto [width, height] = window_dimensions;
 
 	if (width && height && window_dimensions != prev_window_dimensions) {
@@ -111,38 +111,21 @@ void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, M
 
 void HandleContinuousInput(const Window& window, const float delta_time, const mat4& view_transform, Mesh& mesh) {
 	static optional<dvec2> prev_cursor_position;
-	const auto translate_step = 1.25f * delta_time;
-	const auto scale_step = .75f * delta_time;
 
-	if (window.IsKeyPressed(GLFW_KEY_LEFT)) {
-		mesh.Translate(vec3{-translate_step, 0.f, 0.f});
-	} else if (window.IsKeyPressed(GLFW_KEY_RIGHT)) {
-		mesh.Translate(vec3{translate_step, 0.f, 0.f});
-	}
-
-	if (window.IsKeyPressed(GLFW_KEY_UP)) {
-		mesh.Translate(vec3{0.f, translate_step, 0.f});
-	} else if (window.IsKeyPressed(GLFW_KEY_DOWN)) {
-		mesh.Translate(vec3{0.f, -translate_step, 0.f});
-	}
-
-	if (window.IsKeyPressed(GLFW_KEY_LEFT_SHIFT) && window.IsKeyPressed(GLFW_KEY_EQUAL)) {
-		mesh.Scale(vec3{1.f + scale_step});
-	} else if (window.IsKeyPressed(GLFW_KEY_MINUS)) {
-		mesh.Scale(vec3{1.f - scale_step});
-	}
-
-	if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-		const auto cursor_position = window.GetCursorPosition();
-
+	if (const auto cursor_position = window.CursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		if (prev_cursor_position) {
-			const auto window_dimensions = window.GetDimensions();
-			const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_dimensions);
-
-			if (axis_and_angle) {
+			const auto translate_step = .25f * delta_time;
+			const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
+			const auto translate = inverse(mesh.model_transform()) * vec4{cursor_delta.x, -cursor_delta.y, 0.f, 0.f};
+			mesh.Translate(translate);
+		}
+		prev_cursor_position = cursor_position;
+	} else if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+		if (prev_cursor_position) {
+			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.Dimensions())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
 				const auto view_model_transform = view_transform * mesh.model_transform();
-				const auto model_rotation_axis = mat3{inverse(view_model_transform)} * view_rotation_axis;
+				const auto model_rotation_axis = inverse(view_model_transform) * vec4{view_rotation_axis, 0.f};
 				mesh.Rotate(normalize(model_rotation_axis), angle);
 			}
 		}
