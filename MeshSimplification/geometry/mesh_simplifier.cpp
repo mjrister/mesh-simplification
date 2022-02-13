@@ -188,76 +188,76 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	// stop mesh simplification if the number of triangles has been sufficiently reduced
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.faces().size());
 	const auto target_face_count = initial_face_count * (1.f - rate);
-	const auto should_stop = [&]() {
+	const auto should_stop = [&]() noexcept {
 		const auto face_count = static_cast<float>(half_edge_mesh.faces().size());
 		return face_count < target_face_count;
 	};
 
 	while (!edge_contractions.empty() && !should_stop()) {
-		const auto& edge_contraction = edge_contractions.top();
+
+		const auto edge_contraction = edge_contractions.top();
+		edge_contractions.pop();
+
 		const auto& edge01 = edge_contraction->edge;
 		const auto& v_new = edge_contraction->vertex;
 
-		if (edge_contraction->valid && !WillDegenerate(edge01)) {
-			const auto v0 = edge01->flip()->vertex();
-			const auto v1 = edge01->vertex();
+		if (!edge_contraction->valid || WillDegenerate(edge01)) continue;
 
-			// invalidate entries in the priority queue that will be removed during the edge contraction
-			// note this needs to happen before edge removed to ensure valid pointer lifetimes
-			for (const auto& vertex : {v0, v1}) {
-				auto edge = vertex->edge();
-				do {
-					const auto min_edge = GetMinEdge(edge);
-					if (const auto iterator = valid_edges.find(hash_value(*min_edge)); iterator != valid_edges.end()) {
-						iterator->second->valid = false;
-						valid_edges.erase(iterator);
-					}
-					edge = edge->next()->flip();
-				} while (edge != vertex->edge());
-			}
+		const auto v0 = edge01->flip()->vertex();
+		const auto v1 = edge01->vertex();
 
-			// compute the error quadric for the new vertex
-			const auto& q0 = quadrics.at(v0->id());
-			const auto& q1 = quadrics.at(v1->id());
-			quadrics.emplace(v_new->id(), q0 + q1);
-
-			// remove the edge from the mesh and attach incident edges to the new vertex
-			half_edge_mesh.CollapseEdge(*edge01, v_new);
-
-			// add new edge contraction candidates for edges affected by the edge contraction
-			unordered_map<size_t, shared_ptr<const HalfEdge>> visited_edges;
-			const auto& vi = v_new;
-			auto edgeji = vi->edge();
+		// invalidate entries in the priority queue that will be removed during the edge contraction
+		// note this needs to happen before edge removed to ensure valid pointer lifetimes
+		for (const auto& vertex : {v0, v1}) {
+			auto edge = vertex->edge();
 			do {
-				const auto vj = edgeji->flip()->vertex();
-				auto edgekj = vj->edge();
-				do {
-					const auto min_edge = GetMinEdge(edgekj);
-					if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.contains(min_edge_key)) {
-						if (const auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
-							// invalidate existing edge contraction candidate in the priority queue
-							iterator->second->valid = false;
-						}
-						const auto new_edge_contraction = make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
-						valid_edges[min_edge_key] = new_edge_contraction;
-						edge_contractions.emplace(new_edge_contraction);
-						visited_edges.emplace(min_edge_key, min_edge);
-					}
-					edgekj = edgekj->next()->flip();
-				} while (edgekj != vj->edge());
-				edgeji = edgeji->next()->flip();
-			} while (edgeji != vi->edge());
+				const auto min_edge = GetMinEdge(edge);
+				if (const auto iterator = valid_edges.find(hash_value(*min_edge)); iterator != valid_edges.end()) {
+					iterator->second->valid = false;
+					valid_edges.erase(iterator);
+				}
+				edge = edge->next()->flip();
+			} while (edge != vertex->edge());
 		}
 
-		edge_contractions.pop();
+		// compute the error quadric for the new vertex
+		const auto& q0 = quadrics.at(v0->id());
+		const auto& q1 = quadrics.at(v1->id());
+		quadrics.emplace(v_new->id(), q0 + q1);
+
+		// remove the edge from the mesh and attach incident edges to the new vertex
+		half_edge_mesh.CollapseEdge(*edge01, v_new);
+
+		// add new edge contraction candidates for edges affected by the edge contraction
+		unordered_map<size_t, shared_ptr<const HalfEdge>> visited_edges;
+		const auto& vi = v_new;
+		auto edgeji = vi->edge();
+		do {
+			const auto vj = edgeji->flip()->vertex();
+			auto edgekj = vj->edge();
+			do {
+				const auto min_edge = GetMinEdge(edgekj);
+				if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.contains(min_edge_key)) {
+					if (const auto iterator = valid_edges.find(min_edge_key); iterator != valid_edges.end()) {
+						// invalidate existing edge contraction candidate in the priority queue
+						iterator->second->valid = false;
+					}
+					const auto new_edge_contraction = make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
+					valid_edges[min_edge_key] = new_edge_contraction;
+					edge_contractions.emplace(new_edge_contraction);
+					visited_edges.emplace(min_edge_key, min_edge);
+				}
+				edgekj = edgekj->next()->flip();
+			} while (edgekj != vj->edge());
+			edgeji = edgeji->next()->flip();
+		} while (edgeji != vi->edge());
 	}
 
-	const auto end_time = chrono::high_resolution_clock::now();
-	cout << std::format(
+	cout << format(
 		"Mesh simplified from {} to {} triangles in {} seconds\n",
 		initial_face_count,
 		half_edge_mesh.faces().size(),
-		chrono::duration<float>{end_time - start_time}.count());
+		chrono::duration<float>{chrono::high_resolution_clock::now() - start_time}.count());
 
 	return static_cast<Mesh>(half_edge_mesh);
 }
