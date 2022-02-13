@@ -139,15 +139,14 @@ void HandleContinuousInput(const Window& window, const float delta_time, const m
 Scene::Scene(Window* const window, ShaderProgram* const shader_program)
 	: window_{window}, shader_program_{shader_program}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
-	window_->OnKeyPress([this](const auto key_code) {
-		HandleDiscreteKeyPress(key_code, *shader_program_, mesh_);
-	});
+	window_->OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code, *shader_program_, mesh_); });
 	window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
-		constexpr auto kScaleStep = 0.02f;
-		mesh_.Scale(vec3{1.f + kScaleStep * static_cast<float>(y_offset)});
+		constexpr auto kScaleStep = .02f;
+		const auto sign = static_cast<float>(y_offset > 0) - static_cast<float>(y_offset < 0);
+		mesh_.Scale(vec3{1.f + sign * kScaleStep});
 	});
-	shader_program_->Enable();
 
+	shader_program_->Enable();
 	InitializeMesh(*shader_program_, mesh_);
 	InitializePointLights(*shader_program_);
 }
