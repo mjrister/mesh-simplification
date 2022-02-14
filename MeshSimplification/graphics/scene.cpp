@@ -81,7 +81,7 @@ void SetProjectionTransform(ShaderProgram& shader_program, const pair<int, int>&
 	static pair<int, int> prev_window_dimensions;
 	const auto [width, height] = window_dimensions;
 
-	if (width && height && window_dimensions != prev_window_dimensions) {
+	if (window_dimensions != prev_window_dimensions && width && height) {
 		const auto [field_of_view_y, z_near, z_far] = kViewFrustrum;
 		const auto aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
 		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
