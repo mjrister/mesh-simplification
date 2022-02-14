@@ -77,20 +77,15 @@ void SetPointLights(ShaderProgram& shader_program) {
 	}
 }
 
-void SetProjectionTransform(ShaderProgram& shader_program, const pair<int, int>& window_dimensions) {
-	static pair<int, int> prev_window_dimensions;
-	const auto [width, height] = window_dimensions;
+void SetModelViewProjectionTransforms(ShaderProgram& shader_program, const Mesh& mesh, const float aspect_ratio) {
 
-	if (window_dimensions != prev_window_dimensions && width && height) {
+	if (static auto prev_aspect_ratio = 0.f; prev_aspect_ratio != aspect_ratio && aspect_ratio > 0) {
 		const auto [field_of_view_y, z_near, z_far] = kViewFrustrum;
-		const auto aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
 		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
-		prev_window_dimensions = window_dimensions;
+		prev_aspect_ratio = aspect_ratio;
 	}
-}
 
-void SetViewTransforms(ShaderProgram& shader_program, const Mesh& mesh) {
 	const auto view_model_transform = kCamera.view_transform * mesh.model_transform();
 	shader_program.SetUniform("view_model_transform", view_model_transform);
 	shader_program.SetUniform("normal_transform", inverse(transpose(view_model_transform)));
@@ -143,11 +138,11 @@ void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_t
 
 Scene::Scene(Window* const window)
 	: window_{window},
-	  mesh_shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
+	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
 	  mesh_{obj_loader::LoadMesh("models/bunny.obj", scale(translate(mat4{1.f}, vec3{.2f, -.25f, 0.f}), vec3{.3f}))} {
 
 	window_->OnKeyPress([this](const auto key_code) {
-		HandleDiscreteKeyPress(key_code, mesh_shader_program_, mesh_);
+		HandleDiscreteKeyPress(key_code, shader_program_, mesh_);
 	});
 
 	window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
@@ -156,18 +151,17 @@ Scene::Scene(Window* const window)
 		mesh_.Scale(vec3{1.f + sign * kScaleStep});
 	});
 
-	mesh_shader_program_.Enable([&] {
-		SetMaterial(mesh_shader_program_);
-		SetPointLights(mesh_shader_program_);
+	shader_program_.Enable([&] {
+		SetMaterial(shader_program_);
+		SetPointLights(shader_program_);
 	});
 }
 
 void Scene::Render(const float delta_time) {
 
-	mesh_shader_program_.Enable([&, this] {
+	shader_program_.Enable([&, this] {
 		HandleContinuousInput(*window_, mesh_, delta_time);
-		SetProjectionTransform(mesh_shader_program_, window_->Dimensions());
-		SetViewTransforms(mesh_shader_program_, mesh_);
+		SetModelViewProjectionTransforms(shader_program_, mesh_, window_->AspectRatio());
 		mesh_.Render();
 	});
 }
