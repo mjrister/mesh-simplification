@@ -55,6 +55,15 @@ public:
 	}
 
 	/**
+	 * \brief Gets the windows aspect ratio.
+	 * \return The ratio of the windows width to its height (e.g., 16/9).
+	 */
+	[[nodiscard]] float AspectRatio() const noexcept {
+		const auto [width, height] = Dimensions();
+		return height > 0 ? static_cast<float>(width) / static_cast<float>(height) : 0;
+	}
+
+	/**
 	 * \brief Gets the cursor position.
 	 * \return The (x,y) coordinates of the cursor position in the window.
 	 */
