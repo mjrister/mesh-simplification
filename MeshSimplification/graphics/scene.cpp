@@ -58,10 +58,7 @@ struct PointLight {
 	}
 };
 
-void InitializeMesh(ShaderProgram& shader_program, Mesh& mesh) {
-	mesh.Scale(vec3{.3f});
-	mesh.Translate(vec3{.5f, -1.f, 0.f});
-
+void SetMaterial(ShaderProgram& shader_program) {
 	const auto [ambient, diffuse, specular, shininess] = Material::FromType(MaterialType::kJade);
 	shader_program.SetUniform("material.ambient", ambient);
 	shader_program.SetUniform("material.diffuse", diffuse);
@@ -69,7 +66,7 @@ void InitializeMesh(ShaderProgram& shader_program, Mesh& mesh) {
 	shader_program.SetUniform("material.shininess", shininess * 128.f);
 }
 
-void InitializePointLights(ShaderProgram& shader_program) {
+void SetPointLights(ShaderProgram& shader_program) {
 	constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
 	shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
@@ -80,7 +77,7 @@ void InitializePointLights(ShaderProgram& shader_program) {
 	}
 }
 
-void UpdateProjectionTransform(const Window& window, ShaderProgram& shader_program) {
+void SetProjectionTransform(const Window& window, ShaderProgram& shader_program) {
 	static pair<int, int> prev_window_dimensions;
 	const auto window_dimensions = window.Dimensions();
 	const auto [width, height] = window_dimensions;
@@ -142,7 +139,7 @@ void HandleContinuousInput(const Window& window, const float delta_time, const m
 Scene::Scene(Window* const window)
 	: window_{window},
 	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
-	  mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
+	  mesh_{obj_loader::LoadMesh("models/bunny.obj", scale(translate(mat4{1.f}, vec3{.2f, -.25f, 0.f}), vec3{.3f}))} {
 
 	window_->OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code, shader_program_, mesh_); });
 	window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
@@ -152,8 +149,8 @@ Scene::Scene(Window* const window)
 	});
 
 	shader_program_.Enable([&] {
-		InitializeMesh(shader_program_, mesh_);
-		InitializePointLights(shader_program_);
+		SetMaterial(shader_program_);
+		SetPointLights(shader_program_);
 	});
 }
 
@@ -161,7 +158,7 @@ void Scene::Render(const float delta_time) {
 
 	shader_program_.Enable([&, this] {
 		HandleContinuousInput(*window_, delta_time, kCamera.view_transform, mesh_);
-		UpdateProjectionTransform(*window_, shader_program_);
+		SetProjectionTransform(*window_, shader_program_);
 
 		// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In
 		// this context, it is sufficient to use the view-model matrix to transform normals because meshes are only
@@ -170,7 +167,7 @@ void Scene::Render(const float delta_time) {
 		// normal is renormalized in the vertex shader.
 		const auto view_model_transform = kCamera.view_transform * mesh_.model_transform();
 		shader_program_.SetUniform("view_model_transform", view_model_transform);
-		shader_program_.SetUniform("normal_transform", mat3{ view_model_transform });
+		shader_program_.SetUniform("normal_transform", mat3{view_model_transform});
 
 		mesh_.Render();
 	});

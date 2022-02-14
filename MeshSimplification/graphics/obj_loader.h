@@ -2,6 +2,8 @@
 
 #include <string_view>
 
+#include <glm/mat4x4.hpp>
+
 namespace qem {
 class Mesh;
 
@@ -9,7 +11,8 @@ namespace obj_loader {
 
 /**
  * \brief Loads a triangle mesh from an .obj file.
- * \param filepath The filepath to the .obj file.
+ * \param filepath The path to the .obj file.
+ * \param model_transform The initial 4x4 affine transform to apply to the mesh.
  * \return A mesh defined by the position, texture coordinates, normals, and indices specified in the .obj file.
  * \note At this time, only a subset of .obj file specification is supported. Specifically, only 3D vertex
  *       position, 2D texture coordinates, and 3D normals are supported. Face elements are supported and may
@@ -18,6 +21,6 @@ namespace obj_loader {
  * \throw std::runtime_error Indicates the file cannot be opened.
  * \see https://en.wikipedia.org/wiki/Wavefront_.obj_file
  */
-Mesh LoadMesh(std::string_view filepath);
+Mesh LoadMesh(std::string_view filepath, const glm::mat4& model_transform = glm::mat4{1.f});
 }
 }
