@@ -251,8 +251,8 @@
     <ClInclude Include="common\ptr_conversion.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragment.glsl" />
-    <None Include="shaders\vertex.glsl" />
+    <None Include="shaders\mesh_fragment.glsl" />
+    <None Include="shaders\mesh_vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Object Include="models\armadillo.obj">

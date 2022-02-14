@@ -138,7 +138,9 @@ void HandleContinuousInput(const Window& window, const float delta_time, const m
 }
 
 Scene::Scene(Window* const window)
-	: window_{window}, shader_program_{"shaders/vertex.glsl", "shaders/fragment.glsl"}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
+	: window_{window},
+	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
+	  mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
 	window_->OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code, shader_program_, mesh_); });
 	window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
