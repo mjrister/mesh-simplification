@@ -58,7 +58,7 @@ struct PointLight {
 	}
 };
 
-void SetMaterial(ShaderProgram& shader_program) {
+void SetMaterialUniform(ShaderProgram& shader_program) {
 	const auto [ambient, diffuse, specular, shininess] = Material::FromType(MaterialType::kJade);
 	shader_program.SetUniform("material.ambient", ambient);
 	shader_program.SetUniform("material.diffuse", diffuse);
@@ -66,7 +66,7 @@ void SetMaterial(ShaderProgram& shader_program) {
 	shader_program.SetUniform("material.shininess", shininess * 128.f);
 }
 
-void SetPointLights(ShaderProgram& shader_program) {
+void SetPointLightsUniform(ShaderProgram& shader_program) {
 	constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
 	shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
@@ -77,9 +77,8 @@ void SetPointLights(ShaderProgram& shader_program) {
 	}
 }
 
-void SetProjectionTransform(const Window& window, ShaderProgram& shader_program) {
+void SetProjectionTransform(ShaderProgram& shader_program, const pair<int, int>& window_dimensions) {
 	static pair<int, int> prev_window_dimensions;
-	const auto window_dimensions = window.Dimensions();
 	const auto [width, height] = window_dimensions;
 
 	if (width && height && window_dimensions != prev_window_dimensions) {
@@ -89,6 +88,12 @@ void SetProjectionTransform(const Window& window, ShaderProgram& shader_program)
 		shader_program.SetUniform("projection_transform", projection_transform);
 		prev_window_dimensions = window_dimensions;
 	}
+}
+
+void SetViewTransforms(ShaderProgram& shader_program, const Mesh& mesh) {
+	const auto view_model_transform = kCamera.view_transform * mesh.model_transform();
+	shader_program.SetUniform("view_model_transform", view_model_transform);
+	shader_program.SetUniform("normal_transform", inverse(transpose(view_model_transform)));
 }
 
 void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, Mesh& mesh) {
@@ -108,14 +113,14 @@ void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, M
 	}
 }
 
-void HandleContinuousInput(const Window& window, const float delta_time, const mat4& view_transform, Mesh& mesh) {
+void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_time) {
 	static optional<dvec2> prev_cursor_position;
 
 	if (const auto cursor_position = window.CursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		if (prev_cursor_position) {
 			const auto translate_step = .25f * delta_time;
 			const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
-			const auto view_model_inv = inverse(view_transform * mesh.model_transform());
+			const auto view_model_inv = inverse(kCamera.view_transform * mesh.model_transform());
 			const auto translate = view_model_inv * vec4{cursor_delta.x, -cursor_delta.y, 0.f, 0.f};
 			mesh.Translate(translate);
 		}
@@ -124,9 +129,9 @@ void HandleContinuousInput(const Window& window, const float delta_time, const m
 		if (prev_cursor_position) {
 			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.Dimensions())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = view_transform * mesh.model_transform();
-				const auto model_rotation_axis = inverse(view_model_transform) * vec4{view_rotation_axis, 0.f};
-				mesh.Rotate(normalize(model_rotation_axis), angle);
+				const auto view_model_inv = inverse(kCamera.view_transform * mesh.model_transform());
+				const auto model_rotation_axis = normalize(view_model_inv * vec4{view_rotation_axis, 0.f});
+				mesh.Rotate(model_rotation_axis, angle);
 			}
 		}
 		prev_cursor_position = cursor_position;
@@ -138,37 +143,31 @@ void HandleContinuousInput(const Window& window, const float delta_time, const m
 
 Scene::Scene(Window* const window)
 	: window_{window},
-	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
+	  mesh_shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
 	  mesh_{obj_loader::LoadMesh("models/bunny.obj", scale(translate(mat4{1.f}, vec3{.2f, -.25f, 0.f}), vec3{.3f}))} {
 
-	window_->OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code, shader_program_, mesh_); });
+	window_->OnKeyPress([this](const auto key_code) {
+		HandleDiscreteKeyPress(key_code, mesh_shader_program_, mesh_);
+	});
+
 	window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
 		constexpr auto kScaleStep = .02f;
 		const auto sign = static_cast<float>(y_offset > 0) - static_cast<float>(y_offset < 0);
 		mesh_.Scale(vec3{1.f + sign * kScaleStep});
 	});
 
-	shader_program_.Enable([&] {
-		SetMaterial(shader_program_);
-		SetPointLights(shader_program_);
+	mesh_shader_program_.Enable([&] {
+		SetMaterialUniform(mesh_shader_program_);
+		SetPointLightsUniform(mesh_shader_program_);
 	});
 }
 
 void Scene::Render(const float delta_time) {
 
-	shader_program_.Enable([&, this] {
-		HandleContinuousInput(*window_, delta_time, kCamera.view_transform, mesh_);
-		SetProjectionTransform(*window_, shader_program_);
-
-		// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In
-		// this context, it is sufficient to use the view-model matrix to transform normals because meshes are only
-		// transformed by rotations and translations (which are orthogonal matrices with the property that their
-		// inverse is equal to their transpose) in addition to uniform scaling which is undone when the transformed
-		// normal is renormalized in the vertex shader.
-		const auto view_model_transform = kCamera.view_transform * mesh_.model_transform();
-		shader_program_.SetUniform("view_model_transform", view_model_transform);
-		shader_program_.SetUniform("normal_transform", mat3{view_model_transform});
-
+	mesh_shader_program_.Enable([&, this] {
+		HandleContinuousInput(*window_, mesh_, delta_time);
+		SetProjectionTransform(mesh_shader_program_, window_->Dimensions());
+		SetViewTransforms(mesh_shader_program_, mesh_);
 		mesh_.Render();
 	});
 }

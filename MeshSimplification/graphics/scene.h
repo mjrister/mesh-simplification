@@ -24,7 +24,7 @@ public:
 
 private:
 	Window* window_;
-	ShaderProgram shader_program_;
+	ShaderProgram mesh_shader_program_;
 	Mesh mesh_;
 };
 }
