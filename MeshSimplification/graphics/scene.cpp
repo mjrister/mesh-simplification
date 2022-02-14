@@ -32,10 +32,12 @@ struct Camera {
 	vec3 look_from;
 	vec3 look_at;
 	vec3 up;
-} constexpr kCamera = {
+	mat4 view_transform;
+} const kCamera = {
 	.look_from = vec3{0.f, .5f, 2.f},
 	.look_at = vec3{0.f},
-	.up = vec3{0.f, 1.f, 0.f}
+	.up = vec3{0.f, 1.f, 0.f},
+	.view_transform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up)
 };
 
 struct PointLight {
@@ -149,24 +151,27 @@ Scene::Scene(Window* const window)
 		mesh_.Scale(vec3{1.f + sign * kScaleStep});
 	});
 
-	shader_program_.Enable();
-	InitializeMesh(shader_program_, mesh_);
-	InitializePointLights(shader_program_);
+	shader_program_.Enable([&] {
+		InitializeMesh(shader_program_, mesh_);
+		InitializePointLights(shader_program_);
+	});
 }
 
 void Scene::Render(const float delta_time) {
-	static const auto kViewTransform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up);
-	HandleContinuousInput(*window_, delta_time, kViewTransform, mesh_);
-	UpdateProjectionTransform(*window_, shader_program_);
 
-	// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In this
-	// context, it is sufficient to use the view-model matrix to transform normals because meshes are only transformed
-	// by rotations and translations (which are orthogonal matrices with the property that their inverse is equal to
-	// their transpose) in addition to uniform scaling which is undone when the transformed normal is renormalized in
-	// the vertex shader.
-	const auto view_model_transform = kViewTransform * mesh_.model_transform();
-	shader_program_.SetUniform("view_model_transform", view_model_transform);
-	shader_program_.SetUniform("normal_transform", mat3{view_model_transform});
+	shader_program_.Enable([&, this] {
+		HandleContinuousInput(*window_, delta_time, kCamera.view_transform, mesh_);
+		UpdateProjectionTransform(*window_, shader_program_);
 
-	mesh_.Render();
+		// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In
+		// this context, it is sufficient to use the view-model matrix to transform normals because meshes are only
+		// transformed by rotations and translations (which are orthogonal matrices with the property that their
+		// inverse is equal to their transpose) in addition to uniform scaling which is undone when the transformed
+		// normal is renormalized in the vertex shader.
+		const auto view_model_transform = kCamera.view_transform * mesh_.model_transform();
+		shader_program_.SetUniform("view_model_transform", view_model_transform);
+		shader_program_.SetUniform("normal_transform", mat3{ view_model_transform });
+
+		mesh_.Render();
+	});
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <format>
+#include <functional>
 #include <iostream>
 #include <string_view>
 #include <type_traits>
@@ -52,8 +53,16 @@ public:
 	ShaderProgram(ShaderProgram&&) noexcept = delete;
 	ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
-	/** \brief Enables this shader program for immediate use in rendering. */
-	void Enable() const noexcept { glUseProgram(id_); }
+	/**
+	 *	\brief Binds the shader program to the current OpenGL context.
+	 *	\param fn A callback to be invoked once the shader program is enabled.
+	 *	\note The shader program is disabled after execution of \p fn completes.
+	 */
+	void Enable(const std::function<void()>& fn) const {
+		glUseProgram(id_);
+		fn();
+		glUseProgram(0);
+	}
 
 	/**
 	 * \brief Sets a uniform variable in the shader program.
