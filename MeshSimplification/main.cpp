@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include "graphics/scene.h"
-#include "graphics/shader_program.h"
 #include "graphics/window.h"
 
 using namespace qem;
@@ -16,8 +15,7 @@ int main() {
 		constexpr auto kWindowDimensions = make_pair(1280, 960);
 		constexpr auto kOpenGlVersion = make_pair(4, 6);
 		Window window{"Mesh Simplification", kWindowDimensions, kOpenGlVersion};
-		ShaderProgram shader_program{"shaders/vertex.glsl", "shaders/fragment.glsl"};
-		Scene scene{&window, &shader_program};
+		Scene scene{&window};
 
 		for (auto previous_time = static_cast<float>(glfwGetTime()), delta_time = 0.f; !window.IsClosed();) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

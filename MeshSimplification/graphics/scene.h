@@ -1,9 +1,9 @@
 #pragma once
 
 #include "graphics/mesh.h"
+#include "graphics/shader_program.h"
 
 namespace qem {
-class ShaderProgram;
 class Window;
 
 /** \brief Defines all of the necessary objects (e.g., camera, lighting, mesh, etc.) to render the scene. */
@@ -13,9 +13,8 @@ public:
 	/**
 	 * \brief Initializes the scene.
 	 * \param window The window to render to.
-	 * \param shader_program The shader shader program to use for rendering.
 	 */
-	Scene(Window* window, ShaderProgram* shader_program);
+	explicit Scene(Window* window);
 
 	/**
 	 * \brief Renders the scene.
@@ -25,7 +24,7 @@ public:
 
 private:
 	Window* window_;
-	ShaderProgram* shader_program_;
+	ShaderProgram shader_program_;
 	Mesh mesh_;
 };
 }

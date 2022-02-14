@@ -137,25 +137,25 @@ void HandleContinuousInput(const Window& window, const float delta_time, const m
 }
 }
 
-Scene::Scene(Window* const window, ShaderProgram* const shader_program)
-	: window_{window}, shader_program_{shader_program}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
+Scene::Scene(Window* const window)
+	: window_{window}, shader_program_{"shaders/vertex.glsl", "shaders/fragment.glsl"}, mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
-	window_->OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code, *shader_program_, mesh_); });
+	window_->OnKeyPress([this](const auto key_code) { HandleDiscreteKeyPress(key_code, shader_program_, mesh_); });
 	window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
 		constexpr auto kScaleStep = .02f;
 		const auto sign = static_cast<float>(y_offset > 0) - static_cast<float>(y_offset < 0);
 		mesh_.Scale(vec3{1.f + sign * kScaleStep});
 	});
 
-	shader_program_->Enable();
-	InitializeMesh(*shader_program_, mesh_);
-	InitializePointLights(*shader_program_);
+	shader_program_.Enable();
+	InitializeMesh(shader_program_, mesh_);
+	InitializePointLights(shader_program_);
 }
 
 void Scene::Render(const float delta_time) {
 	static const auto kViewTransform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up);
 	HandleContinuousInput(*window_, delta_time, kViewTransform, mesh_);
-	UpdateProjectionTransform(*window_, *shader_program_);
+	UpdateProjectionTransform(*window_, shader_program_);
 
 	// Generally, normals should be transformed by the upper 3x3 inverse transpose of the view model matrix. In this
 	// context, it is sufficient to use the view-model matrix to transform normals because meshes are only transformed
@@ -163,8 +163,8 @@ void Scene::Render(const float delta_time) {
 	// their transpose) in addition to uniform scaling which is undone when the transformed normal is renormalized in
 	// the vertex shader.
 	const auto view_model_transform = kViewTransform * mesh_.model_transform();
-	shader_program_->SetUniform("view_model_transform", view_model_transform);
-	shader_program_->SetUniform("normal_transform", mat3{view_model_transform});
+	shader_program_.SetUniform("view_model_transform", view_model_transform);
+	shader_program_.SetUniform("normal_transform", mat3{view_model_transform});
 
 	mesh_.Render();
 }
