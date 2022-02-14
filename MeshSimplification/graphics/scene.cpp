@@ -58,7 +58,7 @@ struct PointLight {
 	}
 };
 
-void SetMaterialUniform(ShaderProgram& shader_program) {
+void SetMaterial(ShaderProgram& shader_program) {
 	const auto [ambient, diffuse, specular, shininess] = Material::FromType(MaterialType::kJade);
 	shader_program.SetUniform("material.ambient", ambient);
 	shader_program.SetUniform("material.diffuse", diffuse);
@@ -66,7 +66,7 @@ void SetMaterialUniform(ShaderProgram& shader_program) {
 	shader_program.SetUniform("material.shininess", shininess * 128.f);
 }
 
-void SetPointLightsUniform(ShaderProgram& shader_program) {
+void SetPointLights(ShaderProgram& shader_program) {
 	constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
 	shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
@@ -157,8 +157,8 @@ Scene::Scene(Window* const window)
 	});
 
 	mesh_shader_program_.Enable([&] {
-		SetMaterialUniform(mesh_shader_program_);
-		SetPointLightsUniform(mesh_shader_program_);
+		SetMaterial(mesh_shader_program_);
+		SetPointLights(mesh_shader_program_);
 	});
 }
 
