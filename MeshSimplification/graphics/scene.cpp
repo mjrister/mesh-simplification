@@ -91,18 +91,12 @@ void SetModelViewProjectionTransforms(ShaderProgram& shader_program, const Mesh&
 	shader_program.SetUniform("normal_transform", inverse(transpose(view_model_transform)));
 }
 
-void HandleDiscreteKeyPress(const int key_code, ShaderProgram& shader_program, Mesh& mesh) {
+void HandleDiscreteKeyPress(const int key_code, Mesh& mesh) {
 
 	switch (key_code) {
 		case GLFW_KEY_S:
 			mesh = mesh::Simplify(mesh, .5f);
 			break;
-		case GLFW_KEY_P: {
-			static auto use_phong_shading = false;
-			use_phong_shading = !use_phong_shading;
-			shader_program.SetUniform("use_phong_shading", use_phong_shading);
-			break;
-		}
 		default:
 			break;
 	}
@@ -142,7 +136,7 @@ Scene::Scene(Window* const window)
 	  mesh_{obj_loader::LoadMesh("models/bunny.obj", scale(translate(mat4{1.f}, vec3{.2f, -.25f, 0.f}), vec3{.3f}))} {
 
 	window_->OnKeyPress([this](const auto key_code) {
-		HandleDiscreteKeyPress(key_code, shader_program_, mesh_);
+		HandleDiscreteKeyPress(key_code, mesh_);
 	});
 
 	window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {

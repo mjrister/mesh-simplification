@@ -18,13 +18,12 @@ uniform struct Material {
 } material;
 
 uniform int point_lights_size;
-uniform bool use_phong_shading;
 
 out vec4 fragment_color;
 
 void main() {
 	vec3 vertex_position = vertex.position.xyz;
-	vec3 vertex_normal = normalize(use_phong_shading ? vertex.normal : cross(dFdx(vertex_position), dFdy(vertex_position)));
+	vec3 vertex_normal = normalize(cross(dFdx(vertex_position), dFdy(vertex_position)));
 	fragment_color = vec4(material.ambient, 1.f);
 
 	for (int i = 0; i < min(point_lights_size, point_lights.length()); ++i) {
