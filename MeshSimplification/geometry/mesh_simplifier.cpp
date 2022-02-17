@@ -63,7 +63,7 @@ mat4 ComputeQuadric(const Vertex& vertex) {
  * \return The optimal vertex and cost associated with collapsing \p edge01.
  */
 pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
-	const size_t vertex_id, const HalfEdge& edge01, const unordered_map<size_t, mat4>& quadrics) {
+	const uint64_t vertex_id, const HalfEdge& edge01, const unordered_map<uint64_t, mat4>& quadrics) {
 
 	const auto v0 = edge01.flip()->vertex();
 	const auto v1 = edge01.vertex();
@@ -102,7 +102,7 @@ bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
 	const auto v0 = edge01->flip()->vertex();
 	const auto v1_next = edge01->next()->vertex();
 	const auto v0_next = edge01->flip()->next()->vertex();
-	unordered_map<size_t, shared_ptr<Vertex>> neighborhood;
+	unordered_map<uint64_t, shared_ptr<Vertex>> neighborhood;
 
 	for (auto iterator = edge01->next(); iterator != edge01->flip(); iterator = iterator->flip()->next()) {
 		if (const auto vertex = iterator->vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
@@ -125,7 +125,7 @@ struct EdgeContraction {
 	EdgeContraction(
 		HalfEdgeMesh& mesh,
 		const shared_ptr<const HalfEdge>& edge,
-		const unordered_map<size_t, mat4>& quadrics)
+		const unordered_map<uint64_t, mat4>& quadrics)
 		: edge{edge} {
 		tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.next_vertex_id(), *edge, quadrics);
 	}
@@ -156,7 +156,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	HalfEdgeMesh half_edge_mesh{mesh};
 
 	// compute error quadrics for each vertex
-	unordered_map<size_t, mat4> quadrics;
+	unordered_map<uint64_t, mat4> quadrics;
 	for (const auto& [vertex_id, vertex] : half_edge_mesh.vertices()) {
 		quadrics.emplace(vertex_id, ComputeQuadric(*vertex));
 	}
@@ -173,7 +173,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	> edge_contractions{kMinHeapComparator};
 
 	// this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
-	unordered_map<size_t, shared_ptr<EdgeContraction>> valid_edges;
+	unordered_map<uint64_t, shared_ptr<EdgeContraction>> valid_edges;
 
 	// compute the optimal vertex position that minimizes the cost of collapsing each edge
 	for (const auto& edge : half_edge_mesh.edges() | views::values) {
@@ -227,7 +227,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		half_edge_mesh.CollapseEdge(*edge01, v_new);
 
 		// add new edge contraction candidates for edges affected by the edge contraction
-		unordered_map<size_t, shared_ptr<const HalfEdge>> visited_edges;
+		unordered_map<uint64_t, shared_ptr<const HalfEdge>> visited_edges;
 		const auto& vi = v_new;
 		auto edgeji = vi->edge();
 		do {

@@ -66,7 +66,7 @@ HalfEdgeMesh MakeHalfEdgeMesh() {
 void VerifyEdge(
 	const shared_ptr<Vertex>& v0,
 	const shared_ptr<Vertex>& v1,
-	const unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
+	const unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges) {
 
 	const auto edge01_iterator = edges.find(hash_value(*v0, *v1));
 	const auto edge10_iterator = edges.find(hash_value(*v1, *v0));
@@ -176,7 +176,7 @@ TEST_F(HalfEdgeMeshTest, TestGetNextVertexId) {
 
 TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {
 
-	const unordered_map<size_t, shared_ptr<HalfEdge>> edges{
+	const unordered_map<uint64_t, shared_ptr<HalfEdge>> edges{
 		{hash_value(*edge01_), edge01_},
 		{hash_value(*edge10_), edge10_}
 	};
@@ -193,7 +193,7 @@ TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {
 TEST_F(HalfEdgeMeshTest, TestDeleteVertex) {
 
 	const auto v0 = make_shared<Vertex>(0, vec3{});
-	map<size_t, shared_ptr<Vertex>> vertices{{0, v0}};
+	map<uint64_t, shared_ptr<Vertex>> vertices{{0, v0}};
 
 	DeleteVertex(*v0, vertices);
 
@@ -203,7 +203,7 @@ TEST_F(HalfEdgeMeshTest, TestDeleteVertex) {
 
 TEST_F(HalfEdgeMeshTest, TestDeleteHalfEdge) {
 
-	unordered_map<size_t, shared_ptr<HalfEdge>> edges{
+	unordered_map<uint64_t, shared_ptr<HalfEdge>> edges{
 		{hash_value(*edge01_), edge01_},
 		{hash_value(*edge10_), edge10_}
 	};
@@ -220,7 +220,7 @@ TEST_F(HalfEdgeMeshTest, TestDeleteFace) {
 	const auto v1 = make_shared<Vertex>(1, vec3{0.f, .5f, 0.f});
 	const auto v2 = make_shared<Vertex>(2, vec3{1.f, -1.f, 0.f});
 	const auto face012 = make_shared<Face>(v0, v1, v2);
-	unordered_map<size_t, shared_ptr<Face>> faces{{hash_value(*face012), face012}};
+	unordered_map<uint64_t, shared_ptr<Face>> faces{{hash_value(*face012), face012}};
 
 	DeleteFace(*face012, faces);
 

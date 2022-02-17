@@ -41,7 +41,7 @@ public:
 	void set_face(const std::shared_ptr<Face>& face) noexcept { face_ = face; }
 
 	/** \brief Gets the half-edge hash value. */
-	friend std::size_t hash_value(const HalfEdge& edge) { return hash_value(*edge.flip()->vertex(), *edge.vertex()); }
+	friend std::uint64_t hash_value(const HalfEdge& edge) { return hash_value(*edge.flip()->vertex(), *edge.vertex()); }
 
 private:
 	std::weak_ptr<Vertex> vertex_;

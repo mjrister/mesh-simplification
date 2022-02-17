@@ -39,7 +39,7 @@ public:
 	[[nodiscard]] float area() const noexcept { return area_; }
 
 	/** \brief Gets the face hash value. */
-	friend std::size_t hash_value(const Face& face) { return hash_value(*face.v0(), *face.v1(), *face.v2()); }
+	friend std::uint64_t hash_value(const Face& face) { return hash_value(*face.v0(), *face.v1(), *face.v2()); }
 
 private:
 	std::weak_ptr<const Vertex> v0_, v1_, v2_;

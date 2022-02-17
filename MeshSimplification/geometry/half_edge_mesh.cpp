@@ -23,7 +23,7 @@ namespace {
  * \return The half-edge connecting vertex \p v0 to \p v1.
  */
 shared_ptr<HalfEdge> CreateHalfEdge(
-	const shared_ptr<Vertex>& v0, const shared_ptr<Vertex>& v1, unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
+	const shared_ptr<Vertex>& v0, const shared_ptr<Vertex>& v1, unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges) {
 
 	const auto edge01_key = hash_value(*v0, *v1);
 	const auto edge10_key = hash_value(*v1, *v0);
@@ -55,7 +55,7 @@ shared_ptr<Face> CreateTriangle(
 	const shared_ptr<Vertex>& v0,
 	const shared_ptr<Vertex>& v1,
 	const shared_ptr<Vertex>& v2,
-	unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
+	unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges) {
 
 	const auto edge01 = CreateHalfEdge(v0, v1, edges);
 	const auto edge12 = CreateHalfEdge(v1, v2, edges);
@@ -85,7 +85,7 @@ shared_ptr<Face> CreateTriangle(
  * \throw invalid_argument Indicates no edge connecting \p v0 to \p v1 exists in \p edges.
  */
 shared_ptr<HalfEdge> GetHalfEdge(
-	const Vertex& v0, const Vertex& v1, const unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
+	const Vertex& v0, const Vertex& v1, const unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges) {
 
 	if (const auto iterator = edges.find(hash_value(v0, v1)); iterator != edges.end()) {
 		return iterator->second;
@@ -100,7 +100,7 @@ shared_ptr<HalfEdge> GetHalfEdge(
  * \param vertices A mapping of mesh vertices by ID.
  * \throw invalid_argument Indicates \p vertex does not exist in \p vertices.
  */
-void DeleteVertex(const Vertex& vertex, map<size_t, shared_ptr<Vertex>>& vertices) {
+void DeleteVertex(const Vertex& vertex, map<uint64_t, shared_ptr<Vertex>>& vertices) {
 
 	if (const auto iterator = vertices.find(vertex.id()); iterator != vertices.end()) {
 		vertices.erase(iterator);
@@ -115,7 +115,7 @@ void DeleteVertex(const Vertex& vertex, map<size_t, shared_ptr<Vertex>>& vertice
  * \param edges A mapping of mesh half-edges by ID.
  * \throw invalid_argument Indicates \p edge does not exist in \p edges.
  */
-void DeleteEdge(const HalfEdge& edge, unordered_map<size_t, shared_ptr<HalfEdge>>& edges) {
+void DeleteEdge(const HalfEdge& edge, unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges) {
 
 	for (const auto edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
 		if (const auto iterator = edges.find(edge_key); iterator != edges.end()) {
@@ -132,7 +132,7 @@ void DeleteEdge(const HalfEdge& edge, unordered_map<size_t, shared_ptr<HalfEdge>
  * \param faces A mapping of mesh faces by ID.
  * \throw invalid_argument Indicates \p face does not exist in \p faces.
  */
-void DeleteFace(const Face& face, unordered_map<size_t, shared_ptr<Face>>& faces) {
+void DeleteFace(const Face& face, unordered_map<uint64_t, shared_ptr<Face>>& faces) {
 
 	if (const auto iterator = faces.find(hash_value(face)); iterator != faces.end()) {
 		faces.erase(iterator);
@@ -155,8 +155,8 @@ void UpdateIncidentEdges(
 	const Vertex& v_start,
 	const Vertex& v_end,
 	const shared_ptr<Vertex>& v_new,
-	unordered_map<size_t, shared_ptr<HalfEdge>>& edges,
-	unordered_map<size_t, shared_ptr<Face>>& faces) {
+	unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges,
+	unordered_map<uint64_t, shared_ptr<Face>>& faces) {
 
 	const auto edge_start = GetHalfEdge(v_target, v_start, edges);
 	const auto edge_end = GetHalfEdge(v_target, v_end, edges);
@@ -202,8 +202,8 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_trans
 	const auto& positions = mesh.positions();
 	const auto& indices = mesh.indices();
 
-	for (size_t i = 0; i < positions.size(); ++i) {
-		vertices_.emplace(i, make_shared<Vertex>(i, positions[i]));
+	for (uint64_t i = 0; i < static_cast<uint64_t>(positions.size()); ++i) {
+		vertices_.emplace(i, make_shared<Vertex>(i, positions[static_cast<size_t>(i)]));
 	}
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
@@ -228,7 +228,7 @@ HalfEdgeMesh::operator Mesh() const {
 	vector<unsigned> indices;
 	indices.reserve(faces_.size() * 3);
 
-	unordered_map<size_t, unsigned> index_map;
+	unordered_map<uint64_t, unsigned> index_map;
 	for (auto i = 0u; const auto& vertex : vertices_ | views::values) {
 		positions.push_back(vertex->position());
 		normals.push_back(ComputeWeightedVertexNormal(*vertex));

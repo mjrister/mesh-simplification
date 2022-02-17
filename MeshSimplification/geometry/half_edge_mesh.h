@@ -41,7 +41,7 @@ public:
 	[[nodiscard]] const auto& faces() const noexcept { return faces_; }
 
 	/** \brief Gets a unique vertex ID that can be used to construct a new vertex in the half-edge mesh. */
-	[[nodiscard]] std::size_t next_vertex_id() noexcept { return next_vertex_id_++; }
+	[[nodiscard]] std::uint64_t next_vertex_id() noexcept { return next_vertex_id_++; }
 
 	/**
 	 * \brief Collapses an edge into a single vertex and updates all incident edges to connect to that vertex.
@@ -51,10 +51,10 @@ public:
 	void CollapseEdge(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new);
 
 private:
-	std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;
-	std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
-	std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
+	std::map<std::uint64_t, std::shared_ptr<Vertex>> vertices_;
+	std::unordered_map<std::uint64_t, std::shared_ptr<HalfEdge>> edges_;
+	std::unordered_map<std::uint64_t, std::shared_ptr<Face>> faces_;
 	glm::mat4 model_transform_;
-	std::size_t next_vertex_id_;
+	std::uint64_t next_vertex_id_;
 };
 }
