@@ -202,8 +202,8 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_trans
 	const auto& positions = mesh.positions();
 	const auto& indices = mesh.indices();
 
-	for (uint64_t i = 0; i < static_cast<uint64_t>(positions.size()); ++i) {
-		vertices_.emplace(i, make_shared<Vertex>(i, positions[static_cast<size_t>(i)]));
+	for (size_t i = 0; i < positions.size(); ++i) {
+		vertices_.emplace(i, make_shared<Vertex>(i, positions[i]));
 	}
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
