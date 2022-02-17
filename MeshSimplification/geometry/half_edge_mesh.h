@@ -26,10 +26,10 @@ public:
 	 * \brief Initializes a half-edge mesh.
 	 * \param mesh An indexed triangle mesh to construct the half-edge mesh from.
 	 */
-	explicit HalfEdgeMesh(const qem::Mesh& mesh);
+	explicit HalfEdgeMesh(const Mesh& mesh);
 
 	/** \brief Defines the conversion operator back to a triangle mesh. */
-	explicit operator qem::Mesh() const;
+	explicit operator Mesh() const;
 
 	/** \brief Gets a mapping of mesh vertices by ID. */
 	[[nodiscard]] const auto& vertices() const noexcept { return vertices_; }
