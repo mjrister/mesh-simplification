@@ -88,7 +88,7 @@ void SetModelViewProjectionTransforms(ShaderProgram& shader_program, const Mesh&
 
 	const auto view_model_transform = kCamera.view_transform * mesh.model_transform();
 	shader_program.SetUniform("model_view_transform", view_model_transform);
-	shader_program.SetUniform("normal_transform", inverse(transpose(view_model_transform)));
+	shader_program.SetUniform("normal_transform", mat3{inverse(transpose(view_model_transform))});
 }
 
 void HandleDiscreteKeyPress(const int key_code, Mesh& mesh) {
