@@ -57,36 +57,39 @@ Mesh::Mesh(
 	glGenBuffers(1, &vertex_buffer_);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
 
+	using PositionType = decltype(positions_)::value_type;
+	using TextureCoordinateType = decltype(texture_coordinates_)::value_type;
+	using NormalType = decltype(normals_)::value_type;
+
 	// allocate memory for the vertex buffer
-	const auto positions_size = sizeof(vec3) * positions_.size();
-	const auto texture_coordinates_size = sizeof(vec2) * texture_coordinates_.size();
-	const auto normals_size = sizeof(vec3) * normals_.size();
+	const auto positions_size = sizeof(PositionType) * positions_.size();
+	const auto texture_coordinates_size = sizeof(TextureCoordinateType) * texture_coordinates_.size();
+	const auto normals_size = sizeof(NormalType) * normals_.size();
 	const auto buffer_size = positions_size + texture_coordinates_size + normals_size;
 	glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
 
 	// copy positions to the vertex buffer
 	glBufferSubData(GL_ARRAY_BUFFER, 0, positions_size, positions_.data());
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(0));
+	glVertexAttribPointer(0, PositionType::length(), GL_FLOAT, GL_FALSE, 0, nullptr);
 	glEnableVertexAttribArray(0);
 
 	// copy texture coordinates to the vertex buffer
 	if (!texture_coordinates_.empty()) {
 		glBufferSubData(GL_ARRAY_BUFFER, positions_size, texture_coordinates_size, texture_coordinates_.data());
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(positions_size));
+		glVertexAttribPointer(1, TextureCoordinateType::length(), GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(1);
 	}
 
 	// copy normals to the vertex buffer
 	if (!normals_.empty()) {
-		const size_t offset = positions_size + texture_coordinates_size;
-		glBufferSubData(GL_ARRAY_BUFFER, offset, normals_size, normals_.data());
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(offset));
+		glBufferSubData(GL_ARRAY_BUFFER, positions_size + texture_coordinates_size, normals_size, normals_.data());
+		glVertexAttribPointer(2, NormalType::length(), GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(2);
 	}
 
 	// copy indices to the element buffer
 	if (!indices_.empty()) {
-		const size_t indices_size = sizeof(GLuint) * indices_.size();
+		const auto indices_size = sizeof(decltype(indices_)::value_type) * indices_.size();
 		glGenBuffers(1, &element_buffer_);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size, indices_.data(), GL_STATIC_DRAW);
