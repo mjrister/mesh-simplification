@@ -77,8 +77,8 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 	const auto d = q01[3][3];
 
 	// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
-	static constexpr auto kEpsilon = numeric_limits<float>::epsilon();
-	if (std::abs(determinant(Q)) < kEpsilon || std::abs(d) < kEpsilon) {
+	if (static constexpr auto kEpsilon = numeric_limits<float>::epsilon();
+		std::abs(determinant(Q)) < kEpsilon || std::abs(d) < kEpsilon) {
 		const auto position = (v0->position() + v1->position()) / 2.f;
 		return {make_shared<Vertex>(vertex_id, position), 0.f};
 	}
