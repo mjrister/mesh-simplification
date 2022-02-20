@@ -154,7 +154,7 @@ array<ivec3, 3> ParseFace(const string_view line) {
  * \return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
  * \throw invalid_argument Indicates the input stream contains an unsupported format.
  */
-Mesh LoadMesh(istream& is, const mat4& model_transform) {
+Mesh LoadMesh(istream& is) {
 	vector<vec3> positions;
 	vector<vec2> texture_coordinates;
 	vector<vec3> normals;
@@ -174,7 +174,7 @@ Mesh LoadMesh(istream& is, const mat4& model_transform) {
 		}
 	}
 
-	if (faces.empty()) return Mesh{positions, texture_coordinates, normals, {}, model_transform};
+	if (faces.empty()) return Mesh{positions, texture_coordinates, normals, {}};
 
 	vector<vec3> ordered_positions;
 	vector<vec2> ordered_texture_coordinates;
@@ -211,13 +211,13 @@ Mesh LoadMesh(istream& is, const mat4& model_transform) {
 		}
 	}
 
-	return Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices, model_transform};
+	return Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices};
 }
 }
 
-Mesh obj_loader::LoadMesh(const string_view filepath, const mat4& model_transform) {
+Mesh obj_loader::LoadMesh(const string_view filepath) {
 	if (ifstream ifs{filepath.data()}; ifs.good()) {
-		return ::LoadMesh(ifs, model_transform);
+		return ::LoadMesh(ifs);
 	}
 	throw runtime_error{format("Unable to open {}", filepath)};
 }

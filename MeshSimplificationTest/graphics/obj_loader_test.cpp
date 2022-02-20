@@ -132,7 +132,7 @@ TEST(ObjLoaderTest, TestLoadMeshWithoutFaceIndices) {
 		)"
 	};
 
-	const auto mesh = LoadMesh(ss, mat4{1.f});
+	const auto mesh = LoadMesh(ss);
 	constexpr vec3 v0{0.f, 0.1f, 0.2f}, v1{1.f, 1.1f, 1.2f}, v2{2.f, 2.1f, 2.2f};
 	constexpr vec2 vt0{3.f, 3.1f}, vt1{4.f, 4.1f}, vt2{5.f, 5.1f};
 	constexpr vec3 vn0{6.f, 6.1f, 6.2f}, vn1{7.f, 7.1f, 7.2f}, vn2{8.f, 8.1f, 8.2f};
@@ -167,7 +167,7 @@ TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
 		)"
 	};
 
-	const auto mesh = LoadMesh(ss, mat4{1.f});
+	const auto mesh = LoadMesh(ss);
 	constexpr vec3 v0{0.f, .1f, .2f}, v1{1.f, 1.1f, 1.2f}, v2{2.f, 2.1f, 2.2f}, v3{3.f, 3.1f, 3.2f};
 	constexpr vec2 vt0{4.f, 4.1f}, vt1{5.f, 5.1f}, vt2{6.f, 6.1f}, vt3{7.f, 7.1f};
 	constexpr vec3 vn0{8.f, 8.1f, 8.2f}, vn1{9.f, 9.1f, 9.2f}, vn2{10.f, 10.1f, 10.2f};
