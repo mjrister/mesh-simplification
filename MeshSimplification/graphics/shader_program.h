@@ -73,17 +73,17 @@ public:
 	template <typename T>
 	void SetUniform(const std::string_view name, const T& value) {
 
-		if constexpr (const auto location = GetUniformLocation(name); std::is_integral<T>::value) {
+		if constexpr (const auto location = GetUniformLocation(name); std::is_integral_v<T>) {
 			glUniform1i(location, static_cast<GLint>(value));
-		} else if constexpr (std::is_floating_point<T>::value) {
+		} else if constexpr (std::is_floating_point_v<T>) {
 			glUniform1f(location, static_cast<GLfloat>(value));
-		} else if constexpr (std::is_same<T, glm::vec3>::value) {
+		} else if constexpr (std::is_same_v<T, glm::vec3>) {
 			glUniform3fv(location, 1, glm::value_ptr(value));
-		} else if constexpr (std::is_same<T, glm::vec4>::value) {
+		} else if constexpr (std::is_same_v<T, glm::vec4>) {
 			glUniform4fv(location, 1, glm::value_ptr(value));
-		} else if constexpr (std::is_same<T, glm::mat3>::value) {
+		} else if constexpr (std::is_same_v<T, glm::mat3>) {
 			glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
-		} else if constexpr (std::is_same<T, glm::mat4>::value) {
+		} else if constexpr (std::is_same_v<T, glm::mat4>) {
 			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 		} else {
 			throw std::runtime_error{std::format("Unsupported uniform variable type {}", typeid(T).name())};
