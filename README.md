@@ -6,7 +6,7 @@ The central idea of the algorithm is to iteratively remove edges in the mesh by 
 
 The following GIF presents a real-time demonstration of successive applications of mesh simplification on a polygon mesh consisting of nearly 70,000 triangles. At each iteration, the number of triangles is reduced by 50% eventually reducing to a mesh consisting of only 1,086 triangles (a 98.5% reduction). Observe that although fidelity is reduced, the mesh retains an overall high-quality appearance that nicely approximates the original shape the mesh.
 
-![](https://github.com/matthew-rister/mesh_simplification/blob/main/bunny.gif)
+![](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification.gif)
 
 ## How To Run
 This project was implemented using Visual Studio in C++20 and OpenGL 4.6. To build it, you will need a version of Visual Studio that supports the latest language standard (e.g., 16.10.0). Additionally, this project uses [vcpkg](https://vcpkg.io/en/index.html) to manage 3rd party dependencies. To get started, clone the [vcpkg repository](https://github.com/microsoft/vcpkg) on Github and run `bootstrap-vcpkg.bat` followed by `vcpkg integrate install`. Upon completion, you should be able to build and run the project which will install dependencies from the [vcpkg.json](https://github.com/matthew-rister/mesh_simplification/blob/main/vcpkg.json) package manifest on first build.
