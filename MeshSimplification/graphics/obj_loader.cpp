@@ -93,7 +93,7 @@ vec<N, T> ParseLine(const string_view line) {
  * \brief Parses a token representing a face element index group.
  * \param token The token to parse. May optionally contain texture coordinate and normal indices.
  * \return A vector containing vertex position, texture coordinate, and normal indices. Unspecified texture
- *         coordinate and normal values are indicated by the value \c npos_index.
+ *         coordinate and normal values are indicated by the value \c kInvalidFaceElementIndex.
  * \throw invalid_argument Indicates the index group format is unsupported.
  */
 ivec3 ParseIndexGroup(const string_view token) {
