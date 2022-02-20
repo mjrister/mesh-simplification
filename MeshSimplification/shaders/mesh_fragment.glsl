@@ -8,6 +8,7 @@ in Vertex {
 uniform struct PointLight {
 	vec3 position;
 	vec3 color;
+	vec3 attenuation;
 } point_lights[8];
 
 uniform struct Material {
@@ -22,26 +23,27 @@ uniform int point_lights_size;
 out vec4 fragment_color;
 
 void main() {
-	vec3 vertex_position = vertex.position.xyz;
-	vec3 vertex_normal = normalize(cross(dFdx(vertex_position), dFdy(vertex_position)));
+	const vec3 vertex_position = vertex.position.xyz;
+	const vec3 vertex_normal = normalize(cross(dFdx(vertex_position), dFdy(vertex_position)));
 	fragment_color = vec4(material.ambient, 1.f);
 
 	for (int i = 0; i < min(point_lights_size, point_lights.length()); ++i) {
-		PointLight point_light = point_lights[i];
+		const PointLight point_light = point_lights[i];
 
 		vec3 light_direction = point_light.position - vertex_position;
-		float light_distance = length(light_direction);
-		float attenuation = 1.f / max(light_distance * light_distance, 1.f);
+		const float light_distance = length(light_direction);
+		const vec3 attenuation_coeff = vec3(1., light_distance, pow(light_distance, 2.));
+		const float attenuation = 1. / max(dot(attenuation_coeff, point_light.attenuation), 1.);
 		light_direction = normalize(light_direction);
 
-		float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.f);
-		vec3 diffuse_color = material.diffuse * diffuse_intensity;
+		const float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.);
+		const vec3 diffuse_color = material.diffuse * diffuse_intensity;
 
-		vec3 reflect_direction = normalize(reflect(-light_direction, vertex_normal));
-		vec3 view_direction = normalize(-vertex_position);
-		float specular_intensity = pow(max(dot(reflect_direction, view_direction), 0.f), material.shininess);
-		vec3 specular_color = material.specular * specular_intensity;
+		const vec3 reflect_direction = normalize(reflect(-light_direction, vertex_normal));
+		const vec3 view_direction = normalize(-vertex_position);
+		const float specular_intensity = pow(max(dot(reflect_direction, view_direction), 0.), material.shininess);
+		const vec3 specular_color = material.specular * specular_intensity;
 
-		fragment_color += vec4(attenuation * point_light.color * (diffuse_color + specular_color), 0.f);
+		fragment_color += vec4(attenuation * point_light.color * (diffuse_color + specular_color), 0.);
 	}
 }

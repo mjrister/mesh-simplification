@@ -43,18 +43,22 @@ struct Camera {
 struct PointLight {
 	vec3 position; // defined in view-space coordinates
 	vec3 color;
+	vec3 attenuation;
 } constexpr kPointLights[] = {
 	{
 		.position = vec3{1.f, 1.f, -.5f},
 		.color = vec3{1.f},
+		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
 	{
 		.position = vec3{-1.5f, 1.5f, -.5f},
 		.color = vec3{1.f},
+		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
 	{
 		.position = vec3{0.f, 2.f, -2.f},
 		.color = vec3{1.f},
+		.attenuation = vec3{0.f, 0.f, 1.f}
 	}
 };
 
@@ -71,9 +75,10 @@ void SetPointLights(ShaderProgram& shader_program) {
 	shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
 	for (size_t i = 0; i < kPointLightsSize; ++i) {
-		const auto& [position, color] = kPointLights[i];
+		const auto& [position, color, attenuation] = kPointLights[i];
 		shader_program.SetUniform(format("point_lights[{}].position", i), position);
 		shader_program.SetUniform(format("point_lights[{}].color", i), color);
+		shader_program.SetUniform(format("point_lights[{}].attenuation", i), attenuation);
 	}
 }
 
@@ -146,6 +151,8 @@ Scene::Scene(Window* const window)
 }
 
 void Scene::Render(const float delta_time) {
+	glClearColor(.1f, .1f, .1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shader_program_.Enable([&, this] {
 		HandleContinuousInput(*window_, mesh_, delta_time);

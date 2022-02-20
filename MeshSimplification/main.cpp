@@ -18,16 +18,13 @@ int main() {
 		Scene scene{&window};
 
 		for (auto previous_time = static_cast<float>(glfwGetTime()), delta_time = 0.f; !window.IsClosed();) {
-			glClearColor(.08f, .08f, .08f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 			const auto current_time = static_cast<float>(glfwGetTime());
 			delta_time = current_time - previous_time;
 			previous_time = current_time;
-
 			scene.Render(delta_time);
 			window.Update();
 		}
+
 	} catch (const exception& e) {
 		cerr << e.what() << endl;
 		return EXIT_FAILURE;

@@ -14,7 +14,7 @@ out Vertex {
 } vertex;
 
 void main() {
-	vertex.position = model_view_transform * vec4(position, 1.f);
+	vertex.position = model_view_transform * vec4(position, 1.);
 	vertex.normal = normal_transform * normal;
 	gl_Position = projection_transform * vertex.position;
 }
