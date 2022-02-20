@@ -46,17 +46,17 @@ struct PointLight {
 	vec3 attenuation;
 } constexpr kPointLights[] = {
 	{
-		.position = vec3{1.f, 1.f, -.5f},
+		.position = vec3{.5f, 1.f, -.5f},
 		.color = vec3{1.f},
 		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
 	{
-		.position = vec3{-1.5f, 1.5f, -.5f},
+		.position = vec3{0.f, 0.f, 1.f},
 		.color = vec3{1.f},
 		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
 	{
-		.position = vec3{0.f, 2.f, -2.f},
+		.position = vec3{0.f, 3.f, -2.f},
 		.color = vec3{1.f},
 		.attenuation = vec3{0.f, 0.f, 1.f}
 	}
