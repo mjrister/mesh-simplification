@@ -46,12 +46,12 @@ struct PointLight {
 	vec3 attenuation;
 } constexpr kPointLights[] = {
 	{
-		.position = vec3{.5f, 1.f, -.25f},
+		.position = vec3{1.f, 1.f, 0.f},
 		.color = vec3{1.f},
 		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
 	{
-		.position = vec3{0.f, 0.f, 1.f},
+		.position = vec3{-1.f, 0.f, 1.f},
 		.color = vec3{1.f},
 		.attenuation = vec3{0.f, 0.f, 1.f}
 	},
@@ -147,11 +147,11 @@ Scene::Scene(Window* const window)
 	});
 
 	mesh_.Translate(kCamera.look_at + vec3{.2f, -.25f, 0.f});
-	mesh_.Scale(vec3{.325f});
+	mesh_.Scale(vec3{.35f});
 }
 
 void Scene::Render(const float delta_time) {
-	glClearColor(.11f, .11f, .11f, 1.0f);
+	glClearColor(.1f, .1f, .1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shader_program_.Enable([&, this] {
