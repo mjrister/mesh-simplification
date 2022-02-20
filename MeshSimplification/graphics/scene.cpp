@@ -34,7 +34,7 @@ struct Camera {
 	vec3 up;
 	mat4 view_transform;
 } const kCamera = {
-	.look_from = vec3{0.f, .5f, 2.f},
+	.look_from = vec3{0.f, .4f, 2.f},
 	.look_at = vec3{0.f},
 	.up = vec3{0.f, 1.f, 0.f},
 	.view_transform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up)
@@ -91,17 +91,6 @@ void SetModelViewProjectionTransforms(ShaderProgram& shader_program, const Mesh&
 	shader_program.SetUniform("normal_transform", mat3{inverse(transpose(view_model_transform))});
 }
 
-void HandleDiscreteKeyPress(const int key_code, Mesh& mesh) {
-
-	switch (key_code) {
-		case GLFW_KEY_S:
-			mesh = mesh::Simplify(mesh, .5f);
-			break;
-		default:
-			break;
-	}
-}
-
 void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_time) {
 	static optional<dvec2> prev_cursor_position;
 
@@ -133,10 +122,12 @@ void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_t
 Scene::Scene(Window* const window)
 	: window_{window},
 	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
-	  mesh_{obj_loader::LoadMesh("models/bunny.obj", scale(translate(mat4{1.f}, vec3{.2f, -.25f, 0.f}), vec3{.3f}))} {
+	  mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
 	window_->OnKeyPress([this](const auto key_code) {
-		HandleDiscreteKeyPress(key_code, mesh_);
+		if (key_code == GLFW_KEY_S) {
+			mesh_ = mesh::Simplify(mesh_, .5f);
+		}
 	});
 
 	window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
@@ -149,6 +140,9 @@ Scene::Scene(Window* const window)
 		SetMaterial(shader_program_);
 		SetPointLights(shader_program_);
 	});
+
+	mesh_.Translate(kCamera.look_at + vec3{.2f, -.25f, 0.f});
+	mesh_.Scale(vec3{.325f});
 }
 
 void Scene::Render(const float delta_time) {
