@@ -25,7 +25,7 @@ out vec4 fragment_color;
 void main() {
 	const vec3 vertex_position = vertex.position.xyz;
 	const vec3 vertex_normal = normalize(cross(dFdx(vertex_position), dFdy(vertex_position)));
-	fragment_color = vec4(material.ambient, 1.f);
+	fragment_color = vec4(material.ambient, 1.);
 
 	for (int i = 0; i < min(point_lights_size, point_lights.length()); ++i) {
 		const PointLight point_light = point_lights[i];
