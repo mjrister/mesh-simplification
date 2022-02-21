@@ -5,6 +5,7 @@
         "gl3w",
         "glfw3",
         "glm",
-        "gtest"
+        "gtest",
+        "stb"
     ]
 }
