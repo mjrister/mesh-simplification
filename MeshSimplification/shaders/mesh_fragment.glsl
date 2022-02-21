@@ -32,8 +32,8 @@ void main() {
 
 		vec3 light_direction = point_light.position - vertex_position;
 		const float light_distance = length(light_direction);
-		const vec3 attenuation_coeff = vec3(1., light_distance, pow(light_distance, 2.));
-		const float attenuation = 1. / max(dot(attenuation_coeff, point_light.attenuation), 1.);
+		const float attenuation_inv = dot(point_light.attenuation, vec3(1., light_distance, pow(light_distance, 2.)));
+		const float attenuation = 1. / max(attenuation_inv, 1.);
 		light_direction = normalize(light_direction);
 
 		const float diffuse_intensity = max(dot(light_direction, vertex_normal), 0.);
