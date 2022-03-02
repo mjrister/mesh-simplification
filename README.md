@@ -14,7 +14,3 @@ This project was implemented using Visual Studio in C++20 and OpenGL 4.6. To bui
 ## Usage
 
 Once the program is running, the mesh can be simplified by pressing the `S` key. Additionally, the mesh can be translated or rotated about an arbitrary axis by left or right clicking on the mouse and dragging the cursor across the screen. Lastly, the mesh can be uniformly scaled using the mouse scroll wheel. 
-
-## Known Issues
-
-Constructing a half-edge mesh involves creating several hash tables used to store vertices, edges, and faces in the mesh. If the mesh is extremely complex (e.g., over 1,000,000 triangles) this can result in hash collisions causing the program to crash. One potential mitigation for this would be to migrate from using `std::unordered_map` to `std::unordered_multimap` in [`half_edge_mesh.h`](https://github.com/matthew-rister/mesh-simplification/blob/main/MeshSimplification/geometry/half_edge_mesh.h) which is doable, but also non-trival and currently on my list of TODO's for this project when I have more time.
