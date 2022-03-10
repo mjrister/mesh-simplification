@@ -54,9 +54,9 @@ public:
 	ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
 	/**
-	 *	\brief Binds the shader program to the current OpenGL context.
-	 *	\param fn A callback to be invoked once the shader program is enabled.
-	 *	\note The shader program is disabled after execution of \p fn completes.
+	 * \brief Binds the shader program to the current OpenGL context.
+	 * \param fn A callback to be invoked once the shader program is enabled.
+	 * \note The shader program is disabled after execution of \p fn completes.
 	 */
 	void Enable(const std::function<void()>& fn) const {
 		glUseProgram(id_);
