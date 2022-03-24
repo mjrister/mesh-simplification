@@ -92,8 +92,8 @@ void SetViewTransforms(ShaderProgram& shader_program, const Mesh& mesh, const Wi
 		prev_aspect_ratio = aspect_ratio;
 	}
 
-	const auto view_model_transform = kCamera.view_transform * mesh.model_transform();
-	shader_program.SetUniform("model_view_transform", view_model_transform);
+	const auto model_view_transform = kCamera.view_transform * mesh.model_transform();
+	shader_program.SetUniform("model_view_transform", model_view_transform);
 }
 
 void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_time) {
