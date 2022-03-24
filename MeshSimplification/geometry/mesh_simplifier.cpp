@@ -204,8 +204,12 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		const auto v0 = edge01->flip()->vertex();
 		const auto v1 = edge01->vertex();
 
+		// compute the error quadric for the new vertex
+		const auto& q0 = quadrics.at(v0->id());
+		const auto& q1 = quadrics.at(v1->id());
+		quadrics.emplace(v_new->id(), q0 + q1);
+
 		// invalidate entries in the priority queue that will be removed during the edge contraction
-		// note this needs to happen before edge removed to ensure valid pointer lifetimes
 		for (const auto& vertex : {v0, v1}) {
 			auto edge = vertex->edge();
 			do {
@@ -217,11 +221,6 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 				edge = edge->next()->flip();
 			} while (edge != vertex->edge());
 		}
-
-		// compute the error quadric for the new vertex
-		const auto& q0 = quadrics.at(v0->id());
-		const auto& q1 = quadrics.at(v1->id());
-		quadrics.emplace(v_new->id(), q0 + q1);
 
 		// remove the edge from the mesh and attach incident edges to the new vertex
 		half_edge_mesh.CollapseEdge(*edge01, v_new);
