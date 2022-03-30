@@ -140,7 +140,7 @@ Scene::Scene(Window* const window)
 		mesh_.Scale(vec3{1.f + sign * kScaleStep});
 	});
 
-	shader_program_.Enable([&] {
+	shader_program_.Enable([this] {
 		SetMaterial(shader_program_);
 		SetPointLights(shader_program_);
 	});
