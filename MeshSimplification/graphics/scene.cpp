@@ -85,7 +85,7 @@ void SetPointLights(ShaderProgram& shader_program) {
 void SetViewTransforms(ShaderProgram& shader_program, const Mesh& mesh, const Window& window) {
 	static auto prev_aspect_ratio = 0.f;
 
-	if (const auto aspect_ratio = window.AspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0) {
+	if (const auto aspect_ratio = window.AspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.f) {
 		const auto [field_of_view_y, z_near, z_far] = kViewFrustrum;
 		const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 		shader_program.SetUniform("projection_transform", projection_transform);
