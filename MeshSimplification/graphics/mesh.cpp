@@ -3,8 +3,6 @@
 #include <stdexcept>
 #include <utility>
 
-#include <GLFW/glfw3.h>
-
 using namespace glm;
 using namespace qem;
 using namespace std;
