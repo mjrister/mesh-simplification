@@ -163,7 +163,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
 	constexpr auto kMinHeapComparator = [](
-		const shared_ptr<EdgeContraction>& lhs, const shared_ptr<EdgeContraction>& rhs) {
+		const shared_ptr<EdgeContraction>& lhs, const shared_ptr<EdgeContraction>& rhs) noexcept {
 		return lhs->cost > rhs->cost;
 	};
 	priority_queue<
