@@ -193,11 +193,10 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		return face_count < target_face_count;
 	};
 
-	while (!edge_contractions.empty() && !should_stop()) {
-		const auto edge_contraction = edge_contractions.top();
+	for (; !edge_contractions.empty() && !should_stop(); edge_contractions.pop()) {
+		const auto& edge_contraction = edge_contractions.top();
 		const auto& edge01 = edge_contraction->edge;
 		const auto& v_new = edge_contraction->vertex;
-		edge_contractions.pop();
 
 		if (!edge_contraction->valid || WillDegenerate(edge01)) continue;
 
