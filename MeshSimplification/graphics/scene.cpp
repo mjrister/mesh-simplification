@@ -71,10 +71,10 @@ void SetMaterial(ShaderProgram& shader_program) {
 }
 
 void SetPointLights(ShaderProgram& shader_program) {
-	constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
-	shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
+	constexpr int kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
+	shader_program.SetUniform("point_lights_size", kPointLightsSize);
 
-	for (size_t i = 0; i < kPointLightsSize; ++i) {
+	for (auto i = 0; i < kPointLightsSize; ++i) {
 		const auto& [position, color, attenuation] = kPointLights[i];
 		shader_program.SetUniform(format("point_lights[{}].position", i), position);
 		shader_program.SetUniform(format("point_lights[{}].color", i), color);
