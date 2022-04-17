@@ -24,22 +24,22 @@ public:
 	     const std::shared_ptr<const Vertex>& v2);
 
 	/** \brief Gets the first face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v0() const { return ptr::Get(v0_); }
+	[[nodiscard]] std::shared_ptr<const Vertex> V0() const { return ptr::Get(v0_); }
 
-	/** \brief  Gets the second face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v1() const { return ptr::Get(v1_); }
+	/** \brief Gets the second face vertex. */
+	[[nodiscard]] std::shared_ptr<const Vertex> V1() const { return ptr::Get(v1_); }
 
 	/** \brief Gets the third face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> v2() const { return ptr::Get(v2_); }
+	[[nodiscard]] std::shared_ptr<const Vertex> V2() const { return ptr::Get(v2_); }
 
-	/** \brief  Gets the face normal. */
-	[[nodiscard]] const glm::vec3& normal() const noexcept { return normal_; }
+	/** \brief Gets the face normal. */
+	[[nodiscard]] const glm::vec3& Normal() const noexcept { return normal_; }
 
 	/** \brief Gets the face area. */
-	[[nodiscard]] float area() const noexcept { return area_; }
+	[[nodiscard]] float Area() const noexcept { return area_; }
 
 	/** \brief Gets the face hash value. */
-	friend std::uint64_t hash_value(const Face& face) { return hash_value(*face.v0(), *face.v1(), *face.v2()); }
+	friend std::uint64_t hash_value(const Face& face) { return hash_value(*face.V0(), *face.V1(), *face.V2()); }
 
 private:
 	std::weak_ptr<const Vertex> v0_, v1_, v2_;
@@ -54,7 +54,7 @@ namespace std {
 template <>
 struct formatter<qem::Face> : formatter<string> {
 	auto format(const qem::Face& face, format_context& context) {
-		return formatter<string>::format(std::format("({},{},{})", *face.v0(), *face.v1(), *face.v2()), context);
+		return formatter<string>::format(std::format("({},{},{})", *face.V0(), *face.V1(), *face.V2()), context);
 	}
 };
 }

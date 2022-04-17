@@ -19,8 +19,8 @@ protected:
 		  v1_{make_shared<Vertex>(1, vec3{})},
 		  edge01_{make_shared<HalfEdge>(v1_)},
 		  edge10_{make_shared<HalfEdge>(v0_)} {
-		edge01_->set_flip(edge10_);
-		edge10_->set_flip(edge01_);
+		edge01_->SetFlip(edge10_);
+		edge10_->SetFlip(edge01_);
 	}
 
 	shared_ptr<Vertex> v0_, v1_;
@@ -77,20 +77,20 @@ void VerifyEdge(
 	const auto& edge01 = edge01_iterator->second;
 	const auto& edge10 = edge10_iterator->second;
 
-	ASSERT_EQ(v0, edge10->vertex());
-	ASSERT_EQ(v1, edge01->vertex());
+	ASSERT_EQ(v0, edge10->Vertex());
+	ASSERT_EQ(v1, edge01->Vertex());
 
-	ASSERT_EQ(edge01, edge10->flip());
-	ASSERT_EQ(edge10, edge01->flip());
+	ASSERT_EQ(edge01, edge10->Flip());
+	ASSERT_EQ(edge10, edge01->Flip());
 
-	ASSERT_EQ(edge01, edge01->flip()->flip());
-	ASSERT_EQ(edge10, edge10->flip()->flip());
+	ASSERT_EQ(edge01, edge01->Flip()->Flip());
+	ASSERT_EQ(edge10, edge10->Flip()->Flip());
 }
 
 void VerifyTriangles(const HalfEdgeMesh& half_edge_mesh, const vector<GLuint>& indices) {
-	const auto& vertices = half_edge_mesh.vertices();
-	const auto& edges = half_edge_mesh.edges();
-	const auto& faces = half_edge_mesh.faces();
+	const auto& vertices = half_edge_mesh.Vertices();
+	const auto& edges = half_edge_mesh.Edges();
+	const auto& faces = half_edge_mesh.Faces();
 
 	for (size_t i = 0; i < indices.size(); i += 3) {
 
@@ -114,17 +114,17 @@ void VerifyTriangles(const HalfEdgeMesh& half_edge_mesh, const vector<GLuint>& i
 		const auto edge12 = edges.at(hash_value(*v1, *v2));
 		const auto edge20 = edges.at(hash_value(*v2, *v0));
 
-		ASSERT_EQ(edge01->next(), edge12);
-		ASSERT_EQ(edge12->next(), edge20);
-		ASSERT_EQ(edge20->next(), edge01);
+		ASSERT_EQ(edge01->Next(), edge12);
+		ASSERT_EQ(edge12->Next(), edge20);
+		ASSERT_EQ(edge20->Next(), edge01);
 
 		const auto face012_iterator = faces.find(hash_value(*v0, *v1, *v2));
 		ASSERT_NE(face012_iterator, faces.end());
 
 		const auto face012 = face012_iterator->second;
-		ASSERT_EQ(edge01->face(), face012);
-		ASSERT_EQ(edge12->face(), face012);
-		ASSERT_EQ(edge20->face(), face012);
+		ASSERT_EQ(edge01->Face(), face012);
+		ASSERT_EQ(edge12->Face(), face012);
+		ASSERT_EQ(edge20->Face(), face012);
 	}
 }
 
@@ -133,28 +133,28 @@ TEST_F(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
 	const auto mesh = MakeMesh();
 	const HalfEdgeMesh half_edge_mesh{mesh};
 
-	ASSERT_EQ(10, half_edge_mesh.vertices().size());
-	ASSERT_EQ(38, half_edge_mesh.edges().size());
-	ASSERT_EQ(10, half_edge_mesh.faces().size());
+	ASSERT_EQ(10, half_edge_mesh.Vertices().size());
+	ASSERT_EQ(38, half_edge_mesh.Edges().size());
+	ASSERT_EQ(10, half_edge_mesh.Faces().size());
 
-	VerifyTriangles(half_edge_mesh, mesh.indices());
+	VerifyTriangles(half_edge_mesh, mesh.Indices());
 }
 
 TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
 
 	auto half_edge_mesh = MakeHalfEdgeMesh();
-	const auto& vertices = half_edge_mesh.vertices();
-	const auto& edges = half_edge_mesh.edges();
+	const auto& vertices = half_edge_mesh.Vertices();
+	const auto& edges = half_edge_mesh.Edges();
 	const auto& v0 = vertices.at(0);
 	const auto& v1 = vertices.at(1);
 	const auto& edge01 = edges.at(hash_value(*v0, *v1));
-	const Vertex v_new{half_edge_mesh.next_vertex_id(), (v0->position() + v1->position()) / 2.f};
+	const Vertex v_new{half_edge_mesh.NextVertexId(), (v0->Position() + v1->Position()) / 2.f};
 
-	half_edge_mesh.CollapseEdge(*edge01, make_shared<Vertex>(v_new));
+	half_edge_mesh.Contract(*edge01, make_shared<Vertex>(v_new));
 
-	ASSERT_EQ(9, half_edge_mesh.vertices().size());
-	ASSERT_EQ(32, half_edge_mesh.edges().size());
-	ASSERT_EQ(8, half_edge_mesh.faces().size());
+	ASSERT_EQ(9, half_edge_mesh.Vertices().size());
+	ASSERT_EQ(32, half_edge_mesh.Edges().size());
+	ASSERT_EQ(8, half_edge_mesh.Faces().size());
 
 	VerifyTriangles(half_edge_mesh, {
 		2, 3, 10,
@@ -170,8 +170,8 @@ TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
 
 TEST_F(HalfEdgeMeshTest, TestGetNextVertexId) {
 	auto half_edge_mesh = MakeHalfEdgeMesh();
-	ASSERT_EQ(10, half_edge_mesh.next_vertex_id());
-	ASSERT_EQ(11, half_edge_mesh.next_vertex_id());
+	ASSERT_EQ(10, half_edge_mesh.NextVertexId());
+	ASSERT_EQ(11, half_edge_mesh.NextVertexId());
 }
 
 TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {
@@ -181,8 +181,8 @@ TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {
 		{hash_value(*edge10_), edge10_}
 	};
 
-	const auto v0 = edge10_->vertex();
-	const auto v1 = edge01_->vertex();
+	const auto v0 = edge10_->Vertex();
+	const auto v1 = edge01_->Vertex();
 	const auto v2 = make_shared<Vertex>(2, vec3{});
 
 	ASSERT_EQ(edge01_, GetHalfEdge(*v0, *v1, edges));

@@ -25,17 +25,17 @@ TEST(FaceTest, TestFaceInitializationVertexOrder) {
 	const Face face120{v1, v2, v0};
 	const Face face201{v2, v0, v1};
 
-	ASSERT_EQ(face012.v0(), v0);
-	ASSERT_EQ(face012.v1(), v1);
-	ASSERT_EQ(face012.v2(), v2);
+	ASSERT_EQ(face012.V0(), v0);
+	ASSERT_EQ(face012.V1(), v1);
+	ASSERT_EQ(face012.V2(), v2);
 
-	ASSERT_EQ(face120.v0(), v0);
-	ASSERT_EQ(face120.v1(), v1);
-	ASSERT_EQ(face120.v2(), v2);
+	ASSERT_EQ(face120.V0(), v0);
+	ASSERT_EQ(face120.V1(), v1);
+	ASSERT_EQ(face120.V2(), v2);
 
-	ASSERT_EQ(face120.v0(), v0);
-	ASSERT_EQ(face120.v1(), v1);
-	ASSERT_EQ(face120.v2(), v2);
+	ASSERT_EQ(face120.V0(), v0);
+	ASSERT_EQ(face120.V1(), v1);
+	ASSERT_EQ(face120.V2(), v2);
 }
 
 TEST(FaceTest, TestFaceInitializationWithCollinearVerticesThrowsException) {
@@ -48,13 +48,13 @@ TEST(FaceTest, TestFaceInitializationWithCollinearVerticesThrowsException) {
 TEST(FaceTest, TestGetFaceArea) {
 	const auto [v0, v1, v2] = MakeTriangle();
 	const Face face012{v0, v1, v2};
-	ASSERT_FLOAT_EQ(1.5f, face012.area());
+	ASSERT_FLOAT_EQ(1.5f, face012.Area());
 }
 
 TEST(FaceTEst, TestGetFaceNormal) {
 	const auto [v0, v1, v2] = MakeTriangle();
 	const Face face012{v0, v1, v2};
-	ASSERT_EQ((vec3{0.f, 0.f, 1.f}), face012.normal());
+	ASSERT_EQ((vec3{0.f, 0.f, 1.f}), face012.Normal());
 }
 
 TEST(FaceTest, TestFormatFace) {

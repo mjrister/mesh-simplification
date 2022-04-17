@@ -32,23 +32,25 @@ public:
 	explicit operator Mesh() const;
 
 	/** \brief Gets a mapping of mesh vertices by ID. */
-	[[nodiscard]] const auto& vertices() const noexcept { return vertices_; }
+	[[nodiscard]] const auto& Vertices() const noexcept { return vertices_; }
 
 	/** \brief Gets a mapping of mesh half-edges by ID. */
-	[[nodiscard]] const auto& edges() const noexcept { return edges_; }
+	[[nodiscard]] const auto& Edges() const noexcept { return edges_; }
 
 	/** \brief Gets a mapping of mesh faces by ID. */
-	[[nodiscard]] const auto& faces() const noexcept { return faces_; }
+	[[nodiscard]] const auto& Faces() const noexcept { return faces_; }
 
 	/** \brief Gets a unique vertex ID that can be used to construct a new vertex in the half-edge mesh. */
-	[[nodiscard]] std::uint64_t next_vertex_id() noexcept { return next_vertex_id_++; }
+	[[nodiscard]] std::uint64_t NextVertexId() noexcept { return next_vertex_id_++; }
 
 	/**
-	 * \brief Collapses an edge into a single vertex and updates all incident edges to connect to that vertex.
-	 * \param edge01 The edge from vertex \c v0 to \c v1 to collapse.
-	 * \param v_new The vertex to collapse the edge onto.
+	 * \brief Performs edge contraction.
+	 * \Details Edge contraction consists of removing an edge from the mesh by merging its two vertices into a single
+	 *          vertex and updating edges incident to each edge to connect to that new vertex.
+	 * \param edge01 The edge from vertex \c v0 to \c v1 to remove.
+	 * \param v_new The new vertex to update incident edges to.
 	 */
-	void CollapseEdge(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new);
+	void Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new);
 
 private:
 	std::map<std::uint64_t, std::shared_ptr<Vertex>> vertices_;

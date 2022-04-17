@@ -32,8 +32,8 @@ namespace {
  * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
  */
 shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge) {
-	return min<>(edge, const_pointer_cast<const HalfEdge>(edge->flip()), [](const auto& edge01, const auto& edge10) {
-		return edge01->vertex()->id() < edge10->vertex()->id();
+	return min<>(edge, const_pointer_cast<const HalfEdge>(edge->Flip()), [](const auto& edge01, const auto& edge10) {
+		return edge01->Vertex()->Id() < edge10->Vertex()->Id();
 	});
 }
 
@@ -44,14 +44,16 @@ shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge) {
  */
 mat4 ComputeQuadric(const Vertex& vertex) {
 	mat4 quadric{0.f};
-	auto edgei0 = vertex.edge();
+	auto edgei0 = vertex.Edge();
+
 	do {
-		const auto& position = vertex.position();
-		const auto& normal = edgei0->face()->normal();
+		const auto& position = vertex.Position();
+		const auto& normal = edgei0->Face()->Normal();
 		const vec4 plane{normal, -dot(position, normal)};
 		quadric += outerProduct(plane, plane);
-		edgei0 = edgei0->next()->flip();
-	} while (edgei0 != vertex.edge());
+		edgei0 = edgei0->Next()->Flip();
+	} while (edgei0 != vertex.Edge());
+
 	return quadric;
 }
 
@@ -60,16 +62,16 @@ mat4 ComputeQuadric(const Vertex& vertex) {
  * \param vertex_id The ID to use for the newly created vertex.
  * \param edge01 The half-edge to evaluate.
  * \param quadrics A mapping of error quadrics by vertex ID.
- * \return The optimal vertex and cost associated with collapsing \p edge01.
+ * \return The optimal vertex and cost associated with contracting \p edge01.
  */
 pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 	const uint64_t vertex_id, const HalfEdge& edge01, const unordered_map<uint64_t, mat4>& quadrics) {
 
-	const auto v0 = edge01.flip()->vertex();
-	const auto v1 = edge01.vertex();
+	const auto v0 = edge01.Flip()->Vertex();
+	const auto v1 = edge01.Vertex();
 
-	const auto& q0 = quadrics.at(v0->id());
-	const auto& q1 = quadrics.at(v1->id());
+	const auto& q0 = quadrics.at(v0->Id());
+	const auto& q1 = quadrics.at(v1->Id());
 	const auto q01 = q0 + q1;
 
 	const mat3 Q{q01};
@@ -79,7 +81,7 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 	// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
 	if (static constexpr auto kEpsilon = numeric_limits<float>::epsilon();
 		std::abs(determinant(Q)) < kEpsilon || std::abs(d) < kEpsilon) {
-		const auto position = (v0->position() + v1->position()) / 2.f;
+		const auto position = (v0->Position() + v1->Position()) / 2.f;
 		return {make_shared<Vertex>(vertex_id, position), 0.f};
 	}
 
@@ -99,19 +101,19 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
  * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
  */
 bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
-	const auto v0 = edge01->flip()->vertex();
-	const auto v1_next = edge01->next()->vertex();
-	const auto v0_next = edge01->flip()->next()->vertex();
+	const auto v0 = edge01->Flip()->Vertex();
+	const auto v1_next = edge01->Next()->Vertex();
+	const auto v0_next = edge01->Flip()->Next()->Vertex();
 	unordered_map<uint64_t, shared_ptr<Vertex>> neighborhood;
 
-	for (auto iterator = edge01->next(); iterator != edge01->flip(); iterator = iterator->flip()->next()) {
-		if (const auto vertex = iterator->vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
+	for (auto iterator = edge01->Next(); iterator != edge01->Flip(); iterator = iterator->Flip()->Next()) {
+		if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
 			neighborhood.emplace(hash_value(*vertex), vertex);
 		}
 	}
 
-	for (auto iterator = edge01->flip()->next(); iterator != edge01; iterator = iterator->flip()->next()) {
-		if (const auto vertex = iterator->vertex(); neighborhood.contains(hash_value(*vertex))) {
+	for (auto iterator = edge01->Flip()->Next(); iterator != edge01; iterator = iterator->Flip()->Next()) {
+		if (const auto vertex = iterator->Vertex(); neighborhood.contains(hash_value(*vertex))) {
 			return true;
 		}
 	}
@@ -127,16 +129,16 @@ struct EdgeContraction {
 		const shared_ptr<const HalfEdge>& edge,
 		const unordered_map<uint64_t, mat4>& quadrics)
 		: edge{edge} {
-		tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.next_vertex_id(), *edge, quadrics);
+		tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
 	}
 
-	/** \brief The edge to be collapsed. */
+	/** \brief The edge to contract. */
 	shared_ptr<const HalfEdge> edge;
 
-	/** \brief The optimal vertex position that minimizes the cost of collapsing this edge. */
+	/** \brief The optimal vertex position that minimizes the cost of this edge contraction. */
 	shared_ptr<Vertex> vertex;
 
-	/** \brief The associated cost of collapsing this edge. */
+	/** \brief A metric that quantifies how much the mesh will change after this edge contraction has been performed. */
 	float cost = numeric_limits<float>::infinity();
 
 	/**
@@ -157,11 +159,11 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 	// compute error quadrics for each vertex
 	unordered_map<uint64_t, mat4> quadrics;
-	for (const auto& [vertex_id, vertex] : half_edge_mesh.vertices()) {
+	for (const auto& [vertex_id, vertex] : half_edge_mesh.Vertices()) {
 		quadrics.emplace(vertex_id, ComputeQuadric(*vertex));
 	}
 
-	// use a priority queue to sort edge contraction candidates by the associate cost of collapsing that edge
+	// use a priority queue to sort edge contraction candidates by the cost of removing each edge
 	constexpr auto kMinHeapComparator = [](
 		const shared_ptr<EdgeContraction>& lhs, const shared_ptr<EdgeContraction>& rhs) noexcept {
 		return lhs->cost > rhs->cost;
@@ -175,8 +177,8 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	// this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
 	unordered_map<uint64_t, shared_ptr<EdgeContraction>> valid_edges;
 
-	// compute the optimal vertex position that minimizes the cost of collapsing each edge
-	for (const auto& edge : half_edge_mesh.edges() | views::values) {
+	// compute the optimal vertex position that minimizes the cost of contracting each edge
+	for (const auto& edge : half_edge_mesh.Edges() | views::values) {
 		const auto min_edge = GetMinEdge(edge);
 		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
 			const auto edge_contraction = make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
@@ -186,10 +188,10 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	}
 
 	// stop mesh simplification if the number of triangles has been sufficiently reduced
-	const auto initial_face_count = static_cast<float>(half_edge_mesh.faces().size());
+	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
 	const auto target_face_count = initial_face_count * (1.f - rate);
 	const auto should_stop = [&]() noexcept {
-		const auto face_count = static_cast<float>(half_edge_mesh.faces().size());
+		const auto face_count = static_cast<float>(half_edge_mesh.Faces().size());
 		return face_count < target_face_count;
 	};
 
@@ -200,37 +202,37 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 		if (!edge_contraction->valid || WillDegenerate(edge01)) continue;
 
-		const auto v0 = edge01->flip()->vertex();
-		const auto v1 = edge01->vertex();
+		const auto v0 = edge01->Flip()->Vertex();
+		const auto v1 = edge01->Vertex();
 
 		// compute the error quadric for the new vertex
-		const auto& q0 = quadrics.at(v0->id());
-		const auto& q1 = quadrics.at(v1->id());
-		quadrics.emplace(v_new->id(), q0 + q1);
+		const auto& q0 = quadrics.at(v0->Id());
+		const auto& q1 = quadrics.at(v1->Id());
+		quadrics.emplace(v_new->Id(), q0 + q1);
 
 		// invalidate entries in the priority queue that will be removed during the edge contraction
 		for (const auto& vertex : {v0, v1}) {
-			auto edge = vertex->edge();
+			auto edge = vertex->Edge();
 			do {
 				const auto min_edge = GetMinEdge(edge);
 				if (const auto iterator = valid_edges.find(hash_value(*min_edge)); iterator != valid_edges.end()) {
 					iterator->second->valid = false;
 					valid_edges.erase(iterator);
 				}
-				edge = edge->next()->flip();
-			} while (edge != vertex->edge());
+				edge = edge->Next()->Flip();
+			} while (edge != vertex->Edge());
 		}
 
 		// remove the edge from the mesh and attach incident edges to the new vertex
-		half_edge_mesh.CollapseEdge(*edge01, v_new);
+		half_edge_mesh.Contract(*edge01, v_new);
 
 		// add new edge contraction candidates for edges affected by the edge contraction
 		unordered_map<uint64_t, shared_ptr<const HalfEdge>> visited_edges;
 		const auto& vi = v_new;
-		auto edgeji = vi->edge();
+		auto edgeji = vi->Edge();
 		do {
-			const auto vj = edgeji->flip()->vertex();
-			auto edgekj = vj->edge();
+			const auto vj = edgeji->Flip()->Vertex();
+			auto edgekj = vj->Edge();
 			do {
 				const auto min_edge = GetMinEdge(edgekj);
 				if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.contains(min_edge_key)) {
@@ -243,16 +245,16 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 					edge_contractions.emplace(new_edge_contraction);
 					visited_edges.emplace(min_edge_key, min_edge);
 				}
-				edgekj = edgekj->next()->flip();
-			} while (edgekj != vj->edge());
-			edgeji = edgeji->next()->flip();
-		} while (edgeji != vi->edge());
+				edgekj = edgekj->Next()->Flip();
+			} while (edgekj != vj->Edge());
+			edgeji = edgeji->Next()->Flip();
+		} while (edgeji != vi->Edge());
 	}
 
 	cout << format(
 		"Mesh simplified from {} to {} triangles in {} seconds\n",
 		initial_face_count,
-		half_edge_mesh.faces().size(),
+		half_edge_mesh.Faces().size(),
 		chrono::duration<float>{chrono::high_resolution_clock::now() - start_time}.count());
 
 	return static_cast<Mesh>(half_edge_mesh);

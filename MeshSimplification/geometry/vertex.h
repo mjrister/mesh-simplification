@@ -22,16 +22,16 @@ public:
 	Vertex(const std::uint64_t id, const glm::vec3& position) noexcept : id_{id}, position_{position} {}
 
 	/** \brief Gets the vertex ID. */
-	[[nodiscard]] std::uint64_t id() const noexcept { return id_; }
+	[[nodiscard]] std::uint64_t Id() const noexcept { return id_; }
 
 	/** \brief Gets the vertex position. */
-	[[nodiscard]] const glm::vec3& position() const noexcept { return position_; }
+	[[nodiscard]] const glm::vec3& Position() const noexcept { return position_; }
 
 	/** \brief Gets the last created half-edge that points to this vertex. */
-	[[nodiscard]] std::shared_ptr<const HalfEdge> edge() const { return ptr::Get(edge_); }
+	[[nodiscard]] std::shared_ptr<const HalfEdge> Edge() const { return ptr::Get(edge_); }
 
 	/** \brief Sets the vertex half-edge. */
-	void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
+	void SetEdge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
 
 	/** \brief Gets the hash value for a vertex. */
 	friend std::uint64_t hash_value(const Vertex& v0) noexcept { return std::hash<std::uint64_t>{}(v0.id_); }
@@ -66,7 +66,7 @@ namespace std {
 template <>
 struct formatter<qem::Vertex> : formatter<string> {
 	auto format(const qem::Vertex& vertex, format_context& context) {
-		return formatter<string>::format(to_string(vertex.id()), context);
+		return formatter<string>::format(to_string(vertex.Id()), context);
 	}
 };
 }

@@ -115,12 +115,12 @@ private:
 	// each uniform location query is performed using a string_view, but stored as a string. Without heterogeneous
 	// lookup, each query would have to be converted to a string (and hence allocate unnecessary memory) which would
 	// degrade performance on the critical rendering path.
-	struct string_view_hash {
+	struct StringViewHash {
 		using is_transparent = void;
 		std::size_t operator()(const std::string_view value) const noexcept {
 			return std::hash<std::string_view>{}(value);
 		}
 	};
-	std::unordered_map<std::string, GLint, string_view_hash, std::equal_to<>> uniform_locations_;
+	std::unordered_map<std::string, GLint, StringViewHash, std::equal_to<>> uniform_locations_;
 };
 }

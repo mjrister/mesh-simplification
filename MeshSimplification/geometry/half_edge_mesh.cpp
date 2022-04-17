@@ -36,8 +36,8 @@ shared_ptr<HalfEdge> CreateHalfEdge(
 	auto edge01 = make_shared<HalfEdge>(v1);
 	const auto edge10 = make_shared<HalfEdge>(v0);
 
-	edge01->set_flip(edge10);
-	edge10->set_flip(edge01);
+	edge01->SetFlip(edge10);
+	edge10->SetFlip(edge01);
 
 	edges.emplace(edge01_key, edge01);
 	edges.emplace(edge10_key, edge10);
@@ -61,18 +61,18 @@ shared_ptr<Face> CreateTriangle(
 	const auto edge12 = CreateHalfEdge(v1, v2, edges);
 	const auto edge20 = CreateHalfEdge(v2, v0, edges);
 
-	v0->set_edge(edge20);
-	v1->set_edge(edge01);
-	v2->set_edge(edge12);
+	v0->SetEdge(edge20);
+	v1->SetEdge(edge01);
+	v2->SetEdge(edge12);
 
-	edge01->set_next(edge12);
-	edge12->set_next(edge20);
-	edge20->set_next(edge01);
+	edge01->SetNext(edge12);
+	edge12->SetNext(edge20);
+	edge20->SetNext(edge01);
 
 	auto face012 = make_shared<Face>(v0, v1, v2);
-	edge01->set_face(face012);
-	edge12->set_face(face012);
-	edge20->set_face(face012);
+	edge01->SetFace(face012);
+	edge12->SetFace(face012);
+	edge20->SetFace(face012);
 
 	return face012;
 }
@@ -102,7 +102,7 @@ shared_ptr<HalfEdge> GetHalfEdge(
  */
 void DeleteVertex(const Vertex& vertex, map<uint64_t, shared_ptr<Vertex>>& vertices) {
 
-	if (const auto iterator = vertices.find(vertex.id()); iterator != vertices.end()) {
+	if (const auto iterator = vertices.find(vertex.Id()); iterator != vertices.end()) {
 		vertices.erase(iterator);
 	} else {
 		throw invalid_argument{format("Attempted to delete a nonexistent vertex: {}", vertex)};
@@ -117,7 +117,7 @@ void DeleteVertex(const Vertex& vertex, map<uint64_t, shared_ptr<Vertex>>& verti
  */
 void DeleteEdge(const HalfEdge& edge, unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges) {
 
-	for (const auto edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
+	for (const auto edge_key : {hash_value(edge), hash_value(*edge.Flip())}) {
 		if (const auto iterator = edges.find(edge_key); iterator != edges.end()) {
 			edges.erase(iterator);
 		} else {
@@ -163,19 +163,19 @@ void UpdateIncidentEdges(
 
 	for (auto edge0i = edge_start; edge0i != edge_end;) {
 
-		const auto edgeij = edge0i->next();
-		const auto edgej0 = edgeij->next();
+		const auto edgeij = edge0i->Next();
+		const auto edgej0 = edgeij->Next();
 
-		const auto vi = edge0i->vertex();
-		const auto vj = edgeij->vertex();
+		const auto vi = edge0i->Vertex();
+		const auto vj = edgeij->Vertex();
 
 		const auto face_new = CreateTriangle(v_new, vi, vj, edges);
 		faces.emplace(hash_value(*face_new), face_new);
 
-		DeleteFace(*edge0i->face(), faces);
+		DeleteFace(*edge0i->Face(), faces);
 		DeleteEdge(*edge0i, edges);
 
-		edge0i = edgej0->flip();
+		edge0i = edgej0->Flip();
 	}
 
 	DeleteEdge(*edge_end, edges);
@@ -188,19 +188,19 @@ void UpdateIncidentEdges(
  */
 vec3 ComputeWeightedVertexNormal(const Vertex& v0) {
 	vec3 normal{0.f};
-	auto edgei0 = v0.edge();
+	auto edgei0 = v0.Edge();
 	do {
-		const auto& face = edgei0->face();
-		normal += face->normal() * face->area();
-		edgei0 = edgei0->next()->flip();
-	} while (edgei0 != v0.edge());
+		const auto& face = edgei0->Face();
+		normal += face->Normal() * face->Area();
+		edgei0 = edgei0->Next()->Flip();
+	} while (edgei0 != v0.Edge());
 	return normalize(normal);
 }
 }
 
-HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_transform()} {
-	const auto& positions = mesh.positions();
-	const auto& indices = mesh.indices();
+HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransform()} {
+	const auto& positions = mesh.Positions();
+	const auto& indices = mesh.Indices();
 
 	for (size_t i = 0; i < positions.size(); ++i) {
 		vertices_.emplace(i, make_shared<Vertex>(i, positions[i]));
@@ -230,37 +230,37 @@ HalfEdgeMesh::operator Mesh() const {
 
 	unordered_map<uint64_t, unsigned> index_map;
 	for (auto i = 0u; const auto& vertex : vertices_ | views::values) {
-		positions.push_back(vertex->position());
+		positions.push_back(vertex->Position());
 		normals.push_back(ComputeWeightedVertexNormal(*vertex));
-		index_map.emplace(vertex->id(), i++); // map original vertex IDs to their new index positions
+		index_map.emplace(vertex->Id(), i++); // map original vertex IDs to their new index positions
 	}
 
 	for (const auto& face : faces_ | views::values) {
-		indices.push_back(index_map.at(face->v0()->id()));
-		indices.push_back(index_map.at(face->v1()->id()));
-		indices.push_back(index_map.at(face->v2()->id()));
+		indices.push_back(index_map.at(face->V0()->Id()));
+		indices.push_back(index_map.at(face->V1()->Id()));
+		indices.push_back(index_map.at(face->V2()->Id()));
 	}
 
 	return Mesh{positions, {}, normals, indices, model_transform_};
 }
 
-void HalfEdgeMesh::CollapseEdge(const HalfEdge& edge01, const shared_ptr<Vertex>& v_new) {
-	const auto edge10 = edge01.flip();
-	const auto v0 = edge10->vertex();
-	const auto v1 = edge01.vertex();
-	const auto v0_next = edge10->next()->vertex();
-	const auto v1_next = edge01.next()->vertex();
+void HalfEdgeMesh::Contract(const HalfEdge& edge01, const shared_ptr<Vertex>& v_new) {
+	const auto edge10 = edge01.Flip();
+	const auto v0 = edge10->Vertex();
+	const auto v1 = edge01.Vertex();
+	const auto v0_next = edge10->Next()->Vertex();
+	const auto v1_next = edge01.Next()->Vertex();
 
 	UpdateIncidentEdges(*v0, *v1_next, *v0_next, v_new, edges_, faces_);
 	UpdateIncidentEdges(*v1, *v0_next, *v1_next, v_new, edges_, faces_);
 
-	DeleteFace(*edge01.face(), faces_);
-	DeleteFace(*edge10->face(), faces_);
+	DeleteFace(*edge01.Face(), faces_);
+	DeleteFace(*edge10->Face(), faces_);
 
 	DeleteEdge(edge01, edges_);
 
 	DeleteVertex(*v0, vertices_);
 	DeleteVertex(*v1, vertices_);
 
-	vertices_.emplace(v_new->id(), v_new);
+	vertices_.emplace(v_new->Id(), v_new);
 }
