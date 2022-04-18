@@ -29,6 +29,10 @@ constexpr int kInvalidFaceElementIndex = -1;
  * \param line The string to evaluate.
  * \param delimiter A set of characters (in any order) to remove from the beginning and end of the string.
  * \return A view of the characters in \p delimiter removed from the beginning and end of \p line.
+ * \note Generally, returning a \c string_view is unsafe since it may lead to a dangling pointer if a temporary is
+ *       passed in to \p line. This is guaranteed to \b not happen in this context because \p line will always refer to
+ *       a dynamically allocated string created by reading the .obj file. Furthermore, preventing unnecessary copies of
+ *       \p line can significantly reduce the total time needed to parse an .obj file which warrants its use.
  */
 constexpr string_view Trim(string_view line, const string_view delimiter = " \t") noexcept {
 	line.remove_prefix(std::min<>(line.find_first_not_of(delimiter), line.size()));
@@ -41,6 +45,10 @@ constexpr string_view Trim(string_view line, const string_view delimiter = " \t"
  * \param line The string to evaluate.
  * \param delimiter The set of characters (in any order) to split the string on.
  * \return A vector of tokens in \p line split on the characters in \p delimiter.
+ * \note Generally, returning a \c string_view is unsafe since it may lead to a dangling pointer if a temporary is
+ *       passed in to \p line. This is guaranteed to \b not happen in this context because \p line will always refer to
+ *       a dynamically allocated string created by reading the .obj file. Furthermore, preventing unnecessary copies of
+ *       \p line can significantly reduce the total time needed to parse an .obj file which warrants its use.
  */
 vector<string_view> Split(const string_view line, const string_view delimiter = " \t") {
 	vector<string_view> tokens;
@@ -150,7 +158,6 @@ array<ivec3, 3> ParseFace(const string_view line) {
 /**
  * \brief Loads a triangle mesh from an input stream representing the contents of an .obj file.
  * \param is The input stream to parse.
- * \param model_transform The initial 4x4 affine transform to apply to the mesh.
  * \return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
  * \throw invalid_argument Indicates the input stream contains an unsupported format.
  */
