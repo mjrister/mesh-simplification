@@ -45,7 +45,6 @@ shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge) {
 mat4 ComputeQuadric(const Vertex& vertex) {
 	mat4 quadric{0.f};
 	auto edgei0 = vertex.Edge();
-
 	do {
 		const auto& position = vertex.Position();
 		const auto& normal = edgei0->Face()->Normal();
@@ -53,7 +52,6 @@ mat4 ComputeQuadric(const Vertex& vertex) {
 		quadric += outerProduct(plane, plane);
 		edgei0 = edgei0->Next()->Flip();
 	} while (edgei0 != vertex.Edge());
-
 	return quadric;
 }
 
