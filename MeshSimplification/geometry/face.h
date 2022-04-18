@@ -5,7 +5,6 @@
 
 #include <glm/vec3.hpp>
 
-#include "common/ptr_conversion.h"
 #include "geometry/vertex.h"
 
 namespace qem {
@@ -24,13 +23,13 @@ public:
 	     const std::shared_ptr<const Vertex>& v2);
 
 	/** \brief Gets the first face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> V0() const { return ptr::Get(v0_); }
+	[[nodiscard]] std::shared_ptr<const Vertex> V0() const { return std::shared_ptr{v0_}; }
 
 	/** \brief Gets the second face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> V1() const { return ptr::Get(v1_); }
+	[[nodiscard]] std::shared_ptr<const Vertex> V1() const { return std::shared_ptr{v1_}; }
 
 	/** \brief Gets the third face vertex. */
-	[[nodiscard]] std::shared_ptr<const Vertex> V2() const { return ptr::Get(v2_); }
+	[[nodiscard]] std::shared_ptr<const Vertex> V2() const { return std::shared_ptr{v2_}; }
 
 	/** \brief Gets the face normal. */
 	[[nodiscard]] const glm::vec3& Normal() const noexcept { return normal_; }

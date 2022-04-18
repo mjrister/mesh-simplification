@@ -23,9 +23,6 @@
     <ClCompile Include="geometry\half_edge_mesh_test.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
-    <ClCompile Include="utils\ptr_conversion_test.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="geometry">
       <UniqueIdentifier>{daec029e-b1ee-494e-a6df-6335e2413eda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="common">
-      <UniqueIdentifier>{f96d5c31-664b-4b54-a68a-5152be897c41}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

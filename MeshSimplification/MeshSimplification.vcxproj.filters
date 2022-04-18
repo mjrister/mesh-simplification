@@ -67,9 +67,6 @@
     <ClInclude Include="geometry\mesh_simplifier.h">
       <Filter>geometry</Filter>
     </ClInclude>
-    <ClInclude Include="common\ptr_conversion.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="graphics\scene.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -97,9 +94,6 @@
     </Filter>
     <Filter Include="geometry">
       <UniqueIdentifier>{a63d86ff-a6ba-4e0f-b5b7-0e6345a41a0f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="common">
-      <UniqueIdentifier>{6c846d83-e4bb-4062-894d-8d76838e07ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

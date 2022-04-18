@@ -5,8 +5,6 @@
 
 #include <glm/vec3.hpp>
 
-#include "common/ptr_conversion.h"
-
 namespace qem {
 class HalfEdge;
 
@@ -28,7 +26,7 @@ public:
 	[[nodiscard]] const glm::vec3& Position() const noexcept { return position_; }
 
 	/** \brief Gets the last created half-edge that points to this vertex. */
-	[[nodiscard]] std::shared_ptr<const HalfEdge> Edge() const { return ptr::Get(edge_); }
+	[[nodiscard]] std::shared_ptr<const HalfEdge> Edge() const { return std::shared_ptr{edge_}; }
 
 	/** \brief Sets the vertex half-edge. */
 	void SetEdge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
