@@ -45,7 +45,7 @@ public:
 
 	/**
 	 * \brief Performs edge contraction.
-	 * \Details Edge contraction consists of removing an edge from the mesh by merging its two vertices into a single
+	 * \details Edge contraction consists of removing an edge from the mesh by merging its two vertices into a single
 	 *          vertex and updating edges incident to each edge to connect to that new vertex.
 	 * \param edge01 The edge from vertex \c v0 to \c v1 to remove.
 	 * \param v_new The new vertex to update incident edges to.
