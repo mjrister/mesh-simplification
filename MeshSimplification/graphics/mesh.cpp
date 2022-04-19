@@ -15,10 +15,10 @@ namespace {
  * \throw invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
  */
 void Validate(
-	const span<const vec3>& positions,
-	const span<const vec2>& texture_coordinates,
-	const span<const vec3>& normals,
-	const span<const GLuint>& indices) {
+	const span<const vec3> positions,
+	const span<const vec2> texture_coordinates,
+	const span<const vec3> normals,
+	const span<const GLuint> indices) {
 
 	if (positions.empty()) {
 		throw invalid_argument{"Vertex positions must be specified"};
