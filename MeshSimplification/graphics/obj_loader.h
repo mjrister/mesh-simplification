@@ -2,8 +2,6 @@
 
 #include <string_view>
 
-#include <glm/mat4x4.hpp>
-
 namespace qem {
 class Mesh;
 
