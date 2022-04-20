@@ -115,7 +115,6 @@ Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
 	vertex_array_ = mesh.vertex_array_;
 	vertex_buffer_ = mesh.vertex_buffer_;
 	element_buffer_ = mesh.element_buffer_;
-
 	mesh.vertex_array_ = mesh.vertex_buffer_ = mesh.element_buffer_ = 0u;
 
 	positions_ = move(mesh.positions_);
