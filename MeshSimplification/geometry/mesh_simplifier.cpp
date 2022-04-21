@@ -162,10 +162,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	}
 
 	// use a priority queue to sort edge contraction candidates by the cost of removing each edge
-	constexpr auto kMinHeapComparator = [](
-		const shared_ptr<EdgeContraction>& lhs, const shared_ptr<EdgeContraction>& rhs) noexcept {
-		return lhs->cost > rhs->cost;
-	};
+	constexpr auto kMinHeapComparator = [](const auto& lhs, const auto& rhs) noexcept { return lhs->cost > rhs->cost; };
 	priority_queue<
 		shared_ptr<EdgeContraction>,
 		vector<shared_ptr<EdgeContraction>>,
