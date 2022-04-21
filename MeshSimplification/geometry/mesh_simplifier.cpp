@@ -187,10 +187,8 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 	// stop mesh simplification if the number of triangles has been sufficiently reduced
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
-	const auto target_face_count = initial_face_count * (1.f - rate);
-	const auto should_stop = [&]() noexcept {
-		const auto face_count = static_cast<float>(half_edge_mesh.Faces().size());
-		return face_count < target_face_count;
+	const auto should_stop = [&half_edge_mesh, target_face_count = initial_face_count * (1.f - rate)]() noexcept {
+		return static_cast<float>(half_edge_mesh.Faces().size()) < target_face_count;
 	};
 
 	for (; !edge_contractions.empty() && !should_stop(); edge_contractions.pop()) {
