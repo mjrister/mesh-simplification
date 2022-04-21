@@ -140,10 +140,9 @@ Scene::Scene(Window* const window)
 		mesh_.Scale(vec3{1.f + sign * kScaleStep});
 	});
 
-	shader_program_.Enable([this] {
-		SetMaterial(shader_program_);
-		SetPointLights(shader_program_);
-	});
+	shader_program_.Enable();
+	SetMaterial(shader_program_);
+	SetPointLights(shader_program_);
 
 	mesh_.Translate(kCamera.look_at + vec3{.2f, -.25f, 0.f});
 	mesh_.Scale(vec3{.35f});
@@ -153,9 +152,7 @@ void Scene::Render(const float delta_time) {
 	glClearColor(.1f, .1f, .1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	shader_program_.Enable([&, this] {
-		HandleContinuousInput(*window_, mesh_, delta_time);
-		SetViewTransforms(shader_program_, mesh_, *window_);
-		mesh_.Render();
-	});
+	HandleContinuousInput(*window_, mesh_, delta_time);
+	SetViewTransforms(shader_program_, mesh_, *window_);
+	mesh_.Render();
 }
