@@ -71,10 +71,10 @@ template <typename T>
 T ParseToken(const string_view token) {
 	T value;
 	if (const auto [_, error_code] = from_chars(token.data(), token.data() + token.size(), value);
-		error_code == errc::invalid_argument) {
-		throw invalid_argument{format("Unable to convert {} to type {}", token, typeid(T).name())};
+		error_code == errc{}) {
+		return value;
 	}
-	return value;
+	throw invalid_argument{format("Unable to convert {} to type {}", token, typeid(T).name())};
 }
 
 /**
