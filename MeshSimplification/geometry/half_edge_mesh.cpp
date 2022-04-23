@@ -229,6 +229,8 @@ HalfEdgeMesh::operator Mesh() const {
 	indices.reserve(faces_.size() * 3);
 
 	unordered_map<uint64_t, unsigned> index_map;
+	index_map.reserve(vertices_.size());
+
 	for (auto i = 0u; const auto& vertex : vertices_ | views::values) {
 		positions.push_back(vertex->Position());
 		normals.push_back(ComputeWeightedVertexNormal(*vertex));
