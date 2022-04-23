@@ -106,11 +106,11 @@ TEST(ObjLoaderTest, TestParseFaceWithInvalidNumberOfIndexGroups) {
 }
 
 TEST(ObjLoaderTest, TestParseFaceWithThreeIndexGroups) {
-	ASSERT_EQ((array<ivec3, 3>{
-		          ivec3{0, 1, 2},
-		          ivec3{3, 4, 5},
-		          ivec3{6, 7, 8}
-		          }), ParseFace("f 1/2/3 4/5/6 7/8/9"));
+	ASSERT_EQ((array{
+		ivec3{0, 1, 2},
+		ivec3{3, 4, 5},
+		ivec3{6, 7, 8}
+	}), ParseFace("f 1/2/3 4/5/6 7/8/9"));
 }
 
 TEST(ObjLoaderTest, TestLoadMeshWithoutFaceIndices) {
