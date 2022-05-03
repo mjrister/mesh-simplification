@@ -191,12 +191,11 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	for (; !edge_contractions.empty() && !should_stop(); edge_contractions.pop()) {
 		const auto& edge_contraction = edge_contractions.top();
 		const auto& edge01 = edge_contraction->edge;
-		const auto& v_new = edge_contraction->vertex;
-
 		if (!edge_contraction->valid || WillDegenerate(edge01)) continue;
 
 		const auto v0 = edge01->Flip()->Vertex();
 		const auto v1 = edge01->Vertex();
+		const auto& v_new = edge_contraction->vertex;
 
 		// compute the error quadric for the new vertex
 		const auto& q0 = quadrics.at(v0->Id());
