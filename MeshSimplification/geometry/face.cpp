@@ -30,8 +30,7 @@ auto GetMinVertexOrder(
 }
 }
 
-Face::Face(
-	const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v1, const shared_ptr<const Vertex>& v2) {
+Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v1, const shared_ptr<const Vertex>& v2) {
 
 	tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
 
@@ -41,7 +40,7 @@ Face::Face(
 	const auto normal_magnitude = length(normal);
 
 	if (normal_magnitude == 0.f) {
-		throw invalid_argument{format("({},{},{}) is not a triangle", *v0, *v1, *v2)};
+		throw invalid_argument{format("{} is not a triangle", *this)};
 	}
 
 	normal_ = normal / normal_magnitude;
