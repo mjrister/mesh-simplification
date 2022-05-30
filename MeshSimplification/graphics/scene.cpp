@@ -101,7 +101,7 @@ void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_t
 
 	if (const auto cursor_position = window.CursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		if (prev_cursor_position) {
-			const auto translate_step = .25f * delta_time;
+			const auto translate_step = .2f * delta_time;
 			const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
 			const auto view_model_inv = inverse(kCamera.view_transform * mesh.ModelTransform());
 			mesh.Translate(view_model_inv * vec4{cursor_delta.x, -cursor_delta.y, 0.f, 0.f});
