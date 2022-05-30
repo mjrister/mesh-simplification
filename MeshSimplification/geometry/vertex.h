@@ -25,7 +25,10 @@ public:
 	Vertex(const std::uint64_t id, const glm::vec3& position) noexcept : id_{id}, position_{position} {}
 
 	/** \brief Gets the vertex ID. */
-	[[nodiscard]] std::uint64_t Id() const noexcept { return id_; }
+	[[nodiscard]] std::uint64_t Id() const noexcept {
+		assert(id_ != kInvalidVertexId); // ensure ID is set before attempting to access
+		return id_;
+	}
 
 	/** \brief Sets the vertex ID. */
 	void SetId(const std::uint64_t id) noexcept { id_ = id; }
@@ -60,7 +63,8 @@ public:
 	}
 
 private:
-	std::uint64_t id_ = std::numeric_limits<std::uint64_t>::max();
+	static constexpr auto kInvalidVertexId = std::numeric_limits<std::uint64_t>::max();
+	std::uint64_t id_ = kInvalidVertexId;
 	glm::vec3 position_;
 	std::weak_ptr<const HalfEdge> edge_;
 };
