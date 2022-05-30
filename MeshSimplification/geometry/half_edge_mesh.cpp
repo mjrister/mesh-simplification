@@ -213,8 +213,6 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.ModelTransf
 		const auto face012 = CreateTriangle(v0, v1, v2, edges_);
 		faces_.emplace(hash_value(*face012), face012);
 	}
-
-	next_vertex_id_ = positions.size();
 }
 
 HalfEdgeMesh::operator Mesh() const {

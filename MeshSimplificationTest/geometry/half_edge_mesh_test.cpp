@@ -148,7 +148,7 @@ TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
 	const auto& v0 = vertices.at(0);
 	const auto& v1 = vertices.at(1);
 	const auto& edge01 = edges.at(hash_value(*v0, *v1));
-	const Vertex v_new{half_edge_mesh.NextVertexId(), (v0->Position() + v1->Position()) / 2.f};
+	const Vertex v_new{half_edge_mesh.Vertices().size(), (v0->Position() + v1->Position()) / 2.f};
 
 	half_edge_mesh.Contract(*edge01, make_shared<Vertex>(v_new));
 
@@ -166,12 +166,6 @@ TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
 		8, 9, 10,
 		2, 10, 9
 	});
-}
-
-TEST_F(HalfEdgeMeshTest, TestGetNextVertexId) {
-	auto half_edge_mesh = MakeHalfEdgeMesh();
-	ASSERT_EQ(10, half_edge_mesh.NextVertexId());
-	ASSERT_EQ(11, half_edge_mesh.NextVertexId());
 }
 
 TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {

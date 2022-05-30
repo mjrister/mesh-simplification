@@ -40,9 +40,6 @@ public:
 	/** \brief Gets a mapping of mesh faces by ID. */
 	[[nodiscard]] const auto& Faces() const noexcept { return faces_; }
 
-	/** \brief Gets a unique vertex ID that can be used to construct a new vertex in the half-edge mesh. */
-	[[nodiscard]] std::uint64_t NextVertexId() noexcept { return next_vertex_id_++; }
-
 	/**
 	 * \brief Performs edge contraction.
 	 * \details Edge contraction consists of removing an edge from the mesh by merging its two vertices into a single
@@ -57,6 +54,5 @@ private:
 	std::unordered_map<std::uint64_t, std::shared_ptr<HalfEdge>> edges_;
 	std::unordered_map<std::uint64_t, std::shared_ptr<Face>> faces_;
 	glm::mat4 model_transform_;
-	std::uint64_t next_vertex_id_;
 };
 }

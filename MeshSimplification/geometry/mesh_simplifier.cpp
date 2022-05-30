@@ -39,7 +39,7 @@ shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge01) 
 /**
  * \brief Computes the error quadric for a vertex.
  * \param v0 The vertex to evaluate.
- * \return The summation of quadrics for all triangles incident to \p vertex.
+ * \return The error quadric for \p vertex.
  */
 mat4 ComputeQuadric(const Vertex& v0) {
 	mat4 quadric{0.f};
@@ -56,7 +56,7 @@ mat4 ComputeQuadric(const Vertex& v0) {
 
 /**
  * \brief Determines the optimal vertex position for an edge contraction.
- * \param edge01 The half-edge to evaluate.
+ * \param edge01 The edge to evaluate.
  * \param quadrics A mapping of error quadrics by vertex ID.
  * \return The optimal vertex and cost associated with contracting \p edge01.
  */
@@ -92,7 +92,7 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 
 /**
  * \brief Determines if the removal of an edge will cause the mesh to degenerate.
- * \param edge01 The half-edge to evaluate.
+ * \param edge01 The edge to evaluate.
  * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
  */
 bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
@@ -122,7 +122,7 @@ struct EdgeContraction {
 	/**
 	 * \brief Initializes an edge contraction.
 	 * \param edge The edge to remove.
-	 * \param quadrics A mapping of quadrics by vertex ID.
+	 * \param quadrics A mapping of error quadrics by vertex ID.
 	 */
 	EdgeContraction(const shared_ptr<const HalfEdge>& edge, const unordered_map<uint64_t, mat4>& quadrics)
 		: edge{edge} {
@@ -174,6 +174,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	// compute the optimal vertex position that minimizes the cost of contracting each edge
 	for (const auto& edge : half_edge_mesh.Edges() | views::values) {
 		const auto min_edge = GetMinEdge(edge);
+
 		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
 			const auto edge_contraction = make_shared<EdgeContraction>(min_edge, quadrics);
 			edge_contractions.push(edge_contraction);
@@ -183,19 +184,21 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 	// stop mesh simplification if the number of triangles has been sufficiently reduced
 	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
-	const auto should_stop = [&half_edge_mesh, target_face_count = initial_face_count * (1.f - rate)]() noexcept {
-		return static_cast<float>(half_edge_mesh.Faces().size()) < target_face_count;
+	const auto is_simplified = [&, target_face_count = initial_face_count * (1.f - rate)]() noexcept {
+		return edge_contractions.empty() || static_cast<float>(half_edge_mesh.Faces().size()) < target_face_count;
 	};
 
-	for (; !edge_contractions.empty() && !should_stop(); edge_contractions.pop()) {
+	for (uint64_t next_vertex_id = half_edge_mesh.Vertices().size(); !is_simplified(); edge_contractions.pop()) {
 		const auto& edge_contraction = edge_contractions.top();
 		const auto& edge01 = edge_contraction->edge;
+
 		if (!edge_contraction->valid || WillDegenerate(edge01)) continue;
+
+		const auto& v_new = edge_contraction->vertex;
+		v_new->SetId(next_vertex_id++); // assign a new vertex ID when processing the next edge contraction
 
 		const auto v0 = edge01->Flip()->Vertex();
 		const auto v1 = edge01->Vertex();
-		const auto& v_new = edge_contraction->vertex;
-		v_new->SetId(half_edge_mesh.NextVertexId());
 
 		// compute the error quadric for the new vertex
 		const auto& q0 = quadrics.at(v0->Id());
