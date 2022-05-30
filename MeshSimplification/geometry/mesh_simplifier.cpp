@@ -159,12 +159,12 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	}
 
 	// use a priority queue to sort edge contraction candidates by the cost of removing each edge
-	constexpr auto kMinHeapComparator = [](const auto& lhs, const auto& rhs) noexcept { return lhs->cost > rhs->cost; };
+	constexpr auto kMinCostComparator = [](const auto& lhs, const auto& rhs) noexcept { return lhs->cost > rhs->cost; };
 	priority_queue<
 		shared_ptr<EdgeContraction>,
 		vector<shared_ptr<EdgeContraction>>,
-		decltype(kMinHeapComparator)
-	> edge_contractions{kMinHeapComparator};
+		decltype(kMinCostComparator)
+	> edge_contractions{kMinCostComparator};
 
 	// this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
 	unordered_map<uint64_t, shared_ptr<EdgeContraction>> valid_edges;
