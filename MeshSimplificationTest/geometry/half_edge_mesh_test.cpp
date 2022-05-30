@@ -169,56 +169,62 @@ TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
 }
 
 TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {
-
-	const unordered_map<uint64_t, shared_ptr<HalfEdge>> edges{
-		{hash_value(*edge01_), edge01_},
-		{hash_value(*edge10_), edge10_}
-	};
-
+	const unordered_map<uint64_t, shared_ptr<HalfEdge>> edges{{hash_value(*edge01_), edge01_}, {hash_value(*edge10_), edge10_}};
 	const auto v0 = edge10_->Vertex();
 	const auto v1 = edge01_->Vertex();
-	const auto v2 = make_shared<Vertex>(2, vec3{});
-
 	ASSERT_EQ(edge01_, GetHalfEdge(*v0, *v1, edges));
 	ASSERT_EQ(edge10_, GetHalfEdge(*v1, *v0, edges));
-	ASSERT_THROW(GetHalfEdge(*v0, *v2, edges), invalid_argument);
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteVertex) {
-
 	const auto v0 = make_shared<Vertex>(0, vec3{});
 	map<uint64_t, shared_ptr<Vertex>> vertices{{0, v0}};
-
 	DeleteVertex(*v0, vertices);
-
 	ASSERT_TRUE(vertices.empty());
-	ASSERT_THROW(DeleteVertex(*v0, vertices), invalid_argument);
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteHalfEdge) {
-
-	unordered_map<uint64_t, shared_ptr<HalfEdge>> edges{
-		{hash_value(*edge01_), edge01_},
-		{hash_value(*edge10_), edge10_}
-	};
-
+	unordered_map<uint64_t, shared_ptr<HalfEdge>> edges{{hash_value(*edge01_), edge01_}, {hash_value(*edge10_), edge10_}};
 	DeleteEdge(*edge01_, edges);
-
 	ASSERT_TRUE(edges.empty());
-	ASSERT_THROW(DeleteEdge(*edge01_, edges), invalid_argument);
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteFace) {
-
 	const auto v0 = make_shared<Vertex>(0, vec3{-1.f, -1.f, 0.f});
 	const auto v1 = make_shared<Vertex>(1, vec3{0.f, .5f, 0.f});
 	const auto v2 = make_shared<Vertex>(2, vec3{1.f, -1.f, 0.f});
 	const auto face012 = make_shared<Face>(v0, v1, v2);
 	unordered_map<uint64_t, shared_ptr<Face>> faces{{hash_value(*face012), face012}};
-
 	DeleteFace(*face012, faces);
-
 	ASSERT_TRUE(faces.empty());
-	ASSERT_THROW(DeleteFace(*face012, faces), invalid_argument);
 }
+
+#ifdef _DEBUG
+
+TEST_F(HalfEdgeMeshTest, TestGetInvalidHalfEdgeCausesProgramExit) {
+	const unordered_map<uint64_t, shared_ptr<HalfEdge>> edges{{hash_value(*edge01_), edge01_}};
+	ASSERT_DEATH(GetHalfEdge(*v1_, *v0_, edges), "");
+}
+
+TEST_F(HalfEdgeMeshTest, TestDeleteInvalidVertexCausesProgramExit) {
+	map<uint64_t, shared_ptr<Vertex>> vertices;
+	ASSERT_DEATH(DeleteVertex(*v0_, vertices), "");
+}
+
+TEST_F(HalfEdgeMeshTest, TestDeleteInvalidHalfEdgeCausesProgramExit) {
+	unordered_map<uint64_t, shared_ptr<HalfEdge>> edges;
+	ASSERT_DEATH(DeleteEdge(*edge01_, edges), "");
+}
+
+TEST_F(HalfEdgeMeshTest, TestDeleteInvalidFaceCausesProgramExit) {
+	const auto v0 = make_shared<Vertex>(0, vec3{ -1.f, -1.f, 0.f });
+	const auto v1 = make_shared<Vertex>(1, vec3{ 0.f, .5f, 0.f });
+	const auto v2 = make_shared<Vertex>(2, vec3{ 1.f, -1.f, 0.f });
+	const auto face012 = make_shared<Face>(v0, v1, v2);
+	unordered_map<uint64_t, shared_ptr<Face>> faces;
+	ASSERT_DEATH(DeleteFace(*face012, faces), "");
+}
+
+#endif
+
 }
