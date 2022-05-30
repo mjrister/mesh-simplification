@@ -58,13 +58,10 @@ private:
 };
 }
 
-namespace std {
-
 // defines an explicit specialization for use with std::format
 template <>
-struct formatter<qem::Vertex> : formatter<string> {
+struct std::formatter<qem::Vertex> : std::formatter<string> {
 	auto format(const qem::Vertex& vertex, format_context& context) {
-		return formatter<string>::format(to_string(vertex.Id()), context);
+		return std::formatter<string>::format(to_string(vertex.Id()), context);
 	}
 };
-}

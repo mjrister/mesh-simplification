@@ -49,14 +49,11 @@ private:
 };
 }
 
-namespace std {
-
 // defines an explicit specialization for use with std::format
 template <>
-struct formatter<qem::HalfEdge> : formatter<string> {
+struct std::formatter<qem::HalfEdge> : std::formatter<string> {
 	auto format(const qem::HalfEdge& half_edge, format_context& context) {
-		return formatter<string>::format(
+		return std::formatter<string>::format(
 			std::format("({},{})", *half_edge.Flip()->Vertex(), *half_edge.Vertex()), context);
 	}
 };
-}

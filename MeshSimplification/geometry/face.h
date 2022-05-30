@@ -47,13 +47,10 @@ private:
 };
 }
 
-namespace std {
-
 // defines an explicit specialization for use with std::format
 template <>
-struct formatter<qem::Face> : formatter<string> {
+struct std::formatter<qem::Face> : std::formatter<string> {
 	auto format(const qem::Face& face, format_context& context) {
-		return formatter<string>::format(std::format("({},{},{})", *face.V0(), *face.V1(), *face.V2()), context);
+		return std::formatter<string>::format(std::format("({},{},{})", *face.V0(), *face.V1(), *face.V2()), context);
 	}
 };
-}
