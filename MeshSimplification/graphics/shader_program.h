@@ -25,7 +25,10 @@ class ShaderProgram {
 		 * \throw std::runtime_error Indicates shader creation was unsuccessful.
 		 */
 		Shader(GLenum shader_type, const GLchar* shader_source);
-		~Shader() { glDeleteShader(id); }
+
+		~Shader() {
+			glDeleteShader(id);
+		}
 
 		Shader(const Shader&) = delete;
 		Shader& operator=(const Shader&) = delete;
@@ -44,7 +47,10 @@ public:
 	 * \throw std::runtime_error Indicates the shader program creation was unsuccessful.
 	 */
 	ShaderProgram(std::string_view vertex_shader_filepath, std::string_view fragment_shader_filepath);
-	~ShaderProgram() { glDeleteProgram(id_); }
+
+	~ShaderProgram() {
+		glDeleteProgram(id_);
+	}
 
 	ShaderProgram(const ShaderProgram&) = delete;
 	ShaderProgram& operator=(const ShaderProgram&) = delete;
@@ -65,8 +71,9 @@ public:
 	 */
 	template <typename T>
 	void SetUniform(const std::string_view name, const T& value) {
+		const auto location = GetUniformLocation(name);
 
-		if constexpr (const auto location = GetUniformLocation(name); std::is_integral_v<T>) {
+		if constexpr (std::is_integral_v<T>) {
 			glUniform1i(location, static_cast<GLint>(value));
 		} else if constexpr (std::is_floating_point_v<T>) {
 			glUniform1f(location, static_cast<GLfloat>(value));
@@ -110,10 +117,12 @@ private:
 	// degrade performance on the critical rendering path.
 	struct StringViewHash {
 		using is_transparent = void;
+
 		std::size_t operator()(const std::string_view value) const noexcept {
 			return std::hash<std::string_view>{}(value);
 		}
 	};
+
 	std::unordered_map<std::string, GLint, StringViewHash, std::equal_to<>> uniform_locations_;
 };
 }
