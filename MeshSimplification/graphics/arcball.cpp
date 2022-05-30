@@ -12,43 +12,43 @@ using namespace std;
 
 namespace {
 
-/**
- * \brief Gets the cursor position in normalized device coordinates (e.g., \f$(x,y) \in [-1, 1]\f$).
- * \param cursor_position The cursor position in the window.
- * \param window_dimensions The window width and height.
- * \return The cursor position in normalized device coordinates.
- */
-constexpr vec2 GetNormalizedDeviceCoordinates(
-	const dvec2& cursor_position, const pair<const int, const int>& window_dimensions) {
+	/**
+	 * \brief Gets the cursor position in normalized device coordinates (e.g., \f$(x,y) \in [-1, 1]\f$).
+	 * \param cursor_position The cursor position in the window.
+	 * \param window_dimensions The window width and height.
+	 * \return The cursor position in normalized device coordinates.
+	 */
+	constexpr vec2 GetNormalizedDeviceCoordinates(
+		const dvec2& cursor_position, const pair<const int, const int>& window_dimensions) {
 
-	// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
-	constexpr auto kMinCoordinateValue = -1., kMaxCoordinateValue = 1.;
-	const auto [width, height] = window_dimensions;
-	const auto x_ndc = std::clamp(cursor_position.x * 2. / width - 1., kMinCoordinateValue, kMaxCoordinateValue);
-	const auto y_ndc = std::clamp(cursor_position.y * 2. / height - 1., kMinCoordinateValue, kMaxCoordinateValue);
+		// normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
+		constexpr auto kMinCoordinateValue = -1., kMaxCoordinateValue = 1.;
+		const auto [width, height] = window_dimensions;
+		const auto x_ndc = std::clamp(cursor_position.x * 2. / width - 1., kMinCoordinateValue, kMaxCoordinateValue);
+		const auto y_ndc = std::clamp(cursor_position.y * 2. / height - 1., kMinCoordinateValue, kMaxCoordinateValue);
 
-	// because window coordinates start with (0,0) in the top-left corner which becomes (-1,-1) after normalization,
-	// the y-coordinate needs to be negated to align with the OpenGL convention of the top-left residing at (-1,1)
-	return {x_ndc, -y_ndc};
-}
-
-/**
- * \brief Projects a cursor position onto the surface of the arcball.
- * \param cursor_position_ndc The cursor position in normalized device coordinates.
- * \return The cursor position on the arcball.
- */
-vec3 GetArcballPosition(const vec2& cursor_position_ndc) {
-	const auto x = cursor_position_ndc.x;
-	const auto y = cursor_position_ndc.y;
-
-	// compute z using the standard equation for a unit sphere (x^2 + y^2 + z^2 = 1)
-	if (const auto c = x * x + y * y; c <= 1.f) {
-		return vec3{x, y, sqrt(1.f - c)};
+		// because window coordinates start with (0,0) in the top-left corner which becomes (-1,-1) after normalization,
+		// the y-coordinate needs to be negated to align with the OpenGL convention of the top-left residing at (-1,1)
+		return {x_ndc, -y_ndc};
 	}
 
-	// get nearest position on the arcball
-	return normalize(vec3{x, y, 0.f});
-}
+	/**
+	 * \brief Projects a cursor position onto the surface of the arcball.
+	 * \param cursor_position_ndc The cursor position in normalized device coordinates.
+	 * \return The cursor position on the arcball.
+	 */
+	vec3 GetArcballPosition(const vec2& cursor_position_ndc) {
+		const auto x = cursor_position_ndc.x;
+		const auto y = cursor_position_ndc.y;
+
+		// compute z using the standard equation for a unit sphere (x^2 + y^2 + z^2 = 1)
+		if (const auto c = x * x + y * y; c <= 1.f) {
+			return vec3{x, y, sqrt(1.f - c)};
+		}
+
+		// get nearest position on the arcball
+		return normalize(vec3{x, y, 0.f});
+	}
 }
 
 optional<const pair<const vec3, const float>> arcball::GetRotation(

@@ -9,29 +9,29 @@ using namespace std;
 
 namespace {
 
-/**
- * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
- *        triangle mesh in addition to enforcing alignment between vertex attribute.
- */
-void Validate(
-	const span<const vec3> positions,
-	const span<const vec2> texture_coordinates,
-	const span<const vec3> normals,
-	const span<const GLuint> indices) {
+	/**
+	 * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
+	 *        triangle mesh in addition to enforcing alignment between vertex attribute.
+	 */
+	void Validate(
+		const span<const vec3> positions,
+		const span<const vec2> texture_coordinates,
+		const span<const vec3> normals,
+		const span<const GLuint> indices) {
 
-	if (positions.empty()) {
-		throw invalid_argument{"Vertex positions must be specified"};
+		if (positions.empty()) {
+			throw invalid_argument{"Vertex positions must be specified"};
+		}
+		if (indices.empty() && positions.size() % 3 != 0 || indices.size() % 3 != 0) {
+			throw invalid_argument{"Object must be a triangle mesh"};
+		}
+		if (indices.empty() && !texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
+			throw invalid_argument{"Texture coordinates must align with position data"};
+		}
+		if (indices.empty() && !normals.empty() && positions.size() != normals.size()) {
+			throw invalid_argument{"Vertex normals must align with position data"};
+		}
 	}
-	if (indices.empty() && positions.size() % 3 != 0 || indices.size() % 3 != 0) {
-		throw invalid_argument{"Object must be a triangle mesh"};
-	}
-	if (indices.empty() && !texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
-		throw invalid_argument{"Texture coordinates must align with position data"};
-	}
-	if (indices.empty() && !normals.empty() && positions.size() != normals.size()) {
-		throw invalid_argument{"Vertex normals must align with position data"};
-	}
-}
 }
 
 Mesh::Mesh(

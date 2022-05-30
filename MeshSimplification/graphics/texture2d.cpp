@@ -10,14 +10,14 @@ using namespace std;
 
 namespace {
 
-/** \brief Gets the maximum number of texture units allowed by the host GPU. */
-GLint GetMaxTextureUnits() noexcept {
-	static GLint max_texture_units = 0;
-	if (!max_texture_units) {
-		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
+	/** \brief Gets the maximum number of texture units allowed by the host GPU. */
+	GLint GetMaxTextureUnits() noexcept {
+		static GLint max_texture_units = 0;
+		if (!max_texture_units) {
+			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
+		}
+		return max_texture_units;
 	}
-	return max_texture_units;
-}
 }
 
 Texture2d::Texture2d(const string_view filepath, const int texture_unit_index)
