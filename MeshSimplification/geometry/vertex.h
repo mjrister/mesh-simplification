@@ -1,6 +1,5 @@
 #pragma once
 
-#include <format>
 #include <memory>
 
 #include <glm/vec3.hpp>
@@ -66,11 +65,3 @@ private:
 	std::weak_ptr<const HalfEdge> edge_;
 };
 }
-
-// defines an explicit specialization for use with std::format
-template <>
-struct std::formatter<qem::Vertex> : std::formatter<string> {
-	auto format(const qem::Vertex& vertex, format_context& context) {
-		return std::formatter<string>::format(to_string(vertex.Id()), context);
-	}
-};

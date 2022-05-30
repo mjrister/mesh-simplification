@@ -1,6 +1,6 @@
 #include "geometry/half_edge_mesh.h"
 
-#include <format>
+#include <cassert>
 #include <ranges>
 
 #include <glm/vec3.hpp>
@@ -82,47 +82,35 @@ shared_ptr<Face> CreateTriangle(
  * \param v0,v1 The half-edge vertices.
  * \param edges A mapping of mesh half-edges by ID.
  * \return The half-edge connecting \p v0 to \p v1.
- * \throw invalid_argument Indicates no edge connecting \p v0 to \p v1 exists in \p edges.
  */
 shared_ptr<HalfEdge> GetHalfEdge(
 	const Vertex& v0, const Vertex& v1, const unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges) {
-
-	if (const auto iterator = edges.find(hash_value(v0, v1)); iterator != edges.end()) {
-		return iterator->second;
-	}
-
-	throw invalid_argument(format("Attempted to retrieve a nonexistent edge: ({},{})", v0, v1));
+	const auto iterator = edges.find(hash_value(v0, v1));
+	assert(iterator != edges.end());
+	return iterator->second;
 }
 
 /**
  * \brief Deletes a vertex in the half-edge mesh.
  * \param vertex The vertex to delete.
  * \param vertices A mapping of mesh vertices by ID.
- * \throw invalid_argument Indicates \p vertex does not exist in \p vertices.
  */
 void DeleteVertex(const Vertex& vertex, map<uint64_t, shared_ptr<Vertex>>& vertices) {
-
-	if (const auto iterator = vertices.find(vertex.Id()); iterator != vertices.end()) {
-		vertices.erase(iterator);
-	} else {
-		throw invalid_argument{format("Attempted to delete a nonexistent vertex: {}", vertex)};
-	}
+	const auto iterator = vertices.find(vertex.Id());
+	assert(iterator != vertices.end());
+	vertices.erase(iterator);
 }
 
 /**
  * \brief Deletes an edge in the half-edge mesh.
  * \param edge The half-edge to delete.
  * \param edges A mapping of mesh half-edges by ID.
- * \throw invalid_argument Indicates \p edge does not exist in \p edges.
  */
 void DeleteEdge(const HalfEdge& edge, unordered_map<uint64_t, shared_ptr<HalfEdge>>& edges) {
-
 	for (const auto edge_key : {hash_value(edge), hash_value(*edge.Flip())}) {
-		if (const auto iterator = edges.find(edge_key); iterator != edges.end()) {
-			edges.erase(iterator);
-		} else {
-			throw invalid_argument{format("Attempted to delete a nonexistent edge: {}", edge)};
-		}
+		const auto iterator = edges.find(edge_key);
+		assert(iterator != edges.end());
+		edges.erase(iterator);
 	}
 }
 
@@ -130,15 +118,11 @@ void DeleteEdge(const HalfEdge& edge, unordered_map<uint64_t, shared_ptr<HalfEdg
  * \brief Deletes a face in the half-edge mesh.
  * \param face The face to delete.
  * \param faces A mapping of mesh faces by ID.
- * \throw invalid_argument Indicates \p face does not exist in \p faces.
  */
 void DeleteFace(const Face& face, unordered_map<uint64_t, shared_ptr<Face>>& faces) {
-
-	if (const auto iterator = faces.find(hash_value(face)); iterator != faces.end()) {
-		faces.erase(iterator);
-	} else {
-		throw invalid_argument{format("Attempted to delete a nonexistent face: {}", face)};
-	}
+	const auto iterator = faces.find(hash_value(face));
+	assert(iterator != faces.end());
+	faces.erase(iterator);
 }
 
 /**

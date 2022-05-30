@@ -10,10 +10,6 @@ using namespace std;
 
 namespace {
 
-TEST(VertexTest, TestFormatVertex) {
-	ASSERT_EQ("42", format("{}", Vertex{42, vec3{}}));
-}
-
 TEST(VertexTest, TestEqualVerticesProduceTheSameHashValue) {
 	const Vertex v0{0, vec3{0.f}};
 	ASSERT_EQ(hash_value(v0), hash_value(Vertex{v0}));

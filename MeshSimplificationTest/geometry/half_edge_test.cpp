@@ -26,10 +26,6 @@ protected:
 	std::shared_ptr<HalfEdge> edge01_, edge10_;
 };
 
-TEST_F(HalfEdgeTest, TestFormatHalfEdge) {
-	ASSERT_EQ("(0,1)", format("{}", *edge01_));
-}
-
 TEST_F(HalfEdgeTest, TestEqualHalfEdgesProduceTheSameHashValue) {
 	ASSERT_EQ(hash_value(*edge01_), hash_value(HalfEdge{*edge01_}));
 	ASSERT_NE(hash_value(*edge01_), hash_value(*edge01_->Flip()));

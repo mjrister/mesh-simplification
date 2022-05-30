@@ -65,7 +65,6 @@ vector<string_view> Split(const string_view line, const string_view delimiter = 
  * \tparam T The type to convert to.
  * \param token The token to parse.
  * \return The converted value of \p token to type \p T.
- * \throw invalid_argument Indicates the string conversion failed.
  */
 template <typename T>
 T ParseToken(const string_view token) {
@@ -83,7 +82,6 @@ T ParseToken(const string_view token) {
  * \tparam N The number of items to convert (does not include the first token identifying the line type).
  * \param line The line to parse.
  * \return A vector of size \p N containing each item in \p line converted to type \p T.
- * \throw invalid_argument Indicates if the line format is unsupported.
  */
 template <typename T, int N>
 vec<N, T> ParseLine(const string_view line) {
@@ -102,7 +100,6 @@ vec<N, T> ParseLine(const string_view line) {
  * \param token The token to parse. May optionally contain texture coordinate and normal indices.
  * \return A vector containing vertex position, texture coordinate, and normal indices. Unspecified texture
  *         coordinate and normal values are indicated by the value \c kInvalidFaceElementIndex.
- * \throw invalid_argument Indicates the index group format is unsupported.
  */
 ivec3 ParseIndexGroup(const string_view token) {
 	static constexpr auto kIndexDelimiter = "/";
@@ -146,7 +143,6 @@ ivec3 ParseIndexGroup(const string_view token) {
  * \brief Parses a line representing a triangular face element.
  * \param line The line to parse.
  * \return An array containing three parsed index groups for the face.
- * \throw invalid_argument Indicates the line format is unsupported.
  */
 array<ivec3, 3> ParseFace(const string_view line) {
 	if (const auto tokens = Split(line, " \t"); tokens.size() == 4) {
@@ -159,7 +155,6 @@ array<ivec3, 3> ParseFace(const string_view line) {
  * \brief Loads a triangle mesh from an input stream representing the contents of an .obj file.
  * \param is The input stream to parse.
  * \return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
- * \throw invalid_argument Indicates the input stream contains an unsupported format.
  */
 Mesh LoadMesh(istream& is) {
 	vector<vec3> positions;

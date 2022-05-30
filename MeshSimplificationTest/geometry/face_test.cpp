@@ -57,11 +57,6 @@ TEST(FaceTEst, TestGetFaceNormal) {
 	ASSERT_EQ((vec3{0.f, 0.f, 1.f}), face012.Normal());
 }
 
-TEST(FaceTest, TestFormatFace) {
-	const auto [v0, v1, v2] = MakeTriangle();
-	ASSERT_EQ("(0,1,2)", format("{}", Face{v0, v1, v2}));
-}
-
 TEST(FaceTest, TestEqualFacesProduceTheSameHashValue) {
 	const auto v0 = make_shared<Vertex>(0, vec3{-1.f, -1.f, 0.f});
 	const auto v1 = make_shared<Vertex>(1, vec3{0.f, .5f, 0.f});

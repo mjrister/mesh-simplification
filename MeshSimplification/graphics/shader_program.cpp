@@ -13,7 +13,6 @@ namespace {
  * \brief Retrieves the contents of a file.
  * \param filepath The filepath to load contents from.
  * \return A string containing the file contents.
- * \throw runtime_error Indicates there was an error opening the file.
  */
 string Read(const string_view filepath) {
 
@@ -33,7 +32,6 @@ string Read(const string_view filepath) {
  * \brief Verifies the status of a shader.
  * \param shader_id The shader ID.
  * \param status_type The status type to verify.
- * \throw runtime_error if shader verification failed.
  */
 void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
 	GLint success;
@@ -52,7 +50,6 @@ void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
  * \brief Verifies the status of a shader program.
  * \param shader_program_id The shader program ID.
  * \param status_type The shader program status type to verify.
- * \throw runtime_error if shader program verification failed.
  */
 void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum status_type) {
 	GLint success;

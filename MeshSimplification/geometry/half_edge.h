@@ -1,6 +1,5 @@
 #pragma once
 
-#include <format>
 #include <memory>
 
 #include "geometry/face.h"
@@ -40,7 +39,9 @@ public:
 	void SetFace(const std::shared_ptr<qem::Face>& face) noexcept { face_ = face; }
 
 	/** \brief Gets the half-edge hash value. */
-	friend std::uint64_t hash_value(const HalfEdge& edge) { return hash_value(*edge.Flip()->Vertex(), *edge.Vertex()); }
+	friend std::uint64_t hash_value(const HalfEdge& edge) noexcept {
+		return hash_value(*edge.Flip()->Vertex(), *edge.Vertex());
+	}
 
 private:
 	std::weak_ptr<qem::Vertex> vertex_;
@@ -48,12 +49,3 @@ private:
 	std::weak_ptr<qem::Face> face_;
 };
 }
-
-// defines an explicit specialization for use with std::format
-template <>
-struct std::formatter<qem::HalfEdge> : std::formatter<string> {
-	auto format(const qem::HalfEdge& half_edge, format_context& context) {
-		return std::formatter<string>::format(
-			std::format("({},{})", *half_edge.Flip()->Vertex(), *half_edge.Vertex()), context);
-	}
-};

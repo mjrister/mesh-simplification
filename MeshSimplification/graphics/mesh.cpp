@@ -12,7 +12,6 @@ namespace {
 /**
  * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
  *        triangle mesh in addition to enforcing alignment between vertex attribute.
- * \throw invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
  */
 void Validate(
 	const span<const vec3> positions,

@@ -1,6 +1,7 @@
 #include "geometry/face.h"
 
 #include <algorithm>
+#include <cassert>
 #include <tuple>
 
 #include <glm/geometric.hpp>
@@ -38,10 +39,7 @@ Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v
 	const auto edge02 = v2_.lock()->Position() - v0_.lock()->Position();
 	const auto normal = cross(edge01, edge02);
 	const auto normal_magnitude = length(normal);
-
-	if (normal_magnitude == 0.f) {
-		throw invalid_argument{format("{} is not a triangle", *this)};
-	}
+	assert(normal_magnitude != 0.f); // ensure face vertices are not collinear
 
 	normal_ = normal / normal_magnitude;
 	area_ = .5f * normal_magnitude;

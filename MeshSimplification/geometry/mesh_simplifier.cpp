@@ -149,7 +149,7 @@ struct EdgeContraction {
 
 Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
-	if (rate < 0.f || rate > 1.f) throw invalid_argument{format("Invalid mesh simplification rate {}", rate)};
+	assert(0.f <= rate && rate <= 1.f);
 
 	const auto start_time = chrono::high_resolution_clock::now();
 	HalfEdgeMesh half_edge_mesh{mesh};

@@ -135,7 +135,8 @@ struct Material {
 				};
 			}
 			default:
-				throw std::invalid_argument{"Invalid material type"};
+				assert(false);
+				return Material{};
 		}
 	}
 

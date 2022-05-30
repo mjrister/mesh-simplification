@@ -38,7 +38,9 @@ public:
 	[[nodiscard]] float Area() const noexcept { return area_; }
 
 	/** \brief Gets the face hash value. */
-	friend std::uint64_t hash_value(const Face& face) { return hash_value(*face.V0(), *face.V1(), *face.V2()); }
+	friend std::uint64_t hash_value(const Face& face) noexcept {
+		return hash_value(*face.V0(), *face.V1(), *face.V2());
+	}
 
 private:
 	std::weak_ptr<const Vertex> v0_, v1_, v2_;
@@ -46,11 +48,3 @@ private:
 	float area_;
 };
 }
-
-// defines an explicit specialization for use with std::format
-template <>
-struct std::formatter<qem::Face> : std::formatter<string> {
-	auto format(const qem::Face& face, format_context& context) {
-		return std::formatter<string>::format(std::format("({},{},{})", *face.V0(), *face.V1(), *face.V2()), context);
-	}
-};
