@@ -28,13 +28,12 @@ namespace {
 
 /**
  * \brief Gets a canonical representation of a half-edge used to disambiguate between its flip edge.
- * \param edge The half-edge to disambiguate.
+ * \param edge01 The half-edge to disambiguate.
  * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
  */
-shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge) {
-	return min<>(edge, const_pointer_cast<const HalfEdge>(edge->Flip()), [](const auto& edge01, const auto& edge10) {
-		return edge01->Vertex()->Id() < edge10->Vertex()->Id();
-	});
+shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge01) {
+	const auto edge10 = const_pointer_cast<const HalfEdge>(edge01->Flip());
+	return edge01->Vertex()->Id() < edge10->Vertex()->Id() ? edge01 : edge10;
 }
 
 /**
@@ -77,8 +76,8 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 	const auto d = q01[3][3];
 
 	// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
-	if (static constexpr auto kEpsilon = numeric_limits<float>::epsilon();
-		std::abs(determinant(Q)) < kEpsilon || std::abs(d) < kEpsilon) {
+	if (constexpr auto kEpsilon = numeric_limits<float>::epsilon();
+		fabs(determinant(Q)) < kEpsilon || fabs(d) < kEpsilon) {
 		const auto position = (v0->Position() + v1->Position()) / 2.f;
 		return {make_shared<Vertex>(vertex_id, position), 0.f};
 	}
@@ -88,9 +87,8 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 
 	auto position = D_inv * vec4{0.f, 0.f, 0.f, 1.f};
 	position /= position.w;
-	const auto cost = dot(position, q01 * position);
 
-	return {make_shared<Vertex>(vertex_id, position), cost};
+	return {make_shared<Vertex>(vertex_id, position), dot(position, q01 * position)};
 }
 
 /**
