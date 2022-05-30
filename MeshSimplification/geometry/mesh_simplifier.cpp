@@ -125,9 +125,7 @@ struct EdgeContraction {
 	 * \param quadrics A mapping of error quadrics by vertex ID.
 	 */
 	EdgeContraction(const shared_ptr<const HalfEdge>& edge, const unordered_map<uint64_t, mat4>& quadrics)
-		: edge{edge} {
-		tie(vertex, cost) = GetOptimalEdgeContractionVertex(*edge, quadrics);
-	}
+		: edge{edge} { tie(vertex, cost) = GetOptimalEdgeContractionVertex(*edge, quadrics); }
 
 	/** \brief The edge to contract. */
 	shared_ptr<const HalfEdge> edge;
