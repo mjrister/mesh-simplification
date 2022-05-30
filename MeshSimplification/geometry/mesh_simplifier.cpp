@@ -56,13 +56,12 @@ mat4 ComputeQuadric(const Vertex& vertex) {
 
 /**
  * \brief Determines the optimal vertex position for an edge contraction.
- * \param vertex_id The ID to use for the newly created vertex.
  * \param edge01 The half-edge to evaluate.
  * \param quadrics A mapping of error quadrics by vertex ID.
  * \return The optimal vertex and cost associated with contracting \p edge01.
  */
 pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
-	const uint64_t vertex_id, const HalfEdge& edge01, const unordered_map<uint64_t, mat4>& quadrics) {
+	const HalfEdge& edge01, const unordered_map<uint64_t, mat4>& quadrics) {
 
 	const auto v0 = edge01.Flip()->Vertex();
 	const auto v1 = edge01.Vertex();
@@ -79,7 +78,7 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 	if (constexpr auto kEpsilon = numeric_limits<float>::epsilon();
 		fabs(determinant(Q)) < kEpsilon || fabs(d) < kEpsilon) {
 		const auto position = (v0->Position() + v1->Position()) / 2.f;
-		return {make_shared<Vertex>(vertex_id, position), 0.f};
+		return {make_shared<Vertex>(position), 0.f};
 	}
 
 	const auto Q_inv = inverse(Q);
@@ -88,7 +87,7 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 	auto position = D_inv * vec4{0.f, 0.f, 0.f, 1.f};
 	position /= position.w;
 
-	return {make_shared<Vertex>(vertex_id, position), dot(position, q01 * position)};
+	return {make_shared<Vertex>(position), dot(position, q01 * position)};
 }
 
 /**
@@ -120,12 +119,9 @@ bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
 /** \brief Represents an edge contraction priority queue entry. */
 struct EdgeContraction {
 
-	EdgeContraction(
-		HalfEdgeMesh& mesh,
-		const shared_ptr<const HalfEdge>& edge,
-		const unordered_map<uint64_t, mat4>& quadrics)
+	EdgeContraction(const shared_ptr<const HalfEdge>& edge, const unordered_map<uint64_t, mat4>& quadrics)
 		: edge{edge} {
-		tie(vertex, cost) = GetOptimalEdgeContractionVertex(mesh.NextVertexId(), *edge, quadrics);
+		tie(vertex, cost) = GetOptimalEdgeContractionVertex(*edge, quadrics);
 	}
 
 	/** \brief The edge to contract. */
@@ -174,7 +170,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	for (const auto& edge : half_edge_mesh.Edges() | views::values) {
 		const auto min_edge = GetMinEdge(edge);
 		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
-			const auto edge_contraction = make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
+			const auto edge_contraction = make_shared<EdgeContraction>(min_edge, quadrics);
 			edge_contractions.push(edge_contraction);
 			valid_edges.emplace(min_edge_key, edge_contraction);
 		}
@@ -194,6 +190,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		const auto v0 = edge01->Flip()->Vertex();
 		const auto v1 = edge01->Vertex();
 		const auto& v_new = edge_contraction->vertex;
+		v_new->SetId(half_edge_mesh.NextVertexId());
 
 		// compute the error quadric for the new vertex
 		const auto& q0 = quadrics.at(v0->Id());
@@ -230,7 +227,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 						// invalidate existing edge contraction candidate in the priority queue
 						iterator->second->valid = false;
 					}
-					const auto new_edge_contraction = make_shared<EdgeContraction>(half_edge_mesh, min_edge, quadrics);
+					const auto new_edge_contraction = make_shared<EdgeContraction>(min_edge, quadrics);
 					valid_edges[min_edge_key] = new_edge_contraction;
 					edge_contractions.emplace(new_edge_contraction);
 					visited_edges.emplace(min_edge_key, min_edge);

@@ -14,6 +14,12 @@ class Vertex {
 public:
 	/**
 	 * \brief Initializes a vertex.
+	 * \param position The vertex position.
+	 */
+	explicit Vertex(const glm::vec3& position) noexcept : position_{position} {}
+
+	/**
+	 * \brief Initializes a vertex.
 	 * \param id The vertex ID.
 	 * \param position The vertex position.
 	 */
@@ -21,6 +27,9 @@ public:
 
 	/** \brief Gets the vertex ID. */
 	[[nodiscard]] std::uint64_t Id() const noexcept { return id_; }
+
+	/** \brief Sets the vertex ID. */
+	void SetId(const std::uint64_t id) noexcept { id_ = id; }
 
 	/** \brief Gets the vertex position. */
 	[[nodiscard]] const glm::vec3& Position() const noexcept { return position_; }
@@ -52,7 +61,7 @@ public:
 	}
 
 private:
-	std::uint64_t id_;
+	std::uint64_t id_ = std::numeric_limits<std::uint64_t>::max();
 	glm::vec3 position_;
 	std::weak_ptr<const HalfEdge> edge_;
 };
