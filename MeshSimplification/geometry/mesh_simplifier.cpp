@@ -38,19 +38,19 @@ shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge01) 
 
 /**
  * \brief Computes the error quadric for a vertex.
- * \param vertex The vertex to evaluate.
+ * \param v0 The vertex to evaluate.
  * \return The summation of quadrics for all triangles incident to \p vertex.
  */
-mat4 ComputeQuadric(const Vertex& vertex) {
+mat4 ComputeQuadric(const Vertex& v0) {
 	mat4 quadric{0.f};
-	auto edgei0 = vertex.Edge();
+	auto edgei0 = v0.Edge();
 	do {
-		const auto& position = vertex.Position();
+		const auto& position = v0.Position();
 		const auto& normal = edgei0->Face()->Normal();
 		const vec4 plane{normal, -dot(position, normal)};
 		quadric += outerProduct(plane, plane);
 		edgei0 = edgei0->Next()->Flip();
-	} while (edgei0 != vertex.Edge());
+	} while (edgei0 != v0.Edge());
 	return quadric;
 }
 
@@ -116,9 +116,14 @@ bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
 	return false;
 }
 
-/** \brief Represents an edge contraction priority queue entry. */
+/** \brief Represents a candidate edge contraction. */
 struct EdgeContraction {
 
+	/**
+	 * \brief Initializes an edge contraction.
+	 * \param edge The edge to remove.
+	 * \param quadrics A mapping of quadrics by vertex ID.
+	 */
 	EdgeContraction(const shared_ptr<const HalfEdge>& edge, const unordered_map<uint64_t, mat4>& quadrics)
 		: edge{edge} {
 		tie(vertex, cost) = GetOptimalEdgeContractionVertex(*edge, quadrics);
