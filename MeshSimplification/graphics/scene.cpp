@@ -101,20 +101,20 @@ namespace {
 
 		if (const auto cursor_position = window.CursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			if (prev_cursor_position) {
-				const auto translate_step = .2f * delta_time;
-				const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
-				const auto view_model_inv = inverse(kCamera.view_transform * mesh.ModelTransform());
-				mesh.Translate(view_model_inv * vec4{cursor_delta.x, -cursor_delta.y, 0.f, 0.f});
-			}
-			prev_cursor_position = cursor_position;
-		} else if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-			if (prev_cursor_position) {
 				if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.Dimensions())) {
 					const auto& [view_rotation_axis, angle] = *axis_and_angle;
 					const auto view_model_inv = inverse(kCamera.view_transform * mesh.ModelTransform());
 					const auto model_rotation_axis = normalize(view_model_inv * vec4{view_rotation_axis, 0.f});
 					mesh.Rotate(model_rotation_axis, angle);
 				}
+			}
+			prev_cursor_position = cursor_position;
+		} else if ( window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+			if (prev_cursor_position) {
+				const auto translate_step = .2f * delta_time;
+				const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
+				const auto view_model_inv = inverse(kCamera.view_transform * mesh.ModelTransform());
+				mesh.Translate(view_model_inv * vec4{cursor_delta.x, -cursor_delta.y, 0.f, 0.f});
 			}
 			prev_cursor_position = cursor_position;
 		} else if (prev_cursor_position.has_value()) {
