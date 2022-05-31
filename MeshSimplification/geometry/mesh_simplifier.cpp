@@ -199,21 +199,21 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		const auto v1 = edge01->Vertex();
 
 		// compute the error quadric for the new vertex
-		const auto& q0 = quadrics.at(v0->Id());
-		const auto& q1 = quadrics.at(v1->Id());
+		const auto& q0 = quadrics[v0->Id()];
+		const auto& q1 = quadrics[v1->Id()];
 		quadrics.emplace(v_new->Id(), q0 + q1);
 
 		// invalidate entries in the priority queue that will be removed during the edge contraction
-		for (const auto& vertex : {v0, v1}) {
-			auto edge = vertex->Edge();
+		for (const auto& vi : {v0, v1}) {
+			auto edgeji = vi->Edge();
 			do {
-				const auto min_edge = GetMinEdge(edge);
+				const auto min_edge = GetMinEdge(edgeji);
 				if (const auto iterator = valid_edges.find(hash_value(*min_edge)); iterator != valid_edges.end()) {
 					iterator->second->valid = false;
 					valid_edges.erase(iterator);
 				}
-				edge = edge->Next()->Flip();
-			} while (edge != vertex->Edge());
+				edgeji = edgeji->Next()->Flip();
+			} while (edgeji != vi->Edge());
 		}
 
 		// remove the edge from the mesh and attach incident edges to the new vertex
