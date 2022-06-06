@@ -18,7 +18,7 @@ namespace {
 
 		if (ifstream ifs{filepath.data(), ios::ate | ios::binary}) {
 			string source;
-			source.reserve(ifs.tellg());
+			source.reserve(static_cast<std::size_t>(ifs.tellg()));
 			ifs.seekg(0, ios::beg);
 			source.assign(istreambuf_iterator<char>{ifs}, istreambuf_iterator<char>{});
 			return source;
