@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <format>
 #include <iostream>
 #include <string_view>
@@ -67,24 +68,38 @@ namespace qem {
 		void SetUniform(const std::string_view name, const T& value) {
 			const auto location = GetUniformLocation(name);
 
-			if constexpr (std::is_integral_v<T>) {
+			if constexpr (std::integral<T>) {
 				glUniform1i(location, static_cast<GLint>(value));
-			} else if constexpr (std::is_floating_point_v<T>) {
+			} else if constexpr (std::floating_point<T>) {
 				glUniform1f(location, static_cast<GLfloat>(value));
-			} else if constexpr (std::is_same_v<T, glm::vec3>) {
+			} else if constexpr (std::same_as<T, glm::vec3>) {
 				glUniform3fv(location, 1, glm::value_ptr(value));
-			} else if constexpr (std::is_same_v<T, glm::vec4>) {
+			} else if constexpr (std::same_as<T, glm::vec4>) {
 				glUniform4fv(location, 1, glm::value_ptr(value));
-			} else if constexpr (std::is_same_v<T, glm::mat3>) {
+			} else if constexpr (std::same_as<T, glm::mat3>) {
 				glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
-			} else if constexpr (std::is_same_v<T, glm::mat4>) {
+			} else if constexpr (std::same_as<T, glm::mat4>) {
 				glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 			} else {
-				throw std::runtime_error{std::format("Unsupported uniform variable type {}", typeid(T).name())};
+				static_assert(assert_false<T>, "Unsupported uniform variable type");
 			}
 		}
 
 	private:
+		// this is required as a workaround to ensure that static assertions in if constexpr statement are not ill-formed
+		template<typename> static constexpr std::false_type assert_false{};
+
+		// The following is needed to perform heterogeneous lookup in unordered containers. This is important because
+		// each uniform location query is performed using a string_view, but stored as a string. Without heterogeneous
+		// lookup, each query would have to be converted to a string (and hence allocate unnecessary memory) which would
+		// degrade performance on the critical rendering path.
+		struct string_view_hash {
+			using is_transparent = void;
+			std::size_t operator()(const std::string_view value) const noexcept {
+				return std::hash<std::string_view>{}(value);
+			}
+		};
+
 		/**
 		 * \brief Gets the location for a uniform variable in the shader program.
 		 * \param name The uniform variable name.
@@ -104,19 +119,6 @@ namespace qem {
 
 		const GLuint id_;
 		const Shader vertex_shader_, fragment_shader_;
-
-		// The following is needed to perform heterogeneous lookup in unordered containers. This is important because
-		// each uniform location query is performed using a string_view, but stored as a string. Without heterogeneous
-		// lookup, each query would have to be converted to a string (and hence allocate unnecessary memory) which would
-		// degrade performance on the critical rendering path.
-		struct StringViewHash {
-			using is_transparent = void;
-
-			std::size_t operator()(const std::string_view value) const noexcept {
-				return std::hash<std::string_view>{}(value);
-			}
-		};
-
-		std::unordered_map<std::string, GLint, StringViewHash, std::equal_to<>> uniform_locations_;
+		std::unordered_map<std::string, GLint, string_view_hash, std::equal_to<>> uniform_locations_;
 	};
 }
