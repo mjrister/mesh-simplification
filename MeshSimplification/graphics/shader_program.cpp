@@ -16,10 +16,9 @@ namespace {
 	 */
 	string Read(const string_view filepath) {
 
-		if (ifstream ifs{filepath.data()}; ifs.good()) {
+		if (ifstream ifs{filepath.data(), ios::ate | ios::binary}) {
 			string source;
-			ifs.seekg(0, ios::end);
-			source.reserve(static_cast<size_t>(ifs.tellg()));
+			source.reserve(ifs.tellg());
 			ifs.seekg(0, ios::beg);
 			source.assign(istreambuf_iterator<char>{ifs}, istreambuf_iterator<char>{});
 			return source;
