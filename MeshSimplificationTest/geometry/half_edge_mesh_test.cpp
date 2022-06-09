@@ -25,7 +25,6 @@ namespace {
 				  {hash_value(*v0_), v0_},
 				  {hash_value(*v1_), v1_},
 				  {hash_value(*v2_), v2_}
-
 			  },
 			  edges_{
 				  {hash_value(*edge01_), edge01_},
