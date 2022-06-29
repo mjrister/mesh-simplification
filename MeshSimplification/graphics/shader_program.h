@@ -56,7 +56,7 @@ namespace qem {
 		ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
 
 		/** \brief Binds the shader program to the current OpenGL context. */
-		void Enable() const { glUseProgram(id_); }
+		void Enable() const noexcept { glUseProgram(id_); }
 
 		/**
 		 * \brief Sets a uniform variable in the shader program.
