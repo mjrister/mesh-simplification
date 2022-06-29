@@ -37,7 +37,7 @@ namespace qem {
 		[[nodiscard]] float Area() const noexcept { return area_; }
 
 		/** \brief Gets the face hash value. */
-		friend std::uint64_t hash_value(const Face& face) noexcept {
+		friend std::uint64_t hash_value(const Face& face) {
 			return hash_value(*face.V0(), *face.V1(), *face.V2());
 		}
 

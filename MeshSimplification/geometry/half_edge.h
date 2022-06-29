@@ -39,7 +39,7 @@ namespace qem {
 		void SetFace(const std::shared_ptr<qem::Face>& face) noexcept { face_ = face; }
 
 		/** \brief Gets the half-edge hash value. */
-		friend std::uint64_t hash_value(const HalfEdge& edge) noexcept { 
+		friend std::uint64_t hash_value(const HalfEdge& edge) {
 			return hash_value(*edge.Flip()->Vertex(), *edge.Vertex());
 		}
 
