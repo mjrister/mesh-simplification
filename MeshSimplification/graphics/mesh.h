@@ -44,19 +44,19 @@ namespace qem {
 		Mesh& operator=(Mesh&& mesh) noexcept;
 
 		/** \brief Gets the mesh vertex positions. */
-		[[nodiscard]] const std::vector<glm::vec3>& Positions() const noexcept { return positions_; }
+		[[nodiscard]] const std::vector<glm::vec3>& positions() const noexcept { return positions_; }
 
 		/** \brief Gets the mesh texture coordinates. */
-		[[nodiscard]] const std::vector<glm::vec2>& TextureCoordinates() const noexcept { return texture_coordinates_; }
+		[[nodiscard]] const std::vector<glm::vec2>& texture_coordinates() const noexcept { return texture_coordinates_; }
 
 		/** \brief Gets the mesh normals. */
-		[[nodiscard]] const std::vector<glm::vec3>& Normals() const noexcept { return normals_; }
+		[[nodiscard]] const std::vector<glm::vec3>& normals() const noexcept { return normals_; }
 
 		/** \brief Gets the mesh indices corresponding to a triangle face for every three consecutive integers. */
-		[[nodiscard]] const std::vector<GLuint>& Indices() const noexcept { return indices_; }
+		[[nodiscard]] const std::vector<GLuint>& indices() const noexcept { return indices_; }
 
 		/** \brief Gets the affine transform to apply to the mesh in model space. */
-		[[nodiscard]] const glm::mat4& ModelTransform() const noexcept { return model_transform_; }
+		[[nodiscard]] const glm::mat4& model_transform() const noexcept { return model_transform_; }
 
 		/** \brief Renders the mesh to the current render target. */
 		void Render() const noexcept {

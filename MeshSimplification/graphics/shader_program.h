@@ -86,7 +86,7 @@ namespace qem {
 		}
 
 	private:
-		// this is required as a workaround to ensure that static assertions in if constexpr statement are not ill-formed
+		// this is required as a workaround to ensure that static assertions in if constexpr statement are well-formed
 		template<typename> static constexpr std::false_type assert_false{};
 
 		// The following is needed to perform heterogeneous lookup in unordered containers. This is important because

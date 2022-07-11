@@ -92,7 +92,7 @@ namespace {
 			prev_aspect_ratio = aspect_ratio;
 		}
 
-		const auto model_view_transform = kCamera.view_transform * mesh.ModelTransform();
+		const auto model_view_transform = kCamera.view_transform * mesh.model_transform();
 		shader_program.SetUniform("model_view_transform", model_view_transform);
 	}
 
@@ -103,7 +103,7 @@ namespace {
 			if (prev_cursor_position) {
 				if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.Dimensions())) {
 					const auto& [view_rotation_axis, angle] = *axis_and_angle;
-					const auto view_model_inv = inverse(kCamera.view_transform * mesh.ModelTransform());
+					const auto view_model_inv = inverse(kCamera.view_transform * mesh.model_transform());
 					const auto model_rotation_axis = normalize(view_model_inv * vec4{view_rotation_axis, 0.f});
 					mesh.Rotate(model_rotation_axis, angle);
 				}
@@ -113,7 +113,7 @@ namespace {
 			if (prev_cursor_position) {
 				const auto translate_step = .2f * delta_time;
 				const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
-				const auto view_model_inv = inverse(kCamera.view_transform * mesh.ModelTransform());
+				const auto view_model_inv = inverse(kCamera.view_transform * mesh.model_transform());
 				mesh.Translate(view_model_inv * vec4{cursor_delta.x, -cursor_delta.y, 0.f, 0.f});
 			}
 			prev_cursor_position = cursor_position;

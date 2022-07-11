@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 
 #include <glm/vec3.hpp>
 
@@ -25,25 +26,25 @@ namespace qem {
 		Vertex(const std::uint64_t id, const glm::vec3& position) noexcept : id_{id}, position_{position} {}
 
 		/** \brief Gets the vertex ID. */
-		[[nodiscard]] std::uint64_t Id() const noexcept {
-			assert(id_ != kInvalidVertexId); // ensure ID is set before attempting to access
-			return id_;
+		[[nodiscard]] std::uint64_t id() const noexcept {
+			assert(id_.has_value());
+			return *id_;
 		}
 
 		/** \brief Sets the vertex ID. */
-		void SetId(const std::uint64_t id) noexcept { id_ = id; }
+		void set_id(const std::uint64_t id) noexcept { id_ = id; }
 
 		/** \brief Gets the vertex position. */
-		[[nodiscard]] const glm::vec3& Position() const noexcept { return position_; }
+		[[nodiscard]] const glm::vec3& position() const noexcept { return position_; }
 
 		/** \brief Gets the last created half-edge that points to this vertex. */
-		[[nodiscard]] std::shared_ptr<const HalfEdge> Edge() const { return std::shared_ptr{edge_}; }
+		[[nodiscard]] std::shared_ptr<const HalfEdge> edge() const { return std::shared_ptr{edge_}; }
 
 		/** \brief Sets the vertex half-edge. */
-		void SetEdge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
+		void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
 
 		/** \brief Gets the hash value for a vertex. */
-		friend std::uint64_t hash_value(const Vertex& v0) noexcept { return std::hash<std::uint64_t>{}(v0.id_); }
+		friend std::uint64_t hash_value(const Vertex& v0) noexcept { return std::hash<std::uint64_t>{}(*v0.id_); }
 
 		/** \brief Gets the hash value for two vertices. */
 		friend std::uint64_t hash_value(const Vertex& v0, const Vertex& v1) noexcept {
@@ -63,8 +64,7 @@ namespace qem {
 		}
 
 	private:
-		static constexpr auto kInvalidVertexId = std::numeric_limits<std::uint64_t>::max();
-		std::uint64_t id_ = kInvalidVertexId;
+		std::optional<std::uint64_t> id_;
 		glm::vec3 position_;
 		std::weak_ptr<const HalfEdge> edge_;
 	};

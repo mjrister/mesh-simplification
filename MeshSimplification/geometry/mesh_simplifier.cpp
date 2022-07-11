@@ -32,8 +32,8 @@ namespace {
 	 * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
 	 */
 	shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge01) {
-		const auto edge10 = const_pointer_cast<const HalfEdge>(edge01->Flip());
-		return edge01->Vertex()->Id() < edge10->Vertex()->Id() ? edge01 : edge10;
+		const auto edge10 = const_pointer_cast<const HalfEdge>(edge01->flip());
+		return edge01->vertex()->id() < edge10->vertex()->id() ? edge01 : edge10;
 	}
 
 	/**
@@ -43,14 +43,14 @@ namespace {
 	 */
 	mat4 ComputeQuadric(const Vertex& v0) {
 		mat4 quadric{0.f};
-		auto edgei0 = v0.Edge();
+		auto edgei0 = v0.edge();
 		do {
-			const auto& position = v0.Position();
-			const auto& normal = edgei0->Face()->Normal();
+			const auto& position = v0.position();
+			const auto& normal = edgei0->face()->normal();
 			const vec4 plane{normal, -dot(position, normal)};
 			quadric += outerProduct(plane, plane);
-			edgei0 = edgei0->Next()->Flip();
-		} while (edgei0 != v0.Edge());
+			edgei0 = edgei0->next()->flip();
+		} while (edgei0 != v0.edge());
 		return quadric;
 	}
 
@@ -63,11 +63,11 @@ namespace {
 	pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 		const HalfEdge& edge01, const unordered_map<uint64_t, mat4>& quadrics) {
 
-		const auto v0 = edge01.Flip()->Vertex();
-		const auto v1 = edge01.Vertex();
+		const auto v0 = edge01.flip()->vertex();
+		const auto v1 = edge01.vertex();
 
-		const auto& q0 = quadrics.at(v0->Id());
-		const auto& q1 = quadrics.at(v1->Id());
+		const auto& q0 = quadrics.at(v0->id());
+		const auto& q1 = quadrics.at(v1->id());
 		const auto q01 = q0 + q1;
 
 		const mat3 Q{q01};
@@ -77,7 +77,7 @@ namespace {
 		// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
 		if (constexpr auto kEpsilon = numeric_limits<float>::epsilon();
 			fabs(determinant(Q)) < kEpsilon || fabs(d) < kEpsilon) {
-			const auto position = (v0->Position() + v1->Position()) / 2.f;
+			const auto position = (v0->position() + v1->position()) / 2.f;
 			return {make_shared<Vertex>(position), 0.f};
 		}
 
@@ -96,19 +96,19 @@ namespace {
 	 * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
 	 */
 	bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
-		const auto v0 = edge01->Flip()->Vertex();
-		const auto v1_next = edge01->Next()->Vertex();
-		const auto v0_next = edge01->Flip()->Next()->Vertex();
+		const auto v0 = edge01->flip()->vertex();
+		const auto v1_next = edge01->next()->vertex();
+		const auto v0_next = edge01->flip()->next()->vertex();
 		unordered_map<uint64_t, shared_ptr<Vertex>> neighborhood;
 
-		for (auto iterator = edge01->Next(); iterator != edge01->Flip(); iterator = iterator->Flip()->Next()) {
-			if (const auto vertex = iterator->Vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
+		for (auto iterator = edge01->next(); iterator != edge01->flip(); iterator = iterator->flip()->next()) {
+			if (const auto vertex = iterator->vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
 				neighborhood.emplace(hash_value(*vertex), vertex);
 			}
 		}
 
-		for (auto iterator = edge01->Flip()->Next(); iterator != edge01; iterator = iterator->Flip()->Next()) {
-			if (const auto vertex = iterator->Vertex(); neighborhood.contains(hash_value(*vertex))) {
+		for (auto iterator = edge01->flip()->next(); iterator != edge01; iterator = iterator->flip()->next()) {
+			if (const auto vertex = iterator->vertex(); neighborhood.contains(hash_value(*vertex))) {
 				return true;
 			}
 		}
@@ -154,7 +154,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
 	// compute error quadrics for each vertex
 	unordered_map<uint64_t, mat4> quadrics;
-	for (const auto& [vertex_id, vertex] : half_edge_mesh.Vertices()) {
+	for (const auto& [vertex_id, vertex] : half_edge_mesh.vertices()) {
 		quadrics.emplace(vertex_id, ComputeQuadric(*vertex));
 	}
 
@@ -170,7 +170,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	unordered_map<uint64_t, shared_ptr<EdgeContraction>> valid_edges;
 
 	// compute the optimal vertex position that minimizes the cost of contracting each edge
-	for (const auto& edge : half_edge_mesh.Edges() | views::values) {
+	for (const auto& edge : half_edge_mesh.edges() | views::values) {
 		const auto min_edge = GetMinEdge(edge);
 
 		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
@@ -181,39 +181,39 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 	}
 
 	// stop mesh simplification if the number of triangles has been sufficiently reduced
-	const auto initial_face_count = static_cast<float>(half_edge_mesh.Faces().size());
+	const auto initial_face_count = static_cast<float>(half_edge_mesh.faces().size());
 	const auto is_simplified = [&, target_face_count = initial_face_count * (1.f - rate)]() noexcept {
-		return edge_contractions.empty() || static_cast<float>(half_edge_mesh.Faces().size()) < target_face_count;
+		return edge_contractions.empty() || static_cast<float>(half_edge_mesh.faces().size()) < target_face_count;
 	};
 
-	for (uint64_t next_vertex_id = half_edge_mesh.Vertices().size(); !is_simplified(); edge_contractions.pop()) {
+	for (uint64_t next_vertex_id = half_edge_mesh.vertices().size(); !is_simplified(); edge_contractions.pop()) {
 		const auto& edge_contraction = edge_contractions.top();
 		const auto& edge01 = edge_contraction->edge;
 
 		if (!edge_contraction->valid || WillDegenerate(edge01)) continue;
 
 		const auto& v_new = edge_contraction->vertex;
-		v_new->SetId(next_vertex_id++); // assign a new vertex ID when processing the next edge contraction
+		v_new->set_id(next_vertex_id++); // assign a new vertex ID when processing the next edge contraction
 
-		const auto v0 = edge01->Flip()->Vertex();
-		const auto v1 = edge01->Vertex();
+		const auto v0 = edge01->flip()->vertex();
+		const auto v1 = edge01->vertex();
 
 		// compute the error quadric for the new vertex
-		const auto& q0 = quadrics[v0->Id()];
-		const auto& q1 = quadrics[v1->Id()];
-		quadrics.emplace(v_new->Id(), q0 + q1);
+		const auto& q0 = quadrics[v0->id()];
+		const auto& q1 = quadrics[v1->id()];
+		quadrics.emplace(v_new->id(), q0 + q1);
 
 		// invalidate entries in the priority queue that will be removed during the edge contraction
 		for (const auto& vi : {v0, v1}) {
-			auto edgeji = vi->Edge();
+			auto edgeji = vi->edge();
 			do {
 				const auto min_edge = GetMinEdge(edgeji);
 				if (const auto iterator = valid_edges.find(hash_value(*min_edge)); iterator != valid_edges.end()) {
 					iterator->second->valid = false;
 					valid_edges.erase(iterator);
 				}
-				edgeji = edgeji->Next()->Flip();
-			} while (edgeji != vi->Edge());
+				edgeji = edgeji->next()->flip();
+			} while (edgeji != vi->edge());
 		}
 
 		// remove the edge from the mesh and attach incident edges to the new vertex
@@ -222,10 +222,10 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		// add new edge contraction candidates for edges affected by the edge contraction
 		unordered_map<uint64_t, shared_ptr<const HalfEdge>> visited_edges;
 		const auto& vi = v_new;
-		auto edgeji = vi->Edge();
+		auto edgeji = vi->edge();
 		do {
-			const auto vj = edgeji->Flip()->Vertex();
-			auto edgekj = vj->Edge();
+			const auto vj = edgeji->flip()->vertex();
+			auto edgekj = vj->edge();
 			do {
 				const auto min_edge = GetMinEdge(edgekj);
 				if (const auto min_edge_key = hash_value(*min_edge); !visited_edges.contains(min_edge_key)) {
@@ -238,16 +238,16 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 					edge_contractions.emplace(new_edge_contraction);
 					visited_edges.emplace(min_edge_key, min_edge);
 				}
-				edgekj = edgekj->Next()->Flip();
-			} while (edgekj != vj->Edge());
-			edgeji = edgeji->Next()->Flip();
-		} while (edgeji != vi->Edge());
+				edgekj = edgekj->next()->flip();
+			} while (edgekj != vj->edge());
+			edgeji = edgeji->next()->flip();
+		} while (edgeji != vi->edge());
 	}
 
 	cout << format(
 		"Mesh simplified from {} to {} triangles in {} seconds\n",
 		initial_face_count,
-		half_edge_mesh.Faces().size(),
+		half_edge_mesh.faces().size(),
 		chrono::duration<float>{chrono::high_resolution_clock::now() - start_time}.count());
 
 	return static_cast<Mesh>(half_edge_mesh);

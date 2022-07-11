@@ -32,13 +32,13 @@ namespace qem {
 		explicit operator Mesh() const;
 
 		/** \brief Gets a mapping of mesh vertices by ID. */
-		[[nodiscard]] const auto& Vertices() const noexcept { return vertices_; }
+		[[nodiscard]] const auto& vertices() const noexcept { return vertices_; }
 
 		/** \brief Gets a mapping of mesh half-edges by ID. */
-		[[nodiscard]] const auto& Edges() const noexcept { return edges_; }
+		[[nodiscard]] const auto& edges() const noexcept { return edges_; }
 
 		/** \brief Gets a mapping of mesh faces by ID. */
-		[[nodiscard]] const auto& Faces() const noexcept { return faces_; }
+		[[nodiscard]] const auto& faces() const noexcept { return faces_; }
 
 		/**
 		 * \brief Performs edge contraction.
