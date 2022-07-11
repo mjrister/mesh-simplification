@@ -44,7 +44,10 @@ namespace qem {
 		void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
 
 		/** \brief Gets the hash value for a vertex. */
-		friend std::uint64_t hash_value(const Vertex& v0) noexcept { return std::hash<std::uint64_t>{}(*v0.id_); }
+		friend std::uint64_t hash_value(const Vertex& v0) noexcept {
+			assert(v0.id_.has_value());
+			return std::hash<std::uint64_t>{}(*v0.id_);
+		}
 
 		/** \brief Gets the hash value for two vertices. */
 		friend std::uint64_t hash_value(const Vertex& v0, const Vertex& v1) noexcept {
