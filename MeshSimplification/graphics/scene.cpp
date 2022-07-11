@@ -117,7 +117,7 @@ namespace {
 				mesh.Translate(view_model_inv * vec4{cursor_delta.x, -cursor_delta.y, 0.f, 0.f});
 			}
 			prev_cursor_position = cursor_position;
-		} else if (prev_cursor_position.has_value()) {
+		} else if (prev_cursor_position) {
 			prev_cursor_position = nullopt;
 		}
 	}
