@@ -89,9 +89,9 @@ namespace {
 
 		if (const auto cursor_position = window.CursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			if (prev_cursor_position) {
-				const auto translate_step = .2f * delta_time;
-				const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
-				camera.Rotate(cursor_delta.x, -cursor_delta.y);
+				const auto rotation_step = .2f * delta_time;
+				const auto cursor_delta = rotation_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
+				camera.RotateBy(cursor_delta.x, cursor_delta.y);
 			}
 			prev_cursor_position = cursor_position;
 		} else if ( window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
@@ -110,7 +110,7 @@ namespace {
 
 Scene::Scene(Window* const window)
 	: window_{window},
-	  camera_{2.f},
+	  camera_{2.f, glm::half_pi<float>(), 0.f, glm::vec3{-.2f, .3f, 0.f}},
 	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
 	  mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 

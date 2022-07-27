@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 
 #include <glm/glm.hpp>
@@ -10,13 +11,15 @@ namespace qem {
 	class Camera {
 
 	public:
-		explicit Camera(const float radius, const float theta = 0.f, const float phi = 0.f) noexcept
-			: radius_{radius}, theta_{theta}, phi_{phi} {
-		}
+		Camera(const float radius, const float theta, const float phi, const glm::vec3& pivot) noexcept
+			: radius_{radius}, theta_{theta}, phi_{phi}, pivot_{pivot} {}
 
-		void Rotate(const float theta, const float phi) noexcept {
-			theta_ += theta;
-			phi_ += phi;
+		void RotateBy(const float alpha, const float beta) noexcept {
+			constexpr auto kEpsilon = std::numeric_limits<float>::epsilon();
+			constexpr auto kPhiMin = -glm::half_pi<float>() + kEpsilon;
+			constexpr auto kPhiMax = glm::half_pi<float>() - kEpsilon;
+			theta_ = std::fmodf(theta_ + alpha, glm::two_pi<float>());
+			phi_ = std::clamp(phi_ + beta, kPhiMin, kPhiMax);
 		}
 
 		[[nodiscard]] glm::mat4 GetViewTransform() const {
@@ -25,12 +28,12 @@ namespace qem {
 				radius_ * std::sin(-phi_),
 				radius_ * std::sin(theta_) * std::cos(-phi_)
 			};
-			return lookAt(look_from, kLookAt, kWorldUp);
+			constexpr glm::vec3 kWorldUp{0.f, 1.f, 0.f};
+			return glm::lookAt(look_from + pivot_, pivot_, kWorldUp);
 		}
 
 	private:
-		static constexpr glm::vec3 kLookAt{0.f};
-		static constexpr glm::vec3 kWorldUp{0.f, 1.f, 0.f};
 		float radius_, theta_, phi_;
+		glm::vec3 pivot_;
 	};
 }
