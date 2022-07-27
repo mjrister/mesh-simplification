@@ -16,22 +16,6 @@ using namespace glm;
 using namespace qem;
 using namespace std;
 
-class ArcCamera {
-
-public:
-	ArcCamera() noexcept = default;
-
-	[[nodiscard]] glm::mat4 GetViewTransform() const {
-		return glm::lookAt(look_from_, look_at_, world_up_);
-	}
-
-private:
-	glm::vec3 look_from_{0.f, .4f, 2.f};
-	glm::vec3 look_at_{0.f};
-	glm::vec3 world_up_{0.f, 1.f, 0.f};
-
-} camera;
-
 namespace {
 
 	struct ViewFrustrum {
@@ -86,7 +70,7 @@ namespace {
 		}
 	}
 
-	void SetViewTransforms(ShaderProgram& shader_program, const Mesh& mesh, const Window& window) {
+	void SetViewTransforms(ShaderProgram& shader_program, const Mesh& mesh, const Window& window, const Camera& camera) {
 		static auto prev_aspect_ratio = 0.f;
 
 		if (const auto aspect_ratio = window.AspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.f) {
@@ -100,17 +84,14 @@ namespace {
 		shader_program.SetUniform("model_view_transform", model_view_transform);
 	}
 
-	void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_time) {
+	void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_time, Camera& camera) {
 		static optional<dvec2> prev_cursor_position;
 
 		if (const auto cursor_position = window.CursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			if (prev_cursor_position) {
-				/*if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.Dimensions())) {
-					const auto& [view_rotation_axis, angle] = *axis_and_angle;
-					const auto view_model_inv = inverse(camera.GetViewTransform() * mesh.model_transform());
-					const auto model_rotation_axis = normalize(view_model_inv * vec4{view_rotation_axis, 0.f});
-					mesh.Rotate(model_rotation_axis, angle);
-				}*/
+				const auto translate_step = .2f * delta_time;
+				const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
+				camera.Rotate(cursor_delta.x, -cursor_delta.y);
 			}
 			prev_cursor_position = cursor_position;
 		} else if ( window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
@@ -129,6 +110,7 @@ namespace {
 
 Scene::Scene(Window* const window)
 	: window_{window},
+	  camera_{2.f},
 	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
 	  mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
 
@@ -148,7 +130,6 @@ Scene::Scene(Window* const window)
 	SetMaterial(shader_program_);
 	SetPointLights(shader_program_);
 
-	mesh_.Translate(vec3{.2f, -.25f, 0.f});
 	mesh_.Scale(vec3{.35f});
 }
 
@@ -156,7 +137,7 @@ void Scene::Render(const float delta_time) {
 	glClearColor(.1f, .1f, .1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	HandleContinuousInput(*window_, mesh_, delta_time);
-	SetViewTransforms(shader_program_, mesh_, *window_);
+	HandleContinuousInput(*window_, mesh_, delta_time, camera_);
+	SetViewTransforms(shader_program_, mesh_, *window_, camera_);
 	mesh_.Render();
 }
