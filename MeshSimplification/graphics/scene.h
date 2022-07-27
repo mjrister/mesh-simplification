@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graphics/camera.h"
 #include "graphics/mesh.h"
 #include "graphics/shader_program.h"
 
@@ -24,6 +25,7 @@ namespace qem {
 
 	private:
 		Window* window_;
+		Camera camera_;
 		ShaderProgram shader_program_;
 		Mesh mesh_;
 	};

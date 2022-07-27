@@ -73,6 +73,9 @@
     <ClInclude Include="graphics\window.h">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\camera.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\mesh_fragment.glsl">
