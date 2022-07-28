@@ -41,7 +41,7 @@ namespace qem {
 
 		/**
 		 * \brief Constructs a view transformation matrix.
-		 * \return A matrix that can be used to transform a position into the camera's frame of reference.
+		 * \return A matrix representing the camera's frame of reference.
 		 */
 		[[nodiscard]] glm::mat4 GetViewTransform() const {
 			const auto cos_phi = std::cos(phi_);
