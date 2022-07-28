@@ -6,7 +6,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "geometry/mesh_simplifier.h"
-#include "graphics/arcball.h"
 #include "graphics/material.h"
 #include "graphics/obj_loader.h"
 #include "graphics/shader_program.h"
@@ -70,7 +69,7 @@ namespace {
 		}
 	}
 
-	void SetViewTransforms(ShaderProgram& shader_program, const Mesh& mesh, const Window& window, const Camera& camera) {
+	void SetViewTransforms(const Window& window, const Camera& camera, const Mesh& mesh, ShaderProgram& shader_program) {
 		static auto prev_aspect_ratio = 0.f;
 
 		if (const auto aspect_ratio = window.AspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.f) {
@@ -84,17 +83,17 @@ namespace {
 		shader_program.SetUniform("model_view_transform", model_view_transform);
 	}
 
-	void HandleContinuousInput(const Window& window, Mesh& mesh, const float delta_time, Camera& camera) {
+	void HandleContinuousInput(const Window& window, Camera& camera, Mesh& mesh, const float delta_time) {
 		static optional<dvec2> prev_cursor_position;
 
 		if (const auto cursor_position = window.CursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			if (prev_cursor_position) {
 				const auto rotation_step = .2f * delta_time;
 				const auto cursor_delta = rotation_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
-				camera.RotateBy(-cursor_delta.x, cursor_delta.y);
+				camera.RotateBy(-cursor_delta.x, -cursor_delta.y);
 			}
 			prev_cursor_position = cursor_position;
-		} else if ( window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+		} else if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
 			if (prev_cursor_position) {
 				const auto translate_step = .2f * delta_time;
 				const auto cursor_delta = translate_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
@@ -111,8 +110,8 @@ namespace {
 Scene::Scene(Window* const window)
 	: window_{window},
 	  camera_{vec3{-.2f, .3f, 0.f}, 2.f, 0.f, 0.f},
-	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"},
-	  mesh_{obj_loader::LoadMesh("models/bunny.obj")} {
+	  mesh_{obj_loader::LoadMesh("models/bunny.obj")},
+	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"} {
 
 	window_->OnKeyPress([this](const auto key_code) {
 		if (key_code == GLFW_KEY_S) {
@@ -137,7 +136,7 @@ void Scene::Render(const float delta_time) {
 	glClearColor(.1f, .1f, .1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	HandleContinuousInput(*window_, mesh_, delta_time, camera_);
-	SetViewTransforms(shader_program_, mesh_, *window_, camera_);
+	HandleContinuousInput(*window_, camera_, mesh_, delta_time);
+	SetViewTransforms(*window_, camera_, mesh_, shader_program_);
 	mesh_.Render();
 }

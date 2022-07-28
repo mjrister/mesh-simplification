@@ -26,7 +26,7 @@ namespace qem {
 	private:
 		Window* window_;
 		Camera camera_;
-		ShaderProgram shader_program_;
 		Mesh mesh_;
+		ShaderProgram shader_program_;
 	};
 }

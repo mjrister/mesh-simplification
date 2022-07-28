@@ -228,7 +228,6 @@
   <ItemGroup>
     <ClCompile Include="geometry\face.cpp" />
     <ClCompile Include="geometry\half_edge_mesh.cpp" />
-    <ClCompile Include="graphics\arcball.cpp" />
     <ClCompile Include="graphics\mesh.cpp" />
     <ClCompile Include="graphics\obj_loader.cpp" />
     <ClCompile Include="graphics\shader_program.cpp" />
@@ -242,7 +241,6 @@
     <ClInclude Include="graphics\camera.h" />
     <ClInclude Include="geometry\face.h" />
     <ClInclude Include="geometry\mesh_simplifier.h" />
-    <ClInclude Include="graphics\arcball.h" />
     <ClInclude Include="graphics\texture2d.h" />
     <ClInclude Include="graphics\material.h" />
     <ClInclude Include="geometry\half_edge.h" />

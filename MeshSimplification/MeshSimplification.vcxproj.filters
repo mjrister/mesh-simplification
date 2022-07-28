@@ -14,9 +14,6 @@
     <ClCompile Include="graphics\obj_loader.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\arcball.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="geometry\face.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
@@ -47,9 +44,6 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\material.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\arcball.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="geometry\vertex.h">
