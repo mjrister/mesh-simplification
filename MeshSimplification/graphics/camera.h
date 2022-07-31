@@ -55,7 +55,7 @@ namespace qem {
 
 	private:
 		static constexpr auto kPhiMin = -glm::half_pi<float>() + std::numeric_limits<float>::epsilon();
-		static constexpr auto kPhiMax = glm::half_pi<float>() + std::numeric_limits<float>::epsilon();
+		static constexpr auto kPhiMax = glm::half_pi<float>() - std::numeric_limits<float>::epsilon();
 		static constexpr glm::vec3 kWorldUp{0.f, 1.f, 0.f};
 		glm::vec3 target;
 		float radius_, theta_, phi_;
