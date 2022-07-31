@@ -90,7 +90,7 @@ namespace {
 			if (prev_cursor_position) {
 				const auto rotation_step = .2f * delta_time;
 				const auto cursor_delta = rotation_step * static_cast<vec2>(cursor_position - *prev_cursor_position);
-				camera.RotateBy(-cursor_delta.x, -cursor_delta.y);
+				camera.Rotate(-cursor_delta.x, -cursor_delta.y);
 			}
 			prev_cursor_position = cursor_position;
 		} else if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {

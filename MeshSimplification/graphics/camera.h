@@ -11,10 +11,10 @@ namespace qem {
 
 	/**
 	 * \brief Represents an arc camera that rotates around a central point.
-	 * \details The camera uses spherical polar coordinates to specify the position of the camera. However, the
-	 *          conventions used in this class deviate from standard polar coordinates in two important ways. First, to
-	 *          ensure consistency with right handed coordinate system conventions, positive rotation values are counter
-	 *          clockwise. Second, horizontal rotations are offset from the positive z-axis rather than the x-axis.
+	 * \details Internally, the camera uses spherical polar coordinates to specify the position of the camera. However,
+	 *          it deviates from standard polar coordinate conventions by initializing the camera to look down the -z
+	 *			axis when no rotations are present resulting in any horizontal or vertical rotations being offset from
+	 *			the +z-axis.
 	 */
 	class Camera {
 
@@ -34,7 +34,7 @@ namespace qem {
 		 * \param theta The horizontal rotation in radians.
 		 * \param phi The vertical rotation in radians.
 		 */
-		void RotateBy(const float theta, const float phi) {
+		void Rotate(const float theta, const float phi) {
 			theta_ = std::fmod(theta_ + theta, glm::two_pi<float>());
 			phi_ = std::clamp(phi_ + phi, kPhiMin, kPhiMax);
 		}
