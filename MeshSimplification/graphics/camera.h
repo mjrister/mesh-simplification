@@ -26,7 +26,7 @@ namespace qem {
 		 * \param theta The initial horizontal rotation in radians.
 		 * \param phi The initial vertical rotation in radians.
 		 */
-		Camera(const glm::vec3& target, const float radius, const float theta, const float phi) noexcept
+		constexpr Camera(const glm::vec3& target, const float radius, const float theta, const float phi) noexcept
 			: target{target}, radius_{radius}, theta_{theta}, phi_{phi}  {}
 
 		/**
@@ -36,7 +36,7 @@ namespace qem {
 		 */
 		void RotateBy(const float theta, const float phi) {
 			theta_ = std::fmod(theta_ + theta, glm::two_pi<float>());
-			phi_ = std::clamp(phi_ + phi, -glm::half_pi<float>() + kEpsilon, glm::half_pi<float>() - kEpsilon);
+			phi_ = std::clamp(phi_ + phi, kPhiMin, kPhiMax);
 		}
 
 		/**
@@ -54,7 +54,8 @@ namespace qem {
 		}
 
 	private:
-		static constexpr auto kEpsilon = std::numeric_limits<float>::epsilon();
+		static constexpr auto kPhiMin = -glm::half_pi<float>() + std::numeric_limits<float>::epsilon();
+		static constexpr auto kPhiMax = glm::half_pi<float>() + std::numeric_limits<float>::epsilon();
 		static constexpr glm::vec3 kWorldUp{0.f, 1.f, 0.f};
 		glm::vec3 target;
 		float radius_, theta_, phi_;
