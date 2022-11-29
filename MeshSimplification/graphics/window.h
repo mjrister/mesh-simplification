@@ -2,7 +2,6 @@
 
 #include <concepts>
 #include <functional>
-#include <string_view>
 #include <utility>
 
 #include <GL/gl3w.h>
@@ -21,17 +20,15 @@ namespace qem {
 		 * \param window_dimensions The window width and height.
 		 * \param opengl_version The OpenGL major and minor version.
 		 */
-		Window(
-			std::string_view title,
-			const std::pair<const int, const int>& window_dimensions,
-			const std::pair<const int, const int>& opengl_version);
-		~Window();
+		Window(const char* title, const std::pair<int, int>& window_dimensions, const std::pair<int, int>& opengl_version);
 
 		Window(const Window&) = delete;
 		Window& operator=(const Window&) = delete;
 
 		Window(Window&&) noexcept = delete;
 		Window& operator=(Window&&) noexcept = delete;
+
+		~Window();
 
 		/**
 		 * \brief Sets a callback to be invoked when a discrete key press is detected.

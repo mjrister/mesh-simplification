@@ -95,22 +95,21 @@ namespace {
 	}
 }
 
-Window::Window(
-	const string_view title,
-	const pair<const int, const int>& window_dimensions,
-	const pair<const int, const int>& opengl_version) {
+Window::Window(const char* const title, const pair<int, int>& window_dimensions, const pair<int, int>& opengl_version) {
 
 	InitializeGlfw(opengl_version);
 
 	const auto [width, height] = window_dimensions;
-	window_ = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
+	window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (!window_) throw runtime_error{"Window creation failed"};
 
 	glfwSetWindowUserPointer(window_, this);
 	glfwMakeContextCurrent(window_);
-	glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* /*window*/, const int width, const int height) {
-		glViewport(0, 0, width, height);
+
+	glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* /*window*/, const int new_width, const int new_height) {
+		glViewport(0, 0, new_width, new_height);
 	});
+
 	glfwSetKeyCallback(
 		window_,
 		[](GLFWwindow* const window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) {
@@ -122,6 +121,7 @@ Window::Window(
 				if (self && self->on_key_press_) self->on_key_press_(key);
 			}
 		});
+
 	glfwSetScrollCallback(window_, [](GLFWwindow* const window, const double x_offset, const double y_offset) {
 		const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
 		if (self && self->on_scroll_) self->on_scroll_(x_offset, y_offset);
