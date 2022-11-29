@@ -1,9 +1,10 @@
-#include "graphics/texture2d.h"
+#include "graphics/texture.h"
 
 #include <format>
 #include <stdexcept>
 
-#include "stb_image.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 using namespace qem;
 using namespace std;
