@@ -11,10 +11,9 @@ namespace qem {
 
 	/**
 	 * \brief Represents an arc camera that rotates around a central point.
-	 * \details Internally, the camera uses spherical polar coordinates to specify the position of the camera. However,
-	 *          it deviates from standard polar coordinate conventions by initializing the camera to look down the -z
-	 *			axis when no rotations are present resulting in any horizontal or vertical rotations being offset from
-	 *			the +z-axis.
+	 * \details The camera uses spherical polar coordinates to specify the position of the camera. However, it deviates
+	 *          from standard polar coordinate conventions by initializing the camera to look down the -z-axis when no
+	 *          rotations are present resulting in any horizontal or vertical rotations being offset from the +z-axis.
 	 */
 	class Camera {
 
@@ -27,7 +26,7 @@ namespace qem {
 		 * \param phi The initial vertical rotation in radians.
 		 */
 		constexpr Camera(const glm::vec3& target, const float radius, const float theta, const float phi) noexcept
-			: target{target}, radius_{radius}, theta_{theta}, phi_{phi}  {}
+			: target_{target}, radius_{radius}, theta_{theta}, phi_{phi} {}
 
 		/**
 		 * \brief Rotates the camera by the specified amount.
@@ -35,8 +34,8 @@ namespace qem {
 		 * \param phi The vertical rotation in radians.
 		 */
 		void Rotate(const float theta, const float phi) {
-			theta_ = std::fmod(theta_ + theta, glm::two_pi<float>());
-			phi_ = std::clamp(phi_ + phi, kPhiMin, kPhiMax);
+			theta_ = std::fmod(theta_ - theta, glm::two_pi<float>());
+			phi_ = std::clamp(phi_ - phi, kPhiMin, kPhiMax);
 		}
 
 		/**
@@ -50,14 +49,14 @@ namespace qem {
 				radius_ * std::sin(-phi_),
 				radius_ * std::cos(theta_) * cos_phi
 			};
-			return glm::lookAt(look_from + target, target, kWorldUp);
+			return glm::lookAt(look_from + target_, target_, kWorldUp);
 		}
 
 	private:
 		static constexpr auto kPhiMin = -glm::half_pi<float>() + std::numeric_limits<float>::epsilon();
 		static constexpr auto kPhiMax = glm::half_pi<float>() - std::numeric_limits<float>::epsilon();
-		static constexpr glm::vec3 kWorldUp{0.f, 1.f, 0.f};
-		glm::vec3 target;
+		static constexpr glm::vec3 kWorldUp{0.0f, 1.0f, 0.0f};
+		glm::vec3 target_;
 		float radius_, theta_, phi_;
 	};
 }

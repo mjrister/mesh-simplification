@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <functional>
 #include <string_view>
 #include <utility>
@@ -36,20 +37,24 @@ namespace qem {
 		 * \brief Sets a callback to be invoked when a discrete key press is detected.
 		 * \param on_key_press The callback to be invoked on key press parameterized by the active key code.
 		 */
-		void OnKeyPress(const std::function<void(int)>& on_key_press) { on_key_press_ = on_key_press; }
+		void OnKeyPress(std::invocable<int> auto&& on_key_press) {
+			on_key_press_ = std::forward<decltype(on_key_press_)>(on_key_press);
+		}
 
 		/**
 		 * \brief Sets a callback to be invoked when a scroll event is detected.
 		 * \param on_scroll A callback to be invoked on scroll parameterized by x/y scroll offsets (respectively).
 		 */
-		void OnScroll(const std::function<void(double, double)>& on_scroll) { on_scroll_ = on_scroll; }
+		void OnScroll(std::invocable<double, double> auto&& on_scroll) {
+			on_scroll_ = std::forward<decltype(on_scroll_)>(on_scroll);
+		}
 
 		/**
 		 * \brief Gets the window dimensions.
 		 * \return A pair representing the window's width and height.
 		 */
 		[[nodiscard]] std::pair<int, int> Dimensions() const noexcept {
-			int width, height;
+			int width{}, height{};
 			glfwGetWindowSize(window_, &width, &height);
 			return {width, height};
 		}
@@ -68,7 +73,7 @@ namespace qem {
 		 * \return The (x,y) coordinates of the cursor position in the window.
 		 */
 		[[nodiscard]] glm::dvec2 CursorPosition() const noexcept {
-			double x, y;
+			double x{}, y{};
 			glfwGetCursorPos(window_, &x, &y);
 			return {x, y};
 		}
@@ -96,7 +101,7 @@ namespace qem {
 		 * \return \c true if \p button is pressed, otherwise \c false.
 		 */
 		[[nodiscard]] bool IsMouseButtonPressed(const int button_code) const noexcept {
-			return glfwGetMouseButton(window_, button_code);
+			return glfwGetMouseButton(window_, button_code) == GLFW_PRESS;
 		}
 
 		/** \brief Updates the window for the next iteration of main render loop. */

@@ -18,6 +18,6 @@ void main() {
 	// and translations (which are orthogonal matrices with the property that their inverse is equal to their transpose) in
 	// addition to uniform unscaling which is undone when the transformed normal is renomalized.
 	vertex.normal = normalize(mat3(model_view_transform) * normal);
-	vertex.position = model_view_transform * vec4(position, 1.);
+	vertex.position = model_view_transform * vec4(position, 1.0);
 	gl_Position = projection_transform * vertex.position;
 }

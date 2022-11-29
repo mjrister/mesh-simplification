@@ -39,8 +39,8 @@ Face::Face(const shared_ptr<const Vertex>& v0, const shared_ptr<const Vertex>& v
 	const auto edge02 = v2_.lock()->position() - v0_.lock()->position();
 	const auto normal = cross(edge01, edge02);
 	const auto normal_magnitude = length(normal);
-	assert(normal_magnitude != 0.f); // ensure face vertices are not collinear
+	assert(normal_magnitude != 0.0f); // ensure face vertices are not collinear
 
 	normal_ = normal / normal_magnitude;
-	area_ = .5f * normal_magnitude;
+	area_ = 0.5f * normal_magnitude;
 }

@@ -1,5 +1,7 @@
 #include "shader_program.h"
 
+#include <filesystem>
+#include <format>
 #include <fstream>
 #include <stdexcept>
 #include <vector>
@@ -14,17 +16,17 @@ namespace {
 	 * \param filepath The filepath to load contents from.
 	 * \return A string containing the file contents.
 	 */
-	string Read(const string_view filepath) {
+	std::string ReadFile(const std::filesystem::path& filepath) {
 
-		if (ifstream ifs{filepath.data(), ios::ate | ios::binary}) {
-			string source;
-			source.reserve(static_cast<std::size_t>(ifs.tellg()));
-			ifs.seekg(0, ios::beg);
-			source.assign(istreambuf_iterator<char>{ifs}, istreambuf_iterator<char>{});
+		if (std::ifstream ifs{filepath, std::ios::ate | std::ios::binary}) {
+			const auto size = static_cast<std::size_t>(ifs.tellg());
+			std::string source(size, '\0');
+			ifs.seekg(0, std::ios::beg);
+			ifs.read(source.data(), size);
 			return source;
 		}
 
-		throw runtime_error{format("Unable to open {}", filepath)};
+		throw std::runtime_error{std::format("Unable to open {}", filepath.generic_string())};
 	}
 
 	/**
@@ -77,8 +79,8 @@ ShaderProgram::Shader::Shader(const GLenum shader_type, const GLchar* const shad
 ShaderProgram::ShaderProgram(
 	const string_view vertex_shader_filepath, const string_view fragment_shader_filepath)
 	: id_{glCreateProgram()},
-	  vertex_shader_{GL_VERTEX_SHADER, Read(vertex_shader_filepath).c_str()},
-	  fragment_shader_{GL_FRAGMENT_SHADER, Read(fragment_shader_filepath).c_str()} {
+	  vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath).c_str()},
+	  fragment_shader_{GL_FRAGMENT_SHADER, ReadFile(fragment_shader_filepath).c_str()} {
 
 	if (!id_) throw runtime_error{"Shader program creation failed"};
 

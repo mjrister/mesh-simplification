@@ -173,7 +173,7 @@ namespace {
 	 * \return The weighted vertex normal.
 	 */
 	vec3 ComputeWeightedVertexNormal(const Vertex& v0) {
-		vec3 normal{0.f};
+		vec3 normal{0.0f};
 		auto edgei0 = v0.edge();
 		do {
 			const auto& face = edgei0->face();

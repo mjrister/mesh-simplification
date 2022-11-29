@@ -34,7 +34,7 @@ namespace qem {
 			std::span<const glm::vec2> texture_coordinates = {},
 			std::span<const glm::vec3> normals = {},
 			std::span<const GLuint> indices = {},
-			const glm::mat4& model_transform = glm::mat4{1.f});
+			const glm::mat4& model_transform = glm::mat4{1.0f});
 		~Mesh();
 
 		Mesh(const Mesh&) = delete;

@@ -8,9 +8,6 @@
     <ClCompile Include="graphics\shader_program.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\texture2d.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="graphics\obj_loader.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -38,9 +35,6 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\obj_loader.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\texture2d.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\material.h">
@@ -94,10 +88,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="models\bunny.obj">
+    <Object Include="models\buddah.obj">
       <Filter>models</Filter>
     </Object>
-    <Object Include="models\buddha.obj">
+    <Object Include="models\bunny.obj">
       <Filter>models</Filter>
     </Object>
   </ItemGroup>

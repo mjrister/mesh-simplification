@@ -87,7 +87,7 @@ namespace qem {
 
 	private:
 		// this is required as a workaround to ensure that static assertions in if constexpr statement are well-formed
-		template<typename> static constexpr std::false_type assert_false{};
+		template <typename> static constexpr std::false_type assert_false{};
 
 		// The following is needed to perform heterogeneous lookup in unordered containers. This is important because
 		// each uniform location query is performed using a string_view, but stored as a string. Without heterogeneous
@@ -95,6 +95,7 @@ namespace qem {
 		// degrade performance on the critical rendering path.
 		struct string_view_hash {
 			using is_transparent = void;
+
 			std::size_t operator()(const std::string_view value) const noexcept {
 				return std::hash<std::string_view>{}(value);
 			}

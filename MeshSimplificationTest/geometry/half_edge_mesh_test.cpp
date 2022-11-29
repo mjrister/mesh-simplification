@@ -15,26 +15,26 @@ namespace {
 
 	protected:
 		HalfEdgeMeshTest()
-			: v0_{make_shared<Vertex>(0, vec3{-1.f, -1.f, 0.f})},
-			  v1_{make_shared<Vertex>(1, vec3{0.f, .5f, 0.f})},
-			  v2_{make_shared<Vertex>(1, vec3{1.f, -1.f, 0.f})},
+			: v0_{make_shared<Vertex>(0, vec3{-1.0f, -1.0f, 0.0f})},
+			  v1_{make_shared<Vertex>(1, vec3{0.0f, 0.5f, 0.0f})},
+			  v2_{make_shared<Vertex>(2, vec3{1.0f, -1.0f, 0.0f})},
 			  edge01_{make_shared<HalfEdge>(v1_)},
 			  edge10_{make_shared<HalfEdge>(v0_)},
 			  face012_{make_shared<Face>(v0_, v1_, v2_)},
 			  vertices_{
-				  {hash_value(*v0_), v0_},
-				  {hash_value(*v1_), v1_},
-				  {hash_value(*v2_), v2_}
-			  },
-			  edges_{
-				  {hash_value(*edge01_), edge01_},
-				  {hash_value(*edge10_), edge10_}
+				  {v0_->id(), v0_},
+				  {v1_->id(), v1_},
+				  {v2_->id(), v2_},
 			  },
 			  faces_{
 				  {hash_value(*face012_), face012_}
 			  } {
 			edge01_->set_flip(edge10_);
 			edge10_->set_flip(edge01_);
+			edges_ = unordered_map<uint64_t, shared_ptr<HalfEdge>>{
+				{hash_value(*edge01_), edge01_},
+				{hash_value(*edge10_), edge10_}
+			};
 		}
 
 		shared_ptr<Vertex> v0_, v1_, v2_;
@@ -48,16 +48,16 @@ namespace {
 	Mesh MakeMesh() {
 
 		const vector<vec3> positions{
-			{1.f, 0.f, 0.f},   // v0
-			{2.f, 0.f, 0.f},   // v1
-			{.5f, -1.f, 0.f},  // v2
-			{1.5f, -1.f, 0.f}, // v3
-			{2.5f, -1.f, 0.f}, // v4
-			{3.f, 0.f, 0.f},   // v5
-			{2.5f, 1.f, 0.f},  // v6
-			{1.5f, 1.f, 0.f},  // v7
-			{.5f, 1.f, 0.f},   // v8
-			{0.f, 0.f, 0.f}    // v9
+			{1.0f, 0.0f, 0.0f}, // v0
+			{2.0f, 0.0f, 0.0f}, // v1
+			{0.5f, -1.0f, 0.0f}, // v2
+			{1.5f, -1.0f, 0.0f}, // v3
+			{2.5f, -1.0f, 0.0f}, // v4
+			{3.0f, 0.0f, 0.0f}, // v5
+			{2.5f, 1.0f, 0.0f}, // v6
+			{1.5f, 1.0f, 0.0f}, // v7
+			{0.5f, 1.0f, 0.0f}, // v8
+			{0.0f, 0.0f, 0.0f} // v9
 		};
 
 		const vector<GLuint> indices{
@@ -70,10 +70,10 @@ namespace {
 			1, 3, 4, // f6
 			1, 4, 5, // f7
 			1, 5, 6, // f8
-			1, 6, 7  // f9
+			1, 6, 7 // f9
 		};
 
-		return Mesh{positions, {}, vector(10, vec3{0.f, 0.f, 1.f}), indices};
+		return Mesh{positions, {}, vector(10, vec3{0.0f, 0.0f, 1.0f}), indices};
 	}
 
 	HalfEdgeMesh MakeHalfEdgeMesh() {
@@ -166,7 +166,7 @@ namespace {
 		const auto& v0 = vertices.at(0);
 		const auto& v1 = vertices.at(1);
 		const auto& edge01 = edges.at(hash_value(*v0, *v1));
-		const Vertex v_new{half_edge_mesh.vertices().size(), (v0->position() + v1->position()) / 2.f};
+		const Vertex v_new{half_edge_mesh.vertices().size(), (v0->position() + v1->position()) / 2.0f};
 
 		half_edge_mesh.Contract(*edge01, make_shared<Vertex>(v_new));
 
@@ -204,11 +204,7 @@ namespace {
 	}
 
 	TEST_F(HalfEdgeMeshTest, TestDeleteHalfEdge) {
-
 		DeleteEdge(*edge01_, edges_);
-		ASSERT_EQ(edges_.size(), 1);
-
-		DeleteEdge(*edge10_, edges_);
 		ASSERT_TRUE(edges_.empty());
 	}
 

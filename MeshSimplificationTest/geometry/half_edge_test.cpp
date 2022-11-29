@@ -14,8 +14,8 @@ namespace {
 
 	protected:
 		HalfEdgeTest()
-			: v0_{make_shared<Vertex>(0, vec3{1.f})},
-			  v1_{make_shared<Vertex>(1, vec3{2.f, 0.f, 0.f})},
+			: v0_{make_shared<Vertex>(0, vec3{1.0f})},
+			  v1_{make_shared<Vertex>(1, vec3{2.0f, 0.0f, 0.0f})},
 			  edge01_{make_shared<HalfEdge>(v1_)},
 			  edge10_{make_shared<HalfEdge>(v0_)} {
 			edge01_->set_flip(edge10_);

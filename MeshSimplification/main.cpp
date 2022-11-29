@@ -17,14 +17,13 @@ int main() {
 		Window window{"Mesh Simplification", kWindowDimensions, kOpenGlVersion};
 		Scene scene{&window};
 
-		for (auto previous_time = static_cast<float>(glfwGetTime()), delta_time = 0.f; !window.IsClosed();) {
+		for (auto previous_time = static_cast<float>(glfwGetTime()), delta_time = 0.0f; !window.IsClosed();) {
 			const auto current_time = static_cast<float>(glfwGetTime());
 			delta_time = current_time - previous_time;
 			previous_time = current_time;
 			scene.Render(delta_time);
 			window.Update();
 		}
-
 	} catch (const exception& e) {
 		cerr << e.what() << endl;
 		return EXIT_FAILURE;

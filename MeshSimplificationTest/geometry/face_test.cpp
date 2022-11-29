@@ -12,9 +12,9 @@ using namespace std;
 namespace {
 
 	array<shared_ptr<Vertex>, 3> MakeTriangle() {
-		const auto v0 = make_shared<Vertex>(0, vec3{-1.f, -1.f, 0.f});
-		const auto v1 = make_shared<Vertex>(1, vec3{1.f, -1.f, 0.f});
-		const auto v2 = make_shared<Vertex>(2, vec3{0.f, .5f, 0.f});
+		const auto v0 = make_shared<Vertex>(0, vec3{-1.0f, -1.0f, 0.0f});
+		const auto v1 = make_shared<Vertex>(1, vec3{1.0f, -1.0f, 0.0f});
+		const auto v2 = make_shared<Vertex>(2, vec3{0.0f, 0.5f, 0.0f});
 		return {v0, v1, v2};
 	}
 
@@ -47,21 +47,21 @@ namespace {
 	TEST(FaceTest, TestGetFaceNormal) {
 		const auto [v0, v1, v2] = MakeTriangle();
 		const Face face012{v0, v1, v2};
-		ASSERT_EQ((vec3{0.f, 0.f, 1.f}), face012.normal());
+		ASSERT_EQ((vec3{0.0f, 0.0f, 1.0f}), face012.normal());
 	}
 
 	TEST(FaceTest, TestEqualFacesProduceTheSameHashValue) {
-		const auto v0 = make_shared<Vertex>(0, vec3{-1.f, -1.f, 0.f});
-		const auto v1 = make_shared<Vertex>(1, vec3{0.f, .5f, 0.f});
-		const auto v2 = make_shared<Vertex>(2, vec3{1.f, -1.f, 0.f});
+		const auto v0 = make_shared<Vertex>(0, vec3{-1.0f, -1.0f, 0.0f});
+		const auto v1 = make_shared<Vertex>(1, vec3{0.0f, 0.5f, 0.0f});
+		const auto v2 = make_shared<Vertex>(2, vec3{1.0f, -1.0f, 0.0f});
 		const Face face012{v0, v1, v2};
 		ASSERT_EQ(hash_value(face012), hash_value(Face{face012}));
 	}
 
 	TEST(FaceTest, TestThreeVerticesProduceSameHashValueAsFace) {
-		const auto v0 = make_shared<Vertex>(0, vec3{-1.f, -1.f, 0.f});
-		const auto v1 = make_shared<Vertex>(1, vec3{0.f, .5f, 0.f});
-		const auto v2 = make_shared<Vertex>(2, vec3{1.f, -1.f, 0.f});
+		const auto v0 = make_shared<Vertex>(0, vec3{-1.0f, -1.0f, 0.0f});
+		const auto v1 = make_shared<Vertex>(1, vec3{0.0f, 0.5f, 0.0f});
+		const auto v2 = make_shared<Vertex>(2, vec3{1.0f, -1.0f, 0.0f});
 		const Face face012{v0, v1, v2};
 		ASSERT_EQ(hash_value(*v0, *v1, *v2), hash_value(face012));
 	}
@@ -69,9 +69,9 @@ namespace {
 #ifdef _DEBUG
 
 	TEST(FaceTest, TestFaceInitializationWithCollinearVerticesCausesProgramExit) {
-		const auto v0 = make_shared<Vertex>(0, vec3{-1.f, -1.f, 0.f});
-		const auto v1 = make_shared<Vertex>(1, vec3{0.f, -1.f, 0.f});
-		const auto v2 = make_shared<Vertex>(2, vec3{1.f, -1.f, 0.f});
+		const auto v0 = make_shared<Vertex>(0, vec3{-1.0f, -1.0f, 0.0f});
+		const auto v1 = make_shared<Vertex>(1, vec3{0.0f, -1.0f, 0.0f});
+		const auto v2 = make_shared<Vertex>(2, vec3{1.0f, -1.0f, 0.0f});
 		ASSERT_DEATH((Face{v0, v1, v2}), "");
 	}
 
