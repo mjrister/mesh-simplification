@@ -110,13 +110,12 @@ namespace {
 			ivec3{0, 1, 2},
 			ivec3{3, 4, 5},
 			ivec3{6, 7, 8}
-			}), ParseFace("f 1/2/3 4/5/6 7/8/9"));
+		}), ParseFace("f 1/2/3 4/5/6 7/8/9"));
 	}
 
 	TEST(ObjLoaderTest, TestLoadMeshWithoutFaceIndices) {
 
-		istringstream ss{
-			R"(
+		istringstream ss{R"(
 			# positions
 			v 0.0 0.1 0.2
 			v 1.0 1.1 1.2
@@ -129,8 +128,7 @@ namespace {
 			vn 6.0 6.1 6.2
 			vn 7.0 7.1 7.2
 			vn 8.0 8.1 8.2
-		)"
-		};
+		)"};
 
 		const auto mesh = LoadMesh(ss);
 		constexpr vec3 v0{0.f, 0.1f, 0.2f}, v1{1.f, 1.1f, 1.2f}, v2{2.f, 2.1f, 2.2f};
@@ -145,8 +143,7 @@ namespace {
 
 	TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
 
-		istringstream ss{
-			R"(
+		istringstream ss{R"(
 			# positions
 			v 0.0 0.1 0.2
 			v 1.0 1.1 1.2
@@ -164,8 +161,7 @@ namespace {
 			# faces
 			f 1/4/2 2/1/3 3/2/1
 			f 1/2/2 2/1/3 4/3/1
-		)"
-		};
+		)"};
 
 		const auto mesh = LoadMesh(ss);
 		constexpr vec3 v0{0.f, .1f, .2f}, v1{1.f, 1.1f, 1.2f}, v2{2.f, 2.1f, 2.2f}, v3{3.f, 3.1f, 3.2f};
