@@ -93,34 +93,30 @@ Mesh::Mesh(
 	}
 }
 
-Mesh::~Mesh() {
-	glDeleteVertexArrays(1, &vertex_array_);
-	glDeleteBuffers(1, &vertex_buffer_);
-	glDeleteBuffers(1, &element_buffer_);
-}
-
 Mesh::Mesh(Mesh&& mesh) noexcept {
 	*this = move(mesh);
 }
 
 Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
 
-	if (this == &mesh) return *this;
+	if (this != &mesh) {
 
+		std::swap(vertex_array_, mesh.vertex_array_);
+		std::swap(vertex_buffer_, mesh.vertex_buffer_);
+		std::swap(element_buffer_, mesh.element_buffer_);
+
+		std::swap(positions_, mesh.positions_);
+		std::swap(texture_coordinates_, mesh.texture_coordinates_);
+		std::swap(normals_, mesh.normals_);
+		std::swap(indices_, mesh.indices_);
+		std::swap(model_transform_, mesh.model_transform_);
+	}
+
+	return *this;
+}
+
+Mesh::~Mesh() {
 	glDeleteVertexArrays(1, &vertex_array_);
 	glDeleteBuffers(1, &vertex_buffer_);
 	glDeleteBuffers(1, &element_buffer_);
-
-	vertex_array_ = mesh.vertex_array_;
-	vertex_buffer_ = mesh.vertex_buffer_;
-	element_buffer_ = mesh.element_buffer_;
-	mesh.vertex_array_ = mesh.vertex_buffer_ = mesh.element_buffer_ = 0u;
-
-	positions_ = move(mesh.positions_);
-	texture_coordinates_ = move(mesh.texture_coordinates_);
-	normals_ = move(mesh.normals_);
-	indices_ = move(mesh.indices_);
-	model_transform_ = move(mesh.model_transform_);
-
-	return *this;
 }

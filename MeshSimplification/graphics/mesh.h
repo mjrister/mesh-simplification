@@ -35,13 +35,14 @@ namespace qem {
 			std::span<const glm::vec3> normals = {},
 			std::span<const GLuint> indices = {},
 			const glm::mat4& model_transform = glm::mat4{1.0f});
-		~Mesh();
 
 		Mesh(const Mesh&) = delete;
 		Mesh& operator=(const Mesh&) = delete;
 
 		Mesh(Mesh&& mesh) noexcept;
 		Mesh& operator=(Mesh&& mesh) noexcept;
+
+		~Mesh();
 
 		/** \brief Gets the mesh vertex positions. */
 		[[nodiscard]] const std::vector<glm::vec3>& positions() const noexcept { return positions_; }
@@ -100,6 +101,6 @@ namespace qem {
 		std::vector<glm::vec2> texture_coordinates_;
 		std::vector<glm::vec3> normals_;
 		std::vector<GLuint> indices_;
-		glm::mat4 model_transform_;
+		glm::mat4 model_transform_{};
 	};
 }
