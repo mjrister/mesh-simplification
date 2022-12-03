@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string_view>
+#include <filesystem>
 
 namespace qem {
 	class Mesh;
@@ -18,6 +18,6 @@ namespace qem {
 		 * \throw std::runtime_error Indicates the file cannot be opened.
 		 * \see https://en.wikipedia.org/wiki/Wavefront_.obj_file
 		 */
-		Mesh LoadMesh(std::string_view filepath);
+		Mesh LoadMesh(const std::filesystem::path& filepath);
 	}
 }

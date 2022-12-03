@@ -63,23 +63,23 @@ Mesh::Mesh(
 	const auto texture_coordinates_size = sizeof(TextureCoordinateType) * texture_coordinates_.size();
 	const auto normals_size = sizeof(NormalType) * normals_.size();
 	const auto buffer_size = positions_size + texture_coordinates_size + normals_size;
-	glBufferData(GL_ARRAY_BUFFER, buffer_size, nullptr, GL_STATIC_DRAW);
+	glNamedBufferStorage(vertex_buffer_, buffer_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
 
 	// copy positions to the vertex buffer
-	glBufferSubData(GL_ARRAY_BUFFER, 0, positions_size, positions_.data());
+	glNamedBufferSubData(vertex_buffer_, 0, positions_size, positions_.data());
 	glVertexAttribPointer(0, PositionType::length(), GL_FLOAT, GL_FALSE, 0, nullptr);
 	glEnableVertexAttribArray(0);
 
 	// copy texture coordinates to the vertex buffer
 	if (!texture_coordinates_.empty()) {
-		glBufferSubData(GL_ARRAY_BUFFER, positions_size, texture_coordinates_size, texture_coordinates_.data());
+		glNamedBufferSubData(vertex_buffer_, positions_size, texture_coordinates_size, texture_coordinates_.data());
 		glVertexAttribPointer(1, TextureCoordinateType::length(), GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(1);
 	}
 
 	// copy normals to the vertex buffer
 	if (!normals_.empty()) {
-		glBufferSubData(GL_ARRAY_BUFFER, positions_size + texture_coordinates_size, normals_size, normals_.data());
+		glNamedBufferSubData(vertex_buffer_, positions_size + texture_coordinates_size, normals_size, normals_.data());
 		glVertexAttribPointer(2, NormalType::length(), GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(2);
 	}
@@ -89,7 +89,7 @@ Mesh::Mesh(
 		const auto indices_size = sizeof(decltype(indices_)::value_type) * indices_.size();
 		glGenBuffers(1, &element_buffer_);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_size, indices_.data(), GL_STATIC_DRAW);
+		glNamedBufferStorage(element_buffer_, indices_size, indices_.data(), GL_MAP_READ_BIT);
 	}
 }
 

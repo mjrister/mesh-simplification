@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <filesystem>
 #include <format>
 #include <iostream>
 #include <string_view>
@@ -25,7 +26,7 @@ namespace qem {
 			 * \param shader_source The shader source code to be compiled.
 			 * \throw std::runtime_error Indicates shader creation was unsuccessful.
 			 */
-			Shader(GLenum shader_type, const GLchar* shader_source);
+			Shader(GLenum shader_type, const std::string& shader_source);
 
 			~Shader() { glDeleteShader(id); }
 
@@ -45,7 +46,9 @@ namespace qem {
 		 * \param fragment_shader_filepath The filepath to the fragment shader to be compiled.
 		 * \throw std::runtime_error Indicates the shader program creation was unsuccessful.
 		 */
-		ShaderProgram(std::string_view vertex_shader_filepath, std::string_view fragment_shader_filepath);
+		ShaderProgram(
+			const std::filesystem::path& vertex_shader_filepath,
+			const std::filesystem::path& fragment_shader_filepath);
 
 		~ShaderProgram() { glDeleteProgram(id_); }
 

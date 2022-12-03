@@ -1,4 +1,4 @@
-#include "shader_program.h"
+#include "graphics/shader_program.h"
 
 #include <filesystem>
 #include <format>
@@ -19,7 +19,7 @@ namespace {
 	std::string ReadFile(const std::filesystem::path& filepath) {
 
 		if (std::ifstream ifs{filepath, std::ios::ate | std::ios::binary}) {
-			const auto size = static_cast<std::size_t>(ifs.tellg());
+			const auto size = ifs.tellg();
 			std::string source(size, '\0');
 			ifs.seekg(0, std::ios::beg);
 			ifs.read(source.data(), size);
@@ -35,14 +35,18 @@ namespace {
 	 * \param status_type The status type to verify.
 	 */
 	void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
-		GLint success;
+
+		GLint success{};
 		glGetShaderiv(shader_id, status_type, &success);
 
 		if (!success) {
-			GLsizei log_length;
+
+			GLsizei log_length{};
 			glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
+
 			vector<GLchar> info_log(log_length);
 			glGetShaderInfoLog(shader_id, log_length, &log_length, info_log.data());
+
 			throw runtime_error{info_log.data()};
 		}
 	}
@@ -53,34 +57,40 @@ namespace {
 	 * \param status_type The shader program status type to verify.
 	 */
 	void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum status_type) {
-		GLint success;
+
+		GLint success{};
 		glGetProgramiv(shader_program_id, status_type, &success);
 
 		if (!success) {
-			GLsizei log_length;
+
+			GLsizei log_length{};
 			glGetProgramiv(shader_program_id, GL_INFO_LOG_LENGTH, &log_length);
+
 			vector<GLchar> info_log(log_length);
 			glGetProgramInfoLog(shader_program_id, log_length, &log_length, info_log.data());
+
 			throw runtime_error{info_log.data()};
 		}
 	}
 }
 
-ShaderProgram::Shader::Shader(const GLenum shader_type, const GLchar* const shader_source)
+ShaderProgram::Shader::Shader(const GLenum shader_type, const std::string& shader_source)
 	: id{glCreateShader(shader_type)} {
 
 	if (!id) throw runtime_error{"Shader creation failed"};
 
-	glShaderSource(id, 1, &shader_source, nullptr);
+	const auto* shader_source_data = shader_source.data();
+	glShaderSource(id, 1, &shader_source_data, nullptr);
+
 	glCompileShader(id);
 	VerifyShaderStatus(id, GL_COMPILE_STATUS);
 }
 
 ShaderProgram::ShaderProgram(
-	const string_view vertex_shader_filepath, const string_view fragment_shader_filepath)
+	const std::filesystem::path& vertex_shader_filepath, const std::filesystem::path& fragment_shader_filepath)
 	: id_{glCreateProgram()},
-	  vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath).c_str()},
-	  fragment_shader_{GL_FRAGMENT_SHADER, ReadFile(fragment_shader_filepath).c_str()} {
+	  vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath)},
+	  fragment_shader_{GL_FRAGMENT_SHADER, ReadFile(fragment_shader_filepath)} {
 
 	if (!id_) throw runtime_error{"Shader program creation failed"};
 

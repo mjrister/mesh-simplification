@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <charconv>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <stdexcept>
@@ -209,9 +210,9 @@ namespace {
 	}
 }
 
-Mesh obj_loader::LoadMesh(const string_view filepath) {
-	if (ifstream ifs{filepath.data()}; ifs.good()) {
+Mesh obj_loader::LoadMesh(const std::filesystem::path& filepath) {
+	if (ifstream ifs{filepath}; ifs.good()) {
 		return ::LoadMesh(ifs);
 	}
-	throw runtime_error{format("Unable to open {}", filepath)};
+	throw runtime_error{format("Unable to open {}", filepath.generic_string())};
 }

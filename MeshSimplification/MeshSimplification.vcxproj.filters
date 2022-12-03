@@ -26,9 +26,6 @@
     <ClCompile Include="graphics\window.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\texture.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics\shader_program.h">
@@ -65,9 +62,6 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphics\camera.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics\texture.h">
       <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
