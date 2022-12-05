@@ -74,7 +74,7 @@ namespace {
 
 		static auto prev_aspect_ratio = 0.0f;
 
-		if (const auto aspect_ratio = window.AspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.0f) {
+		if (const auto aspect_ratio = window.GetAspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.0f) {
 			const auto [field_of_view_y, z_near, z_far] = kViewFrustum;
 			const auto projection_transform = perspective(field_of_view_y, aspect_ratio, z_near, z_far);
 			shader_program.SetUniform("projection_transform", projection_transform);
@@ -88,7 +88,7 @@ namespace {
 	void HandleMouseInput(const Window& window, Camera& camera, Mesh& mesh, const float delta_time) {
 		static optional<dvec2> prev_cursor_position;
 
-		if (const auto cursor_position = window.CursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+		if (const auto cursor_position = window.GetCursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			if (prev_cursor_position.has_value()) {
 				const auto rotation_step = 0.2f * delta_time;
 				const auto cursor_delta = rotation_step * static_cast<vec2>(cursor_position - *prev_cursor_position);

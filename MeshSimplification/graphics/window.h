@@ -50,7 +50,7 @@ namespace qem {
 		 * \brief Gets the window dimensions.
 		 * \return A pair representing the window's width and height.
 		 */
-		[[nodiscard]] std::pair<int, int> Dimensions() const noexcept {
+		[[nodiscard]] std::pair<int, int> GetSize() const noexcept {
 			int width{}, height{};
 			glfwGetWindowSize(window_, &width, &height);
 			return {width, height};
@@ -60,8 +60,8 @@ namespace qem {
 		 * \brief Gets the windows aspect ratio.
 		 * \return The ratio of the windows width to its height (e.g., 16/9).
 		 */
-		[[nodiscard]] float AspectRatio() const noexcept {
-			const auto [width, height] = Dimensions();
+		[[nodiscard]] float GetAspectRatio() const noexcept {
+			const auto [width, height] = GetSize();
 			return height > 0 ? static_cast<float>(width) / static_cast<float>(height) : 0;
 		}
 
@@ -69,7 +69,7 @@ namespace qem {
 		 * \brief Gets the cursor position.
 		 * \return The (x,y) coordinates of the cursor position in the window.
 		 */
-		[[nodiscard]] glm::dvec2 CursorPosition() const noexcept {
+		[[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
 			double x{}, y{};
 			glfwGetCursorPos(window_, &x, &y);
 			return {x, y};
