@@ -72,8 +72,8 @@ namespace {
 		do {
 			const auto& position = v0.position();
 			const auto& normal = edgei0->face()->normal();
-			const vec4 plane{normal, -dot(position, normal)};
-			quadric += outerProduct(plane, plane);
+			const vec4 distance{normal, -dot(position, normal)};
+			quadric += outerProduct(distance, distance);
 			edgei0 = edgei0->next()->flip();
 		} while (edgei0 != v0.edge());
 
