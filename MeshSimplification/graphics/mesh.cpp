@@ -100,11 +100,9 @@ Mesh::Mesh(Mesh&& mesh) noexcept {
 Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
 
 	if (this != &mesh) {
-
 		std::swap(vertex_array_, mesh.vertex_array_);
 		std::swap(vertex_buffer_, mesh.vertex_buffer_);
 		std::swap(element_buffer_, mesh.element_buffer_);
-
 		std::swap(positions_, mesh.positions_);
 		std::swap(texture_coordinates_, mesh.texture_coordinates_);
 		std::swap(normals_, mesh.normals_);
