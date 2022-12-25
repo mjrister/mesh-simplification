@@ -50,11 +50,9 @@ namespace {
 			default: message_severity = "OTHER"; break;
 		}
 
-		cout << "OpenGL Debug (" << id << "): "
-			<< "Source: " << message_source << ", "
-			<< "Type: " << message_type << ", "
-			<< "Severity: " << message_severity << endl
-			<< message << endl;
+		cout << format(
+			"OpenGL Debug ({}): Source: {}, Type: {}, Severity: {}\n{}\n",
+			id, message_source, message_type, message_severity, message);
 	}
 
 	void InitializeGlfw(const pair<const int, const int>& opengl_version) {
@@ -86,8 +84,10 @@ namespace {
 		}
 
 #if _DEBUG
-		cout << "OpenGL version: " << glGetString(GL_VERSION) << ", "
-			<< "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
+		cout << format(
+			"OpenGL version: {}, GLSL version: {}\n",
+			reinterpret_cast<const char*>(glGetString(GL_VERSION)),
+			reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
 
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
@@ -128,9 +128,6 @@ Window::Window(const char* const title, const pair<int, int>& window_dimensions,
 	});
 
 	InitializeGl3w(opengl_version);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_MULTISAMPLE);
 }
 
 Window::~Window() {
