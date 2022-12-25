@@ -7,7 +7,6 @@
 #include <limits>
 #include <queue>
 #include <ranges>
-#include <stdexcept>
 #include <unordered_map>
 #include <vector>
 
@@ -31,7 +30,7 @@ namespace {
 	struct EdgeContraction {
 
 		EdgeContraction(shared_ptr<const HalfEdge> edge, shared_ptr<Vertex> vertex, const float cost)
-			: edge{move(edge)}, vertex{move(vertex)}, cost{cost} {}
+			: edge{std::move(edge)}, vertex{std::move(vertex)}, cost{cost} {}
 
 		/** \brief The edge to contract. */
 		shared_ptr<const HalfEdge> edge;
@@ -92,10 +91,15 @@ namespace {
 		const auto v0 = edge01.flip()->vertex();
 		const auto v1 = edge01.vertex();
 
-		const auto& q0 = quadrics.at(v0->id());
-		const auto& q1 = quadrics.at(v1->id());
-		const auto q01 = q0 + q1;
+		const auto q0_iterator = quadrics.find(v0->id());
+		assert(q0_iterator != quadrics.end());
+		const auto& q0 = q0_iterator->second;
 
+		const auto q1_iterator = quadrics.find(v1->id());
+		assert(q1_iterator != quadrics.end());
+		const auto& q1 = q1_iterator->second;
+
+		const auto q01 = q0 + q1;
 		const mat3 Q{q01};
 		const vec3 b = column(q01, 3);
 		const auto d = q01[3][3];
