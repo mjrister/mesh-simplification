@@ -115,6 +115,10 @@ Scene::Scene(Window* const window)
 	  mesh_{obj_loader::LoadMesh("models/bunny.obj")},
 	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"} {
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_MULTISAMPLE);
+
 	window_->OnKeyPress([this](const auto key_code) {
 		if (key_code == GLFW_KEY_S) {
 			mesh_ = mesh::Simplify(mesh_, 0.5f);
