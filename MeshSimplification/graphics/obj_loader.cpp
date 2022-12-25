@@ -23,7 +23,7 @@ using namespace std;
 namespace {
 
 	// sentinel value indicating an unspecified face index
-	constexpr int kInvalidFaceElementIndex = -1;
+	constexpr auto kInvalidFaceElementIndex = -1;
 
 	/**
 	 * \brief Removes a set of characters from the beginning and end of the string.
