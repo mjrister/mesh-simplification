@@ -88,7 +88,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="models\buddah.obj">
+    <Object Include="models\buddha.obj">
       <Filter>models</Filter>
     </Object>
     <Object Include="models\bunny.obj">

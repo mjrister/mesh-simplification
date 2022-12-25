@@ -255,7 +255,7 @@
     <None Include="shaders\mesh_vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="models\buddah.obj">
+    <Object Include="models\buddha.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
