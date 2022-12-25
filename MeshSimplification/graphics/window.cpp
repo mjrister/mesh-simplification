@@ -131,6 +131,8 @@ Window::Window(const char* const title, const pair<int, int>& window_dimensions,
 }
 
 Window::~Window() {
-	if (window_) glfwDestroyWindow(window_);
+	if (window_) {
+		glfwDestroyWindow(window_);
+	}
 	glfwTerminate();
 }
