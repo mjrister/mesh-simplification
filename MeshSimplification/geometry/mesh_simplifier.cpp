@@ -30,8 +30,8 @@ namespace {
 	/** \brief Represents a candidate edge contraction. */
 	struct EdgeContraction {
 
-		EdgeContraction(std::shared_ptr<const HalfEdge> edge, std::shared_ptr<Vertex> vertex, const float cost)
-			: edge{std::move(edge)}, vertex{std::move(vertex)}, cost{cost} {}
+		EdgeContraction(shared_ptr<const HalfEdge> edge, shared_ptr<Vertex> vertex, const float cost)
+			: edge{move(edge)}, vertex{move(vertex)}, cost{cost} {}
 
 		/** \brief The edge to contract. */
 		shared_ptr<const HalfEdge> edge;
