@@ -103,7 +103,7 @@ void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float de
 			if (axis_angle.has_value()) {
 				const auto& [view_rotation_axis, angle] = *axis_angle;
 				const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
-				const auto model_rotation_axis = glm::normalize(view_model_inv * glm::vec4{ view_rotation_axis, 0.f });
+				const auto model_rotation_axis = glm::normalize(view_model_inv * glm::vec4{view_rotation_axis, 0.f});
 				mesh.Rotate(model_rotation_axis, angle);
 			}
 		}
@@ -147,8 +147,8 @@ qem::Scene::Scene(Window* const window)
 	SetMaterial(shader_program_);
 	SetPointLights(shader_program_);
 
-	mesh_.Translate(kCamera.look_at + glm::vec3{.2f, -.25f, 0.f});
 	mesh_.Scale(glm::vec3{0.35f});
+	mesh_.Translate(kCamera.look_at + glm::vec3{.2f, -.25f, 0.f});
 }
 
 void qem::Scene::Render(const float delta_time) {

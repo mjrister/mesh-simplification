@@ -75,7 +75,7 @@ public:
 	 * \param xyz The x,y,z directions to scale the mesh.
 	 */
 	void Scale(const glm::vec3& xyz) {
-		model_transform_ = glm::scale(model_transform_, xyz);
+		model_transform_ = glm::scale(glm::mat4{1.0f}, xyz) * model_transform_;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public:
 	 * \param angle The rotation angle specified in radians.
 	 */
 	void Rotate(const glm::vec3& axis, const GLfloat angle) {
-		model_transform_ = glm::rotate(model_transform_, angle, axis);
+		model_transform_ = glm::rotate(glm::mat4{1.0f}, angle, axis) * model_transform_;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public:
 	 * \param xyz The x,y,z directions to translate the mesh.
 	 */
 	void Translate(const glm::vec3& xyz) {
-		model_transform_ = glm::translate(model_transform_, xyz);
+		model_transform_ = glm::translate(glm::mat4{1.0f}, xyz) * model_transform_;
 	}
 
 private:
