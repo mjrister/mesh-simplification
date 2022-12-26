@@ -2,106 +2,103 @@
 
 #include <format>
 #include <iostream>
-#include <sstream>
 #include <stdexcept>
-
-using namespace qem;
-using namespace std;
 
 namespace {
 
-	void APIENTRY HandleDebugMessageReceived(
-		const GLenum source,
-		const GLenum type,
-		const GLuint id,
-		const GLenum severity,
-		const GLsizei /*length*/,
-		const GLchar* const message,
-		const void* /*user_param*/) {
+void APIENTRY HandleDebugMessageReceived(
+	const GLenum source,
+	const GLenum type,
+	const GLuint id,
+	const GLenum severity,
+	const GLsizei /*length*/,
+	const GLchar* const message,
+	const void* /*user_param*/) {
 
-		if (id == 131185) return;
+	if (id == 131185) return;
 
-		string message_source;
-		switch (source) {
+	std::string message_source;
+	switch (source) {
 			case GL_DEBUG_SOURCE_API: message_source = "API"; break;
 			case GL_DEBUG_SOURCE_WINDOW_SYSTEM: message_source = "WINDOW SYSTEM"; break;
 			case GL_DEBUG_SOURCE_SHADER_COMPILER: message_source = "SHADER COMPILER"; break;
 			case GL_DEBUG_SOURCE_THIRD_PARTY: message_source = "THIRD PARTY"; break;
 			case GL_DEBUG_SOURCE_APPLICATION: message_source = "APPLICATION"; break;
 			default: message_source = "OTHER"; break;
-		}
+	}
 
-		string message_type;
-		switch (type) {
+	std::string message_type;
+	switch (type) {
 			case GL_DEBUG_TYPE_ERROR: message_type = "ERROR"; break;
 			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: message_type = "DEPRECATED BEHAVIOR"; break;
 			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: message_type = "UNDEFINED BEHAVIOR"; break;
 			case GL_DEBUG_TYPE_PORTABILITY: message_type = "PORTABILITY"; break;
 			case GL_DEBUG_TYPE_PERFORMANCE: message_type = "PERFORMANCE"; break;
 			default: message_type = "OTHER"; break;
-		}
+	}
 
-		string message_severity;
-		switch (severity) {
+	std::string message_severity;
+	switch (severity) {
 			case GL_DEBUG_SEVERITY_HIGH: message_severity = "HIGH"; break;
 			case GL_DEBUG_SEVERITY_MEDIUM: message_severity = "MEDIUM"; break;
 			case GL_DEBUG_SEVERITY_LOW: message_severity = "LOW"; break;
 			case GL_DEBUG_SEVERITY_NOTIFICATION: message_severity = "NOTIFICATION"; break;
 			default: message_severity = "OTHER"; break;
-		}
-
-		cout << format(
-			"OpenGL Debug ({}): Source: {}, Type: {}, Severity: {}\n{}\n",
-			id, message_source, message_type, message_severity, message);
 	}
 
-	void InitializeGlfw(const pair<const int, const int>& opengl_version) {
-
-		if (!glfwInit()) throw runtime_error{"GLFW initialization failed"};
-
-		const auto [major_version, minor_version] = opengl_version;
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major_version);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor_version);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwWindowHint(GLFW_SAMPLES, 4);
-		glfwSwapInterval(1);
-
-#ifdef _DEBUG
-		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-		glfwSetErrorCallback([](const int error_code, const char* const description) {
-			cerr << format("GLFW Error ({}): {}\n", error_code, description);
-		});
-#endif
-	}
-
-	void InitializeGl3w(const pair<const int, const int>& opengl_version) {
-
-		if (gl3wInit()) throw runtime_error{"OpenGL initialization failed"};
-
-		if (const auto [major_version, minor_version] = opengl_version;
-			!gl3wIsSupported(major_version, minor_version)) {
-			throw runtime_error{format("OpenGL {}.{} not supported", major_version, minor_version)};
-		}
-
-#if _DEBUG
-		cout << format(
-			"OpenGL version: {}, GLSL version: {}\n",
-			reinterpret_cast<const char*>(glGetString(GL_VERSION)),
-			reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
-
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
-#endif
-	}
+	std::cout << format(
+		"OpenGL Debug ({}): Source: {}, Type: {}, Severity: {}\n{}\n",
+		id, message_source, message_type, message_severity, message);
 }
 
-Window::Window(const char* const title, const pair<int, int>& window_dimensions, const pair<int, int>& opengl_version) {
+void InitializeGlfw(const std::pair<const int, const int>& opengl_version) {
+
+	if (!glfwInit()) throw std::runtime_error{"GLFW initialization failed"};
+
+	const auto [major_version, minor_version] = opengl_version;
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major_version);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor_version);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwSwapInterval(1);
+
+#ifdef _DEBUG
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+	glfwSetErrorCallback([](const int error_code, const char* const description) {
+		std::cerr << std::format("GLFW Error ({}): {}\n", error_code, description);
+	});
+#endif
+}
+
+void InitializeGl3w(const std::pair<const int, const int>& opengl_version) {
+
+	if (gl3wInit()) throw std::runtime_error{"OpenGL initialization failed"};
+
+	if (const auto [major_version, minor_version] = opengl_version;
+		!gl3wIsSupported(major_version, minor_version)) {
+		throw std::runtime_error{std::format("OpenGL {}.{} not supported", major_version, minor_version)};
+	}
+
+#if _DEBUG
+	std::cout << std::format(
+		"OpenGL version: {}, GLSL version: {}\n",
+		reinterpret_cast<const char*>(glGetString(GL_VERSION)),
+		reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
+
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
+#endif
+}
+}
+
+qem::Window::Window(
+	const char* const title, const std::pair<int, int>& window_dimensions, const std::pair<int, int>& opengl_version) {
 
 	InitializeGlfw(opengl_version);
 
 	const auto [width, height] = window_dimensions;
 	window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
-	if (!window_) throw runtime_error{"Window creation failed"};
+	if (!window_) throw std::runtime_error{"Window creation failed"};
 
 	glfwSetWindowUserPointer(window_, this);
 	glfwMakeContextCurrent(window_);
@@ -130,7 +127,7 @@ Window::Window(const char* const title, const pair<int, int>& window_dimensions,
 	InitializeGl3w(opengl_version);
 }
 
-Window::~Window() {
+qem::Window::~Window() {
 	if (window_) {
 		glfwDestroyWindow(window_);
 	}

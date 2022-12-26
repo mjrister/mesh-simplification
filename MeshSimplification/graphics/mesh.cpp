@@ -3,43 +3,39 @@
 #include <stdexcept>
 #include <utility>
 
-using namespace glm;
-using namespace qem;
-using namespace std;
-
 namespace {
 
-	/**
-	 * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
-	 *        triangle mesh in addition to enforcing alignment between vertex attribute.
-	 */
-	void Validate(
-		const span<const vec3> positions,
-		const span<const vec2> texture_coordinates,
-		const span<const vec3> normals,
-		const span<const GLuint> indices) {
+/**
+ * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
+ *        triangle mesh in addition to enforcing alignment between vertex attribute.
+ */
+void Validate(
+	const std::span<const glm::vec3> positions,
+	const std::span<const glm::vec2> texture_coordinates,
+	const std::span<const glm::vec3> normals,
+	const std::span<const GLuint> indices) {
 
-		if (positions.empty()) {
-			throw invalid_argument{"Vertex positions must be specified"};
-		}
-		if (indices.empty() && positions.size() % 3 != 0 || indices.size() % 3 != 0) {
-			throw invalid_argument{"Object must be a triangle mesh"};
-		}
-		if (indices.empty() && !texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
-			throw invalid_argument{"Texture coordinates must align with position data"};
-		}
-		if (indices.empty() && !normals.empty() && positions.size() != normals.size()) {
-			throw invalid_argument{"Vertex normals must align with position data"};
-		}
+	if (positions.empty()) {
+		throw std::invalid_argument{"Vertex positions must be specified"};
+	}
+	if (indices.empty() && positions.size() % 3 != 0 || indices.size() % 3 != 0) {
+		throw std::invalid_argument{"Object must be a triangle mesh"};
+	}
+	if (indices.empty() && !texture_coordinates.empty() && positions.size() != texture_coordinates.size()) {
+		throw std::invalid_argument{"Texture coordinates must align with position data"};
+	}
+	if (indices.empty() && !normals.empty() && positions.size() != normals.size()) {
+		throw std::invalid_argument{"Vertex normals must align with position data"};
 	}
 }
+}
 
-Mesh::Mesh(
-	const span<const vec3> positions,
-	const span<const vec2> texture_coordinates,
-	const span<const vec3> normals,
-	const span<const GLuint> indices,
-	const mat4& model_transform)
+qem::Mesh::Mesh(
+	const std::span<const glm::vec3> positions,
+	const std::span<const glm::vec2> texture_coordinates,
+	const std::span<const glm::vec3> normals,
+	const std::span<const GLuint> indices,
+	const glm::mat4& model_transform)
 	: positions_{positions.begin(), positions.end()},
 	  texture_coordinates_{texture_coordinates.begin(), texture_coordinates.end()},
 	  normals_{normals.begin(), normals.end()},
@@ -93,11 +89,11 @@ Mesh::Mesh(
 	}
 }
 
-Mesh::Mesh(Mesh&& mesh) noexcept {
-	*this = move(mesh);
+qem::Mesh::Mesh(Mesh&& mesh) noexcept {
+	*this = std::move(mesh);
 }
 
-Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
+qem::Mesh& qem::Mesh::operator=(Mesh&& mesh) noexcept {
 
 	if (this != &mesh) {
 		std::swap(vertex_array_, mesh.vertex_array_);
@@ -113,7 +109,7 @@ Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
 	return *this;
 }
 
-Mesh::~Mesh() {
+qem::Mesh::~Mesh() {
 	glDeleteVertexArrays(1, &vertex_array_);
 	glDeleteBuffers(1, &vertex_buffer_);
 	glDeleteBuffers(1, &element_buffer_);

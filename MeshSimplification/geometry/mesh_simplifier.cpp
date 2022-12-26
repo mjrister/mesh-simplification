@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
 #include <chrono>
 #include <iostream>
 #include <limits>
@@ -20,23 +21,19 @@
 #include "geometry/vertex.h"
 #include "graphics/mesh.h"
 
-using namespace glm;
-using namespace qem;
-using namespace std;
-
 namespace {
 
 /** \brief Represents a candidate edge contraction. */
 struct EdgeContraction {
 
-	EdgeContraction(shared_ptr<const HalfEdge> edge, shared_ptr<Vertex> vertex, const float cost)
+	EdgeContraction(std::shared_ptr<const qem::HalfEdge> edge, std::shared_ptr<qem::Vertex> vertex, const float cost)
 		: edge{std::move(edge)}, vertex{std::move(vertex)}, cost{cost} {}
 
 	/** \brief The edge to contract. */
-	shared_ptr<const HalfEdge> edge;
+	std::shared_ptr<const qem::HalfEdge> edge;
 
 	/** \brief The optimal vertex position that minimizes the cost of this edge contraction. */
-	shared_ptr<Vertex> vertex;
+	std::shared_ptr<qem::Vertex> vertex;
 
 	/** \brief A metric that quantifies how much the mesh will change after this edge has been contracted. */
 	float cost;
@@ -54,8 +51,8 @@ struct EdgeContraction {
  * \param edge01 The half-edge to disambiguate.
  * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
  */
-shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge01) {
-	const auto edge10 = const_pointer_cast<const HalfEdge>(edge01->flip());
+std::shared_ptr<const qem::HalfEdge> GetMinEdge(const std::shared_ptr<const qem::HalfEdge>& edge01) {
+	const auto edge10 = const_pointer_cast<const qem::HalfEdge>(edge01->flip());
 	return edge01->vertex()->id() < edge10->vertex()->id() ? edge01 : edge10;
 }
 
@@ -64,14 +61,14 @@ shared_ptr<const HalfEdge> GetMinEdge(const shared_ptr<const HalfEdge>& edge01) 
  * \param v0 The vertex to evaluate.
  * \return The error quadric for \p vertex.
  */
-mat4 ComputeQuadric(const Vertex& v0) {
-	mat4 quadric{0.0f};
+glm::mat4 ComputeQuadric(const qem::Vertex& v0) {
+	glm::mat4 quadric{0.0f};
 	auto edgei0 = v0.edge();
 
 	do {
 		const auto& position = v0.position();
 		const auto& normal = edgei0->face()->normal();
-		const vec4 distance{normal, -dot(position, normal)};
+		const glm::vec4 distance{normal, -dot(position, normal)};
 		quadric += outerProduct(distance, distance);
 		edgei0 = edgei0->next()->flip();
 	} while (edgei0 != v0.edge());
@@ -85,8 +82,8 @@ mat4 ComputeQuadric(const Vertex& v0) {
  * \param quadrics A mapping of error quadrics by vertex ID.
  * \return The optimal vertex and cost associated with contracting \p edge01.
  */
-pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
-	const HalfEdge& edge01, const unordered_map<uint64_t, mat4>& quadrics) {
+std::pair<std::shared_ptr<qem::Vertex>, float> GetOptimalEdgeContractionVertex(
+	const qem::HalfEdge& edge01, const std::unordered_map<std::uint64_t, glm::mat4>& quadrics) {
 
 	const auto v0 = edge01.flip()->vertex();
 	const auto v1 = edge01.vertex();
@@ -100,24 +97,24 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 	const auto& q1 = q1_iterator->second;
 
 	const auto q01 = q0 + q1;
-	const mat3 Q{q01};
-	const vec3 b = column(q01, 3);
+	const glm::mat3 Q{q01};
+	const glm::vec3 b = column(q01, 3);
 	const auto d = q01[3][3];
 
 	// if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
-	if (constexpr auto kEpsilon = numeric_limits<float>::epsilon();
+	if (constexpr auto kEpsilon = std::numeric_limits<float>::epsilon();
 		fabs(determinant(Q)) < kEpsilon || fabs(d) < kEpsilon) {
 		const auto position = (v0->position() + v1->position()) / 2.0f;
-		return {make_shared<Vertex>(position), 0.0f};
+		return {std::make_shared<qem::Vertex>(position), 0.0f};
 	}
 
 	const auto Q_inv = inverse(Q);
-	const auto D_inv = column(mat4{Q_inv}, 3, vec4{-1.0f / d * Q_inv * b, 1.0f / d});
+	const auto D_inv = glm::column(glm::mat4{Q_inv}, 3, glm::vec4{-1.0f / d * Q_inv * b, 1.0f / d});
 
-	auto position = D_inv * vec4{0.0f, 0.0f, 0.0f, 1.0f};
+	auto position = D_inv * glm::vec4{0.0f, 0.0f, 0.0f, 1.0f};
 	position /= position.w;
 
-	return {make_shared<Vertex>(position), dot(position, q01 * position)};
+	return {std::make_shared<qem::Vertex>(position), dot(position, q01 * position)};
 }
 
 /**
@@ -125,11 +122,11 @@ pair<shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
  * \param edge01 The edge to evaluate.
  * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
  */
-bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
+bool WillDegenerate(const std::shared_ptr<const qem::HalfEdge>& edge01) {
 	const auto v0 = edge01->flip()->vertex();
 	const auto v1_next = edge01->next()->vertex();
 	const auto v0_next = edge01->flip()->next()->vertex();
-	unordered_map<uint64_t, shared_ptr<Vertex>> neighborhood;
+	std::unordered_map<uint64_t, std::shared_ptr<qem::Vertex>> neighborhood;
 
 	for (auto iterator = edge01->next(); iterator != edge01->flip(); iterator = iterator->flip()->next()) {
 		if (const auto vertex = iterator->vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
@@ -147,31 +144,31 @@ bool WillDegenerate(const shared_ptr<const HalfEdge>& edge01) {
 }
 }
 
-Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
+qem::Mesh qem::mesh::Simplify(const qem::Mesh& mesh, const float rate) {
 	assert(0.0f <= rate && rate <= 1.0f);
 
-	const auto start_time = chrono::high_resolution_clock::now();
-	HalfEdgeMesh half_edge_mesh{mesh};
+	const auto start_time = std::chrono::high_resolution_clock::now();
+	qem::HalfEdgeMesh half_edge_mesh{mesh};
 
 	// compute error quadrics for each vertex
-	unordered_map<uint64_t, mat4> quadrics;
+	std::unordered_map<uint64_t, glm::mat4> quadrics;
 	for (const auto& [vertex_id, vertex] : half_edge_mesh.vertices()) {
 		quadrics.emplace(vertex_id, ComputeQuadric(*vertex));
 	}
 
 	// use a priority queue to sort edge contraction candidates by the cost of removing each edge
 	constexpr auto kMinCostComparator = [](const auto& lhs, const auto& rhs) noexcept { return lhs->cost > rhs->cost; };
-	priority_queue<
-		shared_ptr<EdgeContraction>,
-		vector<shared_ptr<EdgeContraction>>,
+	std::priority_queue<
+		std::shared_ptr<EdgeContraction>,
+		std::vector<std::shared_ptr<EdgeContraction>>,
 		decltype(kMinCostComparator)
 	> edge_contractions{kMinCostComparator};
 
 	// this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
-	unordered_map<uint64_t, shared_ptr<EdgeContraction>> valid_edges;
+	std::unordered_map<std::uint64_t, std::shared_ptr<EdgeContraction>> valid_edges;
 
 	// compute the optimal vertex position that minimizes the cost of contracting each edge
-	for (const auto& edge : half_edge_mesh.edges() | views::values) {
+	for (const auto& edge : half_edge_mesh.edges() | std::views::values) {
 		const auto min_edge = GetMinEdge(edge);
 
 		if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
@@ -188,7 +185,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		return edge_contractions.empty() || static_cast<float>(half_edge_mesh.faces().size()) < target_face_count;
 	};
 
-	for (uint64_t next_vertex_id = half_edge_mesh.vertices().size(); !is_simplified(); edge_contractions.pop()) {
+	for (std::uint64_t next_vertex_id = half_edge_mesh.vertices().size(); !is_simplified(); edge_contractions.pop()) {
 		const auto& edge_contraction = edge_contractions.top();
 		const auto& edge01 = edge_contraction->edge;
 
@@ -225,7 +222,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		half_edge_mesh.Contract(*edge01, v_new);
 
 		// add new edge contraction candidates for edges affected by the edge contraction
-		unordered_map<uint64_t, shared_ptr<const HalfEdge>> visited_edges;
+		std::unordered_map<uint64_t, std::shared_ptr<const HalfEdge>> visited_edges;
 		const auto& vi = v_new;
 		auto edgeji = vi->edge();
 		do {
@@ -250,11 +247,11 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 		} while (edgeji != vi->edge());
 	}
 
-	cout << format(
+	std::cout << std::format(
 		"Mesh simplified from {} to {} triangles in {} seconds\n",
 		initial_face_count,
 		half_edge_mesh.faces().size(),
-		chrono::duration<float>{chrono::high_resolution_clock::now() - start_time}.count());
+		std::chrono::duration<float>{std::chrono::high_resolution_clock::now() - start_time}.count());
 
 	return static_cast<Mesh>(half_edge_mesh);
 }
