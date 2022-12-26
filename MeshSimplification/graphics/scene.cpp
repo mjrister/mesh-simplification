@@ -6,12 +6,25 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "geometry/mesh_simplifier.h"
+#include "graphics/arcball.h"
 #include "graphics/material.h"
 #include "graphics/obj_loader.h"
 #include "graphics/shader_program.h"
 #include "graphics/window.h"
 
 namespace {
+
+struct Camera {
+	glm::vec3 look_from;
+	glm::vec3 look_at;
+	glm::vec3 up;
+	glm::mat4 view_transform;
+} const kCamera = {
+	.look_from = glm::vec3{0.f, .4f, 2.f},
+	.look_at = glm::vec3{0.f},
+	.up = glm::vec3{0.f, 1.f, 0.f},
+	.view_transform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up)
+};
 
 struct ViewFrustum {
 	float field_of_view_y;
@@ -66,7 +79,7 @@ void SetPointLights(qem::ShaderProgram& shader_program) {
 }
 
 void SetViewTransforms(
-	const qem::Window& window, const qem::Camera& camera, const qem::Mesh& mesh, qem::ShaderProgram& shader_program) {
+	const qem::Window& window, const qem::Mesh& mesh, qem::ShaderProgram& shader_program) {
 
 	static auto prev_aspect_ratio = 0.0f;
 
@@ -77,25 +90,29 @@ void SetViewTransforms(
 		prev_aspect_ratio = aspect_ratio;
 	}
 
-	const auto model_view_transform = camera.GetViewTransform() * mesh.model_transform();
+	const auto model_view_transform = kCamera.view_transform * mesh.model_transform();
 	shader_program.SetUniform("model_view_transform", model_view_transform);
 }
 
-void HandleMouseInput(const qem::Window& window, qem::Camera& camera, qem::Mesh& mesh, const float delta_time) {
+void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float delta_time) {
 	static std::optional<glm::dvec2> prev_cursor_position;
 
 	if (const auto cursor_position = window.GetCursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		if (prev_cursor_position.has_value()) {
-			const auto rotation_step = 0.2f * delta_time;
-			const auto cursor_delta = rotation_step * static_cast<glm::vec2>(cursor_position - *prev_cursor_position);
-			camera.Rotate(cursor_delta.x, cursor_delta.y);
+			const auto axis_angle = qem::arcball::GetRotation(*prev_cursor_position, cursor_position, window.GetSize());
+			if (axis_angle.has_value()) {
+				const auto& [view_rotation_axis, angle] = *axis_angle;
+				const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
+				const auto model_rotation_axis = glm::normalize(view_model_inv * glm::vec4{ view_rotation_axis, 0.f });
+				mesh.Rotate(model_rotation_axis, angle);
+			}
 		}
 		prev_cursor_position = cursor_position;
 	} else if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
 		if (prev_cursor_position.has_value()) {
 			const auto translate_step = 0.2f * delta_time;
 			const auto cursor_delta = translate_step * static_cast<glm::vec2>(cursor_position - *prev_cursor_position);
-			const auto view_model_inv = inverse(camera.GetViewTransform() * mesh.model_transform());
+			const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
 			mesh.Translate(view_model_inv * glm::vec4{cursor_delta.x, -cursor_delta.y, 0.0f, 0.0f});
 		}
 		prev_cursor_position = cursor_position;
@@ -107,7 +124,6 @@ void HandleMouseInput(const qem::Window& window, qem::Camera& camera, qem::Mesh&
 
 qem::Scene::Scene(Window* const window)
 	: window_{window},
-	  camera_{glm::vec3{-0.2f, 0.3f, 0.0f}, 2.0f, 0.0f, -0.1f},
 	  mesh_{obj_loader::LoadMesh("models/bunny.obj")},
 	  shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"} {
 
@@ -131,6 +147,7 @@ qem::Scene::Scene(Window* const window)
 	SetMaterial(shader_program_);
 	SetPointLights(shader_program_);
 
+	mesh_.Translate(kCamera.look_at + glm::vec3{.2f, -.25f, 0.f});
 	mesh_.Scale(glm::vec3{0.35f});
 }
 
@@ -138,8 +155,8 @@ void qem::Scene::Render(const float delta_time) {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	HandleMouseInput(*window_, camera_, mesh_, delta_time);
-	SetViewTransforms(*window_, camera_, mesh_, shader_program_);
+	HandleMouseInput(*window_, mesh_, delta_time);
+	SetViewTransforms(*window_, mesh_, shader_program_);
 
 	mesh_.Render();
 }

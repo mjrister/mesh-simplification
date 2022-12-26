@@ -26,6 +26,9 @@
     <ClCompile Include="graphics\window.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\arcball.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics\shader_program.h">
@@ -61,7 +64,7 @@
     <ClInclude Include="graphics\window.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\camera.h">
+    <ClInclude Include="graphics\arcball.h">
       <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>

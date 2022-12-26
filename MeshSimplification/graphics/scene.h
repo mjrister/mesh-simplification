@@ -1,6 +1,5 @@
 #pragma once
 
-#include "graphics/camera.h"
 #include "graphics/mesh.h"
 #include "graphics/shader_program.h"
 
@@ -25,7 +24,6 @@ public:
 
 private:
 	Window* window_;
-	Camera camera_;
 	Mesh mesh_;
 	ShaderProgram shader_program_;
 };

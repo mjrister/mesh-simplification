@@ -226,6 +226,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="graphics\arcball.cpp" />
     <ClCompile Include="geometry\face.cpp" />
     <ClCompile Include="geometry\half_edge_mesh.cpp" />
     <ClCompile Include="graphics\mesh.cpp" />
@@ -237,7 +238,7 @@
     <ClCompile Include="graphics\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics\camera.h" />
+    <ClInclude Include="graphics\arcball.h" />
     <ClInclude Include="geometry\face.h" />
     <ClInclude Include="geometry\mesh_simplifier.h" />
     <ClInclude Include="graphics\material.h" />

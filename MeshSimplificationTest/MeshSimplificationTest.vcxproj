@@ -37,6 +37,7 @@
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="graphics\arcball_test.cpp" />
     <ClCompile Include="geometry\face_test.cpp" />
     <ClCompile Include="geometry\half_edge_mesh_test.cpp" />
     <ClCompile Include="geometry\half_edge_test.cpp" />
