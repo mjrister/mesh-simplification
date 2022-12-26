@@ -181,7 +181,7 @@ glm::vec3 ComputeWeightedVertexNormal(const qem::Vertex& v0) {
 		normal += face->normal() * face->area();
 		edgei0 = edgei0->next()->flip();
 	} while (edgei0 != v0.edge());
-	return normalize(normal);
+	return glm::normalize(normal);
 }
 }
 

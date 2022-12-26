@@ -62,10 +62,10 @@ std::optional<const std::pair<const glm::vec3, const float>> qem::arcball::GetRo
 	const auto arcball_position_end = GetArcballPosition(cursor_position_end_ndc);
 
 	// use min to account for numerical issues where the dot product is greater than 1 causing acos to produce NaN
-	const auto angle = acos(std::min<>(1.f, dot(arcball_position_start, arcball_position_end)));
+	const auto angle = std::acos(std::min<>(1.f, glm::dot(arcball_position_start, arcball_position_end)));
 
 	if (static constexpr auto kEpsilon = 1e-3f; angle > kEpsilon) {
-		const auto axis = cross(arcball_position_start, arcball_position_end);
+		const auto axis = glm::cross(arcball_position_start, arcball_position_end);
 		return std::make_pair(axis, angle);
 	}
 

@@ -68,7 +68,7 @@ glm::mat4 ComputeQuadric(const qem::Vertex& v0) {
 	do {
 		const auto& position = v0.position();
 		const auto& normal = edgei0->face()->normal();
-		const glm::vec4 distance{normal, -dot(position, normal)};
+		const glm::vec4 distance{normal, -glm::dot(position, normal)};
 		quadric += outerProduct(distance, distance);
 		edgei0 = edgei0->next()->flip();
 	} while (edgei0 != v0.edge());
@@ -114,7 +114,7 @@ std::pair<std::shared_ptr<qem::Vertex>, float> GetOptimalEdgeContractionVertex(
 	auto position = D_inv * glm::vec4{0.0f, 0.0f, 0.0f, 1.0f};
 	position /= position.w;
 
-	return {std::make_shared<qem::Vertex>(position), dot(position, q01 * position)};
+	return {std::make_shared<qem::Vertex>(position), glm::dot(position, q01 * position)};
 }
 
 /**
