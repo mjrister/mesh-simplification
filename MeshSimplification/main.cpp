@@ -11,23 +11,23 @@ using namespace std;
 
 int main() {
 
-	try {
-		constexpr auto kWindowDimensions = make_pair(1280, 960);
-		constexpr auto kOpenGlVersion = make_pair(4, 6);
-		Window window{"Mesh Simplification", kWindowDimensions, kOpenGlVersion};
-		Scene scene{&window};
+    try {
+        constexpr auto kWindowDimensions = make_pair(1280, 960);
+        constexpr auto kOpenGlVersion = make_pair(4, 6);
+        Window window{"Mesh Simplification", kWindowDimensions, kOpenGlVersion};
+        Scene scene{&window};
 
-		for (auto previous_time = static_cast<float>(glfwGetTime()), delta_time = 0.0f; !window.IsClosed();) {
-			const auto current_time = static_cast<float>(glfwGetTime());
-			delta_time = current_time - previous_time;
-			previous_time = current_time;
-			scene.Render(delta_time);
-			window.Update();
-		}
-	} catch (const exception& e) {
-		cerr << e.what() << endl;
-		return EXIT_FAILURE;
-	}
+        for (auto previous_time = static_cast<float>(glfwGetTime()), delta_time = 0.0f; !window.IsClosed();) {
+            const auto current_time = static_cast<float>(glfwGetTime());
+            delta_time = current_time - previous_time;
+            previous_time = current_time;
+            scene.Render(delta_time);
+            window.Update();
+        }
+    } catch (const exception& e) {
+        cerr << e.what() << endl;
+        return EXIT_FAILURE;
+    }
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

@@ -19,28 +19,28 @@ namespace {
  * \return The half-edge connecting vertex \p v0 to \p v1.
  */
 std::shared_ptr<qem::HalfEdge> CreateHalfEdge(
-	const std::shared_ptr<qem::Vertex>& v0,
-	const std::shared_ptr<qem::Vertex>& v1,
-	std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+    const std::shared_ptr<qem::Vertex>& v0,
+    const std::shared_ptr<qem::Vertex>& v1,
+    std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges) {
 
-	const auto edge01_key = hash_value(*v0, *v1);
-	const auto edge10_key = hash_value(*v1, *v0);
+    const auto edge01_key = hash_value(*v0, *v1);
+    const auto edge10_key = hash_value(*v1, *v0);
 
-	// prevent the creation of duplicate edges
-	if (const auto iterator = edges.find(edge01_key); iterator != edges.end()) {
-		return iterator->second;
-	}
+    // prevent the creation of duplicate edges
+    if (const auto iterator = edges.find(edge01_key); iterator != edges.end()) {
+        return iterator->second;
+    }
 
-	auto edge01 = make_shared<qem::HalfEdge>(v1);
-	const auto edge10 = make_shared<qem::HalfEdge>(v0);
+    auto edge01 = make_shared<qem::HalfEdge>(v1);
+    const auto edge10 = make_shared<qem::HalfEdge>(v0);
 
-	edge01->set_flip(edge10);
-	edge10->set_flip(edge01);
+    edge01->set_flip(edge10);
+    edge10->set_flip(edge01);
 
-	edges.emplace(edge01_key, edge01);
-	edges.emplace(edge10_key, edge10);
+    edges.emplace(edge01_key, edge01);
+    edges.emplace(edge10_key, edge10);
 
-	return edge01;
+    return edge01;
 }
 
 /**
@@ -49,30 +49,29 @@ std::shared_ptr<qem::HalfEdge> CreateHalfEdge(
  * \param edges A mapping of mesh half-edges by ID.
  * \return A triangle face representing vertices \p v0, \p v1, \p v2 in the half-edge mesh.
  */
-std::shared_ptr<qem::Face> CreateTriangle(
-	const std::shared_ptr<qem::Vertex>& v0,
-	const std::shared_ptr<qem::Vertex>& v1,
-	const std::shared_ptr<qem::Vertex>& v2,
-	std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+std::shared_ptr<qem::Face> CreateTriangle(const std::shared_ptr<qem::Vertex>& v0,
+                                          const std::shared_ptr<qem::Vertex>& v1,
+                                          const std::shared_ptr<qem::Vertex>& v2,
+                                          std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges) {
 
-	const auto edge01 = CreateHalfEdge(v0, v1, edges);
-	const auto edge12 = CreateHalfEdge(v1, v2, edges);
-	const auto edge20 = CreateHalfEdge(v2, v0, edges);
+    const auto edge01 = CreateHalfEdge(v0, v1, edges);
+    const auto edge12 = CreateHalfEdge(v1, v2, edges);
+    const auto edge20 = CreateHalfEdge(v2, v0, edges);
 
-	v0->set_edge(edge20);
-	v1->set_edge(edge01);
-	v2->set_edge(edge12);
+    v0->set_edge(edge20);
+    v1->set_edge(edge01);
+    v2->set_edge(edge12);
 
-	edge01->set_next(edge12);
-	edge12->set_next(edge20);
-	edge20->set_next(edge01);
+    edge01->set_next(edge12);
+    edge12->set_next(edge20);
+    edge20->set_next(edge01);
 
-	auto face012 = make_shared<qem::Face>(v0, v1, v2);
-	edge01->set_face(face012);
-	edge12->set_face(face012);
-	edge20->set_face(face012);
+    auto face012 = make_shared<qem::Face>(v0, v1, v2);
+    edge01->set_face(face012);
+    edge12->set_face(face012);
+    edge20->set_face(face012);
 
-	return face012;
+    return face012;
 }
 
 /**
@@ -82,13 +81,13 @@ std::shared_ptr<qem::Face> CreateTriangle(
  * \return The half-edge connecting \p v0 to \p v1.
  */
 std::shared_ptr<qem::HalfEdge> GetHalfEdge(
-	const qem::Vertex& v0,
-	const qem::Vertex& v1,
-	const std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+    const qem::Vertex& v0,
+    const qem::Vertex& v1,
+    const std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges) {
 
-	const auto iterator = edges.find(hash_value(v0, v1));
-	assert(iterator != edges.end());
-	return iterator->second;
+    const auto iterator = edges.find(hash_value(v0, v1));
+    assert(iterator != edges.end());
+    return iterator->second;
 }
 
 /**
@@ -97,9 +96,9 @@ std::shared_ptr<qem::HalfEdge> GetHalfEdge(
  * \param vertices A mapping of mesh vertices by ID.
  */
 void DeleteVertex(const qem::Vertex& vertex, std::map<std::uint64_t, std::shared_ptr<qem::Vertex>>& vertices) {
-	const auto iterator = vertices.find(vertex.id());
-	assert(iterator != vertices.end());
-	vertices.erase(iterator);
+    const auto iterator = vertices.find(vertex.id());
+    assert(iterator != vertices.end());
+    vertices.erase(iterator);
 }
 
 /**
@@ -107,14 +106,13 @@ void DeleteVertex(const qem::Vertex& vertex, std::map<std::uint64_t, std::shared
  * \param edge The half-edge to delete.
  * \param edges A mapping of mesh half-edges by ID.
  */
-void DeleteEdge(
-	const qem::HalfEdge& edge, std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+void DeleteEdge(const qem::HalfEdge& edge, std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges) {
 
-	for (const auto edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
-		const auto iterator = edges.find(edge_key);
-		assert(iterator != edges.end());
-		edges.erase(iterator);
-	}
+    for (const auto edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
+        const auto iterator = edges.find(edge_key);
+        assert(iterator != edges.end());
+        edges.erase(iterator);
+    }
 }
 
 /**
@@ -123,9 +121,9 @@ void DeleteEdge(
  * \param faces A mapping of mesh faces by ID.
  */
 void DeleteFace(const qem::Face& face, std::unordered_map<uint64_t, std::shared_ptr<qem::Face>>& faces) {
-	const auto iterator = faces.find(hash_value(face));
-	assert(iterator != faces.end());
-	faces.erase(iterator);
+    const auto iterator = faces.find(hash_value(face));
+    assert(iterator != faces.end());
+    faces.erase(iterator);
 }
 
 /**
@@ -137,35 +135,34 @@ void DeleteFace(const qem::Face& face, std::unordered_map<uint64_t, std::shared_
  * \param edges A mapping of mesh half-edges by ID.
  * \param faces A mapping of mesh faces by ID.
  */
-void UpdateIncidentEdges(
-	const qem::Vertex& v_target,
-	const qem::Vertex& v_start,
-	const qem::Vertex& v_end,
-	const std::shared_ptr<qem::Vertex>& v_new,
-	std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges,
-	std::unordered_map<std::uint64_t, std::shared_ptr<qem::Face>>& faces) {
+void UpdateIncidentEdges(const qem::Vertex& v_target,
+                         const qem::Vertex& v_start,
+                         const qem::Vertex& v_end,
+                         const std::shared_ptr<qem::Vertex>& v_new,
+                         std::unordered_map<std::uint64_t, std::shared_ptr<qem::HalfEdge>>& edges,
+                         std::unordered_map<std::uint64_t, std::shared_ptr<qem::Face>>& faces) {
 
-	const auto edge_start = GetHalfEdge(v_target, v_start, edges);
-	const auto edge_end = GetHalfEdge(v_target, v_end, edges);
+    const auto edge_start = GetHalfEdge(v_target, v_start, edges);
+    const auto edge_end = GetHalfEdge(v_target, v_end, edges);
 
-	for (auto edge0i = edge_start; edge0i != edge_end;) {
+    for (auto edge0i = edge_start; edge0i != edge_end;) {
 
-		const auto edgeij = edge0i->next();
-		const auto edgej0 = edgeij->next();
+        const auto edgeij = edge0i->next();
+        const auto edgej0 = edgeij->next();
 
-		const auto vi = edge0i->vertex();
-		const auto vj = edgeij->vertex();
+        const auto vi = edge0i->vertex();
+        const auto vj = edgeij->vertex();
 
-		const auto face_new = CreateTriangle(v_new, vi, vj, edges);
-		faces.emplace(hash_value(*face_new), face_new);
+        const auto face_new = CreateTriangle(v_new, vi, vj, edges);
+        faces.emplace(hash_value(*face_new), face_new);
 
-		DeleteFace(*edge0i->face(), faces);
-		DeleteEdge(*edge0i, edges);
+        DeleteFace(*edge0i->face(), faces);
+        DeleteEdge(*edge0i, edges);
 
-		edge0i = edgej0->flip();
-	}
+        edge0i = edgej0->flip();
+    }
 
-	DeleteEdge(*edge_end, edges);
+    DeleteEdge(*edge_end, edges);
 }
 
 /**
@@ -174,80 +171,80 @@ void UpdateIncidentEdges(
  * \return The weighted vertex normal.
  */
 glm::vec3 ComputeWeightedVertexNormal(const qem::Vertex& v0) {
-	glm::vec3 normal{0.0f};
-	auto edgei0 = v0.edge();
-	do {
-		const auto& face = edgei0->face();
-		normal += face->normal() * face->area();
-		edgei0 = edgei0->next()->flip();
-	} while (edgei0 != v0.edge());
-	return glm::normalize(normal);
+    glm::vec3 normal{0.0f};
+    auto edgei0 = v0.edge();
+    do {
+        const auto& face = edgei0->face();
+        normal += face->normal() * face->area();
+        edgei0 = edgei0->next()->flip();
+    } while (edgei0 != v0.edge());
+    return glm::normalize(normal);
 }
 }
 
 qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_transform()} {
-	const auto& positions = mesh.positions();
-	const auto& indices = mesh.indices();
+    const auto& positions = mesh.positions();
+    const auto& indices = mesh.indices();
 
-	for (size_t i = 0; i < positions.size(); ++i) {
-		vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i]));
-	}
+    for (size_t i = 0; i < positions.size(); ++i) {
+        vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i]));
+    }
 
-	for (size_t i = 0; i < indices.size(); i += 3) {
-		const auto& v0 = vertices_[indices[i]];
-		const auto& v1 = vertices_[indices[i + 1]];
-		const auto& v2 = vertices_[indices[i + 2]];
-		const auto face012 = CreateTriangle(v0, v1, v2, edges_);
-		faces_.emplace(hash_value(*face012), face012);
-	}
+    for (size_t i = 0; i < indices.size(); i += 3) {
+        const auto& v0 = vertices_[indices[i]];
+        const auto& v1 = vertices_[indices[i + 1]];
+        const auto& v2 = vertices_[indices[i + 2]];
+        const auto face012 = CreateTriangle(v0, v1, v2, edges_);
+        faces_.emplace(hash_value(*face012), face012);
+    }
 }
 
 qem::HalfEdgeMesh::operator qem::Mesh() const {
 
-	std::vector<glm::vec3> positions;
-	positions.reserve(vertices_.size());
+    std::vector<glm::vec3> positions;
+    positions.reserve(vertices_.size());
 
-	std::vector<glm::vec3> normals;
-	normals.reserve(vertices_.size());
+    std::vector<glm::vec3> normals;
+    normals.reserve(vertices_.size());
 
-	std::vector<unsigned> indices;
-	indices.reserve(faces_.size() * 3);
+    std::vector<unsigned> indices;
+    indices.reserve(faces_.size() * 3);
 
-	std::unordered_map<std::uint64_t, unsigned> index_map;
-	index_map.reserve(vertices_.size());
+    std::unordered_map<std::uint64_t, unsigned> index_map;
+    index_map.reserve(vertices_.size());
 
-	for (unsigned i = 0; const auto& vertex : vertices_ | std::views::values) {
-		positions.push_back(vertex->position());
-		normals.push_back(ComputeWeightedVertexNormal(*vertex));
-		index_map.emplace(vertex->id(), i++); // map original vertex IDs to their new index positions
-	}
+    for (unsigned i = 0; const auto& vertex : vertices_ | std::views::values) {
+        positions.push_back(vertex->position());
+        normals.push_back(ComputeWeightedVertexNormal(*vertex));
+        index_map.emplace(vertex->id(), i++);  // map original vertex IDs to their new index positions
+    }
 
-	for (const auto& face : faces_ | std::views::values) {
-		indices.push_back(index_map.at(face->v0()->id()));
-		indices.push_back(index_map.at(face->v1()->id()));
-		indices.push_back(index_map.at(face->v2()->id()));
-	}
+    for (const auto& face : faces_ | std::views::values) {
+        indices.push_back(index_map.at(face->v0()->id()));
+        indices.push_back(index_map.at(face->v1()->id()));
+        indices.push_back(index_map.at(face->v2()->id()));
+    }
 
-	return Mesh{positions, {}, normals, indices, model_transform_};
+    return Mesh{positions, {}, normals, indices, model_transform_};
 }
 
 void qem::HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new) {
-	const auto edge10 = edge01.flip();
-	const auto v0 = edge10->vertex();
-	const auto v1 = edge01.vertex();
-	const auto v0_next = edge10->next()->vertex();
-	const auto v1_next = edge01.next()->vertex();
+    const auto edge10 = edge01.flip();
+    const auto v0 = edge10->vertex();
+    const auto v1 = edge01.vertex();
+    const auto v0_next = edge10->next()->vertex();
+    const auto v1_next = edge01.next()->vertex();
 
-	UpdateIncidentEdges(*v0, *v1_next, *v0_next, v_new, edges_, faces_);
-	UpdateIncidentEdges(*v1, *v0_next, *v1_next, v_new, edges_, faces_);
+    UpdateIncidentEdges(*v0, *v1_next, *v0_next, v_new, edges_, faces_);
+    UpdateIncidentEdges(*v1, *v0_next, *v1_next, v_new, edges_, faces_);
 
-	DeleteFace(*edge01.face(), faces_);
-	DeleteFace(*edge10->face(), faces_);
+    DeleteFace(*edge01.face(), faces_);
+    DeleteFace(*edge10->face(), faces_);
 
-	DeleteEdge(edge01, edges_);
+    DeleteEdge(edge01, edges_);
 
-	DeleteVertex(*v0, vertices_);
-	DeleteVertex(*v1, vertices_);
+    DeleteVertex(*v0, vertices_);
+    DeleteVertex(*v1, vertices_);
 
-	vertices_.emplace(v_new->id(), v_new);
+    vertices_.emplace(v_new->id(), v_new);
 }

@@ -10,21 +10,21 @@ class Window;
 class Scene {
 
 public:
-	/**
-	 * \brief Initializes the scene.
-	 * \param window The window to render to.
-	 */
-	explicit Scene(Window* window);
+    /**
+     * \brief Initializes the scene.
+     * \param window The window to render to.
+     */
+    explicit Scene(Window* window);
 
-	/**
-	 * \brief Renders the scene.
-	 * \param delta_time The amount of time elapsed since the last frame was rendered.
-	 */
-	void Render(float delta_time);
+    /**
+     * \brief Renders the scene.
+     * \param delta_time The amount of time elapsed since the last frame was rendered.
+     */
+    void Render(float delta_time);
 
 private:
-	Window* window_;
-	Mesh mesh_;
-	ShaderProgram shader_program_;
+    Window* window_;
+    Mesh mesh_;
+    ShaderProgram shader_program_;
 };
 }

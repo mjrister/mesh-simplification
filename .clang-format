@@ -1,0 +1,12 @@
+---
+BasedOnStyle: Google
+AccessModifierOffset: -4
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: NonAssignment
+ColumnLimit: 120
+FixNamespaceComments: false
+IncludeBlocks: Preserve
+IndentWidth: 4
+KeepEmptyLinesAtTheStartOfBlocks: true
+Standard: c++20
