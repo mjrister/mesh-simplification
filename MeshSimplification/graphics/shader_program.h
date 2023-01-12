@@ -109,15 +109,15 @@ private:
      * \return An integer representing the uniform variable location. Returns -1 if the variable is not active.
      */
     [[nodiscard]] GLint GetUniformLocation(const std::string_view name) {
-        if (const auto iterator = uniform_locations_.find(name); iterator == uniform_locations_.end()) {
+        auto iterator = uniform_locations_.find(name);
+        if (iterator == uniform_locations_.end()) {
             const auto location = glGetUniformLocation(id_, name.data());
             if (location == -1) {
                 std::cerr << std::format("{} is not an active uniform variable\n", name);
             }
-            return uniform_locations_[std::string{name}] = location;
-        } else {
-            return iterator->second;
+            iterator = uniform_locations_.emplace(name, location).first;
         }
+        return iterator->second;
     }
 
     const GLuint id_;
