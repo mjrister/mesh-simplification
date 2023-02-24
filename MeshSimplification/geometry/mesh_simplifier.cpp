@@ -95,7 +95,7 @@ std::pair<std::shared_ptr<qem::Vertex>, float> GetOptimalEdgeContractionVertex(
 
     const auto q01 = q0 + q1;
     const glm::mat3 Q{q01};
-    const glm::vec3 b = column(q01, 3);
+    const glm::vec3 b = glm::column(q01, 3);
     const auto d = q01[3][3];
 
     // if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
