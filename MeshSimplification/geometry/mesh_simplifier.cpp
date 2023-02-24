@@ -67,8 +67,8 @@ glm::mat4 ComputeQuadric(const qem::Vertex& v0) {
     do {
         const auto& position = v0.position();
         const auto& normal = edgei0->face()->normal();
-        const glm::vec4 distance{normal, -glm::dot(position, normal)};
-        quadric += outerProduct(distance, distance);
+        const glm::vec4 plane{normal, -glm::dot(position, normal)};
+        quadric += glm::outerProduct(plane, plane);
         edgei0 = edgei0->next()->flip();
     } while (edgei0 != v0.edge());
     return quadric;
