@@ -105,7 +105,7 @@ std::pair<std::shared_ptr<qem::Vertex>, float> GetOptimalEdgeContractionVertex(
         return {std::make_shared<qem::Vertex>(position), 0.0f};
     }
 
-    const auto Q_inv = inverse(Q);
+    const auto Q_inv = glm::inverse(Q);
     const auto D_inv = glm::column(glm::mat4{Q_inv}, 3, glm::vec4{-1.0f / d * Q_inv * b, 1.0f / d});
 
     auto position = D_inv * glm::vec4{0.0f, 0.0f, 0.0f, 1.0f};
