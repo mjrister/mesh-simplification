@@ -37,7 +37,7 @@ qem::Face::Face(const std::shared_ptr<const Vertex>& v0,
     const auto edge01 = v1_.lock()->position() - v0_.lock()->position();
     const auto edge02 = v2_.lock()->position() - v0_.lock()->position();
     const auto normal = glm::cross(edge01, edge02);
-    const auto normal_magnitude = length(normal);
+    const auto normal_magnitude = glm::length(normal);
     assert(normal_magnitude != 0.0f);  // ensure face vertices are not collinear
 
     normal_ = normal / normal_magnitude;
