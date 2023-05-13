@@ -53,7 +53,7 @@ glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
 std::optional<const std::pair<const glm::vec3, const float>> qem::arcball::GetRotation(
     const glm::dvec2& cursor_position_start,
     const glm::dvec2& cursor_position_end,
-    const std::pair<const int32_t, const int32_t>& window_dimensions) {
+    const std::pair<const std::int32_t, const std::int32_t>& window_dimensions) {
 
     const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
     const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
