@@ -56,11 +56,7 @@ std::shared_ptr<const qem::HalfEdge> GetMinEdge(const std::shared_ptr<const qem:
     return edge01->vertex()->id() < edge10->vertex()->id() ? edge01 : edge10;
 }
 
-/**
- * \brief Computes the error quadric for a vertex.
- * \param v0 The vertex to evaluate.
- * \return The error quadric for \p vertex.
- */
+/** \brief Computes the error quadric for a vertex. */
 glm::mat4 ComputeQuadric(const qem::Vertex& v0) {
     glm::mat4 quadric{0.0f};
     auto edgei0 = v0.edge();
@@ -74,6 +70,13 @@ glm::mat4 ComputeQuadric(const qem::Vertex& v0) {
     return quadric;
 }
 
+/** \brief Gets the error quadric for a given vertex. */
+const glm::mat4& GetQuadric(const qem::Vertex& v0, const std::unordered_map<std::uint64_t, glm::mat4>& quadrics) {
+    const auto q0_iterator = quadrics.find(v0.id());
+    assert(q0_iterator != quadrics.end());
+    return q0_iterator->second;
+}
+
 /**
  * \brief Determines the optimal vertex position for an edge contraction.
  * \param edge01 The edge to evaluate.
@@ -84,14 +87,10 @@ std::pair<std::shared_ptr<qem::Vertex>, float> GetOptimalEdgeContractionVertex(
     const qem::HalfEdge& edge01, const std::unordered_map<std::uint64_t, glm::mat4>& quadrics) {
 
     const auto v0 = edge01.flip()->vertex();
-    const auto q0_iterator = quadrics.find(v0->id());
-    assert(q0_iterator != quadrics.end());
-    const auto& q0 = q0_iterator->second;
-
     const auto v1 = edge01.vertex();
-    const auto q1_iterator = quadrics.find(v1->id());
-    assert(q1_iterator != quadrics.end());
-    const auto& q1 = q1_iterator->second;
+
+    const auto& q0 = GetQuadric(*v0, quadrics);
+    const auto& q1 = GetQuadric(*v1, quadrics);
 
     const auto q01 = q0 + q1;
     const glm::mat3 Q{q01};
@@ -141,7 +140,7 @@ bool WillDegenerate(const std::shared_ptr<const qem::HalfEdge>& edge01) {
 }
 }
 
-qem::Mesh qem::mesh::Simplify(const qem::Mesh& mesh, const float rate) {
+qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
     assert(0.0f <= rate && rate <= 1.0f);
 
     const auto start_time = std::chrono::high_resolution_clock::now();
@@ -188,14 +187,10 @@ qem::Mesh qem::mesh::Simplify(const qem::Mesh& mesh, const float rate) {
         if (!edge_contraction->valid || WillDegenerate(edge01)) continue;
 
         const auto v0 = edge01->flip()->vertex();
-        const auto q0_iterator = quadrics.find(v0->id());
-        assert(q0_iterator != quadrics.end());
-        const auto& q0 = q0_iterator->second;
-
         const auto v1 = edge01->vertex();
-        const auto q1_iterator = quadrics.find(v1->id());
-        assert(q1_iterator != quadrics.end());
-        const auto& q1 = q1_iterator->second;
+
+        const auto& q0 = GetQuadric(*v0, quadrics);
+        const auto& q1 = GetQuadric(*v1, quadrics);
 
         const auto& v_new = edge_contraction->vertex;
         v_new->set_id(next_vertex_id++);         // assign a new vertex ID when processing the next edge contraction
