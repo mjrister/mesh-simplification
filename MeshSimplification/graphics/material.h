@@ -13,20 +13,7 @@ namespace qem {
 struct Material {
 
     /** \brief An enumeration for various material types. */
-    enum class Type {
-        kBrass,
-        kBronze,
-        kChrome,
-        kCopper,
-        kEmerald,
-        kGold,
-        kJade,
-        kObsidian,
-        kPearl,
-        kRuby,
-        kSilver,
-        kTurquoise
-    };
+    enum class Type { kBrass, kBronze, kChrome, kEmerald, kGold, kJade, kObsidian, kPearl, kRuby, kSilver, kTurquoise };
 
     /**
      * \brief A static factory function to construct a material from a dedicated material type.
@@ -57,14 +44,6 @@ struct Material {
                     .ambient = glm::vec3{0.25f, 0.25f, 0.25f},
                     .diffuse = glm::vec3{0.4f, 0.4f, 0.4f},
                     .specular = glm::vec3{0.774597f, 0.774597f, 0.774597f},
-                    .shininess = 0.6f,
-                };
-            }
-            case Type::kCopper: {
-                return Material{
-                    .ambient = glm::vec3{0.19125f, 0.0735f, 0.0225f},
-                    .diffuse = glm::vec3{0.7038f, 0.27048f, 0.0828f},
-                    .specular = glm::vec3{0.256777f, 0.137622f, 0.086014f},
                     .shininess = 0.6f,
                 };
             }

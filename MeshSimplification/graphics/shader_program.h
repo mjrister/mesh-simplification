@@ -98,9 +98,9 @@ private:
     // degrade performance on the critical rendering path.
     struct StringViewHash {
         using is_transparent = void;
-        static constexpr std::hash<std::string_view> kHash;
+        static constexpr std::hash<std::string_view> kStringViewHash;
 
-        std::size_t operator()(const std::string_view value) const noexcept { return kHash(value); }
+        std::size_t operator()(const std::string_view value) const noexcept { return kStringViewHash(value); }
     };
 
     /**

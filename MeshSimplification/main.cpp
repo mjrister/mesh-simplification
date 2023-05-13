@@ -13,8 +13,8 @@ int main() {
 	try {
 		constexpr auto kWindowDimensions = std::make_pair(1280, 960);
 		constexpr auto kOpenGlVersion = std::make_pair(4, 6);
-		constexpr auto* kWindowTitle = "Mesh Simplification";
-		qem::Window window{kWindowTitle, kWindowDimensions, kOpenGlVersion};
+		constexpr auto* kProjectTitle = "Mesh Simplification";
+		qem::Window window{kProjectTitle, kWindowDimensions, kOpenGlVersion};
 		qem::Scene scene{&window};
 		qem::FrameTimer frame_timer;
 
@@ -24,7 +24,7 @@ int main() {
 
 			if (elapsed_time += delta_time; elapsed_time > frame_timer.sample_time()) {
 				const auto frames_per_second = static_cast<std::uint32_t>(frame_timer.frames_per_second());
-				const auto window_title = std::format("{} - Frames per second: {}", kWindowTitle, frames_per_second);
+				const auto window_title = std::format("{} - Frames per second: {}", kProjectTitle, frames_per_second);
 				window.SetTitle(window_title.c_str());
 				elapsed_time = 0.0f;
 			}
