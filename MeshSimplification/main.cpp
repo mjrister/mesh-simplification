@@ -1,33 +1,41 @@
+#include <cstdlib>
 #include <exception>
+#include <format>
+#include <iostream>
+#include <utility>
 
-#include <GL/gl3w.h>
-#include <GLFW/glfw3.h>
-
+#include "graphics/frame_timer.h"
 #include "graphics/scene.h"
 #include "graphics/window.h"
 
-using namespace qem;
-using namespace std;
-
 int main() {
 
-    try {
-        constexpr auto kWindowDimensions = make_pair(1280, 960);
-        constexpr auto kOpenGlVersion = make_pair(4, 6);
-        Window window{"Mesh Simplification", kWindowDimensions, kOpenGlVersion};
-        Scene scene{&window};
+	try {
+		constexpr auto kWindowDimensions = std::make_pair(1280, 960);
+		constexpr auto kOpenGlVersion = std::make_pair(4, 6);
+		constexpr auto* kWindowTitle = "Mesh Simplification";
+		qem::Window window{kWindowTitle, kWindowDimensions, kOpenGlVersion};
+		qem::Scene scene{&window};
+		qem::FrameTimer frame_timer;
 
-        for (auto previous_time = static_cast<float>(glfwGetTime()), delta_time = 0.0f; !window.IsClosed();) {
-            const auto current_time = static_cast<float>(glfwGetTime());
-            delta_time = current_time - previous_time;
-            previous_time = current_time;
-            scene.Render(delta_time);
-            window.Update();
-        }
-    } catch (const exception& e) {
-        cerr << e.what() << endl;
-        return EXIT_FAILURE;
-    }
+		for (auto elapsed_time = 0.0f; !window.IsClosed();) {
+			frame_timer.Update();
+			const auto delta_time = frame_timer.delta_time();
 
-    return EXIT_SUCCESS;
+			if (elapsed_time += delta_time; elapsed_time > frame_timer.sample_time()) {
+				const auto frames_per_second = static_cast<std::uint32_t>(frame_timer.frames_per_second());
+				const auto window_title = std::format("{} - Frames per second: {}", kWindowTitle, frames_per_second);
+				window.SetTitle(window_title.c_str());
+				elapsed_time = 0.0f;
+			}
+
+			window.Update();
+			scene.Render(delta_time);
+		}
+	} catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
 }

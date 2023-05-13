@@ -67,6 +67,9 @@
     <ClInclude Include="graphics\arcball.h">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\frame_timer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\mesh_fragment.glsl">

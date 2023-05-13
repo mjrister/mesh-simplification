@@ -75,6 +75,9 @@ public:
         return {x, y};
     }
 
+    /** \brief Sets the window title. */
+    void SetTitle(const char* const title) const noexcept { glfwSetWindowTitle(window_, title); }
+
     /**
      * \brief Determines if the window is closed.
      * \return \c true if the window is closed, otherwise \c false.
