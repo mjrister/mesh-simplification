@@ -36,7 +36,7 @@ class ShaderProgram {
         Shader(Shader&&) noexcept = delete;
         Shader& operator=(Shader&&) noexcept = delete;
 
-        const GLuint id;
+        GLuint id;
     };
 
 public:
@@ -98,9 +98,9 @@ private:
     // degrade performance on the critical rendering path.
     struct StringViewHash {
         using is_transparent = void;
-        static constexpr std::hash<std::string_view> kStringViewHash;
+        static constexpr std::hash<std::string_view> kHash;
 
-        std::size_t operator()(const std::string_view value) const noexcept { return kStringViewHash(value); }
+        std::size_t operator()(const std::string_view value) const noexcept { return kHash(value); }
     };
 
     /**
@@ -120,8 +120,8 @@ private:
         return iterator->second;
     }
 
-    const GLuint id_;
-    const Shader vertex_shader_, fragment_shader_;
+    GLuint id_;
+    Shader vertex_shader_, fragment_shader_;
     std::unordered_map<std::string, GLint, StringViewHash, std::equal_to<>> uniform_locations_;
 };
 }
