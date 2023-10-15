@@ -8,6 +8,7 @@
 #include <limits>
 #include <queue>
 #include <ranges>
+#include <stdexcept>
 #include <unordered_map>
 #include <vector>
 
@@ -139,7 +140,9 @@ bool WillDegenerate(const std::shared_ptr<const qem::HalfEdge>& edge01) {
 }
 
 qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
-  assert(0.0f <= rate && rate <= 1.0f);
+  if (rate < 0.0f || rate > 1.0f) {
+    throw std::invalid_argument{std::format("Invalid mesh simplification rate: {}", rate)};
+  }
 
   const auto start_time = std::chrono::high_resolution_clock::now();
   HalfEdgeMesh half_edge_mesh{mesh};
