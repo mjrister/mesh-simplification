@@ -24,7 +24,6 @@ uniform struct Material {
 out vec4 fragment_color;
 
 void main() {
-
 	const vec3 vertex_normal = normalize(cross(dFdx(vertex.position.xyz), dFdy(vertex.position.xyz)));
 	fragment_color = vec4(material.ambient, 1.0);
 
