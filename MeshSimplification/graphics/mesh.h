@@ -40,7 +40,7 @@ public:
   Mesh(Mesh&& mesh) noexcept;
   Mesh& operator=(Mesh&& mesh) noexcept;
 
-  ~Mesh();
+  ~Mesh() noexcept;
 
   /** \brief Gets the mesh vertex positions. */
   [[nodiscard]] const std::vector<glm::vec3>& positions() const noexcept { return positions_; }

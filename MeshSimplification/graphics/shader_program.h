@@ -26,7 +26,7 @@ class ShaderProgram {
      */
     Shader(GLenum shader_type, const std::string& shader_source);
 
-    ~Shader() { glDeleteShader(id); }
+    ~Shader() noexcept { glDeleteShader(id); }
 
     Shader(const Shader&) = delete;
     Shader& operator=(const Shader&) = delete;
@@ -47,13 +47,13 @@ public:
   ShaderProgram(const std::filesystem::path& vertex_shader_filepath,
                 const std::filesystem::path& fragment_shader_filepath);
 
-  ~ShaderProgram() { glDeleteProgram(id_); }
-
   ShaderProgram(const ShaderProgram&) = delete;
   ShaderProgram& operator=(const ShaderProgram&) = delete;
 
   ShaderProgram(ShaderProgram&&) noexcept = delete;
   ShaderProgram& operator=(ShaderProgram&&) noexcept = delete;
+
+  ~ShaderProgram() noexcept { glDeleteProgram(id_); }
 
   /** \brief Binds the shader program to the current OpenGL context. */
   void Enable() const noexcept { glUseProgram(id_); }

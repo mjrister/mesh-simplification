@@ -27,7 +27,7 @@ public:
   Window(Window&&) noexcept = delete;
   Window& operator=(Window&&) noexcept = delete;
 
-  ~Window();
+  ~Window() noexcept;
 
   /**
    * \brief Sets a callback to be invoked when a discrete key press is detected.

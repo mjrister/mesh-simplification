@@ -156,7 +156,7 @@ qem::Window::Window(const char* const title,
   InitializeGl3w(opengl_version);
 }
 
-qem::Window::~Window() {
+qem::Window::~Window() noexcept {
   if (window_) {
     glfwDestroyWindow(window_);
   }

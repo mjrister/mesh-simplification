@@ -102,7 +102,7 @@ qem::Mesh& qem::Mesh::operator=(Mesh&& mesh) noexcept {
   return *this;
 }
 
-qem::Mesh::~Mesh() {
+qem::Mesh::~Mesh() noexcept {
   glDeleteVertexArrays(1, &vertex_array_);
   glDeleteBuffers(1, &vertex_buffer_);
   glDeleteBuffers(1, &element_buffer_);
