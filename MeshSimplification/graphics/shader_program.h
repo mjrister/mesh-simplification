@@ -81,14 +81,14 @@ public:
     } else if constexpr (std::same_as<T, glm::mat4>) {
       glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
     } else {
-      static_assert(assert_false<T>, "Unsupported uniform variable type");
+      static_assert(kAssertFalse<T>, "Unsupported uniform variable type");
     }
   }
 
 private:
   // this is required as a workaround to ensure that static assertions in if constexpr statement are well-formed
   template <typename>
-  static constexpr std::false_type assert_false{};
+  static constexpr std::false_type kAssertFalse{};
 
   // The following is needed to perform heterogeneous lookup in unordered containers. This is important because
   // each uniform location query is performed using a string_view, but stored as a string. Without heterogeneous
