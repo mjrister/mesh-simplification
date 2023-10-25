@@ -238,7 +238,6 @@
     <ClCompile Include="graphics\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics\frame_timer.h" />
     <ClInclude Include="graphics\arcball.h" />
     <ClInclude Include="geometry\face.h" />
     <ClInclude Include="geometry\mesh_simplifier.h" />
