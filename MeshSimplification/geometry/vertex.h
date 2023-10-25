@@ -45,6 +45,7 @@ public:
 
   /** \brief Gets the hash value for a vertex. */
   friend std::uint64_t hash_value(const Vertex& v0) noexcept {
+    static constexpr std::hash<std::uint64_t> kUint64Hash;
     assert(v0.id_.has_value());
     return kUint64Hash(*v0.id_);
   }
@@ -67,7 +68,6 @@ public:
   }
 
 private:
-  static constexpr std::hash<std::uint64_t> kUint64Hash;
   std::optional<std::uint64_t> id_;
   glm::vec3 position_;
   std::weak_ptr<const HalfEdge> edge_;
