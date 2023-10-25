@@ -91,10 +91,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="models\buddha.obj">
+    <Object Include="assets\buddha.obj">
       <Filter>models</Filter>
     </Object>
-    <Object Include="models\bunny.obj">
+    <Object Include="assets\bunny.obj">
       <Filter>models</Filter>
     </Object>
   </ItemGroup>

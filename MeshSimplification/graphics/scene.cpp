@@ -123,7 +123,7 @@ void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float de
 
 qem::Scene::Scene(Window* const window)
     : window_{window},
-      mesh_{obj_loader::LoadMesh("models/bunny.obj")},
+      mesh_{obj_loader::LoadMesh("assets/bunny.obj")},
       shader_program_{"shaders/mesh_vertex.glsl", "shaders/mesh_fragment.glsl"} {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
