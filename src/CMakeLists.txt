@@ -13,7 +13,7 @@ find_package(gl3w CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
-target_compile_definitions(mesh_simplification PRIVATE GLM_ENABLE_EXPERIMENTAL)
+target_compile_definitions(mesh_simplification PRIVATE GLM_ENABLE_EXPERIMENTAL GLM_FORCE_XYZW_ONLY)
 target_include_directories(mesh_simplification PRIVATE .)
 target_link_libraries(mesh_simplification PRIVATE glfw glm::glm unofficial::gl3w::gl3w)
 

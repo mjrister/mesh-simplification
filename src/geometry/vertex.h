@@ -53,17 +53,17 @@ public:
   /** \brief Gets the hash value for two vertices. */
   friend std::uint64_t hash_value(const Vertex& v0, const Vertex& v1) noexcept {
     std::uint64_t seed = 0x32C95994;
-    seed ^= (seed << 6) + (seed >> 2) + 0x3FA612CE + hash_value(v0);
-    seed ^= (seed << 6) + (seed >> 2) + 0x197685C2 + hash_value(v1);
+    seed ^= (seed << 6u) + (seed >> 2u) + 0x3FA612CE + hash_value(v0);
+    seed ^= (seed << 6u) + (seed >> 2u) + 0x197685C2 + hash_value(v1);
     return seed;
   }
 
   /** \brief Gets the hash value for three vertices. */
   friend std::uint64_t hash_value(const Vertex& v0, const Vertex& v1, const Vertex& v2) noexcept {
     std::uint64_t seed = 0x230402B5;
-    seed ^= (seed << 6) + (seed >> 2) + 0x72C2C6EB + hash_value(v0);
-    seed ^= (seed << 6) + (seed >> 2) + 0x16E199E4 + hash_value(v1);
-    seed ^= (seed << 6) + (seed >> 2) + 0x6F89F2A8 + hash_value(v2);
+    seed ^= (seed << 6u) + (seed >> 2u) + 0x72C2C6EB + hash_value(v0);
+    seed ^= (seed << 6u) + (seed >> 2u) + 0x16E199E4 + hash_value(v1);
+    seed ^= (seed << 6u) + (seed >> 2u) + 0x6F89F2A8 + hash_value(v2);
     return seed;
   }
 
@@ -72,4 +72,5 @@ private:
   glm::vec3 position_;
   std::weak_ptr<const HalfEdge> edge_;
 };
-}
+
+}  // namespace qem

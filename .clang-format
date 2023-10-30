@@ -1,11 +1,11 @@
 BasedOnStyle: Google
 AccessModifierOffset: -2
+AllowShortCaseLabelsOnASingleLine: true
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBinaryOperators: NonAssignment
 ColumnLimit: 120
 DerivePointerAlignment: false
-FixNamespaceComments: false
 IncludeBlocks: Preserve
 InsertNewlineAtEOF: true
 PackConstructorInitializers: NextLine

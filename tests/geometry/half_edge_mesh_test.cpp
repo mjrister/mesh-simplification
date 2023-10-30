@@ -159,7 +159,14 @@ TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
   ASSERT_EQ(32, half_edge_mesh.edges().size());
   ASSERT_EQ(8, half_edge_mesh.faces().size());
 
-  VerifyTriangles(half_edge_mesh, {2, 3, 10, 3, 4, 10, 4, 5, 10, 5, 6, 10, 6, 7, 10, 7, 8, 10, 8, 9, 10, 2, 10, 9});
+  VerifyTriangles(half_edge_mesh, {2, 3,  10,   // f0
+                                   3, 4,  10,   // f1
+                                   4, 5,  10,   // f2
+                                   5, 6,  10,   // f3
+                                   6, 7,  10,   // f4
+                                   7, 8,  10,   // f5
+                                   8, 9,  10,   // f6
+                                   2, 10, 9});  // f7
 }
 
 TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {
@@ -210,4 +217,5 @@ TEST_F(HalfEdgeMeshTest, TestDeleteInvalidFaceCausesProgramExit) {
 }
 
 #endif
-}
+
+}  // namespace

@@ -13,5 +13,6 @@ namespace mesh {
  * \see docs/surface_simplification for a detailed description of this mesh simplification algorithm.
  */
 Mesh Simplify(const Mesh& mesh, float rate);
-}
-}
+
+}  // namespace mesh
+}  // namespace qem

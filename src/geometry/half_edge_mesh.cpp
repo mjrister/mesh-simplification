@@ -174,7 +174,8 @@ glm::vec3 ComputeWeightedVertexNormal(const qem::Vertex& v0) {
   } while (edgei0 != v0.edge());
   return glm::normalize(normal);
 }
-}
+
+}  // namespace
 
 qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_transform()} {
   const auto& positions = mesh.positions();

@@ -14,9 +14,9 @@ namespace {
  * \return A string containing the file contents.
  */
 std::string ReadFile(const std::filesystem::path& filepath) {
-  if (std::ifstream ifs{filepath, std::ios::ate | std::ios::binary}) {
-    const auto size = ifs.tellg();
-    std::string source(size, '\0');
+  if (std::ifstream ifs{filepath, std::ios::ate | std::ios::binary}) {  // NOLINT(hicpp-signed-bitwise)
+    const std::streamsize size = ifs.tellg();
+    std::string source(static_cast<std::size_t>(size), '\0');
     ifs.seekg(0, std::ios::beg);
     ifs.read(source.data(), size);
     return source;
@@ -59,11 +59,12 @@ void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum stat
     throw std::runtime_error{info_log.data()};
   }
 }
-}
+
+}  // namespace
 
 qem::ShaderProgram::Shader::Shader(const GLenum shader_type, const std::string& shader_source)
     : id{glCreateShader(shader_type)} {
-  if (!id) throw std::runtime_error{"Shader creation failed"};
+  if (id == 0) throw std::runtime_error{"Shader creation failed"};
 
   const auto* shader_source_data = shader_source.data();
   glShaderSource(id, 1, &shader_source_data, nullptr);
@@ -77,7 +78,7 @@ qem::ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_shader_fil
     : id_{glCreateProgram()},
       vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath)},
       fragment_shader_{GL_FRAGMENT_SHADER, ReadFile(fragment_shader_filepath)} {
-  if (!id_) throw std::runtime_error{"Shader program creation failed"};
+  if (id_ == 0) throw std::runtime_error{"Shader program creation failed"};
 
   glAttachShader(id_, vertex_shader_.id);
   glAttachShader(id_, fragment_shader_.id);

@@ -60,7 +60,7 @@ public:
   /** \brief Renders the mesh to the current render target. */
   void Render() const noexcept {
     glBindVertexArray(vertex_array_);
-    if (element_buffer_) {
+    if (element_buffer_ != 0) {
       glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_.size()), GL_UNSIGNED_INT, nullptr);
     } else {
       glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(positions_.size()));
@@ -97,4 +97,4 @@ private:
   std::vector<GLuint> indices_;
   glm::mat4 model_transform_{};
 };
-}
+}  // namespace qem

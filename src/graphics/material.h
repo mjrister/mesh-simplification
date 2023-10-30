@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdexcept>
-
 #include <glm/vec3.hpp>
 
 namespace qem {
@@ -127,4 +125,4 @@ struct Material {
   /** The degree of shininess reflected from specular highlights. */
   float shininess;
 };
-}
+}  // namespace qem

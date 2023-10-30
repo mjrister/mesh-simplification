@@ -121,8 +121,7 @@ glm::ivec3 ParseIndexGroup(const std::string_view token) {
         return {x, y, z};
       }
       break;
-    default:
-      break;
+    default: break;
   }
 
   throw std::invalid_argument{format("Unsupported format {}", token)};
@@ -204,7 +203,8 @@ qem::Mesh LoadMesh(std::istream& is) {
 
   return qem::Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices};
 }
-}
+
+}  // namespace
 
 qem::Mesh qem::obj_loader::LoadMesh(const std::filesystem::path& filepath) {
   if (std::ifstream ifs{filepath}; ifs.good()) {

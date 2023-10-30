@@ -1,5 +1,4 @@
 #include "geometry/face.cpp"
-
 #include <array>
 #include <format>
 
@@ -71,4 +70,5 @@ TEST(FaceTest, TestFaceInitializationWithCollinearVerticesCausesProgramExit) {
 }
 
 #endif
-}
+
+}  // namespace

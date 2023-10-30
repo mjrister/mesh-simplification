@@ -12,7 +12,7 @@
 namespace {
 
 /**
- * \brief Gets the cursor position in normalized device coordinates (e.g., \f$(x,y) \in [-1, 1]\f$).
+ * \brief Gets the cursor position in normalized device coordinates.
  * \param cursor_position The cursor position in the window.
  * \param window_dimensions The window width and height.
  * \return The cursor position in normalized device coordinates.
@@ -47,7 +47,8 @@ glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
   // get nearest position on the arcball
   return glm::normalize(glm::vec3{x, y, 0.0f});
 }
-}
+
+}  // namespace
 
 std::optional<const std::pair<const glm::vec3, const float>> qem::arcball::GetRotation(
     const glm::dvec2& cursor_position_start,

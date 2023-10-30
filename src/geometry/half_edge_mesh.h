@@ -55,4 +55,5 @@ private:
   std::unordered_map<std::uint64_t, std::shared_ptr<Face>> faces_;
   glm::mat4 model_transform_;
 };
-}
+
+}  // namespace qem

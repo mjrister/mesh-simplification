@@ -81,7 +81,7 @@ public:
    * \brief Determines if the window is closed.
    * \return \c true if the window is closed, otherwise \c false.
    */
-  [[nodiscard]] bool IsClosed() const noexcept { return glfwWindowShouldClose(window_); }
+  [[nodiscard]] bool IsClosed() const noexcept { return glfwWindowShouldClose(window_) == GLFW_TRUE; }
 
   /**
    * \brief Determines if a key is pressed.
@@ -112,4 +112,5 @@ private:
   std::function<void(int)> on_key_press_;
   std::function<void(double, double)> on_scroll_;
 };
-}
+
+}  // namespace qem

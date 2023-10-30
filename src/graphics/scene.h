@@ -26,4 +26,5 @@ private:
   Mesh mesh_;
   ShaderProgram shader_program_;
 };
-}
+
+}  // namespace qem

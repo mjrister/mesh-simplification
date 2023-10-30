@@ -5,7 +5,6 @@
 #include <chrono>
 #include <cstdint>
 #include <iostream>
-#include <limits>
 #include <queue>
 #include <ranges>
 #include <stdexcept>
@@ -95,8 +94,7 @@ std::pair<std::shared_ptr<qem::Vertex>, float> GetOptimalEdgeContractionVertex(
   const auto d = q01[3][3];
 
   // if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
-  if (constexpr auto kEpsilon = std::numeric_limits<float>::epsilon();
-      fabs(determinant(Q)) < kEpsilon || fabs(d) < kEpsilon) {
+  if (static constexpr auto kEpsilon = 1.0e-3f; fabs(determinant(Q)) < kEpsilon || fabs(d) < kEpsilon) {
     const auto position = (v0->position() + v1->position()) / 2.0f;
     return {std::make_shared<qem::Vertex>(position), 0.0f};
   }
@@ -135,7 +133,8 @@ bool WillDegenerate(const std::shared_ptr<const qem::HalfEdge>& edge01) {
 
   return false;
 }
-}
+
+}  // namespace
 
 qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
   if (rate < 0.0f || rate > 1.0f) {
@@ -152,7 +151,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
   }
 
   // use a priority queue to sort edge contraction candidates by the cost of removing each edge
-  constexpr auto kMinCostComparator = [](const auto& lhs, const auto& rhs) noexcept { return lhs->cost > rhs->cost; };
+  static constexpr auto kMinCostComparator = [](const auto& lhs, const auto& rhs) { return lhs->cost > rhs->cost; };
   std::priority_queue<std::shared_ptr<EdgeContraction>,
                       std::vector<std::shared_ptr<EdgeContraction>>,
                       decltype(kMinCostComparator)>
@@ -175,7 +174,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
 
   // stop mesh simplification if the number of triangles has been sufficiently reduced
   const auto initial_face_count = static_cast<float>(half_edge_mesh.faces().size());
-  const auto is_simplified = [&, target_face_count = initial_face_count * (1.0f - rate)]() noexcept {
+  const auto is_simplified = [&, target_face_count = initial_face_count * (1.0f - rate)] {
     return edge_contractions.empty() || static_cast<float>(half_edge_mesh.faces().size()) < target_face_count;
   };
 

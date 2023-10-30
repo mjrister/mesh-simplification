@@ -45,4 +45,5 @@ private:
   std::weak_ptr<HalfEdge> next_, flip_;
   std::weak_ptr<Face> face_;
 };
-}
+
+}  // namespace qem

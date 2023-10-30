@@ -19,5 +19,6 @@ namespace obj_loader {
  * \see https://en.wikipedia.org/wiki/Wavefront_.obj_file
  */
 Mesh LoadMesh(const std::filesystem::path& filepath);
-}
-}
+
+}  // namespace obj_loader
+}  // namespace qem

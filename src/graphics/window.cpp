@@ -7,6 +7,7 @@
 
 namespace {
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 [[maybe_unused]] void APIENTRY HandleDebugMessageReceived(const GLenum source,
                                                           const GLenum type,
                                                           const GLuint id,
@@ -16,65 +17,31 @@ namespace {
                                                           const void* /*user_param*/) {
   std::string message_source;
   switch (source) {
-    case GL_DEBUG_SOURCE_API:
-      message_source = "API";
-      break;
-    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-      message_source = "WINDOW SYSTEM";
-      break;
-    case GL_DEBUG_SOURCE_SHADER_COMPILER:
-      message_source = "SHADER COMPILER";
-      break;
-    case GL_DEBUG_SOURCE_THIRD_PARTY:
-      message_source = "THIRD PARTY";
-      break;
-    case GL_DEBUG_SOURCE_APPLICATION:
-      message_source = "APPLICATION";
-      break;
-    default:
-      message_source = "OTHER";
-      break;
+    case GL_DEBUG_SOURCE_API: message_source = "API"; break;
+    case GL_DEBUG_SOURCE_WINDOW_SYSTEM: message_source = "WINDOW SYSTEM"; break;
+    case GL_DEBUG_SOURCE_SHADER_COMPILER: message_source = "SHADER COMPILER"; break;
+    case GL_DEBUG_SOURCE_THIRD_PARTY: message_source = "THIRD PARTY"; break;
+    case GL_DEBUG_SOURCE_APPLICATION: message_source = "APPLICATION"; break;
+    default: message_source = "OTHER"; break;
   }
 
   std::string message_type;
   switch (type) {
-    case GL_DEBUG_TYPE_ERROR:
-      message_type = "ERROR";
-      break;
-    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-      message_type = "DEPRECATED BEHAVIOR";
-      break;
-    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-      message_type = "UNDEFINED BEHAVIOR";
-      break;
-    case GL_DEBUG_TYPE_PORTABILITY:
-      message_type = "PORTABILITY";
-      break;
-    case GL_DEBUG_TYPE_PERFORMANCE:
-      message_type = "PERFORMANCE";
-      break;
-    default:
-      message_type = "OTHER";
-      break;
+    case GL_DEBUG_TYPE_ERROR: message_type = "ERROR"; break;
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: message_type = "DEPRECATED BEHAVIOR"; break;
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: message_type = "UNDEFINED BEHAVIOR"; break;
+    case GL_DEBUG_TYPE_PORTABILITY: message_type = "PORTABILITY"; break;
+    case GL_DEBUG_TYPE_PERFORMANCE: message_type = "PERFORMANCE"; break;
+    default: message_type = "OTHER"; break;
   }
 
   std::string message_severity;
   switch (severity) {
-    case GL_DEBUG_SEVERITY_HIGH:
-      message_severity = "HIGH";
-      break;
-    case GL_DEBUG_SEVERITY_MEDIUM:
-      message_severity = "MEDIUM";
-      break;
-    case GL_DEBUG_SEVERITY_LOW:
-      message_severity = "LOW";
-      break;
-    case GL_DEBUG_SEVERITY_NOTIFICATION:
-      message_severity = "NOTIFICATION";
-      break;
-    default:
-      message_severity = "OTHER";
-      break;
+    case GL_DEBUG_SEVERITY_HIGH: message_severity = "HIGH"; break;
+    case GL_DEBUG_SEVERITY_MEDIUM: message_severity = "MEDIUM"; break;
+    case GL_DEBUG_SEVERITY_LOW: message_severity = "LOW"; break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION: message_severity = "NOTIFICATION"; break;
+    default: message_severity = "OTHER"; break;
   }
 
   std::cout << format("OpenGL Debug ({}): Source: {}, Type: {}, Severity: {}\n{}\n",
@@ -86,7 +53,7 @@ namespace {
 }
 
 void InitializeGlfw(const std::pair<const int, const int>& opengl_version) {
-  if (!glfwInit()) throw std::runtime_error{"GLFW initialization failed"};
+  if (glfwInit() == GLFW_FALSE) throw std::runtime_error{"GLFW initialization failed"};
 
   const auto [major_version, minor_version] = opengl_version;
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major_version);
@@ -96,7 +63,7 @@ void InitializeGlfw(const std::pair<const int, const int>& opengl_version) {
   glfwSwapInterval(1);
 
 #ifndef NDEBUG
-  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
   glfwSetErrorCallback([](const int error_code, const char* const description) {
     std::cerr << std::format("GLFW Error ({}): {}\n", error_code, description);
   });
@@ -104,22 +71,24 @@ void InitializeGlfw(const std::pair<const int, const int>& opengl_version) {
 }
 
 void InitializeGl3w(const std::pair<const int, const int>& opengl_version) {
-  if (gl3wInit()) throw std::runtime_error{"OpenGL initialization failed"};
+  if (gl3wInit() != GL3W_OK) throw std::runtime_error{"OpenGL initialization failed"};
 
-  if (const auto [major_version, minor_version] = opengl_version; !gl3wIsSupported(major_version, minor_version)) {
+  if (const auto [major_version, minor_version] = opengl_version; gl3wIsSupported(major_version, minor_version) == 0) {
     throw std::runtime_error{std::format("OpenGL {}.{} not supported", major_version, minor_version)};
   }
 
 #ifndef NDEBUG
+  // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
   std::cout << std::format("OpenGL version: {}, GLSL version: {}\n",
                            reinterpret_cast<const char*>(glGetString(GL_VERSION)),
                            reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
+  // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
 
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
   glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
 #endif
 }
-}
+}  // namespace
 
 qem::Window::Window(const char* const title,
                     const std::pair<int, int>& window_dimensions,
@@ -127,8 +96,9 @@ qem::Window::Window(const char* const title,
   InitializeGlfw(opengl_version);
 
   const auto [width, height] = window_dimensions;
+  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
   window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
-  if (!window_) throw std::runtime_error{"Window creation failed"};
+  if (window_ == nullptr) throw std::runtime_error{"Window creation failed"};
 
   glfwSetWindowUserPointer(window_, this);
   glfwMakeContextCurrent(window_);
@@ -160,7 +130,7 @@ qem::Window::Window(const char* const title,
 }
 
 qem::Window::~Window() noexcept {
-  if (window_) {
+  if (window_ != nullptr) {
     glfwDestroyWindow(window_);
   }
   glfwTerminate();

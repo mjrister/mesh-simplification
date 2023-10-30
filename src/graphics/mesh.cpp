@@ -26,7 +26,8 @@ void Validate(const std::span<const glm::vec3> positions,
     throw std::invalid_argument{"Vertex normals must align with position data"};
   }
 }
-}
+
+}  // namespace
 
 qem::Mesh::Mesh(const std::span<const glm::vec3> positions,
                 const std::span<const glm::vec2> texture_coordinates,
@@ -51,10 +52,10 @@ qem::Mesh::Mesh(const std::span<const glm::vec3> positions,
   using NormalType = decltype(normals_)::value_type;
 
   // allocate memory for the vertex buffer
-  const auto positions_size = sizeof(PositionType) * positions_.size();
-  const auto texture_coordinates_size = sizeof(TextureCoordinateType) * texture_coordinates_.size();
-  const auto normals_size = sizeof(NormalType) * normals_.size();
-  const auto buffer_size = positions_size + texture_coordinates_size + normals_size;
+  const auto positions_size = static_cast<GLsizeiptr>(sizeof(PositionType) * positions_.size());
+  const auto texture_coords_size = static_cast<GLsizeiptr>(sizeof(TextureCoordinateType) * texture_coordinates_.size());
+  const auto normals_size = static_cast<GLsizeiptr>(sizeof(NormalType) * normals_.size());
+  const auto buffer_size = positions_size + texture_coords_size + normals_size;
   glNamedBufferStorage(vertex_buffer_, buffer_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
 
   // copy positions to the vertex buffer
@@ -64,21 +65,21 @@ qem::Mesh::Mesh(const std::span<const glm::vec3> positions,
 
   // copy texture coordinates to the vertex buffer
   if (!texture_coordinates_.empty()) {
-    glNamedBufferSubData(vertex_buffer_, positions_size, texture_coordinates_size, texture_coordinates_.data());
+    glNamedBufferSubData(vertex_buffer_, positions_size, texture_coords_size, texture_coordinates_.data());
     glVertexAttribPointer(1, TextureCoordinateType::length(), GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(1);
   }
 
   // copy normals to the vertex buffer
   if (!normals_.empty()) {
-    glNamedBufferSubData(vertex_buffer_, positions_size + texture_coordinates_size, normals_size, normals_.data());
+    glNamedBufferSubData(vertex_buffer_, positions_size + texture_coords_size, normals_size, normals_.data());
     glVertexAttribPointer(2, NormalType::length(), GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(2);
   }
 
   // copy indices to the element buffer
   if (!indices_.empty()) {
-    const auto indices_size = sizeof(decltype(indices_)::value_type) * indices_.size();
+    const auto indices_size = static_cast<GLsizeiptr>(sizeof(decltype(indices_)::value_type) * indices_.size());
     glGenBuffers(1, &element_buffer_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_);
     glNamedBufferStorage(element_buffer_, indices_size, indices_.data(), GL_MAP_READ_BIT);

@@ -43,4 +43,5 @@ private:
   glm::vec3 normal_;
   float area_;
 };
-}
+
+}  // namespace qem

@@ -36,7 +36,7 @@ struct ViewFrustum {
     .z_far = 100.0f,
 };
 
-struct PointLight {
+struct PointLight {    // NOLINT(cppcoreguidelines-avoid-c-arrays)
   glm::vec3 position;  // defined in view-space coordinates
   glm::vec3 color;
   glm::vec3 attenuation;
@@ -63,14 +63,15 @@ void SetMaterial(qem::ShaderProgram& shader_program) {
   shader_program.SetUniform("material.ambient", ambient);
   shader_program.SetUniform("material.diffuse", diffuse);
   shader_program.SetUniform("material.specular", specular);
-  shader_program.SetUniform("material.shininess", shininess * 128.0f);
+  shader_program.SetUniform("material.shininess", shininess * 128.0f);  // NOLINT(readability-magic-numbers)
 }
 
 void SetPointLights(qem::ShaderProgram& shader_program) {
-  constexpr int kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
+  constexpr auto kPointLightsSize = static_cast<int>(sizeof kPointLights / sizeof(PointLight));
   shader_program.SetUniform("point_lights_size", kPointLightsSize);
 
   for (auto i = 0; i < kPointLightsSize; ++i) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
     const auto& [position, color, attenuation] = kPointLights[i];
     shader_program.SetUniform(std::format("point_lights[{}].position", i), position);
     shader_program.SetUniform(std::format("point_lights[{}].color", i), color);
@@ -119,7 +120,7 @@ void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float de
     prev_cursor_position = std::nullopt;
   }
 }
-}
+}  // namespace
 
 qem::Scene::Scene(Window* const window)
     : window_{window},

@@ -122,4 +122,5 @@ private:
   Shader vertex_shader_, fragment_shader_;
   std::unordered_map<std::string, GLint, StringViewHash, std::equal_to<>> uniform_locations_;
 };
-}
+
+}  // namespace qem

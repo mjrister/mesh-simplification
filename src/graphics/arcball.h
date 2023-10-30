@@ -20,4 +20,5 @@ std::optional<const std::pair<const glm::vec3, const float>> GetRotation(
     const glm::dvec2& cursor_position_start,
     const glm::dvec2& cursor_position_end,
     const std::pair<const int, const int>& window_dimensions);
-}
+
+}  // namespace qem::arcball
