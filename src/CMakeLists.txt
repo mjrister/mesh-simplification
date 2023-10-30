@@ -9,13 +9,14 @@ add_executable(mesh_simplification main.cpp
                                    graphics/shader_program.cpp
                                    graphics/window.cpp)
 
+find_package(OpenGL REQUIRED)
 find_package(gl3w CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
 target_compile_definitions(mesh_simplification PRIVATE GLM_ENABLE_EXPERIMENTAL GLM_FORCE_XYZW_ONLY)
 target_include_directories(mesh_simplification PRIVATE .)
-target_link_libraries(mesh_simplification PRIVATE glfw glm::glm unofficial::gl3w::gl3w)
+target_link_libraries(mesh_simplification PRIVATE OpenGL::GL glfw glm::glm unofficial::gl3w::gl3w)
 
 # Copy assets to the current binary directory so they're available at runtime
 add_custom_target(copy_assets COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets
