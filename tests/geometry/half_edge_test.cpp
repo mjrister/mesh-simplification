@@ -1,7 +1,5 @@
 #include "geometry/half_edge.h"
 
-#include <format>
-
 #include <gtest/gtest.h>
 
 namespace {
@@ -31,5 +29,52 @@ TEST_F(HalfEdgeTest, TestTwoVerticesProduceSameHashValueAsHalfEdge) {
   const auto v1 = edge01_->vertex();
   ASSERT_EQ(hash_value(*v0, *v1), hash_value(*edge01_));
 }
+
+#ifndef NDEBUG
+
+TEST_F(HalfEdgeTest, TestGetExpiredVertexCausesProgramExit) {
+  std::shared_ptr<qem::HalfEdge> edge01;
+  {
+    const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{});
+    edge01 = std::make_shared<qem::HalfEdge>(v1);
+  }
+  ASSERT_DEATH({ std::ignore = edge01->vertex(); }, "");
+}
+
+TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
+  const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{});
+  const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{});
+  const auto edge01 = std::make_shared<qem::HalfEdge>(v1);
+  {
+    const auto edge10 = std::make_shared<qem::HalfEdge>(v0);
+    edge01->set_flip(edge10);
+  }
+  ASSERT_DEATH({ std::ignore = edge01->flip(); }, "");
+}
+
+TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
+  const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{});
+  const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{});
+  const auto edge01 = std::make_shared<qem::HalfEdge>(v1);
+  {
+    const auto edge10 = std::make_shared<qem::HalfEdge>(v0);
+    edge01->set_next(edge10);
+  }
+  ASSERT_DEATH({ std::ignore = edge01->next(); }, "");
+}
+
+TEST_F(HalfEdgeTest, TestGetExpiredFaceCausesProgramExit) {
+  const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f});
+  const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{1.0f, -1.0f, 0.0f});
+  const auto v2 = std::make_shared<qem::Vertex>(2, glm::vec3{0.0f, 0.5f, 0.0f});
+  const auto edge01 = std::make_shared<qem::HalfEdge>(v1);
+  {
+    const auto face012 = std::make_shared<qem::Face>(v0, v1, v2);
+    edge01->set_face(face012);
+  }
+  ASSERT_DEATH({ std::ignore = edge01->face(); }, "");
+}
+
+#endif
 
 }  // namespace

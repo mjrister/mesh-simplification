@@ -124,7 +124,7 @@ glm::ivec3 ParseIndexGroup(const std::string_view token) {
     default: break;
   }
 
-  throw std::invalid_argument{format("Unsupported format {}", token)};
+  throw std::invalid_argument{std::format("Unsupported format {}", token)};
 }
 
 /**
@@ -210,5 +210,5 @@ qem::Mesh qem::obj_loader::LoadMesh(const std::filesystem::path& filepath) {
   if (std::ifstream ifs{filepath}; ifs.good()) {
     return ::LoadMesh(ifs);
   }
-  throw std::runtime_error{format("Unable to open {}", filepath.generic_string())};
+  throw std::runtime_error{std::format("Unable to open {}", filepath.generic_string())};
 }

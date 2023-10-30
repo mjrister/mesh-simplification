@@ -223,6 +223,8 @@ qem::HalfEdgeMesh::operator qem::Mesh() const {
 }
 
 void qem::HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new) {
+  assert(edges_.contains(hash_value(edge01)));
+
   const auto edge10 = edge01.flip();
   const auto v0 = edge10->vertex();
   const auto v1 = edge01.vertex();

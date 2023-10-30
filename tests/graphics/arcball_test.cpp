@@ -1,7 +1,6 @@
 #include "graphics/arcball.cpp"
 
 #include <gtest/gtest.h>
-#include <glm/vec2.hpp>
 
 namespace {
 

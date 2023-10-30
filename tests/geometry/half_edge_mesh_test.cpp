@@ -36,7 +36,7 @@ protected:
   std::unordered_map<std::uint64_t, std::shared_ptr<qem::Face>> faces_;
 };
 
-qem::Mesh MakeMesh() {
+qem::Mesh CreateValidMesh() {
   const std::vector<glm::vec3> positions{
       {1.0f, 0.0f, 0.0f},   // v0
       {2.0f, 0.0f, 0.0f},   // v1
@@ -67,7 +67,7 @@ qem::Mesh MakeMesh() {
 }
 
 qem::HalfEdgeMesh MakeHalfEdgeMesh() {
-  const auto mesh = MakeMesh();
+  const auto mesh = CreateValidMesh();
   return qem::HalfEdgeMesh{mesh};
 }
 
@@ -134,7 +134,7 @@ void VerifyTriangles(const qem::HalfEdgeMesh& half_edge_mesh, const std::vector<
 }
 
 TEST_F(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
-  const auto mesh = MakeMesh();
+  const auto mesh = CreateValidMesh();
   const qem::HalfEdgeMesh half_edge_mesh{mesh};
 
   ASSERT_EQ(10, half_edge_mesh.vertices().size());
@@ -196,6 +196,14 @@ TEST_F(HalfEdgeMeshTest, TestDeleteFace) {
 }
 
 #ifndef NDEBUG
+
+TEST_F(HalfEdgeMeshTest, TestCollapseInvalidHalfEdgeCausesProgramExit) {
+  auto half_edge_mesh = MakeHalfEdgeMesh();
+  const auto invalid_vertex = std::make_shared<qem::Vertex>(half_edge_mesh.vertices().size(), glm::vec3{});
+  const auto invalid_half_edge = std::make_shared<qem::HalfEdge>(invalid_vertex);
+  invalid_half_edge->set_flip(edge01_);
+  ASSERT_DEATH(half_edge_mesh.Contract(*invalid_half_edge, std::make_shared<qem::Vertex>(glm::vec3{})), "");
+}
 
 TEST_F(HalfEdgeMeshTest, TestGetInvalidHalfEdgeCausesProgramExit) {
   ASSERT_DEATH(GetHalfEdge(*v1_, *v0_, (std::unordered_map<uint64_t, std::shared_ptr<qem::HalfEdge>>{})), "");

@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <optional>
 
@@ -38,7 +40,10 @@ public:
   [[nodiscard]] const glm::vec3& position() const noexcept { return position_; }
 
   /** \brief Gets the last created half-edge that points to this vertex. */
-  [[nodiscard]] std::shared_ptr<const HalfEdge> edge() const { return std::shared_ptr{edge_}; }
+  [[nodiscard]] std::shared_ptr<const HalfEdge> edge() const noexcept {
+    assert(!edge_.expired());
+    return edge_.lock();
+  }
 
   /** \brief Sets the vertex half-edge. */
   void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
@@ -46,8 +51,7 @@ public:
   /** \brief Gets the hash value for a vertex. */
   friend std::uint64_t hash_value(const Vertex& v0) noexcept {
     static constexpr std::hash<std::uint64_t> kUint64Hash;
-    assert(v0.id_.has_value());
-    return kUint64Hash(*v0.id_);
+    return kUint64Hash(v0.id());
   }
 
   /** \brief Gets the hash value for two vertices. */

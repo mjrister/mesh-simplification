@@ -99,7 +99,6 @@ qem::Mesh& qem::Mesh::operator=(Mesh&& mesh) noexcept {
     std::swap(indices_, mesh.indices_);
     std::swap(model_transform_, mesh.model_transform_);
   }
-
   return *this;
 }
 

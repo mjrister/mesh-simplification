@@ -1,7 +1,6 @@
 #include "graphics/obj_loader.cpp"
 
 #include <gtest/gtest.h>
-#include <glm/glm.hpp>
 
 namespace {
 

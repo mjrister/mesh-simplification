@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include <glm/vec3.hpp>
 
 namespace qem {
@@ -17,7 +19,7 @@ struct Material {
    * \param type The material type representing the material to construct.
    * \return A material containing light reflectance properties for the provided material type.
    */
-  static constexpr Material FromType(const Type type) {
+  static constexpr Material FromType(const Type type) noexcept {
     switch (type) {
       case Type::kBrass: {
         return Material{
@@ -108,7 +110,7 @@ struct Material {
         };
       }
       default:
-        assert(false);  // unreachable code detected
+        assert(false);  // unreachable
         return Material{};
     }
   }

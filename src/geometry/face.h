@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <memory>
 
 #include <glm/vec3.hpp>
@@ -21,13 +22,22 @@ public:
        const std::shared_ptr<const Vertex>& v2);
 
   /** \brief Gets the first face vertex. */
-  [[nodiscard]] std::shared_ptr<const Vertex> v0() const { return std::shared_ptr{v0_}; }
+  [[nodiscard]] std::shared_ptr<const Vertex> v0() const noexcept {
+    assert(!v0_.expired());
+    return v0_.lock();
+  }
 
   /** \brief Gets the second face vertex. */
-  [[nodiscard]] std::shared_ptr<const Vertex> v1() const { return std::shared_ptr{v1_}; }
+  [[nodiscard]] std::shared_ptr<const Vertex> v1() const noexcept {
+    assert(!v1_.expired());
+    return v1_.lock();
+  }
 
   /** \brief Gets the third face vertex. */
-  [[nodiscard]] std::shared_ptr<const Vertex> v2() const { return std::shared_ptr{v2_}; }
+  [[nodiscard]] std::shared_ptr<const Vertex> v2() const noexcept {
+    assert(!v2_.expired());
+    return v2_.lock();
+  }
 
   /** \brief Gets the face normal. */
   [[nodiscard]] const glm::vec3& normal() const noexcept { return normal_; }
@@ -36,7 +46,7 @@ public:
   [[nodiscard]] float area() const noexcept { return area_; }
 
   /** \brief Gets the face hash value. */
-  friend std::uint64_t hash_value(const Face& face) { return hash_value(*face.v0(), *face.v1(), *face.v2()); }
+  friend std::uint64_t hash_value(const Face& face) noexcept { return hash_value(*face.v0(), *face.v1(), *face.v2()); }
 
 private:
   std::weak_ptr<const Vertex> v0_, v1_, v2_;
