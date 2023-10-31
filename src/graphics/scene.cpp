@@ -36,7 +36,7 @@ struct ViewFrustum {
     .z_far = 100.0f,
 };
 
-struct PointLight {    // NOLINT(cppcoreguidelines-avoid-c-arrays)
+struct PointLight {    // NOLINT(modernize-avoid-c-arrays)
   glm::vec3 position;  // defined in view-space coordinates
   glm::vec3 color;
   glm::vec3 attenuation;
@@ -63,7 +63,7 @@ void SetMaterial(qem::ShaderProgram& shader_program) {
   shader_program.SetUniform("material.ambient", ambient);
   shader_program.SetUniform("material.diffuse", diffuse);
   shader_program.SetUniform("material.specular", specular);
-  shader_program.SetUniform("material.shininess", shininess * 128.0f);  // NOLINT(readability-magic-numbers)
+  shader_program.SetUniform("material.shininess", shininess);
 }
 
 void SetPointLights(qem::ShaderProgram& shader_program) {
@@ -126,12 +126,10 @@ qem::Scene::Scene(Window* const window)
     : window_{window},
       mesh_{obj_loader::LoadMesh("assets/models/bunny.obj")},
       shader_program_{"assets/shaders/mesh_vertex.glsl", "assets/shaders/mesh_fragment.glsl"} {
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-  glEnable(GL_MULTISAMPLE);
   window_->OnKeyPress([this](const auto key_code) {
     if (key_code == GLFW_KEY_S) {
-      mesh_ = mesh::Simplify(mesh_, 0.5f);
+      static constexpr auto kDefaultSimplificationRate = 0.5f;
+      mesh_ = mesh::Simplify(mesh_, kDefaultSimplificationRate);
     }
   });
 
@@ -145,12 +143,15 @@ qem::Scene::Scene(Window* const window)
   SetMaterial(shader_program_);
   SetPointLights(shader_program_);
 
+  // NOLINTBEGIN(readability-magic-numbers)
   mesh_.Translate(kCamera.look_at + glm::vec3{.2f, -.25f, 0.f});
   mesh_.Scale(glm::vec3{0.35f});
+  // NOLINTEND(readability-magic-numbers)
 }
 
 void qem::Scene::Render(const float delta_time) {
-  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+  static constexpr auto kDefaultClearColorValue = 0.1f;
+  glClearColor(kDefaultClearColorValue, kDefaultClearColorValue, kDefaultClearColorValue, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   HandleMouseInput(*window_, mesh_, delta_time);

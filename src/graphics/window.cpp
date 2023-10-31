@@ -7,7 +7,6 @@
 
 namespace {
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 [[maybe_unused]] void APIENTRY HandleDebugMessageReceived(const GLenum source,
                                                           const GLenum type,
                                                           const GLuint id,
@@ -87,6 +86,11 @@ void InitializeGl3w(const std::pair<const int, const int>& opengl_version) {
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
   glDebugMessageCallback(HandleDebugMessageReceived, nullptr);
 #endif
+
+  // configure OpenGL graphics pipeline state
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  glEnable(GL_MULTISAMPLE);
 }
 }  // namespace
 
@@ -111,7 +115,7 @@ qem::Window::Window(const char* const title,
       window_,
       [](GLFWwindow* const window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) {
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-          glfwSetWindowShouldClose(window, true);
+          glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
         if (action == GLFW_PRESS) {
           const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
