@@ -194,7 +194,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
     const auto& q1 = GetQuadric(*v1, quadrics);
 
     const auto& v_new = edge_contraction->vertex;
-    v_new->set_id(next_vertex_id++);  // assign a new vertex ID when processing the next edge contraction
+    v_new->set_id(next_vertex_id++);  // only assign a new vertex ID when processing the next edge contraction
     auto success = quadrics.emplace(v_new->id(), q0 + q1).second;  // compute the error quadric for the new vertex
     assert(success);
 
@@ -241,7 +241,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
     } while (edgeji != vi->edge());
   }
 
-  std::cout << std::format(
+  std::clog << std::format(
       "Mesh simplified from {} to {} triangles in {} seconds\n",
       initial_face_count,
       half_edge_mesh.faces().size(),

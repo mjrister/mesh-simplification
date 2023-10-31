@@ -43,7 +43,7 @@ namespace {
     default: message_severity = "OTHER"; break;
   }
 
-  std::cout << format("OpenGL Debug ({}): Source: {}, Type: {}, Severity: {}\n{}\n",
+  std::clog << format("OpenGL Debug ({}): Source: {}, Type: {}, Severity: {}\n{}\n",
                       id,
                       message_source,
                       message_type,
@@ -78,7 +78,7 @@ void InitializeGl3w(const std::pair<const int, const int>& opengl_version) {
 
 #ifndef NDEBUG
   // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
-  std::cout << std::format("OpenGL version: {}, GLSL version: {}\n",
+  std::clog << std::format("OpenGL version: {}, GLSL version: {}\n",
                            reinterpret_cast<const char*>(glGetString(GL_VERSION)),
                            reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
   // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
