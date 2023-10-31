@@ -1,19 +1,45 @@
 ﻿# Mesh Simplification
 
-In computer graphics, working with highly complex models can degrade rendering performance. One technique to mitigate this situation is to use simplified models by reducing the number of triangles in a polygon mesh. This project presents an efficient algorithm to achieve this based on a research paper by Garland-Heckbert titled [Surface Simplification Using Quadric Error Metrics](https://github.com/matthew-rister/mesh-simplification/blob/main/MeshSimplification/docs/surface_simplification.pdf).
+In computer graphics, working with highly complex models can degrade rendering performance. One technique to mitigate this situation is to simplify models by reducing the number of triangles in a polygon mesh. This project presents an efficient algorithm to achieve this based on a research paper by Garland-Heckbert titled [Surface Simplification Using Quadric Error Metrics](docs/surface_simplification.pdf).
 
-The central idea of the algorithm is to iteratively remove edges in the mesh through a process known as [edge contraction](https://en.wikipedia.org/wiki/Edge_contraction) which merges the vertices at an edge's endpoints into a new vertex that optimally preserves the original shape of the mesh. This vertex position can be solved for analytically by minimizing the squared distance of each adjacent triangle's plane to its new position after edge contraction. With this error metric, edges can be efficiently processed using a priority queue to remove edges with the lowest cost until the mesh has been sufficiently simplified. To facilitate the implementation of this algorithm, a data structure known as a [half-edge mesh](https://github.com/matthew-rister/mesh-simplification/blob/main/MeshSimplification/geometry/half_edge_mesh.h) is employed to efficiently traverse and modify edges in the mesh.
+The central idea of the algorithm is to iteratively remove edges in the mesh through a process known as [edge contraction](https://en.wikipedia.org/wiki/Edge_contraction) which merges the vertices at an edge's endpoints into a new vertex that optimally preserves the original shape of the mesh. This vertex position can be solved for analytically by minimizing the squared distance of each adjacent triangle's plane to its new position after edge contraction. With this error metric, edges can be efficiently processed using a priority queue to remove edges with the lowest cost until the mesh has been sufficiently simplified. To facilitate the implementation of this algorithm, a data structure known as a [half-edge mesh](src/geometry/half_edge_mesh.h) is employed to efficiently traverse and modify edges in the mesh.
 
 ## Results
 
 The following GIF presents a real-time demonstration of successive applications of mesh simplification on a polygon mesh consisting of nearly 70,000 triangles. At each iteration, the number of triangles is reduced by 50% eventually reducing to a mesh consisting of only 1,086 triangles (a 98.5% reduction). Observe that although fidelity is reduced, the mesh retains an overall high-quality appearance that nicely approximates the original shape of the mesh.
 
-![](https://github.com/matthew-rister/mesh-simplification/blob/main/MeshSimplification.gif)
+![An example of mesh simplification algorithm applied iteratively to a complex triangle mesh](mesh_simplification.gif)
 
-## How To Run
+## Prerequisites
 
-This project was implemented using Visual Studio in C++20 and OpenGL 4.6. To build it, you will need a version of Visual Studio that supports the latest language standard (e.g., 16.10.0). Additionally, this project uses [vcpkg](https://vcpkg.io/en/index.html) to manage 3rd party dependencies. To get started, clone the [vcpkg repository](https://github.com/microsoft/vcpkg) on Github and run `bootstrap-vcpkg.bat` followed by `vcpkg integrate install`. Upon completion, you should be able to build and run the project which will install dependencies from the [vcpkg.json](https://github.com/matthew-rister/mesh-simplification/blob/main/vcpkg.json) package manifest on first build.
+This project requires OpenGL 4.6, CMake 3.22, and a C++20 compiler. To facilitate project configuration, building, and testing, [CMake Presets](https://cmake.org/cmake/help/v3.22/manual/cmake-presets.7.html) are used with [ninja](https://ninja-build.org/) as a build generator.
 
-## Usage
+### Package Management
+This project uses [`vcpkg`](https://vcpkg.io) to manage external dependencies.  To get started, run `git submodule update --init` to clone `vcpkg` as a git submodule. `vcpkg` can then be initialized by running `.\vcpkg\bootstrap-vcpk.bat` on Windows or `./vcpkg/bootstrap-vcpkg.sh` on Linux. Upon completion, CMake will integrate with `vcpkg` to download, compile, and link external libraries specified in the [vcpkg.json](vcpkg.json) manifest when building the project.
 
-Once the program is running, the mesh can be simplified by pressing the `S` key. Additionally, the mesh can be translated or rotated about an arbitrary axis by left or right clicking on the mouse and dragging the cursor across the screen. Lastly, the mesh can be uniformly scaled using the mouse scroll wheel. 
+### Address Sanitizer
+This project enables [Address Sanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) (ASan) for debug builds. On Linux, this should already be available when using a modern version of GCC or Clang with C++20 support. On Windows, ASan needs to be installed separately which is documented [here](https://learn.microsoft.com/en-us/cpp/sanitizers/asan?view=msvc-170#install-addresssanitizer).
+
+## Build
+
+The simplest way to build the project is to use an IDE with CMake integration. Alternatively, the project can be built from the command line using CMake presets. To use the `windows-release` preset, run:
+
+	cmake --preset windows-release
+	cmake --build --preset windows-release
+
+A list of available configuration and build presets can be displayed by running  `cmake --list-presets` and `cmake --build --list-presets` respectively. At this time, only x64 builds are supported. Note that on Windows, `cl` and `ninja` are expected to be available in your environment path which are available by default when using the Developer Command Prompt for Visual Studio.
+
+## Test
+
+This project uses [Google Test](https://github.com/google/googletest) for unit testing which can be run with [CTest](https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html) after building the project. To run tests with the `windows-release` preset, run:
+
+	ctest --preset windows-release
+
+To see what test presets are available, run `ctest --list-presets`.  Alternatively, tests can be run from the separate `tests` executable which is built with the project.
+
+## Run
+
+Once built, the program executable can be found in`out/build/<preset>/src`. After running the program, the mesh can be simplified by pressing the `S` key. The mesh also can be translated and rotated about an arbitrary axis by left or right clicking  and dragging the cursor across the screen. Lastly, the mesh can be uniformly scaled using the mouse scroll wheel.
+
+
+
