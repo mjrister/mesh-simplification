@@ -13,9 +13,16 @@ find_package(gl3w CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
-target_compile_definitions(mesh_simplification_tests PRIVATE GLM_ENABLE_EXPERIMENTAL GLM_FORCE_XYZW_ONLY)
-target_include_directories(mesh_simplification_tests PRIVATE . ../src)
-target_link_libraries(mesh_simplification_tests PRIVATE GTest::gtest_main OpenGL::GL glfw glm::glm unofficial::gl3w::gl3w)
+target_link_libraries(mesh_simplification_tests PRIVATE GTest::gtest_main
+                                                        OpenGL::GL
+                                                        common_dbg_asan
+                                                        common_glm_definitions
+                                                        common_warnings
+                                                        glfw
+                                                        glm::glm
+                                                        unofficial::gl3w::gl3w)
+
+target_include_directories(mesh_simplification_tests PRIVATE ../src)
 
 include(GoogleTest)
 gtest_discover_tests(mesh_simplification_tests)

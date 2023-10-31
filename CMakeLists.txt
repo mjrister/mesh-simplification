@@ -5,16 +5,24 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# interface targets to ease reuse of common compiler configurations
+add_library(common_dbg_asan INTERFACE)
+add_library(common_glm_definitions INTERFACE)
+add_library(common_warnings INTERFACE)
+
+target_compile_definitions(common_glm_definitions INTERFACE GLM_ENABLE_EXPERIMENTAL # required for <glm/gtx/hash.hpp>
+                                                            GLM_FORCE_XYZW_ONLY) # required for cppcoreguidelines-pro-type-union-access
+
 if(MSVC)
-  add_compile_options(/W4 /WX)
+  target_compile_options(common_warnings INTERFACE /W4 /WX)
   if(CMAKE_BUILD_TYPE STREQUAL Debug)
-    add_compile_options(/fsanitize=address)
+    target_compile_options(common_dbg_asan INTERFACE /fsanitize=address)
   endif()
 else()
-  add_compile_options(-Wall -Werror -Wextra -Wpedantic)
+  target_compile_options(common_warnings INTERFACE -Wall -Werror -Wextra -Wpedantic)
   if(CMAKE_BUILD_TYPE STREQUAL Debug)
-    add_compile_options(-fsanitize=address)
-    add_link_options(-fsanitize=address)
+  target_compile_options(common_dbg_asan INTERFACE -fsanitize=address)
+    target_link_options(common_dbg_asan INTERFACE -fsanitize=address)
   endif()
 endif()
 
