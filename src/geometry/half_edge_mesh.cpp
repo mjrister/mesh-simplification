@@ -36,7 +36,7 @@ std::shared_ptr<qem::HalfEdge> CreateHalfEdge(
   edge01->set_flip(edge10);
   edge10->set_flip(edge01);
 
-  auto success = edges.emplace(edge01_key, edge01).second;
+  [[maybe_unused]] auto success = edges.emplace(edge01_key, edge01).second;
   assert(success);
 
   success = edges.emplace(edge10_key, edge10).second;

@@ -80,6 +80,10 @@
     {
       "name": "linux-debug",
       "inherits": ["linux", "debug"]
+    },
+    {
+      "name": "linux-release",
+      "inherits": ["linux", "release"]
     }
   ],
   "buildPresets": [
@@ -94,6 +98,10 @@
     {
       "name": "linux-debug",
       "configurePreset": "linux-debug"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release"
     }
   ],
   "testPresets": [
@@ -108,6 +116,10 @@
     {
       "name": "linux-debug",
       "configurePreset": "linux-debug"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release"
     }
   ]
 }

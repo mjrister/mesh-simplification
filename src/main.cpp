@@ -11,7 +11,7 @@ int main() {
   try {
     constexpr auto* kProjectTitle = "Mesh Simplification";
     constexpr auto kWindowDimensions = std::make_pair(1920, 1080);
-    constexpr auto kOpenGlVersion = std::make_pair(4, 6);
+    constexpr auto kOpenGlVersion = std::make_pair(4, 1);
     qem::Window window{kProjectTitle, kWindowDimensions, kOpenGlVersion};
     qem::Scene scene{&window};
 

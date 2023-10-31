@@ -12,7 +12,7 @@ The following GIF presents a real-time demonstration of successive applications 
 
 ## Prerequisites
 
-This project requires OpenGL 4.6, CMake 3.22, and a C++20 compiler. To facilitate project configuration, building, and testing, [CMake Presets](https://cmake.org/cmake/help/v3.22/manual/cmake-presets.7.html) are used with [ninja](https://ninja-build.org/) as a build generator.
+This project requires OpenGL 4.1, CMake 3.22, and a C++20 compiler. It is has been confirmed to build and run on and the Microsoft C/C++ Optimizing Compiler Version 19.37.32825 and Clang 17.04 with libc++. To facilitate project configuration, building, and testing, [CMake Presets](https://cmake.org/cmake/help/v3.22/manual/cmake-presets.7.html) are used with [ninja](https://ninja-build.org/) as a build generator.
 
 ### Package Management
 This project uses [`vcpkg`](https://vcpkg.io) to manage external dependencies.  To get started, run `git submodule update --init` to clone `vcpkg` as a git submodule. `vcpkg` can then be initialized by running `.\vcpkg\bootstrap-vcpk.bat` on Windows or `./vcpkg/bootstrap-vcpkg.sh` on Linux. Upon completion, CMake will integrate with `vcpkg` to download, compile, and link external libraries specified in the [vcpkg.json](vcpkg.json) manifest when building the project.

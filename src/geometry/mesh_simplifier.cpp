@@ -193,9 +193,12 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
     const auto& q0 = GetQuadric(*v0, quadrics);
     const auto& q1 = GetQuadric(*v1, quadrics);
 
+    // only assign a new vertex ID when processing the next edge contraction
     const auto& v_new = edge_contraction->vertex;
-    v_new->set_id(next_vertex_id++);  // only assign a new vertex ID when processing the next edge contraction
-    auto success = quadrics.emplace(v_new->id(), q0 + q1).second;  // compute the error quadric for the new vertex
+    v_new->set_id(next_vertex_id++);
+
+    // compute the error quadric for the new vertex
+    [[maybe_unused]] auto success = quadrics.emplace(v_new->id(), q0 + q1).second;
     assert(success);
 
     // invalidate entries in the priority queue that will be removed during the edge contraction
