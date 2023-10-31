@@ -52,7 +52,7 @@ public:
   [[nodiscard]] std::pair<int, int> GetSize() const noexcept {
     int width{}, height{};
     glfwGetWindowSize(window_, &width, &height);
-    return {width, height};
+    return std::pair{width, height};
   }
 
   /**
@@ -71,7 +71,7 @@ public:
   [[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
     double x{}, y{};
     glfwGetCursorPos(window_, &x, &y);
-    return {x, y};
+    return glm::dvec2{x, y};
   }
 
   /** \brief Sets the window title. */

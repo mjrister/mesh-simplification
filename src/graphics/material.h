@@ -20,6 +20,7 @@ struct Material {
    * \return A material containing light reflectance properties for the provided material type.
    */
   static constexpr Material FromType(const Type type) noexcept {
+    // NOLINTBEGIN(readability-magic-numbers)
     switch (type) {
       case Type::kBrass: {
         return Material{
@@ -113,6 +114,7 @@ struct Material {
         assert(false);  // unreachable
         return Material{};
     }
+    // NOLINTEND(readability-magic-numbers)
   }
 
   /** The ambient light reflected. */

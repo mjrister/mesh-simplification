@@ -10,7 +10,7 @@ std::array<std::shared_ptr<qem::Vertex>, 3> CreateValidTriangle() {
   const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f});
   const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{1.0f, -1.0f, 0.0f});
   const auto v2 = std::make_shared<qem::Vertex>(2, glm::vec3{0.0f, 0.5f, 0.0f});
-  return {v0, v1, v2};
+  return std::array{v0, v1, v2};
 }
 
 TEST(FaceTest, TestFaceInitializationVertexOrder) {

@@ -36,8 +36,11 @@ std::shared_ptr<qem::HalfEdge> CreateHalfEdge(
   edge01->set_flip(edge10);
   edge10->set_flip(edge01);
 
-  edges.emplace(edge01_key, edge01);
-  edges.emplace(edge10_key, edge10);
+  auto success = edges.emplace(edge01_key, edge01).second;
+  assert(success);
+
+  success = edges.emplace(edge10_key, edge10).second;
+  assert(success);
 
   return edge01;
 }
@@ -148,7 +151,8 @@ void UpdateIncidentEdges(const qem::Vertex& v_target,
     const auto vj = edgeij->vertex();
 
     const auto face_new = CreateTriangle(v_new, vi, vj, edges);
-    faces.emplace(hash_value(*face_new), face_new);
+    [[maybe_unused]] const auto success = faces.emplace(hash_value(*face_new), face_new).second;
+    assert(success);
 
     DeleteFace(*edge0i->face(), faces);
     DeleteEdge(*edge0i, edges);
@@ -182,7 +186,8 @@ qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_
   const auto& indices = mesh.indices();
 
   for (size_t i = 0; i < positions.size(); ++i) {
-    vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i]));
+    [[maybe_unused]] const auto success = vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i])).second;
+    assert(success);
   }
 
   for (size_t i = 0; i < indices.size(); i += 3) {
@@ -190,7 +195,8 @@ qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_
     const auto& v1 = vertices_[indices[i + 1]];
     const auto& v2 = vertices_[indices[i + 2]];
     const auto face012 = CreateTriangle(v0, v1, v2, edges_);
-    faces_.emplace(hash_value(*face012), face012);
+    [[maybe_unused]] const auto success = faces_.emplace(hash_value(*face012), face012).second;
+    assert(success);
   }
 }
 
@@ -201,16 +207,18 @@ qem::HalfEdgeMesh::operator qem::Mesh() const {
   std::vector<glm::vec3> normals;
   normals.reserve(vertices_.size());
 
-  std::vector<unsigned> indices;
+  std::vector<GLuint> indices;
   indices.reserve(faces_.size() * 3);
 
-  std::unordered_map<std::uint64_t, unsigned> index_map;
+  std::unordered_map<std::uint64_t, GLuint> index_map;
   index_map.reserve(vertices_.size());
 
-  for (unsigned i = 0; const auto& vertex : vertices_ | std::views::values) {
+  for (GLuint i = 0; const auto& vertex : vertices_ | std::views::values) {
     positions.push_back(vertex->position());
     normals.push_back(ComputeWeightedVertexNormal(*vertex));
-    index_map.emplace(vertex->id(), i++);  // map original vertex IDs to their new index positions
+    // map original vertex IDs to new index positions
+    [[maybe_unused]] const auto success = index_map.emplace(vertex->id(), i++).second;
+    assert(success);
   }
 
   for (const auto& face : faces_ | std::views::values) {
@@ -242,5 +250,6 @@ void qem::HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<V
   DeleteVertex(*v0, vertices_);
   DeleteVertex(*v1, vertices_);
 
-  vertices_.emplace(v_new->id(), v_new);
+  [[maybe_unused]] const auto success = vertices_.emplace(v_new->id(), v_new).second;
+  assert(success);
 }

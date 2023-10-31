@@ -86,7 +86,7 @@ public:
   }
 
 private:
-  // this is required as a workaround to ensure that static assertions in if constexpr statement are well-formed
+  // this is required as a workaround to ensure that static assertions in "if constexpr" expressions are well-formed
   template <typename>
   static constexpr std::false_type kAssertFalse{};
 
@@ -113,7 +113,9 @@ private:
       if (location == -1) {
         std::cerr << std::format("{} is not an active uniform variable\n", name);
       }
-      iterator = uniform_locations_.emplace(name, location).first;
+      bool success{};
+      std::tie(iterator, success) = uniform_locations_.emplace(name, location);
+      assert(success);
     }
     return iterator->second;
   }

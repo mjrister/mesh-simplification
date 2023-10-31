@@ -37,5 +37,5 @@ qem::Face::Face(const std::shared_ptr<const Vertex>& v0,  // NOLINT(cppcoreguide
   assert(normal_magnitude != 0.0f);  // ensure face vertices are not collinear
 
   normal_ = normal / normal_magnitude;
-  area_ = 0.5f * normal_magnitude;
+  area_ = 0.5f * normal_magnitude;  // NOLINT(readability-magic-numbers)
 }

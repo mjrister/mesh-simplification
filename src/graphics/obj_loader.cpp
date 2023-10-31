@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <charconv>
 #include <filesystem>
 #include <format>
@@ -98,27 +99,27 @@ glm::ivec3 ParseIndexGroup(const std::string_view token) {
     case 0:
       if (tokens.size() == 1) {
         const auto x = ParseToken<int>(tokens[0]) - 1;
-        return {x, kInvalidFaceElementIndex, kInvalidFaceElementIndex};
+        return glm::ivec3{x, kInvalidFaceElementIndex, kInvalidFaceElementIndex};
       }
       break;
     case 1:
       if (tokens.size() == 2) {
         const auto x = ParseToken<int>(tokens[0]) - 1;
         const auto y = ParseToken<int>(tokens[1]) - 1;
-        return {x, y, kInvalidFaceElementIndex};
+        return glm::ivec3{x, y, kInvalidFaceElementIndex};
       }
       break;
     case 2:
       if (tokens.size() == 2 && *token.cbegin() != '/' && *(token.cend() - 1) != '/') {
         const auto x = ParseToken<int>(tokens[0]) - 1;
         const auto z = ParseToken<int>(tokens[1]) - 1;
-        return {x, kInvalidFaceElementIndex, z};
+        return glm::ivec3{x, kInvalidFaceElementIndex, z};
       }
       if (tokens.size() == 3) {
         const auto x = ParseToken<int>(tokens[0]) - 1;
         const auto y = ParseToken<int>(tokens[1]) - 1;
         const auto z = ParseToken<int>(tokens[2]) - 1;
-        return {x, y, z};
+        return glm::ivec3{x, y, z};
       }
       break;
     default: break;
@@ -134,7 +135,7 @@ glm::ivec3 ParseIndexGroup(const std::string_view token) {
  */
 std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
   if (const auto tokens = Split(line, " \t"); tokens.size() == 4) {
-    return {ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
+    return std::array{ParseIndexGroup(tokens[1]), ParseIndexGroup(tokens[2]), ParseIndexGroup(tokens[3])};
   }
   throw std::invalid_argument{std::format("Unsupported format {}", line)};
 }
@@ -169,7 +170,7 @@ qem::Mesh LoadMesh(std::istream& is) {
   std::vector<glm::vec3> ordered_positions;
   std::vector<glm::vec2> ordered_texture_coordinates;
   std::vector<glm::vec3> ordered_normals;
-  std::vector<unsigned> indices;
+  std::vector<GLuint> indices;
   indices.reserve(faces.size() * 3);
 
   // For each index group, store texture coordinate and normals at the same index as the vertex position so that
@@ -177,7 +178,7 @@ qem::Mesh LoadMesh(std::istream& is) {
   // coordinates or normals for the same vertex position. To handle this situation, an unordered map is used to
   // keep track of unique index groups and appends new position, texture coordinate, and normal triples to the end
   // of each respective ordered array as necessary.
-  for (std::unordered_map<glm::ivec3, unsigned> index_groups; const auto& face : faces) {
+  for (std::unordered_map<glm::ivec3, GLuint> index_groups; const auto& face : faces) {
     for (const auto& index_group : face) {
       if (const auto iterator = index_groups.find(index_group); iterator == index_groups.end()) {
         const auto position_index = index_group[0];
@@ -192,9 +193,10 @@ qem::Mesh LoadMesh(std::istream& is) {
           ordered_normals.push_back(normals.at(normal_index));
         }
 
-        const auto index = static_cast<unsigned>(ordered_positions.size()) - 1u;
+        const auto index = static_cast<GLuint>(ordered_positions.size()) - 1u;
         indices.push_back(index);
-        index_groups.emplace(index_group, index);
+        [[maybe_unused]] const auto success = index_groups.emplace(index_group, index).second;
+        assert(success);
       } else {
         indices.push_back(iterator->second);
       }

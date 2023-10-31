@@ -27,7 +27,7 @@ constexpr glm::vec2 GetNormalizedDeviceCoordinates(const glm::dvec2& cursor_posi
 
   // because window coordinates start with (0,0) in the top-left corner which becomes (-1,-1) after normalization,
   // the y-coordinate needs to be negated to align with the OpenGL convention of the top-left residing at (-1,1)
-  return {x_ndc, -y_ndc};
+  return glm::vec2{x_ndc, -y_ndc};
 }
 
 /**
@@ -53,7 +53,7 @@ glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
 std::optional<const std::pair<const glm::vec3, const float>> qem::arcball::GetRotation(
     const glm::dvec2& cursor_position_start,
     const glm::dvec2& cursor_position_end,
-    const std::pair<const std::int32_t, const std::int32_t>& window_dimensions) {
+    const std::pair<const int, const int>& window_dimensions) {
   const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
   const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
 
