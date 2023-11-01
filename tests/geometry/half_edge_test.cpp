@@ -20,8 +20,9 @@ protected:
 };
 
 TEST_F(HalfEdgeTest, TestEqualHalfEdgesHaveTheSameHashValue) {
-  EXPECT_EQ(*edge01_, qem::HalfEdge{*edge01_});
-  EXPECT_EQ(hash_value(*edge01_), hash_value(qem::HalfEdge{*edge01_}));
+  const auto edge01_copy = *edge01_;  // NOLINT(performance-unnecessary-copy-initialization)
+  EXPECT_EQ(*edge01_, edge01_copy);
+  EXPECT_EQ(hash_value(*edge01_), hash_value(edge01_copy));
 }
 
 TEST_F(HalfEdgeTest, TestOppositeHalfEdgesDoNotHaveTheSameHashValue) {

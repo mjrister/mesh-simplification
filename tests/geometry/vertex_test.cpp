@@ -36,8 +36,9 @@ TEST(VertexTest, TestGetVertexEdge) {
 
 TEST(VertexTest, TestEqualVerticesHaveTheSameHashValue) {
   const qem::Vertex vertex{0, glm::vec3{0.0f}};
-  EXPECT_EQ(vertex, qem::Vertex{vertex});
-  EXPECT_EQ(hash_value(vertex), hash_value(qem::Vertex{vertex}));
+  const auto vertex_copy = vertex;  // NOLINT(performance-unnecessary-copy-initialization)
+  EXPECT_EQ(vertex, vertex_copy);
+  EXPECT_EQ(hash_value(vertex), hash_value(vertex_copy));
 }
 
 TEST(VertexTest, TestEqualVertexPairsHaveTheSameHashValue) {
