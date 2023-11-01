@@ -113,9 +113,7 @@ private:
       if (location == -1) {
         std::cerr << std::format("{} is not an active uniform variable\n", name);
       }
-      bool success{};
-      std::tie(iterator, success) = uniform_locations_.emplace(name, location);
-      assert(success);
+      iterator = uniform_locations_.emplace(name, location).first;
     }
     return iterator->second;
   }

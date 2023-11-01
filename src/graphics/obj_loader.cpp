@@ -195,8 +195,7 @@ qem::Mesh LoadMesh(std::istream& is) {
 
         const auto index = static_cast<GLuint>(ordered_positions.size()) - 1u;
         indices.push_back(index);
-        [[maybe_unused]] const auto success = index_groups.emplace(index_group, index).second;
-        assert(success);
+        index_groups.emplace(index_group, index);
       } else {
         indices.push_back(iterator->second);
       }

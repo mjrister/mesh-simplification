@@ -120,8 +120,7 @@ bool WillDegenerate(const std::shared_ptr<const qem::HalfEdge>& edge01) {
 
   for (auto iterator = edge01->next(); iterator != edge01->flip(); iterator = iterator->flip()->next()) {
     if (const auto vertex = iterator->vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
-      [[maybe_unused]] const auto success = neighborhood.emplace(hash_value(*vertex), vertex).second;
-      assert(success);
+      neighborhood.emplace(hash_value(*vertex), vertex);
     }
   }
 
@@ -147,8 +146,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
   // compute error quadrics for each vertex
   std::unordered_map<std::size_t, glm::mat4> quadrics;
   for (const auto& [vertex_id, vertex] : half_edge_mesh.vertices()) {
-    [[maybe_unused]] const auto success = quadrics.emplace(vertex_id, ComputeQuadric(*vertex)).second;
-    assert(success);
+    quadrics.emplace(vertex_id, ComputeQuadric(*vertex));
   }
 
   // use a priority queue to sort edge contraction candidates by the cost of removing each edge
@@ -169,8 +167,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
       const auto [vertex, cost] = GetOptimalEdgeContractionVertex(*edge, quadrics);
       const auto edge_contraction = make_shared<EdgeContraction>(edge, vertex, cost);
       edge_contractions.push(edge_contraction);
-      [[maybe_unused]] const auto success = valid_edges.emplace(min_edge_key, edge_contraction).second;
-      assert(success);
+      valid_edges.emplace(min_edge_key, edge_contraction);
     }
   }
 
@@ -197,8 +194,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
     v_new->set_id(static_cast<int>(next_vertex_id++));
 
     // compute the error quadric for the new vertex
-    [[maybe_unused]] auto success = quadrics.emplace(v_new->id(), q0 + q1).second;
-    assert(success);
+    quadrics.emplace(v_new->id(), q0 + q1);
 
     // invalidate entries in the priority queue that will be removed during the edge contraction
     for (const auto& vi : {v0, v1}) {
@@ -234,8 +230,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
           const auto new_edge_contraction = make_shared<EdgeContraction>(min_edge, new_vertex, new_cost);
           valid_edges[min_edge_key] = new_edge_contraction;
           edge_contractions.push(new_edge_contraction);
-          success = visited_edges.emplace(min_edge_key, min_edge).second;
-          assert(success);
+          visited_edges.emplace(min_edge_key, min_edge);
         }
         edgekj = edgekj->next()->flip();
       } while (edgekj != vj->edge());

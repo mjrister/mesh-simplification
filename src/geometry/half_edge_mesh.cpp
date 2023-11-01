@@ -27,8 +27,10 @@ std::shared_ptr<qem::HalfEdge> CreateHalfEdge(const std::shared_ptr<qem::Vertex>
 
   // prevent the creation of duplicate edges
   if (const auto iterator = edges.find(edge01_key); iterator != edges.end()) {
+    assert(edges.contains(edge10_key));
     return iterator->second;
   }
+  assert(!edges.contains(edge10_key));
 
   auto edge01 = make_shared<qem::HalfEdge>(v1);
   const auto edge10 = make_shared<qem::HalfEdge>(v0);
@@ -36,11 +38,8 @@ std::shared_ptr<qem::HalfEdge> CreateHalfEdge(const std::shared_ptr<qem::Vertex>
   edge01->set_flip(edge10);
   edge10->set_flip(edge01);
 
-  [[maybe_unused]] auto success = edges.emplace(edge01_key, edge01).second;
-  assert(success);
-
-  success = edges.emplace(edge10_key, edge10).second;
-  assert(success);
+  edges.emplace(edge01_key, edge01);
+  edges.emplace(edge10_key, edge10);
 
   return edge01;
 }
@@ -151,8 +150,8 @@ void UpdateIncidentEdges(const qem::Vertex& v_target,
     const auto vj = edgeij->vertex();
 
     const auto face_new = CreateTriangle(v_new, vi, vj, edges);
-    [[maybe_unused]] const auto success = faces.emplace(hash_value(*face_new), face_new).second;
-    assert(success);
+    assert(!faces.contains(hash_value(*face_new)));
+    faces.emplace(hash_value(*face_new), face_new);
 
     DeleteFace(*edge0i->face(), faces);
     DeleteEdge(*edge0i, edges);
@@ -186,8 +185,7 @@ qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_
   const auto& indices = mesh.indices();
 
   for (auto i = 0; std::cmp_less(i, positions.size()); ++i) {
-    [[maybe_unused]] const auto success = vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i])).second;
-    assert(success);
+    vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i]));
   }
 
   for (auto i = 0; std::cmp_less(i, indices.size()); i += 3) {
@@ -195,8 +193,7 @@ qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_
     const auto& v1 = vertices_[indices[i + 1]];
     const auto& v2 = vertices_[indices[i + 2]];
     const auto face012 = CreateTriangle(v0, v1, v2, edges_);
-    [[maybe_unused]] const auto success = faces_.emplace(hash_value(*face012), face012).second;
-    assert(success);
+    faces_.emplace(hash_value(*face012), face012);
   }
 }
 
@@ -216,9 +213,7 @@ qem::HalfEdgeMesh::operator qem::Mesh() const {
   for (GLuint i = 0; const auto& vertex : vertices_ | std::views::values) {
     positions.push_back(vertex->position());
     normals.push_back(ComputeWeightedVertexNormal(*vertex));
-    // map original vertex IDs to new index positions
-    [[maybe_unused]] const auto success = index_map.emplace(vertex->id(), i++).second;
-    assert(success);
+    index_map.emplace(vertex->id(), i++);  // map original vertex IDs to new index positions
   }
 
   for (const auto& face : faces_ | std::views::values) {
@@ -232,6 +227,7 @@ qem::HalfEdgeMesh::operator qem::Mesh() const {
 
 void qem::HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new) {
   assert(edges_.contains(hash_value(edge01)));
+  assert(!vertices_.contains(v_new->id()));
 
   const auto edge10 = edge01.flip();
   const auto v0 = edge10->vertex();
@@ -250,6 +246,5 @@ void qem::HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<V
   DeleteVertex(*v0, vertices_);
   DeleteVertex(*v1, vertices_);
 
-  [[maybe_unused]] const auto success = vertices_.emplace(v_new->id(), v_new).second;
-  assert(success);
+  vertices_.emplace(v_new->id(), v_new);
 }
