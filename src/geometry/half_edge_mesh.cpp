@@ -33,13 +33,13 @@ std::shared_ptr<qem::HalfEdge> CreateHalfEdge(const std::shared_ptr<qem::Vertex>
   assert(!edges.contains(edge10_key));
 
   auto edge01 = make_shared<qem::HalfEdge>(v1);
-  const auto edge10 = make_shared<qem::HalfEdge>(v0);
+  auto edge10 = make_shared<qem::HalfEdge>(v0);
 
   edge01->set_flip(edge10);
   edge10->set_flip(edge01);
 
   edges.emplace(edge01_key, edge01);
-  edges.emplace(edge10_key, edge10);
+  edges.emplace(edge10_key, std::move(edge10));
 
   return edge01;
 }
@@ -149,9 +149,9 @@ void UpdateIncidentEdges(const qem::Vertex& v_target,
     const auto vi = edge0i->vertex();
     const auto vj = edgeij->vertex();
 
-    const auto face_new = CreateTriangle(v_new, vi, vj, edges);
+    auto face_new = CreateTriangle(v_new, vi, vj, edges);
     assert(!faces.contains(hash_value(*face_new)));
-    faces.emplace(hash_value(*face_new), face_new);
+    faces.emplace(hash_value(*face_new), std::move(face_new));
 
     DeleteFace(*edge0i->face(), faces);
     DeleteEdge(*edge0i, edges);
@@ -192,8 +192,8 @@ qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_
     const auto& v0 = vertices_[indices[i]];
     const auto& v1 = vertices_[indices[i + 1]];
     const auto& v2 = vertices_[indices[i + 2]];
-    const auto face012 = CreateTriangle(v0, v1, v2, edges_);
-    faces_.emplace(hash_value(*face012), face012);
+    auto face012 = CreateTriangle(v0, v1, v2, edges_);
+    faces_.emplace(hash_value(*face012), std::move(face012));
   }
 }
 
