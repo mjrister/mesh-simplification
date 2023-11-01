@@ -44,6 +44,17 @@ TEST(FaceTest, TestGetNormal) {
   EXPECT_EQ((glm::vec3{0.0f, 0.0f, 1.0f}), face012.normal());
 }
 
+TEST(FaceTest, TestFaceEquality) {
+  const auto [v0, v1, v2] = CreateValidTriangle();
+  const qem::Face face012{v0, v1, v2};
+  EXPECT_TRUE(face012 == (qem::Face{v0, v1, v2}));
+  EXPECT_TRUE(face012 == (qem::Face{v1, v2, v0}));
+  EXPECT_TRUE(face012 == (qem::Face{v2, v0, v1}));
+  EXPECT_FALSE(face012 == (qem::Face{v0, v2, v1}));
+  EXPECT_FALSE(face012 == (qem::Face{v1, v0, v2}));
+  EXPECT_FALSE(face012 == (qem::Face{v2, v1, v0}));
+}
+
 TEST(FaceTest, TestEqualFacesHaveTheSameHashValue) {
   const auto [v0, v1, v2] = CreateValidTriangle();
   const qem::Face face012{v0, v1, v2};

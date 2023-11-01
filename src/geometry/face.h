@@ -44,6 +44,11 @@ public:
   /** \brief Gets the face area. */
   [[nodiscard]] float area() const noexcept { return area_; }
 
+  /** \brief Defines the face equality operator. */
+  friend bool operator==(const Face& lhs, const Face& rhs) noexcept {
+    return lhs.v0() == rhs.v0() && lhs.v1() == rhs.v1() && lhs.v2() == rhs.v2();
+  }
+
   /** \brief Gets the face hash value. */
   friend std::size_t hash_value(const Face& face) noexcept { return hash_value(*face.v0(), *face.v1(), *face.v2()); }
 

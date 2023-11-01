@@ -20,8 +20,9 @@ protected:
 };
 
 TEST_F(HalfEdgeTest, TestHalfEdgeEquality) {
-  ASSERT_EQ(edge01_, edge10_->flip());
-  ASSERT_EQ(edge10_, edge01_->flip());
+  EXPECT_TRUE(edge01_ == edge10_->flip());
+  EXPECT_TRUE(edge10_ == edge01_->flip());
+  EXPECT_FALSE(edge01_ == edge10_);
 }
 
 TEST_F(HalfEdgeTest, TestEqualHalfEdgesHaveTheSameHashValue) {

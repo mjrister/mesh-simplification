@@ -35,7 +35,8 @@ TEST(VertexTest, TestGetVertexEdge) {
 TEST(VertexTest, TestVertexEquality) {
   constexpr auto kId = 7;
   const qem::Vertex vertex{kId, glm::vec3{0.0f}};
-  EXPECT_EQ(vertex, qem::Vertex{vertex});
+  EXPECT_TRUE(vertex == (qem::Vertex{vertex}));
+  EXPECT_FALSE(vertex == (qem::Vertex{kId + 1, glm::vec3{0.0f}}));
 }
 
 TEST(VertexTest, TestEqualVerticesHaveTheSameHashValue) {
