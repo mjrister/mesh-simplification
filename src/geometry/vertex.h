@@ -48,6 +48,9 @@ public:
   /** \brief Sets the vertex half-edge. */
   void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
 
+  /** \brief Defines the vertex equality operator */
+  friend bool operator==(const Vertex& v0, const Vertex& v1) noexcept { return v0.id() == v1.id(); }
+
   /** \brief Gets the hash value for a vertex. */
   friend std::uint64_t hash_value(const Vertex& v0) noexcept {
     static constexpr std::hash<std::uint64_t> kUint64Hash;

@@ -27,6 +27,13 @@ TEST(VertexTest, TestSetVertexId) {
   ASSERT_EQ(vertex.id(), kId);
 }
 
+TEST(VertexTest, TestVertexEquality) {
+  constexpr std::uint64_t kId = 42;
+  const qem::Vertex v0{kId, glm::vec3{}};
+  const qem::Vertex v1{kId, glm::vec3{}};
+  ASSERT_EQ(v0, v1);
+}
+
 TEST(VertexTest, TestEqualVerticesProduceTheSameHashValue) {
   const qem::Vertex v0{0, glm::vec3{0.0f}};
   ASSERT_EQ(hash_value(v0), hash_value(qem::Vertex{v0}));
