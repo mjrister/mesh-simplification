@@ -39,7 +39,7 @@ To see what test presets are available, run `ctest --list-presets`.  Alternative
 
 ## Run
 
-Once built, the program executable can be found in`out/build/<preset>/src`. After running the program, the mesh can be simplified by pressing the `S` key. The mesh also can be translated and rotated about an arbitrary axis by left or right clicking  and dragging the cursor across the screen. Lastly, the mesh can be uniformly scaled using the mouse scroll wheel.
+Once built, the program executable can be found in `out/build/<preset>/src`. After running the program, the mesh can be simplified by pressing the `S` key. The mesh also can be translated and rotated about an arbitrary axis by left or right clicking  and dragging the cursor across the screen. Lastly, the mesh can be uniformly scaled using the mouse scroll wheel.
 
 
 
