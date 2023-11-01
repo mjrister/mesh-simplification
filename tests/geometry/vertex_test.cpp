@@ -6,6 +6,27 @@
 
 namespace {
 
+TEST(VertexTest, TestVertexConstructionWithPosition) {
+  constexpr glm::vec3 kPosition{1.0f, 2.0f, 3.0f};
+  const qem::Vertex vertex{kPosition};
+  ASSERT_EQ(vertex.position(), kPosition);
+}
+
+TEST(VertexTest, TestVertexConstructionWithIdAndPosition) {
+  constexpr std::uint64_t kId = 42;
+  constexpr glm::vec3 kPosition{1.0f, 2.0f, 3.0f};
+  const qem::Vertex vertex{kId, kPosition};
+  ASSERT_EQ(vertex.id(), kId);
+  ASSERT_EQ(vertex.position(), kPosition);
+}
+
+TEST(VertexTest, TestSetVertexId) {
+  constexpr std::uint64_t kId = 42;
+  qem::Vertex vertex{glm::vec3{}};
+  vertex.set_id(kId);
+  ASSERT_EQ(vertex.id(), kId);
+}
+
 TEST(VertexTest, TestEqualVerticesProduceTheSameHashValue) {
   const qem::Vertex v0{0, glm::vec3{0.0f}};
   ASSERT_EQ(hash_value(v0), hash_value(qem::Vertex{v0}));
