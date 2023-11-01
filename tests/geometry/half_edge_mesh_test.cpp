@@ -31,7 +31,7 @@ protected:
   std::shared_ptr<qem::Vertex> v0_, v1_, v2_;
   std::shared_ptr<qem::HalfEdge> edge01_, edge10_;
   std::shared_ptr<qem::Face> face012_;
-  std::map<std::size_t, std::shared_ptr<qem::Vertex>> vertices_;
+  std::map<int, std::shared_ptr<qem::Vertex>> vertices_;
   std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>> edges_;
   std::unordered_map<std::size_t, std::shared_ptr<qem::Face>> faces_;
 };
@@ -211,7 +211,7 @@ TEST_F(HalfEdgeMeshTest, TestGetInvalidHalfEdgeCausesProgramExit) {
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidVertexCausesProgramExit) {
-  std::map<std::size_t, std::shared_ptr<qem::Vertex>> vertices;
+  std::map<int, std::shared_ptr<qem::Vertex>> vertices;
   EXPECT_DEATH(DeleteVertex(*v0_, vertices), "");
 }
 

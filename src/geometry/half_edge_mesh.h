@@ -33,10 +33,10 @@ public:
   /** \brief Gets a mapping of mesh vertices by ID. */
   [[nodiscard]] const auto& vertices() const noexcept { return vertices_; }
 
-  /** \brief Gets a mapping of mesh half-edges by ID. */
+  /** \brief Gets a mapping of mesh half-edges by hash key. */
   [[nodiscard]] const auto& edges() const noexcept { return edges_; }
 
-  /** \brief Gets a mapping of mesh faces by ID. */
+  /** \brief Gets a mapping of mesh faces by hash key. */
   [[nodiscard]] const auto& faces() const noexcept { return faces_; }
 
   /**
@@ -49,7 +49,7 @@ public:
   void Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new);
 
 private:
-  std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;
+  std::map<int, std::shared_ptr<Vertex>> vertices_;
   std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
   std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
   glm::mat4 model_transform_;

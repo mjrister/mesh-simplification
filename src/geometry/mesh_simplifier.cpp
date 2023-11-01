@@ -120,12 +120,12 @@ bool WillDegenerate(const std::shared_ptr<const qem::HalfEdge>& edge01) {
 
   for (auto iterator = edge01->next(); iterator != edge01->flip(); iterator = iterator->flip()->next()) {
     if (const auto vertex = iterator->vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
-      neighborhood.emplace(hash_value(*vertex), vertex);
+      neighborhood.emplace(vertex->id(), vertex);
     }
   }
 
   for (auto iterator = edge01->flip()->next(); iterator != edge01; iterator = iterator->flip()->next()) {
-    if (const auto vertex = iterator->vertex(); neighborhood.contains(hash_value(*vertex))) {
+    if (const auto vertex = iterator->vertex(); neighborhood.contains(vertex->id())) {
       return true;
     }
   }
