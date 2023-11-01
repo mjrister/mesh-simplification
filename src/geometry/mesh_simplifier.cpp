@@ -172,9 +172,9 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
   }
 
   // stop mesh simplification if the number of triangles has been sufficiently reduced
-  const auto initial_face_count = static_cast<float>(half_edge_mesh.faces().size());
-  const auto is_simplified = [&, target_face_count = initial_face_count * (1.0f - rate)] {
-    return edge_contractions.empty() || static_cast<float>(half_edge_mesh.faces().size()) < target_face_count;
+  const auto initial_face_count = half_edge_mesh.faces().size();
+  const auto is_simplified = [&, target_face_count = (1.0f - rate) * static_cast<float>(initial_face_count)] {
+    return edge_contractions.empty() || half_edge_mesh.faces().size() < static_cast<std::size_t>(target_face_count);
   };
 
   for (auto next_vertex_id = half_edge_mesh.vertices().size(); !is_simplified(); edge_contractions.pop()) {
