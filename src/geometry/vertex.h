@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -25,16 +24,16 @@ public:
    * \param id The vertex ID.
    * \param position The vertex position.
    */
-  Vertex(const std::uint64_t id, const glm::vec3& position) noexcept : id_{id}, position_{position} {}
+  Vertex(const int id, const glm::vec3& position) noexcept : id_{id}, position_{position} {}
 
   /** \brief Gets the vertex ID. */
-  [[nodiscard]] std::uint64_t id() const noexcept {
+  [[nodiscard]] int id() const noexcept {
     assert(id_.has_value());
     return *id_;
   }
 
   /** \brief Sets the vertex ID. */
-  void set_id(const std::uint64_t id) noexcept { id_ = id; }
+  void set_id(const int id) noexcept { id_ = id; }
 
   /** \brief Gets the vertex position. */
   [[nodiscard]] const glm::vec3& position() const noexcept { return position_; }
@@ -52,15 +51,15 @@ public:
   friend bool operator==(const Vertex& v0, const Vertex& v1) noexcept { return v0.id() == v1.id(); }
 
   /** \brief Gets the hash value for a vertex. */
-  friend std::uint64_t hash_value(const Vertex& v0) noexcept {
-    static constexpr std::hash<std::uint64_t> kUint64Hash;
+  friend std::size_t hash_value(const Vertex& v0) noexcept {
+    static constexpr std::hash<int> kUint64Hash;
     return kUint64Hash(v0.id());
   }
 
   /** \brief Gets the hash value for two vertices. */
-  friend std::uint64_t hash_value(const Vertex& v0, const Vertex& v1) noexcept {
+  friend std::size_t hash_value(const Vertex& v0, const Vertex& v1) noexcept {
     // NOLINTBEGIN(readability-magic-numbers)
-    std::uint64_t seed = 0x32C95994;
+    std::size_t seed = 0x32C95994;
     seed ^= (seed << 6u) + (seed >> 2u) + 0x3FA612CEu + hash_value(v0);
     seed ^= (seed << 6u) + (seed >> 2u) + 0x197685C2u + hash_value(v1);
     // NOLINTEND(readability-magic-numbers)
@@ -68,9 +67,9 @@ public:
   }
 
   /** \brief Gets the hash value for three vertices. */
-  friend std::uint64_t hash_value(const Vertex& v0, const Vertex& v1, const Vertex& v2) noexcept {
+  friend std::size_t hash_value(const Vertex& v0, const Vertex& v1, const Vertex& v2) noexcept {
     // NOLINTBEGIN(readability-magic-numbers)
-    std::uint64_t seed = 0x230402B5;
+    std::size_t seed = 0x230402B5;
     seed ^= (seed << 6u) + (seed >> 2u) + 0x72C2C6EBu + hash_value(v0);
     seed ^= (seed << 6u) + (seed >> 2u) + 0x16E199E4u + hash_value(v1);
     seed ^= (seed << 6u) + (seed >> 2u) + 0x6F89F2A8u + hash_value(v2);
@@ -79,7 +78,7 @@ public:
   }
 
 private:
-  std::optional<std::uint64_t> id_;
+  std::optional<int> id_;
   glm::vec3 position_;
   std::weak_ptr<const HalfEdge> edge_;
 };

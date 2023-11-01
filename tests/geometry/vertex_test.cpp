@@ -13,7 +13,7 @@ TEST(VertexTest, TestVertexConstructionWithPosition) {
 }
 
 TEST(VertexTest, TestVertexConstructionWithIdAndPosition) {
-  constexpr std::uint64_t kId = 42;
+  constexpr auto kId = 42;
   constexpr glm::vec3 kPosition{1.0f, 2.0f, 3.0f};
   const qem::Vertex vertex{kId, kPosition};
   ASSERT_EQ(vertex.id(), kId);
@@ -21,14 +21,14 @@ TEST(VertexTest, TestVertexConstructionWithIdAndPosition) {
 }
 
 TEST(VertexTest, TestSetVertexId) {
-  constexpr std::uint64_t kId = 42;
+  constexpr auto kId = 42;
   qem::Vertex vertex{glm::vec3{}};
   vertex.set_id(kId);
   ASSERT_EQ(vertex.id(), kId);
 }
 
 TEST(VertexTest, TestVertexEquality) {
-  constexpr std::uint64_t kId = 42;
+  constexpr auto kId = 42;
   const qem::Vertex v0{kId, glm::vec3{}};
   const qem::Vertex v1{kId, glm::vec3{}};
   ASSERT_EQ(v0, v1);

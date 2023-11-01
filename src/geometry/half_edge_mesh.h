@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <map>
 #include <memory>
 #include <unordered_map>
@@ -50,9 +49,9 @@ public:
   void Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new);
 
 private:
-  std::map<std::uint64_t, std::shared_ptr<Vertex>> vertices_;
-  std::unordered_map<std::uint64_t, std::shared_ptr<HalfEdge>> edges_;
-  std::unordered_map<std::uint64_t, std::shared_ptr<Face>> faces_;
+  std::map<std::size_t, std::shared_ptr<Vertex>> vertices_;
+  std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
+  std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
   glm::mat4 model_transform_;
 };
 

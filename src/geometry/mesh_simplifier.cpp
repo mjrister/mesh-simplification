@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <cstdint>
 #include <iostream>
 #include <queue>
 #include <ranges>
@@ -68,7 +67,7 @@ glm::mat4 ComputeQuadric(const qem::Vertex& v0) {
 }
 
 /** \brief Gets the error quadric for a given vertex. */
-const glm::mat4& GetQuadric(const qem::Vertex& v0, const std::unordered_map<std::uint64_t, glm::mat4>& quadrics) {
+const glm::mat4& GetQuadric(const qem::Vertex& v0, const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
   const auto q0_iterator = quadrics.find(v0.id());
   assert(q0_iterator != quadrics.end());
   return q0_iterator->second;
@@ -81,7 +80,7 @@ const glm::mat4& GetQuadric(const qem::Vertex& v0, const std::unordered_map<std:
  * \return The optimal vertex and cost associated with contracting \p edge01.
  */
 std::pair<std::shared_ptr<qem::Vertex>, float> GetOptimalEdgeContractionVertex(
-    const qem::HalfEdge& edge01, const std::unordered_map<std::uint64_t, glm::mat4>& quadrics) {
+    const qem::HalfEdge& edge01, const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
   const auto v0 = edge01.flip()->vertex();
   const auto v1 = edge01.vertex();
 
@@ -117,7 +116,7 @@ bool WillDegenerate(const std::shared_ptr<const qem::HalfEdge>& edge01) {
   const auto v0 = edge01->flip()->vertex();
   const auto v1_next = edge01->next()->vertex();
   const auto v0_next = edge01->flip()->next()->vertex();
-  std::unordered_map<uint64_t, std::shared_ptr<qem::Vertex>> neighborhood;
+  std::unordered_map<std::size_t, std::shared_ptr<qem::Vertex>> neighborhood;
 
   for (auto iterator = edge01->next(); iterator != edge01->flip(); iterator = iterator->flip()->next()) {
     if (const auto vertex = iterator->vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
@@ -146,7 +145,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
   HalfEdgeMesh half_edge_mesh{mesh};
 
   // compute error quadrics for each vertex
-  std::unordered_map<uint64_t, glm::mat4> quadrics;
+  std::unordered_map<std::size_t, glm::mat4> quadrics;
   for (const auto& [vertex_id, vertex] : half_edge_mesh.vertices()) {
     [[maybe_unused]] const auto success = quadrics.emplace(vertex_id, ComputeQuadric(*vertex)).second;
     assert(success);
@@ -160,7 +159,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
       edge_contractions{kMinCostComparator};
 
   // this is used to invalidate existing priority queue entries as edges are updated or removed from the mesh
-  std::unordered_map<std::uint64_t, std::shared_ptr<EdgeContraction>> valid_edges;
+  std::unordered_map<std::size_t, std::shared_ptr<EdgeContraction>> valid_edges;
 
   // compute the optimal vertex position that minimizes the cost of contracting each edge
   for (const auto& edge : half_edge_mesh.edges() | std::views::values) {
@@ -181,7 +180,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
     return edge_contractions.empty() || static_cast<float>(half_edge_mesh.faces().size()) < target_face_count;
   };
 
-  for (std::uint64_t next_vertex_id = half_edge_mesh.vertices().size(); !is_simplified(); edge_contractions.pop()) {
+  for (auto next_vertex_id = half_edge_mesh.vertices().size(); !is_simplified(); edge_contractions.pop()) {
     const auto& edge_contraction = edge_contractions.top();
     const auto& edge01 = edge_contraction->edge;
 
@@ -195,7 +194,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
 
     // only assign a new vertex ID when processing the next edge contraction
     const auto& v_new = edge_contraction->vertex;
-    v_new->set_id(next_vertex_id++);
+    v_new->set_id(static_cast<int>(next_vertex_id++));
 
     // compute the error quadric for the new vertex
     [[maybe_unused]] auto success = quadrics.emplace(v_new->id(), q0 + q1).second;
@@ -218,7 +217,7 @@ qem::Mesh qem::mesh::Simplify(const Mesh& mesh, const float rate) {
     half_edge_mesh.Contract(*edge01, v_new);
 
     // add new edge contraction candidates for edges affected by the edge contraction
-    std::unordered_map<uint64_t, std::shared_ptr<const HalfEdge>> visited_edges;
+    std::unordered_map<std::size_t, std::shared_ptr<const HalfEdge>> visited_edges;
     const auto& vi = v_new;
     auto edgeji = vi->edge();
     do {

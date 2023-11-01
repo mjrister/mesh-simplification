@@ -1,6 +1,7 @@
 #include "graphics/scene.h"
 
 #include <optional>
+#include <utility>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -67,10 +68,10 @@ void SetMaterial(qem::ShaderProgram& shader_program) {
 }
 
 void SetPointLights(qem::ShaderProgram& shader_program) {
-  constexpr auto kPointLightsSize = static_cast<int>(sizeof kPointLights / sizeof(PointLight));
-  shader_program.SetUniform("point_lights_size", kPointLightsSize);
+  constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
+  shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
-  for (auto i = 0; i < kPointLightsSize; ++i) {
+  for (auto i = 0; std::cmp_less(i, kPointLightsSize); ++i) {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
     const auto& [position, color, attenuation] = kPointLights[i];
     shader_program.SetUniform(std::format("point_lights[{}].position", i), position);
