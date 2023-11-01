@@ -7,26 +7,77 @@ namespace {
 class HalfEdgeTest : public testing::Test {
 protected:
   HalfEdgeTest()
-      : v0_{std::make_shared<qem::Vertex>(0, glm::vec3{0.0f})},
-        v1_{std::make_shared<qem::Vertex>(1, glm::vec3{0.0f})},
+      : v0_{std::make_shared<qem::Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f})},
+        v1_{std::make_shared<qem::Vertex>(1, glm::vec3{1.0f, -1.0f, 0.0f})},
+        v2_{std::make_shared<qem::Vertex>(2, glm::vec3{0.0f, 0.5f, 0.0f})},
         edge01_{std::make_shared<qem::HalfEdge>(v1_)},
-        edge10_{std::make_shared<qem::HalfEdge>(v0_)} {
+        edge10_{std::make_shared<qem::HalfEdge>(v0_)},
+        edge12_{std::make_shared<qem::HalfEdge>(v2_)},
+        edge21_{std::make_shared<qem::HalfEdge>(v1_)},
+        edge20_{std::make_shared<qem::HalfEdge>(v0_)},
+        edge02_{std::make_shared<qem::HalfEdge>(v2_)},
+        face012_{std::make_shared<qem::Face>(v0_, v1_, v2_)} {
     edge01_->set_flip(edge10_);
     edge10_->set_flip(edge01_);
+    edge12_->set_flip(edge21_);
+    edge21_->set_flip(edge12_);
+    edge20_->set_flip(edge02_);
+    edge02_->set_flip(edge20_);
+
+    edge01_->set_next(edge12_);
+    edge12_->set_next(edge20_);
+    edge20_->set_next(edge01_);
+
+    v0_->set_edge(edge20_);
+    v1_->set_edge(edge01_);
+    v2_->set_edge(edge12_);
+
+    edge01_->set_face(face012_);
+    edge12_->set_face(face012_);
+    edge20_->set_face(face012_);
   }
 
-  std::shared_ptr<qem::Vertex> v0_, v1_;
-  std::shared_ptr<qem::HalfEdge> edge01_, edge10_;
+  // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+  std::shared_ptr<qem::Vertex> v0_, v1_, v2_;
+  std::shared_ptr<qem::HalfEdge> edge01_, edge10_, edge12_, edge21_, edge20_, edge02_;
+  std::shared_ptr<qem::Face> face012_;
+  // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
+
+TEST_F(HalfEdgeTest, TestGetVertex) {
+  EXPECT_EQ(*v0_, *edge10_->vertex());
+  EXPECT_EQ(*v1_, *edge01_->vertex());
+  EXPECT_EQ(*v2_, *edge12_->vertex());
+  EXPECT_EQ(*v1_, *edge21_->vertex());
+  EXPECT_EQ(*v0_, *edge20_->vertex());
+  EXPECT_EQ(*v2_, *edge02_->vertex());
+}
+
+TEST_F(HalfEdgeTest, TestGetFlip) {
+  EXPECT_EQ(*edge01_->flip(), *edge10_);
+  EXPECT_EQ(*edge10_->flip(), *edge01_);
+  EXPECT_EQ(*edge12_->flip(), *edge21_);
+  EXPECT_EQ(*edge21_->flip(), *edge12_);
+  EXPECT_EQ(*edge20_->flip(), *edge02_);
+  EXPECT_EQ(*edge02_->flip(), *edge20_);
+}
+
+TEST_F(HalfEdgeTest, TestGetNext) {
+  EXPECT_EQ(*edge01_->next(), *edge12_);
+  EXPECT_EQ(*edge12_->next(), *edge20_);
+  EXPECT_EQ(*edge20_->next(), *edge01_);
+}
+
+TEST_F(HalfEdgeTest, TestGetFace) {
+  EXPECT_EQ(edge01_->face(), face012_);
+  EXPECT_EQ(edge12_->face(), face012_);
+  EXPECT_EQ(edge20_->face(), face012_);
+}
 
 TEST_F(HalfEdgeTest, TestEqualHalfEdgesHaveTheSameHashValue) {
   const auto edge01_copy = *edge01_;  // NOLINT(performance-unnecessary-copy-initialization)
   EXPECT_EQ(*edge01_, edge01_copy);
   EXPECT_EQ(hash_value(*edge01_), hash_value(edge01_copy));
-}
-
-TEST_F(HalfEdgeTest, TestOppositeHalfEdgesDoNotHaveTheSameHashValue) {
-  EXPECT_NE(hash_value(*edge01_), hash_value(*edge01_->flip()));
 }
 
 TEST_F(HalfEdgeTest, TestEqualHalfEdgeVerticesHaveTheSameHashValue) {
@@ -35,49 +86,53 @@ TEST_F(HalfEdgeTest, TestEqualHalfEdgeVerticesHaveTheSameHashValue) {
   EXPECT_EQ(hash_value(*v0, *v1), hash_value(*edge01_));
 }
 
+TEST_F(HalfEdgeTest, TestFlipHalfEdgesDoNotHaveTheSameHashValue) {
+  EXPECT_NE(hash_value(*edge01_), hash_value(*edge01_->flip()));
+}
+
 #ifndef NDEBUG
 
 TEST_F(HalfEdgeTest, TestGetExpiredVertexCausesProgramExit) {
-  std::shared_ptr<qem::HalfEdge> edge;
+  std::shared_ptr<qem::HalfEdge> edge10;
   {
-    const auto vertex = std::make_shared<qem::Vertex>(0, glm::vec3{});
-    edge = std::make_shared<qem::HalfEdge>(vertex);
+    const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{});
+    edge10 = std::make_shared<qem::HalfEdge>(v0);
   }
-  EXPECT_DEATH({ std::ignore = edge->vertex(); }, "");
+  EXPECT_DEATH({ std::ignore = edge10->vertex(); }, "");
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
-  const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{});
-  const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{});
-  const auto edge01 = std::make_shared<qem::HalfEdge>(v1);
   {
-    const auto edge10 = std::make_shared<qem::HalfEdge>(v0);
-    edge01->set_flip(edge10);
+    const auto edge10 = std::make_shared<qem::HalfEdge>(v0_);
+    edge01_->set_flip(edge10);
   }
-  EXPECT_DEATH({ std::ignore = edge01->flip(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01_->flip(); }, "");
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
-  const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{});
-  const auto v2 = std::make_shared<qem::Vertex>(2, glm::vec3{});
-  const auto edge01 = std::make_shared<qem::HalfEdge>(v1);
   {
-    const auto edge12 = std::make_shared<qem::HalfEdge>(v2);
-    edge01->set_next(edge12);
+    const auto edge12 = std::make_shared<qem::HalfEdge>(v2_);
+    edge01_->set_next(edge12);
   }
-  EXPECT_DEATH({ std::ignore = edge01->next(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01_->next(); }, "");
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredFaceCausesProgramExit) {
-  const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f});
-  const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{1.0f, -1.0f, 0.0f});
-  const auto v2 = std::make_shared<qem::Vertex>(2, glm::vec3{0.0f, 0.5f, 0.0f});
-  const auto edge01 = std::make_shared<qem::HalfEdge>(v1);
   {
-    const auto face012 = std::make_shared<qem::Face>(v0, v1, v2);
-    edge01->set_face(face012);
+    const auto face012 = std::make_shared<qem::Face>(v0_, v1_, v2_);
+    edge01_->set_face(face012);
   }
-  EXPECT_DEATH({ std::ignore = edge01->face(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01_->face(); }, "");
+}
+
+TEST_F(HalfEdgeTest, TestSetInvalidFlipCausesProgramExit) {
+  EXPECT_DEATH(edge01_->set_flip(edge01_), "");
+  EXPECT_DEATH(edge01_->set_flip(edge01_->next()), "");
+}
+
+TEST_F(HalfEdgeTest, TestSetInvalidNextCausesProgramExit) {
+  EXPECT_DEATH(edge01_->set_next(edge01_), "");
+  EXPECT_DEATH(edge01_->set_next(edge01_->flip()), "");
 }
 
 #endif

@@ -58,16 +58,18 @@ public:
   }
 
   /** \brief Sets the half-edge face. */
+  // TODO: add unit test
   void set_face(const std::shared_ptr<Face>& face) noexcept {
 #ifndef NDEBUG
+    // assert the face belongs to this half-edge
     const std::array face_vertices{*face->v0(), *face->v1(), *face->v2()};
     const auto iterator = std::ranges::find_if(face_vertices, [this, edge_vertex = *vertex()](const auto& face_vertex) {
       if (edge_vertex == face_vertex) {
-        auto edgei = face_vertex.edge();
+        auto edge = face_vertex.edge();
         do {
-          if (*this == *edgei) return true;
-          edgei = edgei->next()->flip();
-        } while (edgei != face_vertex.edge());
+          if (*this == *edge) return true;
+          edge = edge->next()->flip();
+        } while (edge != face_vertex.edge());
       }
       return false;
     });

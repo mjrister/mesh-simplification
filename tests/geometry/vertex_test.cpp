@@ -47,7 +47,7 @@ TEST(VertexTest, TestEqualVertexPairsHaveTheSameHashValue) {
   EXPECT_EQ(hash_value(v0, v1), hash_value(qem::Vertex{v0}, qem::Vertex{v1}));
 }
 
-TEST(VertexTest, TestOppositeVertexPairsDoNotHaveTheSameHashValue) {
+TEST(VertexTest, TestFlipVertexPairsDoNotHaveTheSameHashValue) {
   const qem::Vertex v0{0, glm::vec3{0.0f}};
   const qem::Vertex v1{1, glm::vec3{0.0f}};
   EXPECT_NE(hash_value(v0, v1), hash_value(v1, v0));
