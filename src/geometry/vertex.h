@@ -45,7 +45,7 @@ public:
   }
 
   /** \brief Sets the vertex half-edge. */
-  void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept { edge_ = edge; }
+  void set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept;
 
   /** \brief Defines the vertex equality operator. */
   friend bool operator==(const Vertex& lhs, const Vertex& rhs) noexcept { return lhs.id() == rhs.id(); }

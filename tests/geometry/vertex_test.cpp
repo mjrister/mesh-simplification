@@ -68,12 +68,19 @@ TEST(VertexTest, TestGetUnsetIdCausesProgramExit) {
 }
 
 TEST(VertexTest, TestGetExpiredEdgeCausesProgramExit) {
-  const auto vertex = std::make_shared<qem::Vertex>(glm::vec3{0.0f});
+  const auto vertex = std::make_shared<qem::Vertex>(0, glm::vec3{0.0f});
   {
     const auto edge = std::make_shared<qem::HalfEdge>(vertex);
     vertex->set_edge(edge);
   }
   EXPECT_DEATH({ std::ignore = vertex->edge(); }, "");
+}
+
+TEST(VertexTest, TestSetInvalidEdgeCausesProgramExit) {
+  const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{0.0f});
+  const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{0.0f});
+  const auto edge01 = std::make_shared<qem::HalfEdge>(v1);
+  EXPECT_DEATH(v0->set_edge(edge01), "");
 }
 
 #endif

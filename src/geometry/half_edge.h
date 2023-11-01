@@ -93,4 +93,10 @@ private:
   std::weak_ptr<Face> face_;
 };
 
+// defined here to avoid cyclical dependency
+inline void Vertex::set_edge(const std::shared_ptr<const HalfEdge>& edge) noexcept {
+  assert(*this == *edge->vertex());
+  edge_ = edge;
+}
+
 }  // namespace qem
