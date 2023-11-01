@@ -27,61 +27,45 @@ TEST(FaceTest, TestFaceInitializationVertexOrder) {
   EXPECT_EQ(face120.v1(), v1);
   EXPECT_EQ(face120.v2(), v2);
 
-  EXPECT_EQ(face120.v0(), v0);
-  EXPECT_EQ(face120.v1(), v1);
-  EXPECT_EQ(face120.v2(), v2);
+  EXPECT_EQ(face201.v0(), v0);
+  EXPECT_EQ(face201.v1(), v1);
+  EXPECT_EQ(face201.v2(), v2);
 }
 
-TEST(FaceTest, TestGetFaceArea) {
+TEST(FaceTest, TestGetArea) {
   const auto [v0, v1, v2] = CreateValidTriangle();
   const qem::Face face012{v0, v1, v2};
   EXPECT_FLOAT_EQ(1.5f, face012.area());
 }
 
-TEST(FaceTest, TestGetFaceNormal) {
+TEST(FaceTest, TestGetNormal) {
   const auto [v0, v1, v2] = CreateValidTriangle();
   const qem::Face face012{v0, v1, v2};
   EXPECT_EQ((glm::vec3{0.0f, 0.0f, 1.0f}), face012.normal());
 }
 
-TEST(FaceTest, TestEqualFacesProduceTheSameHashValue) {
+TEST(FaceTest, TestEqualFacesHaveTheSameHashValue) {
   const auto [v0, v1, v2] = CreateValidTriangle();
   const qem::Face face012{v0, v1, v2};
   EXPECT_EQ(hash_value(face012), hash_value(qem::Face{face012}));
 }
 
-TEST(FaceTest, TestThreeVerticesProduceSameHashValueAsFace) {
+TEST(FaceTest, TestEqualFaceVerticesHaveTheSameHashValue) {
   const auto [v0, v1, v2] = CreateValidTriangle();
   const qem::Face face012{v0, v1, v2};
-  EXPECT_EQ(hash_value(*v0, *v1, *v2), hash_value(face012));
+  EXPECT_EQ(hash_value(face012), hash_value(*v0, *v1, *v2));
 }
 
 #ifndef NDEBUG
 
-TEST(FaceTest, TestGetExpiredVertex0CausesProgramExit) {
+TEST(FaceTest, TestGetExpiredVertexCausesProgramExit) {
   std::unique_ptr<qem::Face> face012;
   {
     const auto [v0, v1, v2] = CreateValidTriangle();
     face012 = std::make_unique<qem::Face>(v0, v1, v2);
   }
   EXPECT_DEATH({ std::ignore = face012->v0(); }, "");
-}
-
-TEST(FaceTest, TestGetExpiredVertex1CausesProgramExit) {
-  std::unique_ptr<qem::Face> face012;
-  {
-    const auto [v0, v1, v2] = CreateValidTriangle();
-    face012 = std::make_unique<qem::Face>(v0, v1, v2);
-  }
   EXPECT_DEATH({ std::ignore = face012->v1(); }, "");
-}
-
-TEST(FaceTest, TestGetExpiredVertex2CausesProgramExit) {
-  std::unique_ptr<qem::Face> face012;
-  {
-    const auto [v0, v1, v2] = CreateValidTriangle();
-    face012 = std::make_unique<qem::Face>(v0, v1, v2);
-  }
   EXPECT_DEATH({ std::ignore = face012->v2(); }, "");
 }
 
