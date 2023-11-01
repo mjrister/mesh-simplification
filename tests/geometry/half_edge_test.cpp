@@ -20,14 +20,14 @@ protected:
 };
 
 TEST_F(HalfEdgeTest, TestEqualHalfEdgesProduceTheSameHashValue) {
-  ASSERT_EQ(hash_value(*edge01_), hash_value(qem::HalfEdge{*edge01_}));
-  ASSERT_NE(hash_value(*edge01_), hash_value(*edge01_->flip()));
+  EXPECT_EQ(hash_value(*edge01_), hash_value(qem::HalfEdge{*edge01_}));
+  EXPECT_NE(hash_value(*edge01_), hash_value(*edge01_->flip()));
 }
 
 TEST_F(HalfEdgeTest, TestTwoVerticesProduceSameHashValueAsHalfEdge) {
   const auto v0 = edge01_->flip()->vertex();
   const auto v1 = edge01_->vertex();
-  ASSERT_EQ(hash_value(*v0, *v1), hash_value(*edge01_));
+  EXPECT_EQ(hash_value(*v0, *v1), hash_value(*edge01_));
 }
 
 #ifndef NDEBUG
@@ -38,7 +38,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredVertexCausesProgramExit) {
     const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{});
     edge01 = std::make_shared<qem::HalfEdge>(v1);
   }
-  ASSERT_DEATH({ std::ignore = edge01->vertex(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01->vertex(); }, "");
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
@@ -49,7 +49,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
     const auto edge10 = std::make_shared<qem::HalfEdge>(v0);
     edge01->set_flip(edge10);
   }
-  ASSERT_DEATH({ std::ignore = edge01->flip(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01->flip(); }, "");
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
@@ -60,7 +60,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
     const auto edge10 = std::make_shared<qem::HalfEdge>(v0);
     edge01->set_next(edge10);
   }
-  ASSERT_DEATH({ std::ignore = edge01->next(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01->next(); }, "");
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredFaceCausesProgramExit) {
@@ -72,7 +72,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredFaceCausesProgramExit) {
     const auto face012 = std::make_shared<qem::Face>(v0, v1, v2);
     edge01->set_face(face012);
   }
-  ASSERT_DEATH({ std::ignore = edge01->face(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01->face(); }, "");
 }
 
 #endif

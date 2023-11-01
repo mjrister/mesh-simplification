@@ -8,7 +8,6 @@
 #include "geometry/vertex.h"
 
 namespace qem {
-class HalfEdge;
 
 /** \brief A triangle face defined by three vertices in counter-clockwise winding order. */
 class Face {

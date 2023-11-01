@@ -83,14 +83,14 @@ void VerifyEdge(const std::shared_ptr<qem::Vertex>& v0,
   const auto& edge01 = edge01_iterator->second;
   const auto& edge10 = edge10_iterator->second;
 
-  ASSERT_EQ(v0, edge10->vertex());
-  ASSERT_EQ(v1, edge01->vertex());
+  EXPECT_EQ(v0, edge10->vertex());
+  EXPECT_EQ(v1, edge01->vertex());
 
-  ASSERT_EQ(edge01, edge10->flip());
-  ASSERT_EQ(edge10, edge01->flip());
+  EXPECT_EQ(edge01, edge10->flip());
+  EXPECT_EQ(edge10, edge01->flip());
 
-  ASSERT_EQ(edge01, edge01->flip()->flip());
-  ASSERT_EQ(edge10, edge10->flip()->flip());
+  EXPECT_EQ(edge01, edge01->flip()->flip());
+  EXPECT_EQ(edge10, edge10->flip()->flip());
 }
 
 void VerifyTriangles(const qem::HalfEdgeMesh& half_edge_mesh, const std::vector<GLuint>& indices) {
@@ -119,17 +119,17 @@ void VerifyTriangles(const qem::HalfEdgeMesh& half_edge_mesh, const std::vector<
     const auto edge12 = edges.at(hash_value(*v1, *v2));
     const auto edge20 = edges.at(hash_value(*v2, *v0));
 
-    ASSERT_EQ(edge01->next(), edge12);
-    ASSERT_EQ(edge12->next(), edge20);
-    ASSERT_EQ(edge20->next(), edge01);
+    EXPECT_EQ(edge01->next(), edge12);
+    EXPECT_EQ(edge12->next(), edge20);
+    EXPECT_EQ(edge20->next(), edge01);
 
     const auto face012_iterator = faces.find(hash_value(*v0, *v1, *v2));
     ASSERT_NE(face012_iterator, faces.end());
 
     const auto face012 = face012_iterator->second;
-    ASSERT_EQ(edge01->face(), face012);
-    ASSERT_EQ(edge12->face(), face012);
-    ASSERT_EQ(edge20->face(), face012);
+    EXPECT_EQ(edge01->face(), face012);
+    EXPECT_EQ(edge12->face(), face012);
+    EXPECT_EQ(edge20->face(), face012);
   }
 }
 
@@ -137,9 +137,9 @@ TEST_F(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
   const auto mesh = CreateValidMesh();
   const qem::HalfEdgeMesh half_edge_mesh{mesh};
 
-  ASSERT_EQ(10, half_edge_mesh.vertices().size());
-  ASSERT_EQ(38, half_edge_mesh.edges().size());
-  ASSERT_EQ(10, half_edge_mesh.faces().size());
+  EXPECT_EQ(10, half_edge_mesh.vertices().size());
+  EXPECT_EQ(38, half_edge_mesh.edges().size());
+  EXPECT_EQ(10, half_edge_mesh.faces().size());
 
   VerifyTriangles(half_edge_mesh, mesh.indices());
 }
@@ -155,9 +155,9 @@ TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
 
   half_edge_mesh.Contract(*edge01, std::make_shared<qem::Vertex>(v_new));
 
-  ASSERT_EQ(9, half_edge_mesh.vertices().size());
-  ASSERT_EQ(32, half_edge_mesh.edges().size());
-  ASSERT_EQ(8, half_edge_mesh.faces().size());
+  EXPECT_EQ(9, half_edge_mesh.vertices().size());
+  EXPECT_EQ(32, half_edge_mesh.edges().size());
+  EXPECT_EQ(8, half_edge_mesh.faces().size());
 
   VerifyTriangles(half_edge_mesh, {2, 3,  10,   // f0
                                    3, 4,  10,   // f1
@@ -170,29 +170,29 @@ TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
 }
 
 TEST_F(HalfEdgeMeshTest, TestGetHalfEdge) {
-  ASSERT_EQ(edge01_, GetHalfEdge(*v0_, *v1_, edges_));
-  ASSERT_EQ(edge10_, GetHalfEdge(*v1_, *v0_, edges_));
+  EXPECT_EQ(edge01_, GetHalfEdge(*v0_, *v1_, edges_));
+  EXPECT_EQ(edge10_, GetHalfEdge(*v1_, *v0_, edges_));
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteVertex) {
   DeleteVertex(*v0_, vertices_);
-  ASSERT_EQ(vertices_.size(), 2);
+  EXPECT_EQ(vertices_.size(), 2);
 
   DeleteVertex(*v1_, vertices_);
-  ASSERT_EQ(vertices_.size(), 1);
+  EXPECT_EQ(vertices_.size(), 1);
 
   DeleteVertex(*v2_, vertices_);
-  ASSERT_TRUE(vertices_.empty());
+  EXPECT_TRUE(vertices_.empty());
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteHalfEdge) {
   DeleteEdge(*edge01_, edges_);
-  ASSERT_TRUE(edges_.empty());
+  EXPECT_TRUE(edges_.empty());
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteFace) {
   DeleteFace(*face012_, faces_);
-  ASSERT_TRUE(faces_.empty());
+  EXPECT_TRUE(faces_.empty());
 }
 
 #ifndef NDEBUG
@@ -203,26 +203,26 @@ TEST_F(HalfEdgeMeshTest, TestCollapseInvalidHalfEdgeCausesProgramExit) {
       std::make_shared<qem::Vertex>(static_cast<int>(half_edge_mesh.vertices().size()), glm::vec3{});
   const auto invalid_half_edge = std::make_shared<qem::HalfEdge>(invalid_vertex);
   invalid_half_edge->set_flip(edge01_);
-  ASSERT_DEATH(half_edge_mesh.Contract(*invalid_half_edge, std::make_shared<qem::Vertex>(glm::vec3{})), "");
+  EXPECT_DEATH(half_edge_mesh.Contract(*invalid_half_edge, std::make_shared<qem::Vertex>(glm::vec3{})), "");
 }
 
 TEST_F(HalfEdgeMeshTest, TestGetInvalidHalfEdgeCausesProgramExit) {
-  ASSERT_DEATH(GetHalfEdge(*v1_, *v0_, (std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>{})), "");
+  EXPECT_DEATH(GetHalfEdge(*v1_, *v0_, (std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>{})), "");
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidVertexCausesProgramExit) {
   std::map<std::size_t, std::shared_ptr<qem::Vertex>> vertices;
-  ASSERT_DEATH(DeleteVertex(*v0_, vertices), "");
+  EXPECT_DEATH(DeleteVertex(*v0_, vertices), "");
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidHalfEdgeCausesProgramExit) {
   std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>> edges;
-  ASSERT_DEATH(DeleteEdge(*edge01_, edges), "");
+  EXPECT_DEATH(DeleteEdge(*edge01_, edges), "");
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidFaceCausesProgramExit) {
   std::unordered_map<std::size_t, std::shared_ptr<qem::Face>> faces;
-  ASSERT_DEATH(DeleteFace(*face012_, faces), "");
+  EXPECT_DEATH(DeleteFace(*face012_, faces), "");
 }
 
 #endif
