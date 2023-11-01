@@ -30,7 +30,11 @@ public:
   }
 
   /** \brief Sets the next half-edge. */
-  void set_next(const std::shared_ptr<HalfEdge>& next) noexcept { next_ = next; }
+  void set_next(const std::shared_ptr<HalfEdge>& next) noexcept {
+    assert(*this != *next);
+    assert(flip_.expired() || *next != *flip_.lock());
+    next_ = next;
+  }
 
   /** \brief Gets the half-edge that shares this edge's vertices in the opposite direction. */
   [[nodiscard]] std::shared_ptr<HalfEdge> flip() const noexcept {
@@ -39,7 +43,11 @@ public:
   }
 
   /** \brief Sets the flip half-edge. */
-  void set_flip(const std::shared_ptr<HalfEdge>& flip) noexcept { flip_ = flip; }
+  void set_flip(const std::shared_ptr<HalfEdge>& flip) noexcept {
+    assert(*this != *flip);
+    assert(next_.expired() || *flip != *next_.lock());
+    flip_ = flip;
+  }
 
   /** \brief Gets the face created by three counter-clockwise \c next iterations starting from this half-edge. */
   [[nodiscard]] std::shared_ptr<Face> face() const noexcept {
@@ -48,7 +56,10 @@ public:
   }
 
   /** \brief Sets the half-edge face. */
-  void set_face(const std::shared_ptr<Face>& face) noexcept { face_ = face; }
+  void set_face(const std::shared_ptr<Face>& face) noexcept {
+    assert(*this == *face->v0()->edge() || *this == *face->v1()->edge() || *this == *face->v2()->edge());
+    face_ = face;
+  }
 
   /** \brief Defines the half-edge equality operator. */
   friend bool operator==(const HalfEdge& lhs, const HalfEdge& rhs) noexcept {
