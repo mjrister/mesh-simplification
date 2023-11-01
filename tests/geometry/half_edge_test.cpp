@@ -36,12 +36,12 @@ TEST_F(HalfEdgeTest, TestEqualHalfEdgeVerticesHaveTheSameHashValue) {
 #ifndef NDEBUG
 
 TEST_F(HalfEdgeTest, TestGetExpiredVertexCausesProgramExit) {
-  std::shared_ptr<qem::HalfEdge> edge01;
+  std::shared_ptr<qem::HalfEdge> edge;
   {
-    const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{});
-    edge01 = std::make_shared<qem::HalfEdge>(v1);
+    const auto vertex = std::make_shared<qem::Vertex>(0, glm::vec3{});
+    edge = std::make_shared<qem::HalfEdge>(vertex);
   }
-  EXPECT_DEATH({ std::ignore = edge01->vertex(); }, "");
+  EXPECT_DEATH({ std::ignore = edge->vertex(); }, "");
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
@@ -56,12 +56,12 @@ TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
-  const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{});
   const auto v1 = std::make_shared<qem::Vertex>(1, glm::vec3{});
+  const auto v2 = std::make_shared<qem::Vertex>(2, glm::vec3{});
   const auto edge01 = std::make_shared<qem::HalfEdge>(v1);
   {
-    const auto edge10 = std::make_shared<qem::HalfEdge>(v0);
-    edge01->set_next(edge10);
+    const auto edge12 = std::make_shared<qem::HalfEdge>(v2);
+    edge01->set_next(edge12);
   }
   EXPECT_DEATH({ std::ignore = edge01->next(); }, "");
 }
