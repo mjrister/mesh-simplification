@@ -64,6 +64,11 @@ TEST(VertexTest, TestEqualVertexTriplesHaveTheSameHashValue) {
 
 #ifndef NDEBUG
 
+TEST(VertexTest, TestGetUnsetIdCausesProgramExit) {
+  const qem::Vertex vertex{glm::vec3{}};
+  EXPECT_DEATH({ std::ignore = vertex.id(); }, "");
+}
+
 TEST(VertexTest, TestGetExpiredEdgeCausesProgramExit) {
   const auto vertex = std::make_shared<qem::Vertex>(glm::vec3{0.0f});
   {
