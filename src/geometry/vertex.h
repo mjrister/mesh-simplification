@@ -56,7 +56,7 @@ public:
     return kVertexIdHash(v0.id());
   }
 
-  /** \brief Gets the hash value for two vertices. */
+  /** \brief Gets the hash value for a vertex pair. */
   friend std::size_t hash_value(const Vertex& v0, const Vertex& v1) noexcept {
     // NOLINTBEGIN(readability-magic-numbers)
     std::size_t seed = 0x32C95994;
@@ -66,7 +66,7 @@ public:
     return seed;
   }
 
-  /** \brief Gets the hash value for three vertices. */
+  /** \brief Gets the hash value for vertex triple. */
   friend std::size_t hash_value(const Vertex& v0, const Vertex& v1, const Vertex& v2) noexcept {
     // NOLINTBEGIN(readability-magic-numbers)
     std::size_t seed = 0x230402B5;

@@ -47,8 +47,13 @@ public:
     return face_.lock();
   }
 
-  /** Sets the half-edge face. */
+  /** \brief Sets the half-edge face. */
   void set_face(const std::shared_ptr<Face>& face) noexcept { face_ = face; }
+
+  /** \brief Defines the half-edge equality operator. */
+  friend bool operator==(const HalfEdge& lhs, const HalfEdge& rhs) noexcept {
+    return lhs.vertex() == rhs.vertex() && lhs.flip()->vertex() == rhs.flip()->vertex();
+  }
 
   /** \brief Gets the half-edge hash value. */
   friend std::size_t hash_value(const HalfEdge& edge) noexcept {
