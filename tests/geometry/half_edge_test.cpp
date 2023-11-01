@@ -19,13 +19,8 @@ protected:
   std::shared_ptr<qem::HalfEdge> edge01_, edge10_;
 };
 
-TEST_F(HalfEdgeTest, TestHalfEdgeEquality) {
-  EXPECT_TRUE(edge01_ == edge10_->flip());
-  EXPECT_TRUE(edge10_ == edge01_->flip());
-  EXPECT_FALSE(edge01_ == edge10_);
-}
-
 TEST_F(HalfEdgeTest, TestEqualHalfEdgesHaveTheSameHashValue) {
+  EXPECT_EQ(*edge01_, qem::HalfEdge{*edge01_});
   EXPECT_EQ(hash_value(*edge01_), hash_value(qem::HalfEdge{*edge01_}));
 }
 

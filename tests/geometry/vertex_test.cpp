@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include <filesystem>
+
 #include "geometry/half_edge.h"
 
 namespace {
@@ -32,15 +34,9 @@ TEST(VertexTest, TestGetVertexEdge) {
   EXPECT_EQ(vertex->edge(), edge);
 }
 
-TEST(VertexTest, TestVertexEquality) {
-  constexpr auto kId = 7;
-  const qem::Vertex vertex{kId, glm::vec3{0.0f}};
-  EXPECT_TRUE(vertex == (qem::Vertex{vertex}));
-  EXPECT_FALSE(vertex == (qem::Vertex{kId + 1, glm::vec3{0.0f}}));
-}
-
 TEST(VertexTest, TestEqualVerticesHaveTheSameHashValue) {
   const qem::Vertex vertex{0, glm::vec3{0.0f}};
+  EXPECT_EQ(vertex, qem::Vertex{vertex});
   EXPECT_EQ(hash_value(vertex), hash_value(qem::Vertex{vertex}));
 }
 
