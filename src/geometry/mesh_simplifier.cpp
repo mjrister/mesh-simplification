@@ -18,18 +18,20 @@
 #include "geometry/vertex.h"
 #include "graphics/mesh.h"
 
+namespace gfx {
+
 namespace {
 
 /** \brief Represents a candidate edge contraction. */
 struct EdgeContraction {
-  EdgeContraction(std::shared_ptr<const gfx::HalfEdge> edge, std::shared_ptr<gfx::Vertex> vertex, const float cost)
+  EdgeContraction(std::shared_ptr<const HalfEdge> edge, std::shared_ptr<Vertex> vertex, const float cost)
       : edge{std::move(edge)}, vertex{std::move(vertex)}, cost{cost} {}
 
   /** \brief The edge to contract. */
-  std::shared_ptr<const gfx::HalfEdge> edge;
+  std::shared_ptr<const HalfEdge> edge;
 
   /** \brief The optimal vertex position that minimizes the cost of this edge contraction. */
-  std::shared_ptr<gfx::Vertex> vertex;
+  std::shared_ptr<Vertex> vertex;
 
   /** \brief A metric that quantifies how much the mesh will change after this edge has been contracted. */
   float cost;
@@ -47,13 +49,13 @@ struct EdgeContraction {
  * \param edge01 The half-edge to disambiguate.
  * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
  */
-std::shared_ptr<const gfx::HalfEdge> GetMinEdge(const std::shared_ptr<const gfx::HalfEdge>& edge01) {
-  const auto edge10 = const_pointer_cast<const gfx::HalfEdge>(edge01->flip());
+std::shared_ptr<const HalfEdge> GetMinEdge(const std::shared_ptr<const HalfEdge>& edge01) {
+  const auto edge10 = const_pointer_cast<const HalfEdge>(edge01->flip());
   return edge01->vertex()->id() < edge10->vertex()->id() ? edge01 : edge10;
 }
 
 /** \brief Computes the error quadric for a vertex. */
-glm::mat4 ComputeQuadric(const gfx::Vertex& v0) {
+glm::mat4 ComputeQuadric(const Vertex& v0) {
   glm::mat4 quadric{0.0f};
   auto edgei0 = v0.edge();
   do {
@@ -67,7 +69,7 @@ glm::mat4 ComputeQuadric(const gfx::Vertex& v0) {
 }
 
 /** \brief Gets the error quadric for a given vertex. */
-const glm::mat4& GetQuadric(const gfx::Vertex& v0, const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
+const glm::mat4& GetQuadric(const Vertex& v0, const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
   const auto q0_iterator = quadrics.find(v0.id());
   assert(q0_iterator != quadrics.end());
   return q0_iterator->second;
@@ -79,8 +81,8 @@ const glm::mat4& GetQuadric(const gfx::Vertex& v0, const std::unordered_map<std:
  * \param quadrics A mapping of error quadrics by vertex ID.
  * \return The optimal vertex and cost associated with contracting \p edge01.
  */
-std::pair<std::shared_ptr<gfx::Vertex>, float> GetOptimalEdgeContractionVertex(
-    const gfx::HalfEdge& edge01,
+std::pair<std::shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
+    const HalfEdge& edge01,
     const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
   const auto v0 = edge01.flip()->vertex();
   const auto v1 = edge01.vertex();
@@ -96,7 +98,7 @@ std::pair<std::shared_ptr<gfx::Vertex>, float> GetOptimalEdgeContractionVertex(
   // if the upper 3x3 matrix of the error quadric is not invertible, average the edge vertices
   if (static constexpr auto kEpsilon = 1.0e-3f; fabs(determinant(Q)) < kEpsilon || fabs(d) < kEpsilon) {
     const auto position = (v0->position() + v1->position()) / 2.0f;
-    return std::pair{std::make_shared<gfx::Vertex>(position), 0.0f};
+    return std::pair{std::make_shared<Vertex>(position), 0.0f};
   }
 
   const auto Q_inv = glm::inverse(Q);
@@ -105,7 +107,7 @@ std::pair<std::shared_ptr<gfx::Vertex>, float> GetOptimalEdgeContractionVertex(
   auto position = D_inv * glm::vec4{0.0f, 0.0f, 0.0f, 1.0f};
   position /= position.w;
 
-  return std::pair{std::make_shared<gfx::Vertex>(position), glm::dot(position, q01 * position)};
+  return std::pair{std::make_shared<Vertex>(position), glm::dot(position, q01 * position)};
 }
 
 /**
@@ -113,11 +115,11 @@ std::pair<std::shared_ptr<gfx::Vertex>, float> GetOptimalEdgeContractionVertex(
  * \param edge01 The edge to evaluate.
  * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
  */
-bool WillDegenerate(const std::shared_ptr<const gfx::HalfEdge>& edge01) {
+bool WillDegenerate(const std::shared_ptr<const HalfEdge>& edge01) {
   const auto v0 = edge01->flip()->vertex();
   const auto v1_next = edge01->next()->vertex();
   const auto v0_next = edge01->flip()->next()->vertex();
-  std::unordered_map<std::size_t, std::shared_ptr<gfx::Vertex>> neighborhood;
+  std::unordered_map<std::size_t, std::shared_ptr<Vertex>> neighborhood;
 
   for (auto iterator = edge01->next(); iterator != edge01->flip(); iterator = iterator->flip()->next()) {
     if (const auto vertex = iterator->vertex(); vertex != v0 && vertex != v1_next && vertex != v0_next) {
@@ -136,7 +138,7 @@ bool WillDegenerate(const std::shared_ptr<const gfx::HalfEdge>& edge01) {
 
 }  // namespace
 
-gfx::Mesh gfx::mesh::Simplify(const Mesh& mesh, const float rate) {
+Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
   if (rate < 0.0f || rate > 1.0f) {
     throw std::invalid_argument{std::format("Invalid mesh simplification rate: {}", rate)};
   }
@@ -247,3 +249,5 @@ gfx::Mesh gfx::mesh::Simplify(const Mesh& mesh, const float rate) {
 
   return static_cast<Mesh>(half_edge_mesh);
 }
+
+}  // namespace gfx

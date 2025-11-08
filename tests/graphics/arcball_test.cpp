@@ -4,6 +4,8 @@
 
 namespace {
 
+using namespace gfx;
+
 TEST(ArcballTest, TestGetNormalizedDeviceCoordinates) {
   static constexpr auto width = 300;
   static constexpr auto height = 200;

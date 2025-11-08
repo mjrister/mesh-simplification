@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <utility>
 
+namespace gfx {
+
 namespace {
 
 /**
@@ -29,11 +31,11 @@ void Validate(const std::span<const glm::vec3> positions,
 
 }  // namespace
 
-gfx::Mesh::Mesh(const std::span<const glm::vec3> positions,
-                const std::span<const glm::vec2> texture_coordinates,
-                const std::span<const glm::vec3> normals,
-                const std::span<const GLuint> indices,
-                const glm::mat4& model_transform)
+Mesh::Mesh(const std::span<const glm::vec3> positions,
+           const std::span<const glm::vec2> texture_coordinates,
+           const std::span<const glm::vec3> normals,
+           const std::span<const GLuint> indices,
+           const glm::mat4& model_transform)
     : positions_{positions.begin(), positions.end()},
       texture_coordinates_{texture_coordinates.begin(), texture_coordinates.end()},
       normals_{normals.begin(), normals.end()},
@@ -86,9 +88,7 @@ gfx::Mesh::Mesh(const std::span<const glm::vec3> positions,
   }
 }
 
-gfx::Mesh::Mesh(Mesh&& mesh) noexcept { *this = std::move(mesh); }
-
-gfx::Mesh& gfx::Mesh::operator=(Mesh&& mesh) noexcept {
+Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
   if (this != &mesh) {
     std::swap(vertex_array_, mesh.vertex_array_);
     std::swap(vertex_buffer_, mesh.vertex_buffer_);
@@ -102,8 +102,10 @@ gfx::Mesh& gfx::Mesh::operator=(Mesh&& mesh) noexcept {
   return *this;
 }
 
-gfx::Mesh::~Mesh() noexcept {
+Mesh::~Mesh() noexcept {
   glDeleteVertexArrays(1, &vertex_array_);
   glDeleteBuffers(1, &vertex_buffer_);
   glDeleteBuffers(1, &element_buffer_);
 }
+
+}  // namespace gfx

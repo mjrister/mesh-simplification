@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <vector>
 
+namespace gfx {
+
 namespace {
 
 /**
@@ -62,7 +64,7 @@ void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum stat
 
 }  // namespace
 
-gfx::ShaderProgram::Shader::Shader(const GLenum shader_type, const std::string& shader_source)
+ShaderProgram::Shader::Shader(const GLenum shader_type, const std::string& shader_source)
     : id{glCreateShader(shader_type)} {
   if (id == 0) throw std::runtime_error{"Shader creation failed"};
 
@@ -73,8 +75,8 @@ gfx::ShaderProgram::Shader::Shader(const GLenum shader_type, const std::string& 
   VerifyShaderStatus(id, GL_COMPILE_STATUS);
 }
 
-gfx::ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_shader_filepath,
-                                  const std::filesystem::path& fragment_shader_filepath)
+ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_shader_filepath,
+                             const std::filesystem::path& fragment_shader_filepath)
     : id_{glCreateProgram()},
       vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath)},
       fragment_shader_{GL_FRAGMENT_SHADER, ReadFile(fragment_shader_filepath)} {
@@ -92,3 +94,5 @@ gfx::ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_shader_fil
   glDetachShader(id_, vertex_shader_.id);
   glDetachShader(id_, fragment_shader_.id);
 }
+
+}  // namespace gfx

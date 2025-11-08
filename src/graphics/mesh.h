@@ -37,7 +37,7 @@ public:
   Mesh(const Mesh&) = delete;
   Mesh& operator=(const Mesh&) = delete;
 
-  Mesh(Mesh&& mesh) noexcept;
+  Mesh(Mesh&& mesh) noexcept { *this = std::move(mesh); }
   Mesh& operator=(Mesh&& mesh) noexcept;
 
   ~Mesh() noexcept;

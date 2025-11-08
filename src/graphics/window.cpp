@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stdexcept>
 
+namespace gfx {
+
 namespace {
 
 [[maybe_unused]] void APIENTRY HandleDebugMessageReceived(const GLenum source,
@@ -126,11 +128,12 @@ void InitializeGl3w(const std::pair<int, int>& opengl_version) {
   glEnable(GL_CULL_FACE);
   glEnable(GL_MULTISAMPLE);
 }
+
 }  // namespace
 
-gfx::Window::Window(const char* const title,
-                    const std::pair<int, int>& window_dimensions,
-                    const std::pair<int, int>& opengl_version) {
+Window::Window(const char* const title,
+               const std::pair<int, int>& window_dimensions,
+               const std::pair<int, int>& opengl_version) {
   InitializeGlfw(opengl_version);
 
   const auto [width, height] = window_dimensions;
@@ -169,9 +172,11 @@ gfx::Window::Window(const char* const title,
   InitializeGl3w(opengl_version);
 }
 
-gfx::Window::~Window() noexcept {
+Window::~Window() noexcept {
   if (window_ != nullptr) {
     glfwDestroyWindow(window_);
   }
   glfwTerminate();
 }
+
+}  // namespace gfx

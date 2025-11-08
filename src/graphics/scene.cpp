@@ -13,6 +13,8 @@
 #include "graphics/shader_program.h"
 #include "graphics/window.h"
 
+namespace gfx {
+
 namespace {
 
 struct Camera {
@@ -59,15 +61,15 @@ struct PointLight {    // NOLINT(modernize-avoid-c-arrays)
     },
 };
 
-void SetMaterial(gfx::ShaderProgram& shader_program) {
-  const auto [ambient, diffuse, specular, shininess] = gfx::Material::FromType(gfx::Material::Type::kJade);
+void SetMaterial(ShaderProgram& shader_program) {
+  const auto [ambient, diffuse, specular, shininess] = Material::FromType(Material::Type::kJade);
   shader_program.SetUniform("material.ambient", ambient);
   shader_program.SetUniform("material.diffuse", diffuse);
   shader_program.SetUniform("material.specular", specular);
   shader_program.SetUniform("material.shininess", shininess);
 }
 
-void SetPointLights(gfx::ShaderProgram& shader_program) {
+void SetPointLights(ShaderProgram& shader_program) {
   constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
   shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
@@ -80,7 +82,7 @@ void SetPointLights(gfx::ShaderProgram& shader_program) {
   }
 }
 
-void SetViewTransforms(const gfx::Window& window, const gfx::Mesh& mesh, gfx::ShaderProgram& shader_program) {
+void SetViewTransforms(const Window& window, const Mesh& mesh, ShaderProgram& shader_program) {
   static auto prev_aspect_ratio = 0.0f;
 
   if (const auto aspect_ratio = window.GetAspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.0f) {
@@ -94,12 +96,12 @@ void SetViewTransforms(const gfx::Window& window, const gfx::Mesh& mesh, gfx::Sh
   shader_program.SetUniform("model_view_transform", model_view_transform);
 }
 
-void HandleMouseInput(const gfx::Window& window, gfx::Mesh& mesh, const float delta_time) {
+void HandleMouseInput(const Window& window, Mesh& mesh, const float delta_time) {
   static std::optional<glm::vec2> prev_cursor_position;
 
   if (const auto cursor_position = window.GetCursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
     if (prev_cursor_position.has_value()) {
-      const auto axis_angle = gfx::arcball::GetRotation(*prev_cursor_position, cursor_position, window.GetSize());
+      const auto axis_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.GetSize());
       if (axis_angle.has_value()) {
         const auto rotation_speed = 256.0f * delta_time;
         const auto& [view_rotation_axis, angle] = *axis_angle;
@@ -123,7 +125,7 @@ void HandleMouseInput(const gfx::Window& window, gfx::Mesh& mesh, const float de
 }
 }  // namespace
 
-gfx::Scene::Scene(Window* const window)
+Scene::Scene(Window* const window)
     : window_{window},
       mesh_{obj_loader::LoadMesh("assets/models/bunny.obj")},
       shader_program_{"assets/shaders/mesh_vertex.glsl", "assets/shaders/mesh_fragment.glsl"} {
@@ -150,7 +152,7 @@ gfx::Scene::Scene(Window* const window)
   // NOLINTEND(*-magic-numbers)
 }
 
-void gfx::Scene::Render(const float delta_time) {
+void Scene::Render(const float delta_time) {
   static constexpr auto kDefaultClearColorValue = 0.1f;
   glClearColor(kDefaultClearColorValue, kDefaultClearColorValue, kDefaultClearColorValue, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -160,3 +162,5 @@ void gfx::Scene::Render(const float delta_time) {
 
   mesh_.Render();
 }
+
+}  // namespace gfx

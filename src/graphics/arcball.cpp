@@ -9,6 +9,8 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
+namespace gfx {
+
 namespace {
 
 /**
@@ -51,7 +53,7 @@ glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
 
 }  // namespace
 
-std::optional<const std::pair<const glm::vec3, const float>> gfx::arcball::GetRotation(
+std::optional<const std::pair<const glm::vec3, const float>> arcball::GetRotation(
     const glm::vec2& cursor_position_start,
     const glm::vec2& cursor_position_end,
     const std::pair<int, int>& window_dimensions) {
@@ -71,3 +73,5 @@ std::optional<const std::pair<const glm::vec3, const float>> gfx::arcball::GetRo
 
   return std::nullopt;
 }
+
+}  // namespace gfx

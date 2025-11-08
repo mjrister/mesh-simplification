@@ -17,6 +17,8 @@
 
 #include "graphics/mesh.h"
 
+namespace gfx {
+
 namespace {
 
 // sentinel value indicating an unspecified face index
@@ -146,7 +148,7 @@ std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
  * \param is The input stream to parse.
  * \return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
  */
-gfx::Mesh LoadMesh(std::istream& is) {
+Mesh LoadMesh(std::istream& is) {
   std::vector<glm::vec3> positions;
   std::vector<glm::vec2> texture_coordinates;
   std::vector<glm::vec3> normals;
@@ -166,7 +168,7 @@ gfx::Mesh LoadMesh(std::istream& is) {
     }
   }
 
-  if (faces.empty()) return gfx::Mesh{positions, texture_coordinates, normals, {}};
+  if (faces.empty()) return Mesh{positions, texture_coordinates, normals, {}};
 
   std::vector<glm::vec3> ordered_positions;
   std::vector<glm::vec2> ordered_texture_coordinates;
@@ -203,14 +205,16 @@ gfx::Mesh LoadMesh(std::istream& is) {
     }
   }
 
-  return gfx::Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices};
+  return Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices};
 }
 
 }  // namespace
 
-gfx::Mesh gfx::obj_loader::LoadMesh(const std::filesystem::path& filepath) {
+Mesh obj_loader::LoadMesh(const std::filesystem::path& filepath) {
   if (std::ifstream ifs{filepath}; ifs.good()) {
-    return ::LoadMesh(ifs);
+    return gfx::LoadMesh(ifs);
   }
   throw std::runtime_error{std::format("Unable to open {}", filepath.generic_string())};
 }
+
+}  // namespace gfx

@@ -7,6 +7,8 @@
 
 namespace {
 
+using namespace gfx;
+
 TEST(MeshTest, TestValidateMeshWithInvalidNumberOfPositions) {
   for (auto i = 0; i <= 4; ++i) {
     if (i != 3) {

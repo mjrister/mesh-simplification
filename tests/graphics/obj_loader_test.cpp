@@ -4,6 +4,8 @@
 
 namespace {
 
+using namespace gfx;
+
 TEST(StringTest, TestTrimWhitespaceString) {
   constexpr auto* line = "     ";
   static_assert(Trim(line).empty());
