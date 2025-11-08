@@ -111,7 +111,7 @@ void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float de
     prev_cursor_position = cursor_position;
   } else if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
     if (prev_cursor_position.has_value()) {
-      const auto translation_speed = 0.15f * delta_time;
+      const auto translation_speed = 0.25f * delta_time;
       const auto cursor_delta = static_cast<glm::vec2>(cursor_position - *prev_cursor_position);
       const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
       mesh.Translate(view_model_inv * translation_speed * glm::vec4{cursor_delta.x, -cursor_delta.y, 0.0f, 0.0f});
