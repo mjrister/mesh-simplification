@@ -130,6 +130,10 @@ Scene::Scene(Window* const window)
       mesh_{obj_loader::LoadMesh("assets/models/bunny.obj")},
       shader_program_{"assets/shaders/mesh_vertex.glsl", "assets/shaders/mesh_fragment.glsl"} {
   window_->OnKeyPress([this](const auto key_code) {
+    if (key_code == GLFW_KEY_ESCAPE) {
+      window_->Close();
+      return;
+    }
     if (key_code == GLFW_KEY_S) {
       static constexpr auto kDefaultSimplificationRate = 0.5f;
       mesh_ = mesh::Simplify(mesh_, kDefaultSimplificationRate);

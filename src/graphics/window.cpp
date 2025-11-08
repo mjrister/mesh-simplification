@@ -151,9 +151,6 @@ Window::Window(const char* const title,
   glfwSetKeyCallback(
       window_,
       [](GLFWwindow* const window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-          glfwSetWindowShouldClose(window, GLFW_TRUE);
-        }
         if (action == GLFW_PRESS) {
           const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
           assert(self != nullptr);

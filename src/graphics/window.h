@@ -10,12 +10,15 @@
 
 namespace gfx {
 
-/** \brief An abstraction for a GLFW window. */
+/**
+ * @brief An abstraction for a GLFW window.
+ * @see https://www.glfw.org/documentation GLFW Documentation
+ */
 class Window {
 public:
   /**
-   * \brief Initializes a window.
-   * \param title The window title.
+   * \brief Creates a window.
+   * \param title The UTF-8 window title.
    * \param window_dimensions The window width and height.
    * \param opengl_version The OpenGL major and minor version.
    */
@@ -30,26 +33,8 @@ public:
   ~Window() noexcept;
 
   /**
-   * \brief Sets a callback to be invoked when a discrete key press is detected.
-   * \param on_key_press The callback to be invoked on key press parameterized by the active key code.
-   */
-  template <std::invocable<int> Fn>
-  void OnKeyPress(Fn&& on_key_press) {
-    on_key_press_ = std::forward<Fn>(on_key_press);
-  }
-
-  /**
-   * \brief Sets a callback to be invoked when a scroll event is detected.
-   * \param on_scroll A callback to be invoked on scroll parameterized by x/y scroll offsets (respectively).
-   */
-  template <std::invocable<float, float> Fn>
-  void OnScroll(Fn&& on_scroll) {
-    on_scroll_ = std::forward<Fn>(on_scroll);
-  }
-
-  /**
-   * \brief Gets the window dimensions.
-   * \return A pair representing the window's width and height.
+   * \brief Gets the window size in screen coordinates.
+   * \return The window width and height.
    */
   [[nodiscard]] std::pair<int, int> GetSize() const noexcept {
     auto width = 0, height = 0;
@@ -76,31 +61,47 @@ public:
     return glm::vec2{static_cast<float>(x), static_cast<float>(y)};
   }
 
-  /** \brief Sets the window title. */
-  void SetTitle(const char* const title) const noexcept { glfwSetWindowTitle(window_, title); }
+  /** \brief Sets the window close flag. */
+  void Close() noexcept { glfwSetWindowShouldClose(window_, GLFW_TRUE); }
 
   /**
-   * \brief Determines if the window is closed.
-   * \return \c true if the window is closed, otherwise \c false.
+   * \brief Checks if the window close flag has been set.
+   * \return \c true if the window close flag has been set, otherwise \c false.
    */
   [[nodiscard]] bool IsClosed() const noexcept { return glfwWindowShouldClose(window_) == GLFW_TRUE; }
 
   /**
-   * \brief Determines if a key is pressed.
-   * \param key_code The key code to evaluate (e.g., GLFW_KEY_S).
-   * \return \c true if \p key is pressed, otherwise \c false.
+   * \brief Sets a callback to be invoked when a key press event is detected.
+   * \param on_key_press The callback to be invoked on key press parameterized by the active key code.
    */
-  [[nodiscard]] bool IsKeyPressed(const int key_code) const noexcept {
-    return glfwGetKey(window_, key_code) == GLFW_PRESS;
+  template <std::invocable<int> Fn>
+  void OnKeyPress(Fn&& on_key_press) {
+    on_key_press_ = std::forward<Fn>(on_key_press);
   }
 
   /**
+   * \brief Sets a callback to be invoked when a scroll event is detected.
+   * \param on_scroll A callback to be invoked on scroll parameterized by x/y scroll offsets (respectively).
+   */
+  template <std::invocable<float, float> Fn>
+  void OnScroll(Fn&& on_scroll) {
+    on_scroll_ = std::forward<Fn>(on_scroll);
+  }
+
+  /**
+   * \brief Determines if a key is pressed.
+   * \param key The key code to evaluate (e.g., GLFW_KEY_ESCAPE).
+   * \return \c true if \p key is pressed, otherwise \c false.
+   */
+  [[nodiscard]] bool IsKeyPressed(const int key) const noexcept { return glfwGetKey(window_, key) == GLFW_PRESS; }
+
+  /**
    * \brief Determines if a mouse button is pressed.
-   * \param button_code The mouse button code (e.g., GLFW_MOUSE_BUTTON_LEFT).
+   * \param button The mouse button code (e.g., GLFW_MOUSE_BUTTON_LEFT).
    * \return \c true if \p button is pressed, otherwise \c false.
    */
-  [[nodiscard]] bool IsMouseButtonPressed(const int button_code) const noexcept {
-    return glfwGetMouseButton(window_, button_code) == GLFW_PRESS;
+  [[nodiscard]] bool IsMouseButtonPressed(const int button) const noexcept {
+    return glfwGetMouseButton(window_, button) == GLFW_PRESS;
   }
 
   /** \brief Updates the window for the next iteration of main render loop. */
@@ -110,7 +111,7 @@ public:
   }
 
 private:
-  GLFWwindow* window_ = nullptr;
+  GLFWwindow* window_ = nullptr;  // TODO: convert to std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)>
   std::function<void(int)> on_key_press_;
   std::function<void(float, float)> on_scroll_;
 };
