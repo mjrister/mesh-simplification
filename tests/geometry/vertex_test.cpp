@@ -11,20 +11,20 @@ namespace {
 using namespace gfx;
 
 TEST(VertexTest, TestGetVertexId) {
-  constexpr auto kId = 7;
+  static constexpr auto kId = 7;
   const Vertex vertex{kId, glm::vec3{0.0}};
   EXPECT_EQ(vertex.id(), kId);
 }
 
 TEST(VertexTest, TestSetVertexId) {
-  constexpr auto kId = 7;
+  static constexpr auto kId = 7;
   Vertex vertex{glm::vec3{0.0f}};
   vertex.set_id(kId);
   EXPECT_EQ(vertex.id(), kId);
 }
 
 TEST(VertexTest, TestGetVertexPosition) {
-  constexpr glm::vec3 kPosition{1.0f, 2.0f, 3.0f};
+  static constexpr glm::vec3 kPosition{1.0f, 2.0f, 3.0f};
   const Vertex vertex{kPosition};
   EXPECT_EQ(vertex.position(), kPosition);
 }

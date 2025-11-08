@@ -52,10 +52,10 @@ TEST(MeshTest, TestValidateMeshWithCorrectNumberOfPositionsTextureCoordinatesAnd
 }
 
 TEST(MeshTest, TestValidateMeshWithCorrectNumberOfPositionsTextureCoordinatesNormalsAndIndices) {
-  constexpr std::array<glm::vec3, 4> positions{};
-  constexpr std::array<glm::vec2, 2> texture_coordinates{};
-  constexpr std::array<glm::vec3, 5> normals{};
-  constexpr std::array<GLuint, 3> indices{};
-  EXPECT_NO_THROW((gfx::Mesh{positions, texture_coordinates, normals, indices}));
+  static constexpr std::array<glm::vec3, 4> kPositions{};
+  static constexpr std::array<glm::vec2, 2> kTextureCoordinates{};
+  static constexpr std::array<glm::vec3, 5> kNormals{};
+  static constexpr std::array<GLuint, 3> kIndices{};
+  EXPECT_NO_THROW((gfx::Mesh{kPositions, kTextureCoordinates, kNormals, kIndices}));
 }
 }  // namespace

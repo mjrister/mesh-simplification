@@ -14,7 +14,7 @@ class HalfEdge;
 class Vertex {
 public:
   /**
-   * \brief Initializes a vertex.
+   * \brief Creates a vertex.
    * \param position The vertex position.
    */
   explicit Vertex(const glm::vec3& position) noexcept : position_{position} {}

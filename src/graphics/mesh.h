@@ -15,7 +15,7 @@ namespace gfx {
 class Mesh {
 public:
   /**
-   * \brief Initializes a triangle mesh.
+   * \brief Creates a triangle mesh.
    * \param positions The mesh vertex positions.
    * \param texture_coordinates The mesh texture coordinates.
    * \param normals The mesh normals.

@@ -22,7 +22,7 @@ class Vertex;
 class HalfEdgeMesh {
 public:
   /**
-   * \brief Initializes a half-edge mesh.
+   * \brief Creates a half-edge mesh.
    * \param mesh An indexed triangle mesh to construct the half-edge mesh from.
    */
   explicit HalfEdgeMesh(const Mesh& mesh);

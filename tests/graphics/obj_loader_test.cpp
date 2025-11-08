@@ -7,36 +7,36 @@ namespace {
 using namespace gfx;
 
 TEST(StringTest, TestTrimWhitespaceString) {
-  constexpr auto* line = "     ";
-  static_assert(Trim(line).empty());
+  static constexpr auto* kLine = "     ";
+  static_assert(Trim(kLine).empty());
 }
 
 TEST(StringTest, TestTrimString) {
-  constexpr auto* line = "\t  Hello, World!  \t";
-  static_assert("Hello, World!" == Trim(line));
+  static constexpr auto* kLine = "\t  Hello, World!  \t";
+  static_assert("Hello, World!" == Trim(kLine));
 }
 
 TEST(StringTest, TestSplitEmptyString) {
-  constexpr auto* line = "";
-  const auto tokens = Split(line, " ");
+  static constexpr auto* kLine = "";
+  const auto tokens = Split(kLine, " ");
   EXPECT_TRUE(tokens.empty());
 }
 
 TEST(StringTest, TestSplitWhitespaceString) {
-  constexpr auto* line = "   ";
-  const auto tokens = Split(line, " ");
+  static constexpr auto* kLine = "   ";
+  const auto tokens = Split(kLine, " ");
   EXPECT_TRUE(tokens.empty());
 }
 
 TEST(StringTest, TestSplitNoWhitespaceString) {
-  constexpr auto* line = "Hello";
-  const auto tokens = Split(line, " ");
-  EXPECT_EQ((std::vector<std::string_view>{line}), tokens);
+  static constexpr auto* kLine = "Hello";
+  const auto tokens = Split(kLine, " ");
+  EXPECT_EQ((std::vector<std::string_view>{kLine}), tokens);
 }
 
 TEST(StringTest, TestSplitStringOnWhitespaceAndTab) {
-  constexpr auto* line = "\t vt 0.707 0.395 0.684 ";
-  const auto tokens = Split(line, " \t");
+  static constexpr auto* kLine = "\t vt 0.707 0.395 0.684 ";
+  const auto tokens = Split(kLine, " \t");
   EXPECT_EQ((std::vector<std::string_view>{"vt", "0.707", "0.395", "0.684"}), tokens);
 }
 
@@ -118,13 +118,13 @@ TEST(ObjLoaderTest, TestLoadMeshWithoutFaceIndices) {
   // clang-format on
 
   const auto mesh = LoadMesh(ss);
-  constexpr glm::vec3 v0{0.0f, 0.1f, 0.2f}, v1{1.0f, 1.1f, 1.2f}, v2{2.0f, 2.1f, 2.2f};
-  constexpr glm::vec2 vt0{3.0f, 3.1f}, vt1{4.0f, 4.1f}, vt2{5.0f, 5.1f};
-  constexpr glm::vec3 vn0{6.0f, 6.1f, 6.2f}, vn1{7.0f, 7.1f, 7.2f}, vn2{8.0f, 8.1f, 8.2f};
+  static constexpr glm::vec3 kV0{0.0f, 0.1f, 0.2f}, kV1{1.0f, 1.1f, 1.2f}, kV2{2.0f, 2.1f, 2.2f};
+  static constexpr glm::vec2 kVt0{3.0f, 3.1f}, kVt1{4.0f, 4.1f}, kVt2{5.0f, 5.1f};
+  static constexpr glm::vec3 kVn0{6.0f, 6.1f, 6.2f}, kVn1{7.0f, 7.1f, 7.2f}, kVn2{8.0f, 8.1f, 8.2f};
 
-  EXPECT_EQ((std::vector{v0, v1, v2}), mesh.positions());
-  EXPECT_EQ((std::vector{vt0, vt1, vt2}), mesh.texture_coordinates());
-  EXPECT_EQ((std::vector{vn0, vn1, vn2}), mesh.normals());
+  EXPECT_EQ((std::vector{kV0, kV1, kV2}), mesh.positions());
+  EXPECT_EQ((std::vector{kVt0, kVt1, kVt2}), mesh.texture_coordinates());
+  EXPECT_EQ((std::vector{kVn0, kVn1, kVn2}), mesh.normals());
   EXPECT_TRUE(mesh.indices().empty());
 }
 
@@ -152,13 +152,13 @@ TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
   // clang-format on
 
   const auto mesh = LoadMesh(ss);
-  constexpr glm::vec3 v0{0.0f, 0.1f, 0.2f}, v1{1.0f, 1.1f, 1.2f}, v2{2.0f, 2.1f, 2.2f}, v3{3.0f, 3.1f, 3.2f};
-  constexpr glm::vec2 vt0{4.0f, 4.1f}, vt1{5.0f, 5.1f}, vt2{6.0f, 6.1f}, vt3{7.0f, 7.1f};
-  constexpr glm::vec3 vn0{8.0f, 8.1f, 8.2f}, vn1{9.0f, 9.1f, 9.2f}, vn2{10.0f, 10.1f, 10.2f};
+  static constexpr glm::vec3 kV0{0.0f, 0.1f, 0.2f}, kV1{1.0f, 1.1f, 1.2f}, kV2{2.0f, 2.1f, 2.2f}, kV3{3.0f, 3.1f, 3.2f};
+  static constexpr glm::vec2 kVt0{4.0f, 4.1f}, kVt1{5.0f, 5.1f}, kVt2{6.0f, 6.1f}, kVt3{7.0f, 7.1f};
+  static constexpr glm::vec3 kVn0{8.0f, 8.1f, 8.2f}, kVn1{9.0f, 9.1f, 9.2f}, kVn2{10.0f, 10.1f, 10.2f};
 
-  EXPECT_EQ((std::vector{v0, v1, v2, v0, v3}), mesh.positions());
-  EXPECT_EQ((std::vector{vt3, vt0, vt1, vt1, vt2}), mesh.texture_coordinates());
-  EXPECT_EQ((std::vector{vn1, vn2, vn0, vn1, vn0}), mesh.normals());
+  EXPECT_EQ((std::vector{kV0, kV1, kV2, kV0, kV3}), mesh.positions());
+  EXPECT_EQ((std::vector{kVt3, kVt0, kVt1, kVt1, kVt2}), mesh.texture_coordinates());
+  EXPECT_EQ((std::vector{kVn1, kVn2, kVn0, kVn1, kVn0}), mesh.normals());
   EXPECT_EQ((std::vector{0u, 1u, 2u, 3u, 1u, 4u}), mesh.indices());
 }
 }  // namespace

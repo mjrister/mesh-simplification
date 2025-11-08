@@ -13,7 +13,7 @@ namespace gfx {
 class Face {
 public:
   /**
-   * \brief Initializes a triangle face.
+   * \brief Creates a triangle face.
    * \param v0,v1,v2 The face vertices.
    */
   Face(const std::shared_ptr<const Vertex>& v0,

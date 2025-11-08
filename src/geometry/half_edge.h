@@ -14,7 +14,7 @@ namespace gfx {
 class HalfEdge {
 public:
   /**
-   * \brief Initializes a half-edge.
+   * \brief Creates a half-edge.
    * \param vertex The vertex the half-edge will point to.
    */
   explicit HalfEdge(const std::shared_ptr<Vertex>& vertex) noexcept : vertex_{vertex} {}

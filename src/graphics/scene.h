@@ -10,13 +10,13 @@ class Window;
 class Scene {
 public:
   /**
-   * \brief Initializes the scene.
+   * \brief Creates a scene.
    * \param window The window to render to.
    */
   explicit Scene(Window* window);
 
   /**
-   * \brief Renders the scene.
+   * \brief Renders a scene.
    * \param delta_time The amount of time elapsed since the last frame was rendered.
    */
   void Render(float delta_time);

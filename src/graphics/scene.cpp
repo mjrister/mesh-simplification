@@ -70,7 +70,7 @@ void SetMaterial(ShaderProgram& shader_program) {
 }
 
 void SetPointLights(ShaderProgram& shader_program) {
-  constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
+  static constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
   shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
   for (auto i = 0; std::cmp_less(i, kPointLightsSize); ++i) {
@@ -141,7 +141,7 @@ Scene::Scene(Window* const window)
   });
 
   window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
-    constexpr auto kScaleStep = 0.02f;
+    static constexpr auto kScaleStep = 0.02f;
     const auto sign = (y_offset > 0.0f) - (y_offset < 0.0f);
     mesh_.Scale(glm::vec3{sign * kScaleStep + 1.0f});
   });

@@ -19,11 +19,11 @@ namespace {
  * \param window_dimensions The window width and height.
  * \return The cursor position in normalized device coordinates.
  */
-constexpr glm::vec2 GetNormalizedDeviceCoordinates(const glm::vec2& cursor_position,
-                                                   const std::pair<int, int>& window_dimensions) {
+glm::vec2 GetNormalizedDeviceCoordinates(const glm::vec2& cursor_position,
+                                         const std::pair<int, int>& window_dimensions) {
   // normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
-  constexpr auto kMinCoordinateValue = -1.0f;
-  constexpr auto kMaxCoordinateValue = 1.0f;
+  static constexpr auto kMinCoordinateValue = -1.0f;
+  static constexpr auto kMaxCoordinateValue = 1.0f;
   const auto& [width, height] = window_dimensions;
   const auto x_ndc = std::clamp(cursor_position.x * 2.0f / width - 1.0f, kMinCoordinateValue, kMaxCoordinateValue);
   const auto y_ndc = std::clamp(cursor_position.y * 2.0f / height - 1.0f, kMinCoordinateValue, kMaxCoordinateValue);
