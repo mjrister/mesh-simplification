@@ -16,31 +16,65 @@ namespace {
                                                           const void* /*user_param*/) {
   std::string message_source;
   switch (source) {
-    case GL_DEBUG_SOURCE_API: message_source = "API"; break;
-    case GL_DEBUG_SOURCE_WINDOW_SYSTEM: message_source = "WINDOW SYSTEM"; break;
-    case GL_DEBUG_SOURCE_SHADER_COMPILER: message_source = "SHADER COMPILER"; break;
-    case GL_DEBUG_SOURCE_THIRD_PARTY: message_source = "THIRD PARTY"; break;
-    case GL_DEBUG_SOURCE_APPLICATION: message_source = "APPLICATION"; break;
-    default: message_source = "OTHER"; break;
+    case GL_DEBUG_SOURCE_API:
+      message_source = "API";
+      break;
+    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+      message_source = "WINDOW SYSTEM";
+      break;
+    case GL_DEBUG_SOURCE_SHADER_COMPILER:
+      message_source = "SHADER COMPILER";
+      break;
+    case GL_DEBUG_SOURCE_THIRD_PARTY:
+      message_source = "THIRD PARTY";
+      break;
+    case GL_DEBUG_SOURCE_APPLICATION:
+      message_source = "APPLICATION";
+      break;
+    default:
+      message_source = "OTHER";
+      break;
   }
 
   std::string message_type;
   switch (type) {
-    case GL_DEBUG_TYPE_ERROR: message_type = "ERROR"; break;
-    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: message_type = "DEPRECATED BEHAVIOR"; break;
-    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: message_type = "UNDEFINED BEHAVIOR"; break;
-    case GL_DEBUG_TYPE_PORTABILITY: message_type = "PORTABILITY"; break;
-    case GL_DEBUG_TYPE_PERFORMANCE: message_type = "PERFORMANCE"; break;
-    default: message_type = "OTHER"; break;
+    case GL_DEBUG_TYPE_ERROR:
+      message_type = "ERROR";
+      break;
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+      message_type = "DEPRECATED BEHAVIOR";
+      break;
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+      message_type = "UNDEFINED BEHAVIOR";
+      break;
+    case GL_DEBUG_TYPE_PORTABILITY:
+      message_type = "PORTABILITY";
+      break;
+    case GL_DEBUG_TYPE_PERFORMANCE:
+      message_type = "PERFORMANCE";
+      break;
+    default:
+      message_type = "OTHER";
+      break;
   }
 
   std::string message_severity;
   switch (severity) {
-    case GL_DEBUG_SEVERITY_HIGH: message_severity = "HIGH"; break;
-    case GL_DEBUG_SEVERITY_MEDIUM: message_severity = "MEDIUM"; break;
-    case GL_DEBUG_SEVERITY_LOW: message_severity = "LOW"; break;
-    case GL_DEBUG_SEVERITY_NOTIFICATION: message_severity = "NOTIFICATION"; break;
-    default: message_severity = "OTHER"; break;
+    case GL_DEBUG_SEVERITY_HIGH:
+      message_severity = "HIGH";
+      break;
+    case GL_DEBUG_SEVERITY_MEDIUM:
+      message_severity = "MEDIUM";
+      break;
+    case GL_DEBUG_SEVERITY_LOW:
+      message_severity = "LOW";
+      break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION:
+      message_severity = "NOTIFICATION";
+      break;
+    default:
+      message_severity = "OTHER";
+      break;
   }
 
   std::clog << format("OpenGL Debug ({}): Source: {}, Type: {}, Severity: {}\n{}\n",

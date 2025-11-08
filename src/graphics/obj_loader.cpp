@@ -122,7 +122,8 @@ glm::ivec3 ParseIndexGroup(const std::string_view token) {
         return glm::ivec3{x, y, z};
       }
       break;
-    default: break;
+    default:
+      break;
   }
 
   throw std::invalid_argument{std::format("Unsupported format {}", token)};

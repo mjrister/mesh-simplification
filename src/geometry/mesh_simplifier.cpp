@@ -80,7 +80,8 @@ const glm::mat4& GetQuadric(const qem::Vertex& v0, const std::unordered_map<std:
  * \return The optimal vertex and cost associated with contracting \p edge01.
  */
 std::pair<std::shared_ptr<qem::Vertex>, float> GetOptimalEdgeContractionVertex(
-    const qem::HalfEdge& edge01, const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
+    const qem::HalfEdge& edge01,
+    const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
   const auto v0 = edge01.flip()->vertex();
   const auto v1 = edge01.vertex();
 

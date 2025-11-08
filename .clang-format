@@ -1,6 +1,8 @@
+---
 BasedOnStyle: Google
 AccessModifierOffset: -2
-AllowShortCaseLabelsOnASingleLine: true
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBinaryOperators: NonAssignment
@@ -8,7 +10,6 @@ ColumnLimit: 120
 DerivePointerAlignment: false
 IncludeBlocks: Preserve
 InsertNewlineAtEOF: true
-PackConstructorInitializers: NextLine
 PointerAlignment: Left
 QualifierAlignment: Left
 Standard: c++20

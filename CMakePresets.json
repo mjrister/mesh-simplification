@@ -67,7 +67,10 @@
     },
     {
       "name": "windows-debug",
-      "inherits": ["windows", "debug"],
+      "inherits": [
+        "windows",
+        "debug"
+      ],
       "cacheVariables": {
         "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/vcpkg-triplets",
         "VCPKG_TARGET_TRIPLET": "x64-windows-asan"
@@ -75,15 +78,24 @@
     },
     {
       "name": "windows-release",
-      "inherits": ["windows", "release"]
+      "inherits": [
+        "windows",
+        "release"
+      ]
     },
     {
       "name": "linux-debug",
-      "inherits": ["linux", "debug"]
+      "inherits": [
+        "linux",
+        "debug"
+      ]
     },
     {
       "name": "linux-release",
-      "inherits": ["linux", "release"]
+      "inherits": [
+        "linux",
+        "release"
+      ]
     }
   ],
   "buildPresets": [

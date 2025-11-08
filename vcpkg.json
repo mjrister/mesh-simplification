@@ -1,5 +1,10 @@
 {
-    "name": "mesh-simplification",
-    "version-string": "1.0.0",
-    "dependencies": ["gl3w", "glfw3", "glm", "gtest"]
+  "name": "mesh-simplification",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "gl3w",
+    "glfw3",
+    "glm",
+    "gtest"
+  ]
 }
