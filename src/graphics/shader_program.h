@@ -15,28 +15,6 @@ namespace gfx {
 
 /** \brief A program used to run one or more OpenGL shaders on the host GPU. */
 class ShaderProgram {
-  /** \brief A shader in the OpenGL graphics pipeline. */
-  class Shader {
-  public:
-    /**
-     * \brief Creates a shader.
-     * \param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)
-     * \param shader_source The shader source code to be compiled.
-     * \throw std::runtime_error Thrown if shader creation was unsuccessful.
-     */
-    Shader(GLenum shader_type, const std::string& shader_source);
-
-    ~Shader() noexcept { glDeleteShader(id); }
-
-    Shader(const Shader&) = delete;
-    Shader& operator=(const Shader&) = delete;
-
-    Shader(Shader&&) noexcept = delete;
-    Shader& operator=(Shader&&) noexcept = delete;
-
-    GLuint id;  // NOLINT(misc-non-private-member-variables-in-classes): allow direct access to internal shader class
-  };
-
 public:
   /**
    * \brief Creates a shader program.
@@ -86,6 +64,28 @@ public:
   }
 
 private:
+  /** \brief A shader in the OpenGL graphics pipeline. */
+  class Shader {
+  public:
+    /**
+     * \brief Creates a shader.
+     * \param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)
+     * \param shader_source The shader source code to be compiled.
+     * \throw std::runtime_error Thrown if shader creation was unsuccessful.
+     */
+    Shader(GLenum shader_type, const std::string& shader_source);
+
+    ~Shader() noexcept { glDeleteShader(id); }
+
+    Shader(const Shader&) = delete;
+    Shader& operator=(const Shader&) = delete;
+
+    Shader(Shader&&) noexcept = delete;
+    Shader& operator=(Shader&&) noexcept = delete;
+
+    GLuint id;  // NOLINT(misc-non-private-member-variables-in-classes): allow direct access to internal shader class
+  };
+
   // this is required as a workaround to ensure that static assertions in "if constexpr" expressions are well-formed
   template <typename>
   static constexpr std::false_type kAssertFalse{};
