@@ -19,7 +19,7 @@ class ShaderProgram {
   class Shader {
   public:
     /**
-     * \brief Initializes a shader.
+     * \brief Creates a shader.
      * \param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)
      * \param shader_source The shader source code to be compiled.
      * \throw std::runtime_error Thrown if shader creation was unsuccessful.
@@ -34,12 +34,12 @@ class ShaderProgram {
     Shader(Shader&&) noexcept = delete;
     Shader& operator=(Shader&&) noexcept = delete;
 
-    GLuint id;
+    GLuint id;  // NOLINT(misc-non-private-member-variables-in-classes): allow direct access to internal shader class
   };
 
 public:
   /**
-   * \brief Initializes a shader program.
+   * \brief Creates a shader program.
    * \param vertex_shader_filepath The filepath to the vertex shader to be compiled.
    * \param fragment_shader_filepath The filepath to the fragment shader to be compiled.
    * \throw std::runtime_error Thrown if the a file could not be opened or shader program creation was unsuccessful.
@@ -65,7 +65,7 @@ public:
    * \param value The uniform variable value.
    */
   template <typename T>
-  void SetUniform(const std::string_view name, const T& value) {
+  void SetUniform(const std::string_view name, const T& value) const {
     const auto location = GetUniformLocation(name);
 
     if constexpr (std::integral<T>) {
@@ -106,21 +106,23 @@ private:
    * \param name The uniform variable name.
    * \return An integer representing the uniform variable location. Returns -1 if the variable is not active.
    */
-  [[nodiscard]] GLint GetUniformLocation(const std::string_view name) {
+  [[nodiscard]] GLint GetUniformLocation(const std::string_view name) const {
     auto iterator = uniform_locations_.find(name);
     if (iterator == uniform_locations_.end()) {
-      const auto location = glGetUniformLocation(id_, name.data());
-      if (location == -1) {
+      std::string name_string{name};
+      const auto location = glGetUniformLocation(id_, name_string.c_str());
+      if (static constexpr auto kNotActiveUniformVariable = -1; location == kNotActiveUniformVariable) {
         std::cerr << std::format("{} is not an active uniform variable\n", name);
+        return kNotActiveUniformVariable;
       }
-      iterator = uniform_locations_.emplace(name, location).first;
+      iterator = uniform_locations_.emplace(std::move(name_string), location).first;
     }
     return iterator->second;
   }
 
   GLuint id_;
   Shader vertex_shader_, fragment_shader_;
-  std::unordered_map<std::string, GLint, StringViewHash, std::equal_to<>> uniform_locations_;
+  mutable std::unordered_map<std::string, GLint, StringViewHash, std::equal_to<>> uniform_locations_;
 };
 
 }  // namespace gfx

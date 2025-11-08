@@ -35,7 +35,7 @@ void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
   GLint success{};
   glGetShaderiv(shader_id, status_type, &success);
 
-  if (!success) {
+  if (success == GL_FALSE) {
     GLsizei log_length{};
     glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &log_length);
     std::vector<GLchar> info_log(log_length);
@@ -53,7 +53,7 @@ void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum stat
   GLint success{};
   glGetProgramiv(shader_program_id, status_type, &success);
 
-  if (!success) {
+  if (success == GL_FALSE) {
     GLsizei log_length{};
     glGetProgramiv(shader_program_id, GL_INFO_LOG_LENGTH, &log_length);
     std::vector<GLchar> info_log(log_length);
