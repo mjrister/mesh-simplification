@@ -13,7 +13,7 @@
 
 namespace gfx {
 
-/** \brief A program used to execute one or more OpenGL shaders on the host GPU. */
+/** \brief A program used to run one or more OpenGL shaders on the host GPU. */
 class ShaderProgram {
   /** \brief A shader in the OpenGL graphics pipeline. */
   class Shader {

@@ -110,11 +110,11 @@ struct Material {
             .shininess = kOpenGlShininess * 0.1f,
         };
       }
-      default:
-        assert(false);  // unreachable
-        return Material{};
     }
     // NOLINTEND(*-magic-numbers)
+
+    assert(false);  // unreachable
+    return Material{};
   }
 
   /** The ambient light reflected. */
