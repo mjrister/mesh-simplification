@@ -9,9 +9,9 @@
 
 int main() {
   try {
-    constexpr auto* kProjectTitle = "Mesh Simplification";
-    constexpr auto kWindowDimensions = std::make_pair(1920, 1080);
-    constexpr auto kOpenGlVersion = std::make_pair(4, 1);
+    static constexpr auto* kProjectTitle = "Mesh Simplification";
+    static constexpr auto kWindowDimensions = std::make_pair(1920, 1080);
+    static constexpr auto kOpenGlVersion = std::make_pair(4, 1);
     qem::Window window{kProjectTitle, kWindowDimensions, kOpenGlVersion};
     qem::Scene scene{&window};
 
@@ -21,10 +21,10 @@ int main() {
       scene.Render(delta_time.get());
     }
   } catch (const std::exception& e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << e.what() << '\n';
     return EXIT_FAILURE;
   } catch (...) {
-    std::cerr << "An unknown error occurred" << std::endl;
+    std::cerr << "An unknown error occurred\n";
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

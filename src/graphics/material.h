@@ -20,7 +20,7 @@ struct Material {
    * \return A material containing light reflectance properties for the provided material type.
    */
   static constexpr Material FromType(const Type type) noexcept {
-    // NOLINTBEGIN(readability-magic-numbers)
+    // NOLINTBEGIN(*-magic-numbers)
     switch (constexpr auto kOpenGlShininess = 128.0f; type) {
       case Type::kBrass: {
         return Material{
@@ -114,19 +114,20 @@ struct Material {
         assert(false);  // unreachable
         return Material{};
     }
-    // NOLINTEND(readability-magic-numbers)
+    // NOLINTEND(*-magic-numbers)
   }
 
   /** The ambient light reflected. */
-  glm::vec3 ambient;
+  glm::vec3 ambient{0.0f};
 
   /** The diffuse light reflected. */
-  glm::vec3 diffuse;
+  glm::vec3 diffuse{0.0f};
 
   /** The specular light reflected. */
-  glm::vec3 specular;
+  glm::vec3 specular{0.0f};
 
   /** The degree of shininess reflected from specular highlights. */
-  float shininess;
+  float shininess = 0.0f;
 };
+
 }  // namespace qem

@@ -16,6 +16,6 @@ out Vertex {
 void main() {
   vertex.position = vec3(model_view_transform * vec4(position, 1.0));
   vertex.texture_coordiantes = texture_coordinates;
-  vertex.normal = normalize(mat3(model_view_transform) * normal);
+  vertex.normal = normalize(mat3(model_view_transform) * normal); // model-view transform assumed to be an orthogonal matrix
   gl_Position = projection_transform * vec4(vertex.position, 1.0);
 }

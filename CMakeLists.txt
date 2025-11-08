@@ -11,7 +11,7 @@ add_library(common_glm_definitions INTERFACE)
 add_library(common_warnings INTERFACE)
 
 target_compile_definitions(common_glm_definitions INTERFACE GLM_ENABLE_EXPERIMENTAL # required for <glm/gtx/hash.hpp>
-                                                            GLM_FORCE_XYZW_ONLY) # required for cppcoreguidelines-pro-type-union-access
+                                                            GLM_FORCE_XYZW_ONLY)    # required for cppcoreguidelines-pro-type-union-access
 
 if(MSVC)
   target_compile_options(common_warnings INTERFACE /W4 /WX)

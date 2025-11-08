@@ -21,9 +21,9 @@ struct Camera {
   glm::vec3 up;
   glm::mat4 view_transform;
 } const kCamera = {
-    .look_from = glm::vec3{0.f, .4f, 2.f},
-    .look_at = glm::vec3{0.f},
-    .up = glm::vec3{0.f, 1.f, 0.f},
+    .look_from = glm::vec3{0.0f, 0.4f, 2.0f},
+    .look_at = glm::vec3{0.0f},
+    .up = glm::vec3{0.0f, 1.0f, 0.0f},
     .view_transform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up),
 };
 
@@ -95,7 +95,7 @@ void SetViewTransforms(const qem::Window& window, const qem::Mesh& mesh, qem::Sh
 }
 
 void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float delta_time) {
-  static std::optional<glm::dvec2> prev_cursor_position;
+  static std::optional<glm::vec2> prev_cursor_position;
 
   if (const auto cursor_position = window.GetCursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
     if (prev_cursor_position.has_value()) {
@@ -104,7 +104,7 @@ void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float de
         const auto rotation_speed = 256.0f * delta_time;
         const auto& [view_rotation_axis, angle] = *axis_angle;
         const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
-        const auto model_rotation_axis = glm::normalize(view_model_inv * glm::vec4{view_rotation_axis, 0.f});
+        const auto model_rotation_axis = glm::normalize(view_model_inv * glm::vec4{view_rotation_axis, 0.0f});
         mesh.Rotate(model_rotation_axis, rotation_speed * angle);
       }
     }
@@ -137,17 +137,17 @@ qem::Scene::Scene(Window* const window)
   window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
     constexpr auto kScaleStep = 0.02f;
     const auto sign = static_cast<float>(y_offset > 0) - static_cast<float>(y_offset < 0);
-    mesh_.Scale(glm::vec3{1.0f + sign * kScaleStep});
+    mesh_.Scale(glm::vec3{1.0f + (sign * kScaleStep)});
   });
 
   shader_program_.Enable();
   SetMaterial(shader_program_);
   SetPointLights(shader_program_);
 
-  // NOLINTBEGIN(readability-magic-numbers)
-  mesh_.Translate(kCamera.look_at + glm::vec3{.2f, -.25f, 0.f});
+  // NOLINTBEGIN(*-magic-numbers)
+  mesh_.Translate(kCamera.look_at + glm::vec3{0.2f, -0.25f, 0.0f});
   mesh_.Scale(glm::vec3{0.35f});
-  // NOLINTEND(readability-magic-numbers)
+  // NOLINTEND(*-magic-numbers)
 }
 
 void qem::Scene::Render(const float delta_time) {

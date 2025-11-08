@@ -50,7 +50,7 @@ public:
    * \return A pair representing the window's width and height.
    */
   [[nodiscard]] std::pair<int, int> GetSize() const noexcept {
-    int width{}, height{};
+    auto width = 0, height = 0;
     glfwGetWindowSize(window_, &width, &height);
     return std::pair{width, height};
   }
@@ -68,10 +68,10 @@ public:
    * \brief Gets the cursor position.
    * \return The (x,y) coordinates of the cursor position in the window.
    */
-  [[nodiscard]] glm::dvec2 GetCursorPosition() const noexcept {
-    double x{}, y{};
+  [[nodiscard]] glm::vec2 GetCursorPosition() const noexcept {
+    auto x = 0.0, y = 0.0;
     glfwGetCursorPos(window_, &x, &y);
-    return glm::dvec2{x, y};
+    return glm::dvec2{static_cast<float>(x), static_cast<float>(y)};
   }
 
   /** \brief Sets the window title. */

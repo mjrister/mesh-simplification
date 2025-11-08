@@ -17,13 +17,14 @@ namespace {
  * \param window_dimensions The window width and height.
  * \return The cursor position in normalized device coordinates.
  */
-constexpr glm::vec2 GetNormalizedDeviceCoordinates(const glm::dvec2& cursor_position,
+constexpr glm::vec2 GetNormalizedDeviceCoordinates(const glm::vec2& cursor_position,
                                                    const std::pair<const int, const int>& window_dimensions) {
   // normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
-  constexpr auto kMinCoordinateValue = -1.0, kMaxCoordinateValue = 1.0;
-  const auto [width, height] = window_dimensions;
-  const auto x_ndc = std::clamp(cursor_position.x * 2.0 / width - 1.0, kMinCoordinateValue, kMaxCoordinateValue);
-  const auto y_ndc = std::clamp(cursor_position.y * 2.0 / height - 1.0, kMinCoordinateValue, kMaxCoordinateValue);
+  constexpr auto kMinCoordinateValue = -1.0f;
+  constexpr auto kMaxCoordinateValue = 1.0f;
+  const auto& [width, height] = window_dimensions;
+  const auto x_ndc = std::clamp(cursor_position.x * 2.0f / width - 1.0f, kMinCoordinateValue, kMaxCoordinateValue);
+  const auto y_ndc = std::clamp(cursor_position.y * 2.0f / height - 1.0f, kMinCoordinateValue, kMaxCoordinateValue);
 
   // because window coordinates start with (0,0) in the top-left corner which becomes (-1,-1) after normalization,
   // the y-coordinate needs to be negated to align with the OpenGL convention of the top-left residing at (-1,1)
@@ -51,8 +52,8 @@ glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
 }  // namespace
 
 std::optional<const std::pair<const glm::vec3, const float>> qem::arcball::GetRotation(
-    const glm::dvec2& cursor_position_start,
-    const glm::dvec2& cursor_position_end,
+    const glm::vec2& cursor_position_start,
+    const glm::vec2& cursor_position_end,
     const std::pair<const int, const int>& window_dimensions) {
   const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
   const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
