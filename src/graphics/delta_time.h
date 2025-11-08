@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace qem {
+namespace gfx {
 
 /** \brief A utility to calculate the time between frames. */
 class DeltaTime {
@@ -30,4 +30,4 @@ private:
   Duration delta_time_{};
 };
 
-}  // namespace qem
+}  // namespace gfx

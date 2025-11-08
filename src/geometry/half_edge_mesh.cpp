@@ -19,9 +19,9 @@ namespace {
  * \param edges A mapping of mesh half-edges by hash key.
  * \return The half-edge connecting vertex \p v0 to \p v1.
  */
-std::shared_ptr<qem::HalfEdge> CreateHalfEdge(const std::shared_ptr<qem::Vertex>& v0,
-                                              const std::shared_ptr<qem::Vertex>& v1,
-                                              std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+std::shared_ptr<gfx::HalfEdge> CreateHalfEdge(const std::shared_ptr<gfx::Vertex>& v0,
+                                              const std::shared_ptr<gfx::Vertex>& v1,
+                                              std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>>& edges) {
   const auto edge01_key = hash_value(*v0, *v1);
   const auto edge10_key = hash_value(*v1, *v0);
 
@@ -32,8 +32,8 @@ std::shared_ptr<qem::HalfEdge> CreateHalfEdge(const std::shared_ptr<qem::Vertex>
   }
   assert(!edges.contains(edge10_key));
 
-  auto edge01 = make_shared<qem::HalfEdge>(v1);
-  auto edge10 = make_shared<qem::HalfEdge>(v0);
+  auto edge01 = make_shared<gfx::HalfEdge>(v1);
+  auto edge10 = make_shared<gfx::HalfEdge>(v0);
 
   edge01->set_flip(edge10);
   edge10->set_flip(edge01);
@@ -50,10 +50,10 @@ std::shared_ptr<qem::HalfEdge> CreateHalfEdge(const std::shared_ptr<qem::Vertex>
  * \param edges A mapping of mesh half-edges by hash key.
  * \return A triangle face representing vertices \p v0, \p v1, \p v2 in the half-edge mesh.
  */
-std::shared_ptr<qem::Face> CreateTriangle(const std::shared_ptr<qem::Vertex>& v0,
-                                          const std::shared_ptr<qem::Vertex>& v1,
-                                          const std::shared_ptr<qem::Vertex>& v2,
-                                          std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+std::shared_ptr<gfx::Face> CreateTriangle(const std::shared_ptr<gfx::Vertex>& v0,
+                                          const std::shared_ptr<gfx::Vertex>& v1,
+                                          const std::shared_ptr<gfx::Vertex>& v2,
+                                          std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>>& edges) {
   const auto edge01 = CreateHalfEdge(v0, v1, edges);
   const auto edge12 = CreateHalfEdge(v1, v2, edges);
   const auto edge20 = CreateHalfEdge(v2, v0, edges);
@@ -66,7 +66,7 @@ std::shared_ptr<qem::Face> CreateTriangle(const std::shared_ptr<qem::Vertex>& v0
   edge12->set_next(edge20);
   edge20->set_next(edge01);
 
-  auto face012 = make_shared<qem::Face>(v0, v1, v2);
+  auto face012 = make_shared<gfx::Face>(v0, v1, v2);
   edge01->set_face(face012);
   edge12->set_face(face012);
   edge20->set_face(face012);
@@ -80,10 +80,10 @@ std::shared_ptr<qem::Face> CreateTriangle(const std::shared_ptr<qem::Vertex>& v0
  * \param edges A mapping of mesh half-edges by hash key.
  * \return The half-edge connecting \p v0 to \p v1.
  */
-std::shared_ptr<qem::HalfEdge> GetHalfEdge(
-    const qem::Vertex& v0,
-    const qem::Vertex& v1,
-    const std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+std::shared_ptr<gfx::HalfEdge> GetHalfEdge(
+    const gfx::Vertex& v0,
+    const gfx::Vertex& v1,
+    const std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>>& edges) {
   const auto iterator = edges.find(hash_value(v0, v1));
   assert(iterator != edges.end());
   return iterator->second;
@@ -94,7 +94,7 @@ std::shared_ptr<qem::HalfEdge> GetHalfEdge(
  * \param vertex The vertex to delete.
  * \param vertices A mapping of mesh vertices by ID.
  */
-void DeleteVertex(const qem::Vertex& vertex, std::map<int, std::shared_ptr<qem::Vertex>>& vertices) {
+void DeleteVertex(const gfx::Vertex& vertex, std::map<int, std::shared_ptr<gfx::Vertex>>& vertices) {
   const auto iterator = vertices.find(vertex.id());
   assert(iterator != vertices.end());
   vertices.erase(iterator);
@@ -105,7 +105,7 @@ void DeleteVertex(const qem::Vertex& vertex, std::map<int, std::shared_ptr<qem::
  * \param edge The half-edge to delete.
  * \param edges A mapping of mesh half-edges by hash key.
  */
-void DeleteEdge(const qem::HalfEdge& edge, std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+void DeleteEdge(const gfx::HalfEdge& edge, std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>>& edges) {
   for (const auto edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
     const auto iterator = edges.find(edge_key);
     assert(iterator != edges.end());
@@ -118,7 +118,7 @@ void DeleteEdge(const qem::HalfEdge& edge, std::unordered_map<std::size_t, std::
  * \param face The face to delete.
  * \param faces A mapping of mesh faces by hash key.
  */
-void DeleteFace(const qem::Face& face, std::unordered_map<std::size_t, std::shared_ptr<qem::Face>>& faces) {
+void DeleteFace(const gfx::Face& face, std::unordered_map<std::size_t, std::shared_ptr<gfx::Face>>& faces) {
   const auto iterator = faces.find(hash_value(face));
   assert(iterator != faces.end());
   faces.erase(iterator);
@@ -133,12 +133,12 @@ void DeleteFace(const qem::Face& face, std::unordered_map<std::size_t, std::shar
  * \param edges A mapping of mesh half-edges by hash key.
  * \param faces A mapping of mesh faces by hash key.
  */
-void UpdateIncidentEdges(const qem::Vertex& v_target,
-                         const qem::Vertex& v_start,
-                         const qem::Vertex& v_end,
-                         const std::shared_ptr<qem::Vertex>& v_new,
-                         std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>& edges,
-                         std::unordered_map<std::size_t, std::shared_ptr<qem::Face>>& faces) {
+void UpdateIncidentEdges(const gfx::Vertex& v_target,
+                         const gfx::Vertex& v_start,
+                         const gfx::Vertex& v_end,
+                         const std::shared_ptr<gfx::Vertex>& v_new,
+                         std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>>& edges,
+                         std::unordered_map<std::size_t, std::shared_ptr<gfx::Face>>& faces) {
   const auto edge_start = GetHalfEdge(v_target, v_start, edges);
   const auto edge_end = GetHalfEdge(v_target, v_end, edges);
 
@@ -167,7 +167,7 @@ void UpdateIncidentEdges(const qem::Vertex& v_target,
  * \param v0 The vertex to compute the normal for.
  * \return The weighted vertex normal.
  */
-glm::vec3 ComputeWeightedVertexNormal(const qem::Vertex& v0) {
+glm::vec3 ComputeWeightedVertexNormal(const gfx::Vertex& v0) {
   glm::vec3 normal{0.0f};
   auto edgei0 = v0.edge();
   do {
@@ -180,7 +180,7 @@ glm::vec3 ComputeWeightedVertexNormal(const qem::Vertex& v0) {
 
 }  // namespace
 
-qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_transform()} {
+gfx::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_transform()} {
   const auto& positions = mesh.positions();
   const auto& indices = mesh.indices();
 
@@ -197,7 +197,7 @@ qem::HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_
   }
 }
 
-qem::HalfEdgeMesh::operator qem::Mesh() const {
+gfx::HalfEdgeMesh::operator gfx::Mesh() const {
   std::vector<glm::vec3> positions;
   positions.reserve(vertices_.size());
 
@@ -225,7 +225,7 @@ qem::HalfEdgeMesh::operator qem::Mesh() const {
   return Mesh{positions, {}, normals, indices, model_transform_};
 }
 
-void qem::HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new) {
+void gfx::HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new) {
   assert(edges_.contains(hash_value(edge01)));
   assert(!vertices_.contains(v_new->id()));
 

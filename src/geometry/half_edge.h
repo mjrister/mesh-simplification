@@ -8,7 +8,7 @@
 #include "geometry/face.h"
 #include "geometry/vertex.h"
 
-namespace qem {
+namespace gfx {
 
 /** \brief A directional edge in a half-edge mesh. */
 class HalfEdge {
@@ -99,4 +99,4 @@ inline void Vertex::set_edge(const std::shared_ptr<const HalfEdge>& edge) noexce
   edge_ = edge;
 }
 
-}  // namespace qem
+}  // namespace gfx

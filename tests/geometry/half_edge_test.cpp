@@ -7,16 +7,16 @@ namespace {
 class HalfEdgeTest : public testing::Test {
 protected:
   HalfEdgeTest()
-      : v0_{std::make_shared<qem::Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f})},
-        v1_{std::make_shared<qem::Vertex>(1, glm::vec3{1.0f, -1.0f, 0.0f})},
-        v2_{std::make_shared<qem::Vertex>(2, glm::vec3{0.0f, 0.5f, 0.0f})},
-        edge01_{std::make_shared<qem::HalfEdge>(v1_)},
-        edge10_{std::make_shared<qem::HalfEdge>(v0_)},
-        edge12_{std::make_shared<qem::HalfEdge>(v2_)},
-        edge21_{std::make_shared<qem::HalfEdge>(v1_)},
-        edge20_{std::make_shared<qem::HalfEdge>(v0_)},
-        edge02_{std::make_shared<qem::HalfEdge>(v2_)},
-        face012_{std::make_shared<qem::Face>(v0_, v1_, v2_)} {
+      : v0_{std::make_shared<gfx::Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f})},
+        v1_{std::make_shared<gfx::Vertex>(1, glm::vec3{1.0f, -1.0f, 0.0f})},
+        v2_{std::make_shared<gfx::Vertex>(2, glm::vec3{0.0f, 0.5f, 0.0f})},
+        edge01_{std::make_shared<gfx::HalfEdge>(v1_)},
+        edge10_{std::make_shared<gfx::HalfEdge>(v0_)},
+        edge12_{std::make_shared<gfx::HalfEdge>(v2_)},
+        edge21_{std::make_shared<gfx::HalfEdge>(v1_)},
+        edge20_{std::make_shared<gfx::HalfEdge>(v0_)},
+        edge02_{std::make_shared<gfx::HalfEdge>(v2_)},
+        face012_{std::make_shared<gfx::Face>(v0_, v1_, v2_)} {
     edge01_->set_flip(edge10_);
     edge10_->set_flip(edge01_);
     edge12_->set_flip(edge21_);
@@ -38,9 +38,9 @@ protected:
   }
 
   // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
-  std::shared_ptr<qem::Vertex> v0_, v1_, v2_;
-  std::shared_ptr<qem::HalfEdge> edge01_, edge10_, edge12_, edge21_, edge20_, edge02_;
-  std::shared_ptr<qem::Face> face012_;
+  std::shared_ptr<gfx::Vertex> v0_, v1_, v2_;
+  std::shared_ptr<gfx::HalfEdge> edge01_, edge10_, edge12_, edge21_, edge20_, edge02_;
+  std::shared_ptr<gfx::Face> face012_;
   // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
@@ -93,17 +93,17 @@ TEST_F(HalfEdgeTest, TestFlipHalfEdgesDoNotHaveTheSameHashValue) {
 #ifndef NDEBUG
 
 TEST_F(HalfEdgeTest, TestGetExpiredVertexCausesProgramExit) {
-  std::shared_ptr<qem::HalfEdge> edge10;
+  std::shared_ptr<gfx::HalfEdge> edge10;
   {
-    const auto v0 = std::make_shared<qem::Vertex>(0, glm::vec3{});
-    edge10 = std::make_shared<qem::HalfEdge>(v0);
+    const auto v0 = std::make_shared<gfx::Vertex>(0, glm::vec3{});
+    edge10 = std::make_shared<gfx::HalfEdge>(v0);
   }
   EXPECT_DEATH({ std::ignore = edge10->vertex(); }, "");
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
   {
-    const auto edge10 = std::make_shared<qem::HalfEdge>(v0_);
+    const auto edge10 = std::make_shared<gfx::HalfEdge>(v0_);
     edge01_->set_flip(edge10);
   }
   EXPECT_DEATH({ std::ignore = edge01_->flip(); }, "");
@@ -111,7 +111,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
 
 TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
   {
-    const auto edge12 = std::make_shared<qem::HalfEdge>(v2_);
+    const auto edge12 = std::make_shared<gfx::HalfEdge>(v2_);
     edge01_->set_next(edge12);
   }
   EXPECT_DEATH({ std::ignore = edge01_->next(); }, "");
@@ -119,7 +119,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
 
 TEST_F(HalfEdgeTest, TestGetExpiredFaceCausesProgramExit) {
   {
-    const auto face012 = std::make_shared<qem::Face>(v0_, v1_, v2_);
+    const auto face012 = std::make_shared<gfx::Face>(v0_, v1_, v2_);
     edge01_->set_face(face012);
   }
   EXPECT_DEATH({ std::ignore = edge01_->face(); }, "");

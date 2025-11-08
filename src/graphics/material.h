@@ -4,7 +4,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace qem {
+namespace gfx {
 
 /**
  * \brief A material with various light reflectance properties used in the Phong reflection model.
@@ -130,4 +130,4 @@ struct Material {
   float shininess = 0.0f;
 };
 
-}  // namespace qem
+}  // namespace gfx

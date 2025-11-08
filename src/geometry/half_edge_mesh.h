@@ -6,7 +6,7 @@
 
 #include <glm/mat4x4.hpp>
 
-namespace qem {
+namespace gfx {
 class Face;
 class HalfEdge;
 class Mesh;
@@ -55,4 +55,4 @@ private:
   glm::mat4 model_transform_;
 };
 
-}  // namespace qem
+}  // namespace gfx

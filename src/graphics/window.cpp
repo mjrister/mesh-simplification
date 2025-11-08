@@ -85,7 +85,7 @@ namespace {
                       message);
 }
 
-void InitializeGlfw(const std::pair<const int, const int>& opengl_version) {
+void InitializeGlfw(const std::pair<int, int>& opengl_version) {
   if (glfwInit() == GLFW_FALSE) throw std::runtime_error{"GLFW initialization failed"};
 
   const auto [major_version, minor_version] = opengl_version;
@@ -103,7 +103,7 @@ void InitializeGlfw(const std::pair<const int, const int>& opengl_version) {
 #endif
 }
 
-void InitializeGl3w(const std::pair<const int, const int>& opengl_version) {
+void InitializeGl3w(const std::pair<int, int>& opengl_version) {
   if (gl3wInit() != GL3W_OK) throw std::runtime_error{"OpenGL initialization failed"};
 
   if (const auto [major_version, minor_version] = opengl_version; gl3wIsSupported(major_version, minor_version) == 0) {
@@ -128,7 +128,7 @@ void InitializeGl3w(const std::pair<const int, const int>& opengl_version) {
 }
 }  // namespace
 
-qem::Window::Window(const char* const title,
+gfx::Window::Window(const char* const title,
                     const std::pair<int, int>& window_dimensions,
                     const std::pair<int, int>& opengl_version) {
   InitializeGlfw(opengl_version);
@@ -161,13 +161,15 @@ qem::Window::Window(const char* const title,
   glfwSetScrollCallback(window_, [](GLFWwindow* const window, const double x_offset, const double y_offset) {
     const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
     assert(self != nullptr);
-    if (self->on_scroll_) self->on_scroll_(x_offset, y_offset);
+    if (self->on_scroll_) {
+      self->on_scroll_(static_cast<float>(x_offset), static_cast<float>(y_offset));
+    }
   });
 
   InitializeGl3w(opengl_version);
 }
 
-qem::Window::~Window() noexcept {
+gfx::Window::~Window() noexcept {
   if (window_ != nullptr) {
     glfwDestroyWindow(window_);
   }

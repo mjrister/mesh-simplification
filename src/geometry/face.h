@@ -7,7 +7,7 @@
 
 #include "geometry/vertex.h"
 
-namespace qem {
+namespace gfx {
 
 /** \brief A triangle face defined by three vertices in counter-clockwise winding order. */
 class Face {
@@ -58,4 +58,4 @@ private:
   float area_;
 };
 
-}  // namespace qem
+}  // namespace gfx

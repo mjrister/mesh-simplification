@@ -7,7 +7,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace qem {
+namespace gfx {
 class HalfEdge;
 
 /** \brief A half-edge mesh vertex. */
@@ -83,4 +83,4 @@ private:
   std::weak_ptr<const HalfEdge> edge_;
 };
 
-}  // namespace qem
+}  // namespace gfx

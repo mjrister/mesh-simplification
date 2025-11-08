@@ -62,7 +62,7 @@ void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum stat
 
 }  // namespace
 
-qem::ShaderProgram::Shader::Shader(const GLenum shader_type, const std::string& shader_source)
+gfx::ShaderProgram::Shader::Shader(const GLenum shader_type, const std::string& shader_source)
     : id{glCreateShader(shader_type)} {
   if (id == 0) throw std::runtime_error{"Shader creation failed"};
 
@@ -73,7 +73,7 @@ qem::ShaderProgram::Shader::Shader(const GLenum shader_type, const std::string& 
   VerifyShaderStatus(id, GL_COMPILE_STATUS);
 }
 
-qem::ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_shader_filepath,
+gfx::ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_shader_filepath,
                                   const std::filesystem::path& fragment_shader_filepath)
     : id_{glCreateProgram()},
       vertex_shader_{GL_VERTEX_SHADER, ReadFile(vertex_shader_filepath)},

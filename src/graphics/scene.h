@@ -3,7 +3,7 @@
 #include "graphics/mesh.h"
 #include "graphics/shader_program.h"
 
-namespace qem {
+namespace gfx {
 class Window;
 
 /** \brief Defines all of the necessary objects (e.g., camera, lighting, mesh, etc.) to render the scene. */
@@ -27,4 +27,4 @@ private:
   ShaderProgram shader_program_;
 };
 
-}  // namespace qem
+}  // namespace gfx

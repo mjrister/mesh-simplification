@@ -12,10 +12,10 @@ int main() {
     static constexpr auto* kProjectTitle = "Mesh Simplification";
     static constexpr auto kWindowDimensions = std::make_pair(1920, 1080);
     static constexpr auto kOpenGlVersion = std::make_pair(4, 1);
-    qem::Window window{kProjectTitle, kWindowDimensions, kOpenGlVersion};
-    qem::Scene scene{&window};
+    gfx::Window window{kProjectTitle, kWindowDimensions, kOpenGlVersion};
+    gfx::Scene scene{&window};
 
-    for (qem::DeltaTime delta_time; !window.IsClosed();) {
+    for (gfx::DeltaTime delta_time; !window.IsClosed();) {
       delta_time.Update();
       window.Update();
       scene.Render(delta_time.get());

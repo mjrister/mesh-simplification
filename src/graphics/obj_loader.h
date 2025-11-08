@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-namespace qem {
+namespace gfx {
 class Mesh;
 
 namespace obj_loader {
@@ -21,4 +21,4 @@ namespace obj_loader {
 Mesh LoadMesh(const std::filesystem::path& filepath);
 
 }  // namespace obj_loader
-}  // namespace qem
+}  // namespace gfx

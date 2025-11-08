@@ -146,7 +146,7 @@ std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
  * \param is The input stream to parse.
  * \return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
  */
-qem::Mesh LoadMesh(std::istream& is) {
+gfx::Mesh LoadMesh(std::istream& is) {
   std::vector<glm::vec3> positions;
   std::vector<glm::vec2> texture_coordinates;
   std::vector<glm::vec3> normals;
@@ -166,7 +166,7 @@ qem::Mesh LoadMesh(std::istream& is) {
     }
   }
 
-  if (faces.empty()) return qem::Mesh{positions, texture_coordinates, normals, {}};
+  if (faces.empty()) return gfx::Mesh{positions, texture_coordinates, normals, {}};
 
   std::vector<glm::vec3> ordered_positions;
   std::vector<glm::vec2> ordered_texture_coordinates;
@@ -203,12 +203,12 @@ qem::Mesh LoadMesh(std::istream& is) {
     }
   }
 
-  return qem::Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices};
+  return gfx::Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices};
 }
 
 }  // namespace
 
-qem::Mesh qem::obj_loader::LoadMesh(const std::filesystem::path& filepath) {
+gfx::Mesh gfx::obj_loader::LoadMesh(const std::filesystem::path& filepath) {
   if (std::ifstream ifs{filepath}; ifs.good()) {
     return ::LoadMesh(ifs);
   }

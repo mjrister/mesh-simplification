@@ -18,7 +18,7 @@ namespace {
  * \return The cursor position in normalized device coordinates.
  */
 constexpr glm::vec2 GetNormalizedDeviceCoordinates(const glm::vec2& cursor_position,
-                                                   const std::pair<const int, const int>& window_dimensions) {
+                                                   const std::pair<int, int>& window_dimensions) {
   // normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
   constexpr auto kMinCoordinateValue = -1.0f;
   constexpr auto kMaxCoordinateValue = 1.0f;
@@ -51,10 +51,10 @@ glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
 
 }  // namespace
 
-std::optional<const std::pair<const glm::vec3, const float>> qem::arcball::GetRotation(
+std::optional<const std::pair<const glm::vec3, const float>> gfx::arcball::GetRotation(
     const glm::vec2& cursor_position_start,
     const glm::vec2& cursor_position_end,
-    const std::pair<const int, const int>& window_dimensions) {
+    const std::pair<int, int>& window_dimensions) {
   const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
   const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
 

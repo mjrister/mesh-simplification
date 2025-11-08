@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
-namespace qem {
+namespace gfx {
 
 /** \brief An abstraction for a GLFW window. */
 class Window {
@@ -33,16 +33,18 @@ public:
    * \brief Sets a callback to be invoked when a discrete key press is detected.
    * \param on_key_press The callback to be invoked on key press parameterized by the active key code.
    */
-  void OnKeyPress(std::invocable<int> auto&& on_key_press) {
-    on_key_press_ = std::forward<decltype(on_key_press_)>(on_key_press);
+  template <std::invocable<int> Fn>
+  void OnKeyPress(Fn&& on_key_press) {
+    on_key_press_ = std::forward<Fn>(on_key_press);
   }
 
   /**
    * \brief Sets a callback to be invoked when a scroll event is detected.
    * \param on_scroll A callback to be invoked on scroll parameterized by x/y scroll offsets (respectively).
    */
-  void OnScroll(std::invocable<double, double> auto&& on_scroll) {
-    on_scroll_ = std::forward<decltype(on_scroll_)>(on_scroll);
+  template <std::invocable<float, float> Fn>
+  void OnScroll(Fn&& on_scroll) {
+    on_scroll_ = std::forward<Fn>(on_scroll);
   }
 
   /**
@@ -71,7 +73,7 @@ public:
   [[nodiscard]] glm::vec2 GetCursorPosition() const noexcept {
     auto x = 0.0, y = 0.0;
     glfwGetCursorPos(window_, &x, &y);
-    return glm::dvec2{static_cast<float>(x), static_cast<float>(y)};
+    return glm::vec2{static_cast<float>(x), static_cast<float>(y)};
   }
 
   /** \brief Sets the window title. */
@@ -102,7 +104,7 @@ public:
   }
 
   /** \brief Updates the window for the next iteration of main render loop. */
-  void Update() const noexcept {
+  void Update() noexcept {
     glfwSwapBuffers(window_);
     glfwPollEvents();
   }
@@ -110,7 +112,7 @@ public:
 private:
   GLFWwindow* window_ = nullptr;
   std::function<void(int)> on_key_press_;
-  std::function<void(double, double)> on_scroll_;
+  std::function<void(float, float)> on_scroll_;
 };
 
-}  // namespace qem
+}  // namespace gfx

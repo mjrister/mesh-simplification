@@ -11,7 +11,7 @@
 #include <GL/gl3w.h>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace qem {
+namespace gfx {
 
 /** \brief A program used to execute one or more OpenGL shaders on the host GPU. */
 class ShaderProgram {
@@ -123,4 +123,4 @@ private:
   std::unordered_map<std::string, GLint, StringViewHash, std::equal_to<>> uniform_locations_;
 };
 
-}  // namespace qem
+}  // namespace gfx

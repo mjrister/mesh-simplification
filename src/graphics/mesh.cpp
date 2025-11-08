@@ -29,7 +29,7 @@ void Validate(const std::span<const glm::vec3> positions,
 
 }  // namespace
 
-qem::Mesh::Mesh(const std::span<const glm::vec3> positions,
+gfx::Mesh::Mesh(const std::span<const glm::vec3> positions,
                 const std::span<const glm::vec2> texture_coordinates,
                 const std::span<const glm::vec3> normals,
                 const std::span<const GLuint> indices,
@@ -86,9 +86,9 @@ qem::Mesh::Mesh(const std::span<const glm::vec3> positions,
   }
 }
 
-qem::Mesh::Mesh(Mesh&& mesh) noexcept { *this = std::move(mesh); }
+gfx::Mesh::Mesh(Mesh&& mesh) noexcept { *this = std::move(mesh); }
 
-qem::Mesh& qem::Mesh::operator=(Mesh&& mesh) noexcept {
+gfx::Mesh& gfx::Mesh::operator=(Mesh&& mesh) noexcept {
   if (this != &mesh) {
     std::swap(vertex_array_, mesh.vertex_array_);
     std::swap(vertex_buffer_, mesh.vertex_buffer_);
@@ -102,7 +102,7 @@ qem::Mesh& qem::Mesh::operator=(Mesh&& mesh) noexcept {
   return *this;
 }
 
-qem::Mesh::~Mesh() noexcept {
+gfx::Mesh::~Mesh() noexcept {
   glDeleteVertexArrays(1, &vertex_array_);
   glDeleteBuffers(1, &vertex_buffer_);
   glDeleteBuffers(1, &element_buffer_);

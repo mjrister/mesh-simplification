@@ -10,12 +10,12 @@ namespace {
 class HalfEdgeMeshTest : public testing::Test {
 protected:
   HalfEdgeMeshTest()
-      : v0_{std::make_shared<qem::Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f})},
-        v1_{std::make_shared<qem::Vertex>(1, glm::vec3{0.0f, 0.5f, 0.0f})},
-        v2_{std::make_shared<qem::Vertex>(2, glm::vec3{1.0f, -1.0f, 0.0f})},
-        edge01_{std::make_shared<qem::HalfEdge>(v1_)},
-        edge10_{std::make_shared<qem::HalfEdge>(v0_)},
-        face012_{std::make_shared<qem::Face>(v0_, v1_, v2_)},
+      : v0_{std::make_shared<gfx::Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f})},
+        v1_{std::make_shared<gfx::Vertex>(1, glm::vec3{0.0f, 0.5f, 0.0f})},
+        v2_{std::make_shared<gfx::Vertex>(2, glm::vec3{1.0f, -1.0f, 0.0f})},
+        edge01_{std::make_shared<gfx::HalfEdge>(v1_)},
+        edge10_{std::make_shared<gfx::HalfEdge>(v0_)},
+        face012_{std::make_shared<gfx::Face>(v0_, v1_, v2_)},
         vertices_{
             {v0_->id(), v0_},
             {v1_->id(), v1_},
@@ -24,19 +24,19 @@ protected:
         faces_{{hash_value(*face012_), face012_}} {
     edge01_->set_flip(edge10_);
     edge10_->set_flip(edge01_);
-    edges_ = std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>{{hash_value(*edge01_), edge01_},
+    edges_ = std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>>{{hash_value(*edge01_), edge01_},
                                                                              {hash_value(*edge10_), edge10_}};
   }
 
-  std::shared_ptr<qem::Vertex> v0_, v1_, v2_;
-  std::shared_ptr<qem::HalfEdge> edge01_, edge10_;
-  std::shared_ptr<qem::Face> face012_;
-  std::map<int, std::shared_ptr<qem::Vertex>> vertices_;
-  std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>> edges_;
-  std::unordered_map<std::size_t, std::shared_ptr<qem::Face>> faces_;
+  std::shared_ptr<gfx::Vertex> v0_, v1_, v2_;
+  std::shared_ptr<gfx::HalfEdge> edge01_, edge10_;
+  std::shared_ptr<gfx::Face> face012_;
+  std::map<int, std::shared_ptr<gfx::Vertex>> vertices_;
+  std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>> edges_;
+  std::unordered_map<std::size_t, std::shared_ptr<gfx::Face>> faces_;
 };
 
-qem::Mesh CreateValidMesh() {
+gfx::Mesh CreateValidMesh() {
   const std::vector<glm::vec3> positions{
       {1.0f, 0.0f, 0.0f},   // v0
       {2.0f, 0.0f, 0.0f},   // v1
@@ -63,17 +63,17 @@ qem::Mesh CreateValidMesh() {
       1, 6, 7   // f9
   };
 
-  return qem::Mesh{positions, {}, std::vector(10, glm::vec3{0.0f, 0.0f, 1.0f}), indices};
+  return gfx::Mesh{positions, {}, std::vector(10, glm::vec3{0.0f, 0.0f, 1.0f}), indices};
 }
 
-qem::HalfEdgeMesh MakeHalfEdgeMesh() {
+gfx::HalfEdgeMesh MakeHalfEdgeMesh() {
   const auto mesh = CreateValidMesh();
-  return qem::HalfEdgeMesh{mesh};
+  return gfx::HalfEdgeMesh{mesh};
 }
 
-void VerifyEdge(const std::shared_ptr<qem::Vertex>& v0,
-                const std::shared_ptr<qem::Vertex>& v1,
-                const std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>& edges) {
+void VerifyEdge(const std::shared_ptr<gfx::Vertex>& v0,
+                const std::shared_ptr<gfx::Vertex>& v1,
+                const std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>>& edges) {
   const auto edge01_iterator = edges.find(hash_value(*v0, *v1));
   const auto edge10_iterator = edges.find(hash_value(*v1, *v0));
 
@@ -93,7 +93,7 @@ void VerifyEdge(const std::shared_ptr<qem::Vertex>& v0,
   EXPECT_EQ(edge10, edge10->flip()->flip());
 }
 
-void VerifyTriangles(const qem::HalfEdgeMesh& half_edge_mesh, const std::vector<GLuint>& indices) {
+void VerifyTriangles(const gfx::HalfEdgeMesh& half_edge_mesh, const std::vector<GLuint>& indices) {
   const auto& vertices = half_edge_mesh.vertices();
   const auto& edges = half_edge_mesh.edges();
   const auto& faces = half_edge_mesh.faces();
@@ -135,7 +135,7 @@ void VerifyTriangles(const qem::HalfEdgeMesh& half_edge_mesh, const std::vector<
 
 TEST_F(HalfEdgeMeshTest, TestCreateHalfEdgeMesh) {
   const auto mesh = CreateValidMesh();
-  const qem::HalfEdgeMesh half_edge_mesh{mesh};
+  const gfx::HalfEdgeMesh half_edge_mesh{mesh};
 
   EXPECT_EQ(10, half_edge_mesh.vertices().size());
   EXPECT_EQ(38, half_edge_mesh.edges().size());
@@ -151,9 +151,9 @@ TEST_F(HalfEdgeMeshTest, TestCollapseEdge) {
   const auto& v0 = vertices.at(0);
   const auto& v1 = vertices.at(1);
   const auto& edge01 = edges.at(hash_value(*v0, *v1));
-  const qem::Vertex v_new{static_cast<int>(half_edge_mesh.vertices().size()), (v0->position() + v1->position()) / 2.0f};
+  const gfx::Vertex v_new{static_cast<int>(half_edge_mesh.vertices().size()), (v0->position() + v1->position()) / 2.0f};
 
-  half_edge_mesh.Contract(*edge01, std::make_shared<qem::Vertex>(v_new));
+  half_edge_mesh.Contract(*edge01, std::make_shared<gfx::Vertex>(v_new));
 
   EXPECT_EQ(9, half_edge_mesh.vertices().size());
   EXPECT_EQ(32, half_edge_mesh.edges().size());
@@ -200,28 +200,28 @@ TEST_F(HalfEdgeMeshTest, TestDeleteFace) {
 TEST_F(HalfEdgeMeshTest, TestCollapseInvalidHalfEdgeCausesProgramExit) {
   auto half_edge_mesh = MakeHalfEdgeMesh();
   const auto invalid_vertex =
-      std::make_shared<qem::Vertex>(static_cast<int>(half_edge_mesh.vertices().size()), glm::vec3{});
-  const auto invalid_half_edge = std::make_shared<qem::HalfEdge>(invalid_vertex);
+      std::make_shared<gfx::Vertex>(static_cast<int>(half_edge_mesh.vertices().size()), glm::vec3{});
+  const auto invalid_half_edge = std::make_shared<gfx::HalfEdge>(invalid_vertex);
   invalid_half_edge->set_flip(edge01_);
-  EXPECT_DEATH(half_edge_mesh.Contract(*invalid_half_edge, std::make_shared<qem::Vertex>(glm::vec3{})), "");
+  EXPECT_DEATH(half_edge_mesh.Contract(*invalid_half_edge, std::make_shared<gfx::Vertex>(glm::vec3{})), "");
 }
 
 TEST_F(HalfEdgeMeshTest, TestGetInvalidHalfEdgeCausesProgramExit) {
-  EXPECT_DEATH(GetHalfEdge(*v1_, *v0_, (std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>>{})), "");
+  EXPECT_DEATH(GetHalfEdge(*v1_, *v0_, (std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>>{})), "");
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidVertexCausesProgramExit) {
-  std::map<int, std::shared_ptr<qem::Vertex>> vertices;
+  std::map<int, std::shared_ptr<gfx::Vertex>> vertices;
   EXPECT_DEATH(DeleteVertex(*v0_, vertices), "");
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidHalfEdgeCausesProgramExit) {
-  std::unordered_map<std::size_t, std::shared_ptr<qem::HalfEdge>> edges;
+  std::unordered_map<std::size_t, std::shared_ptr<gfx::HalfEdge>> edges;
   EXPECT_DEATH(DeleteEdge(*edge01_, edges), "");
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidFaceCausesProgramExit) {
-  std::unordered_map<std::size_t, std::shared_ptr<qem::Face>> faces;
+  std::unordered_map<std::size_t, std::shared_ptr<gfx::Face>> faces;
   EXPECT_DEATH(DeleteFace(*face012_, faces), "");
 }
 

@@ -59,15 +59,15 @@ struct PointLight {    // NOLINT(modernize-avoid-c-arrays)
     },
 };
 
-void SetMaterial(qem::ShaderProgram& shader_program) {
-  const auto [ambient, diffuse, specular, shininess] = qem::Material::FromType(qem::Material::Type::kJade);
+void SetMaterial(gfx::ShaderProgram& shader_program) {
+  const auto [ambient, diffuse, specular, shininess] = gfx::Material::FromType(gfx::Material::Type::kJade);
   shader_program.SetUniform("material.ambient", ambient);
   shader_program.SetUniform("material.diffuse", diffuse);
   shader_program.SetUniform("material.specular", specular);
   shader_program.SetUniform("material.shininess", shininess);
 }
 
-void SetPointLights(qem::ShaderProgram& shader_program) {
+void SetPointLights(gfx::ShaderProgram& shader_program) {
   constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
   shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
@@ -80,7 +80,7 @@ void SetPointLights(qem::ShaderProgram& shader_program) {
   }
 }
 
-void SetViewTransforms(const qem::Window& window, const qem::Mesh& mesh, qem::ShaderProgram& shader_program) {
+void SetViewTransforms(const gfx::Window& window, const gfx::Mesh& mesh, gfx::ShaderProgram& shader_program) {
   static auto prev_aspect_ratio = 0.0f;
 
   if (const auto aspect_ratio = window.GetAspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.0f) {
@@ -94,12 +94,12 @@ void SetViewTransforms(const qem::Window& window, const qem::Mesh& mesh, qem::Sh
   shader_program.SetUniform("model_view_transform", model_view_transform);
 }
 
-void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float delta_time) {
+void HandleMouseInput(const gfx::Window& window, gfx::Mesh& mesh, const float delta_time) {
   static std::optional<glm::vec2> prev_cursor_position;
 
   if (const auto cursor_position = window.GetCursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
     if (prev_cursor_position.has_value()) {
-      const auto axis_angle = qem::arcball::GetRotation(*prev_cursor_position, cursor_position, window.GetSize());
+      const auto axis_angle = gfx::arcball::GetRotation(*prev_cursor_position, cursor_position, window.GetSize());
       if (axis_angle.has_value()) {
         const auto rotation_speed = 256.0f * delta_time;
         const auto& [view_rotation_axis, angle] = *axis_angle;
@@ -123,7 +123,7 @@ void HandleMouseInput(const qem::Window& window, qem::Mesh& mesh, const float de
 }
 }  // namespace
 
-qem::Scene::Scene(Window* const window)
+gfx::Scene::Scene(Window* const window)
     : window_{window},
       mesh_{obj_loader::LoadMesh("assets/models/bunny.obj")},
       shader_program_{"assets/shaders/mesh_vertex.glsl", "assets/shaders/mesh_fragment.glsl"} {
@@ -136,8 +136,8 @@ qem::Scene::Scene(Window* const window)
 
   window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
     constexpr auto kScaleStep = 0.02f;
-    const auto sign = static_cast<float>(y_offset > 0) - static_cast<float>(y_offset < 0);
-    mesh_.Scale(glm::vec3{1.0f + (sign * kScaleStep)});
+    const auto sign = (y_offset > 0.0f) - (y_offset < 0.0f);
+    mesh_.Scale(glm::vec3{sign * kScaleStep + 1.0f});
   });
 
   shader_program_.Enable();
@@ -150,7 +150,7 @@ qem::Scene::Scene(Window* const window)
   // NOLINTEND(*-magic-numbers)
 }
 
-void qem::Scene::Render(const float delta_time) {
+void gfx::Scene::Render(const float delta_time) {
   static constexpr auto kDefaultClearColorValue = 0.1f;
   glClearColor(kDefaultClearColorValue, kDefaultClearColorValue, kDefaultClearColorValue, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

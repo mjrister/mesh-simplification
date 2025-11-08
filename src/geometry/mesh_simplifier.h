@@ -1,6 +1,6 @@
 #pragma once
 
-namespace qem {
+namespace gfx {
 class Mesh;
 
 namespace mesh {
@@ -16,4 +16,4 @@ namespace mesh {
 Mesh Simplify(const Mesh& mesh, float rate);
 
 }  // namespace mesh
-}  // namespace qem
+}  // namespace gfx

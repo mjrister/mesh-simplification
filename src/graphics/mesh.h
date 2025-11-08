@@ -9,7 +9,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
-namespace qem {
+namespace gfx {
 
 /** \brief A renderable triangle mesh. */
 class Mesh {
@@ -97,4 +97,4 @@ private:
   std::vector<GLuint> indices_;
   glm::mat4 model_transform_{};
 };
-}  // namespace qem
+}  // namespace gfx
