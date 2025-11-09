@@ -4,7 +4,7 @@
 
 namespace {
 
-using namespace gfx;
+using namespace gfx::arcball;
 
 TEST(ArcballTest, TestGetNormalizedDeviceCoordinates) {
   static constexpr auto kWidth = 300;

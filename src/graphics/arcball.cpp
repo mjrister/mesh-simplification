@@ -6,10 +6,8 @@
 #include <utility>
 
 #include <glm/geometric.hpp>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
 
-namespace gfx {
+namespace gfx::arcball {
 
 namespace {
 
@@ -54,11 +52,12 @@ glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
 
 }  // namespace
 
-std::optional<std::pair<glm::vec3, float>> arcball::GetRotation(const glm::vec2& cursor_position_start,
-                                                                const glm::vec2& cursor_position_end,
-                                                                const std::pair<int, int>& window_dimensions) {
+std::optional<Rotation> GetRotation(const glm::vec2& cursor_position_start,
+                                    const glm::vec2& cursor_position_end,
+                                    const std::pair<int, int>& window_dimensions) {
   const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
   const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
+
   const auto arcball_position_start = GetArcballPosition(cursor_position_start_ndc);
   const auto arcball_position_end = GetArcballPosition(cursor_position_end_ndc);
 
@@ -67,10 +66,10 @@ std::optional<std::pair<glm::vec3, float>> arcball::GetRotation(const glm::vec2&
 
   if (static constexpr auto kEpsilon = 1.0e-3f; angle > kEpsilon) {
     const auto axis = glm::cross(arcball_position_start, arcball_position_end);
-    return std::make_pair(axis, angle);
+    return Rotation{.axis = axis, .angle = angle};
   }
 
   return std::nullopt;
 }
 
-}  // namespace gfx
+}  // namespace gfx::arcball

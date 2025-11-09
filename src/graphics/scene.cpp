@@ -98,16 +98,17 @@ void SetViewTransforms(const Window& window, const Mesh& mesh, const ShaderProgr
 
 void HandleMouseInput(const Window& window, Mesh& mesh, const float delta_time) {
   static std::optional<glm::vec2> prev_cursor_position;
+  const auto cursor_position = window.GetCursorPosition();
 
-  if (const auto cursor_position = window.GetCursorPosition(); window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+  if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
     if (prev_cursor_position.has_value()) {
-      const auto axis_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window.GetSize());
-      if (axis_angle.has_value()) {
+      const auto rotation = arcball::GetRotation(*prev_cursor_position, cursor_position, window.GetSize());
+      if (rotation.has_value()) {
         const auto rotation_speed = 256.0f * delta_time;
-        const auto& [view_rotation_axis, angle] = *axis_angle;
+        const auto& [rotation_axis, rotation_angle] = *rotation;
         const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
-        const auto model_rotation_axis = glm::normalize(view_model_inv * glm::vec4{view_rotation_axis, 0.0f});
-        mesh.Rotate(model_rotation_axis, rotation_speed * angle);
+        const auto model_rotation_axis = glm::normalize(view_model_inv * glm::vec4{rotation_axis, 0.0f});
+        mesh.Rotate(model_rotation_axis, rotation_speed * rotation_angle);
       }
     }
     prev_cursor_position = cursor_position;
