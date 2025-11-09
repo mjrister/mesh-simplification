@@ -190,7 +190,7 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_trans
     vertices_.emplace(i, std::make_shared<Vertex>(i, positions[i]));
   }
 
-  for (auto i = 0; std::cmp_less(i, indices.size()); i += 3) {
+  for (std::size_t i = 0; i < indices.size(); i += 3) {
     const auto& v0 = vertices_[static_cast<int>(indices[i])];
     const auto& v1 = vertices_[static_cast<int>(indices[i + 1])];
     const auto& v2 = vertices_[static_cast<int>(indices[i + 2])];
@@ -209,7 +209,7 @@ HalfEdgeMesh::operator Mesh() const {
   std::vector<GLuint> indices;
   indices.reserve(faces_.size() * 3);
 
-  std::unordered_map<std::size_t, GLuint> index_map;
+  std::unordered_map<int, GLuint> index_map;
   index_map.reserve(vertices_.size());
 
   for (GLuint i = 0; const auto& vertex : vertices_ | std::views::values) {
@@ -224,7 +224,7 @@ HalfEdgeMesh::operator Mesh() const {
     indices.push_back(index_map.at(face->v2()->id()));
   }
 
-  return Mesh{positions, {}, normals, indices, model_transform_};
+  return Mesh{positions, {}, normals, indices, model_transform_};  // remapping texture coordinates is unsupported
 }
 
 void HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new) {
