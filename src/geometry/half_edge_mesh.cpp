@@ -191,9 +191,9 @@ HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_trans
   }
 
   for (auto i = 0; std::cmp_less(i, indices.size()); i += 3) {
-    const auto& v0 = vertices_[indices[i]];
-    const auto& v1 = vertices_[indices[i + 1]];
-    const auto& v2 = vertices_[indices[i + 2]];
+    const auto& v0 = vertices_[static_cast<int>(indices[i])];
+    const auto& v1 = vertices_[static_cast<int>(indices[i + 1])];
+    const auto& v2 = vertices_[static_cast<int>(indices[i + 2])];
     auto face012 = CreateTriangle(v0, v1, v2, edges_);
     faces_.emplace(hash_value(*face012), std::move(face012));
   }
