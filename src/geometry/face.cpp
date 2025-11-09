@@ -26,7 +26,7 @@ auto GetMinVertexOrder(const std::shared_ptr<const Vertex>& v0,
 
 }  // namespace
 
-Face::Face(const std::shared_ptr<const Vertex>& v0,
+Face::Face(const std::shared_ptr<const Vertex>& v0,  // NOLINT(*-member-init)
            const std::shared_ptr<const Vertex>& v1,
            const std::shared_ptr<const Vertex>& v2) {
   tie(v0_, v1_, v2_) = GetMinVertexOrder(v0, v1, v2);
