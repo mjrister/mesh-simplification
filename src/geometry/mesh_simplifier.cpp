@@ -22,22 +22,22 @@ namespace gfx {
 
 namespace {
 
-/** \brief Represents a candidate edge contraction. */
+/** @brief Represents a candidate edge contraction. */
 struct EdgeContraction {
   EdgeContraction(std::shared_ptr<const HalfEdge> edge, std::shared_ptr<Vertex> vertex, const float cost)
       : edge{std::move(edge)}, vertex{std::move(vertex)}, cost{cost} {}
 
-  /** \brief The edge to contract. */
+  /** @brief The edge to contract. */
   std::shared_ptr<const HalfEdge> edge;
 
-  /** \brief The optimal vertex position that minimizes the cost of this edge contraction. */
+  /** @brief The optimal vertex position that minimizes the cost of this edge contraction. */
   std::shared_ptr<Vertex> vertex;
 
-  /** \brief A metric that quantifies how much the mesh will change after this edge has been contracted. */
+  /** @brief A metric that quantifies how much the mesh will change after this edge has been contracted. */
   float cost;
 
   /**
-   * \brief This is used as a workaround for priority_queue not providing a method to update an existing
+   * @brief This is used as a workaround for priority_queue not providing a method to update an existing
    *        entry's priority. As edges are updated in the mesh, duplicated entries may be inserted in the queue
    *        and this property will be used to determine if an entry refers to the most recent edge update.
    */
@@ -45,16 +45,16 @@ struct EdgeContraction {
 };
 
 /**
- * \brief Gets a canonical representation of a half-edge used to disambiguate between its flip edge.
- * \param edge01 The half-edge to disambiguate.
- * \return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
+ * @brief Gets a canonical representation of a half-edge used to disambiguate between its flip edge.
+ * @param edge01 The half-edge to disambiguate.
+ * @return For two vertices connected by an edge, returns the half-edge pointing to the vertex with the smallest ID.
  */
 std::shared_ptr<const HalfEdge> GetMinEdge(const std::shared_ptr<const HalfEdge>& edge01) {
   const auto edge10 = const_pointer_cast<const HalfEdge>(edge01->flip());
   return edge01->vertex()->id() < edge10->vertex()->id() ? edge01 : edge10;
 }
 
-/** \brief Computes the error quadric for a vertex. */
+/** @brief Computes the error quadric for a vertex. */
 glm::mat4 ComputeQuadric(const Vertex& v0) {
   glm::mat4 quadric{0.0f};
   auto edgei0 = v0.edge();
@@ -68,7 +68,7 @@ glm::mat4 ComputeQuadric(const Vertex& v0) {
   return quadric;
 }
 
-/** \brief Gets the error quadric for a given vertex. */
+/** @brief Gets the error quadric for a given vertex. */
 const glm::mat4& GetQuadric(const Vertex& v0, const std::unordered_map<std::size_t, glm::mat4>& quadrics) {
   const auto q0_iterator = quadrics.find(v0.id());
   assert(q0_iterator != quadrics.end());
@@ -76,10 +76,10 @@ const glm::mat4& GetQuadric(const Vertex& v0, const std::unordered_map<std::size
 }
 
 /**
- * \brief Determines the optimal vertex position for an edge contraction.
- * \param edge01 The edge to evaluate.
- * \param quadrics A mapping of error quadrics by vertex ID.
- * \return The optimal vertex and cost associated with contracting \p edge01.
+ * @brief Determines the optimal vertex position for an edge contraction.
+ * @param edge01 The edge to evaluate.
+ * @param quadrics A mapping of error quadrics by vertex ID.
+ * @return The optimal vertex and cost associated with contracting @p edge01.
  */
 std::pair<std::shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
     const HalfEdge& edge01,
@@ -111,9 +111,9 @@ std::pair<std::shared_ptr<Vertex>, float> GetOptimalEdgeContractionVertex(
 }
 
 /**
- * \brief Determines if the removal of an edge will cause the mesh to degenerate.
- * \param edge01 The edge to evaluate.
- * \return \c true if the removal of \p edge01 will produce a non-manifold, otherwise \c false.
+ * @brief Determines if the removal of an edge will cause the mesh to degenerate.
+ * @param edge01 The edge to evaluate.
+ * @return @c true if the removal of @p edge01 will produce a non-manifold, otherwise @c false.
  */
 bool WillDegenerate(const std::shared_ptr<const HalfEdge>& edge01) {
   const auto v0 = edge01->flip()->vertex();
@@ -242,7 +242,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
   }
 
   std::clog << std::format(
-      "Mesh simplified from {} to {} triangles in {} seconds\n",
+      "Mesh simplified from {} to {} triangles in {} second\n",
       initial_face_count,
       half_edge_mesh.faces().size(),
       std::chrono::duration<float>{std::chrono::high_resolution_clock::now() - start_time}.count());

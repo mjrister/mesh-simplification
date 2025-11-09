@@ -7,7 +7,7 @@
 #include "graphics/scene.h"
 #include "graphics/window.h"
 
-int main() {
+int main() {  // NOLINT(bugprone-exception-escape): exceptions are not enabled for std::cerr
   try {
     static constexpr auto* kProjectTitle = "Mesh Simplification";
     static constexpr auto kWindowDimensions = std::make_pair(1920, 1080);

@@ -16,10 +16,10 @@ namespace gfx {
 namespace {
 
 /**
- * \brief Creates a new half-edge and its associated flip edge.
- * \param v0,v1 The half-edge vertices.
- * \param edges A mapping of mesh half-edges by hash key.
- * \return The half-edge connecting vertex \p v0 to \p v1.
+ * @brief Creates a new half-edge and its associated flip edge.
+ * @param v0,v1 The half-edge vertices.
+ * @param edges A mapping of mesh half-edges by hash key.
+ * @return The half-edge connecting vertex @p v0 to @p v1.
  */
 std::shared_ptr<HalfEdge> CreateHalfEdge(const std::shared_ptr<Vertex>& v0,
                                          const std::shared_ptr<Vertex>& v1,
@@ -47,10 +47,10 @@ std::shared_ptr<HalfEdge> CreateHalfEdge(const std::shared_ptr<Vertex>& v0,
 }
 
 /**
- * \brief Creates a new triangle in the half-edge mesh.
- * \param v0,v1,v2 The triangle vertices in counter-clockwise order.
- * \param edges A mapping of mesh half-edges by hash key.
- * \return A triangle face representing vertices \p v0, \p v1, \p v2 in the half-edge mesh.
+ * @brief Creates a new triangle in the half-edge mesh.
+ * @param v0,v1,v2 The triangle vertices in counter-clockwise order.
+ * @param edges A mapping of mesh half-edges by hash key.
+ * @return A triangle face representing vertices @p v0, @p v1, @p v2 in the half-edge mesh.
  */
 std::shared_ptr<Face> CreateTriangle(const std::shared_ptr<Vertex>& v0,
                                      const std::shared_ptr<Vertex>& v1,
@@ -77,10 +77,10 @@ std::shared_ptr<Face> CreateTriangle(const std::shared_ptr<Vertex>& v0,
 }
 
 /**
- * \brief Gets a half-edge connecting two vertices.
- * \param v0,v1 The half-edge vertices.
- * \param edges A mapping of mesh half-edges by hash key.
- * \return The half-edge connecting \p v0 to \p v1.
+ * @brief Gets a half-edge connecting two vertices.
+ * @param v0,v1 The half-edge vertices.
+ * @param edges A mapping of mesh half-edges by hash key.
+ * @return The half-edge connecting @p v0 to @p v1.
  */
 std::shared_ptr<HalfEdge> GetHalfEdge(const Vertex& v0,
                                       const Vertex& v1,
@@ -91,9 +91,9 @@ std::shared_ptr<HalfEdge> GetHalfEdge(const Vertex& v0,
 }
 
 /**
- * \brief Deletes a vertex in the half-edge mesh.
- * \param vertex The vertex to delete.
- * \param vertices A mapping of mesh vertices by ID.
+ * @brief Deletes a vertex in the half-edge mesh.
+ * @param vertex The vertex to delete.
+ * @param vertices A mapping of mesh vertices by ID.
  */
 void DeleteVertex(const Vertex& vertex, std::map<int, std::shared_ptr<Vertex>>& vertices) {
   const auto iterator = vertices.find(vertex.id());
@@ -102,9 +102,9 @@ void DeleteVertex(const Vertex& vertex, std::map<int, std::shared_ptr<Vertex>>& 
 }
 
 /**
- * \brief Deletes an edge in the half-edge mesh.
- * \param edge The half-edge to delete.
- * \param edges A mapping of mesh half-edges by hash key.
+ * @brief Deletes an edge in the half-edge mesh.
+ * @param edge The half-edge to delete.
+ * @param edges A mapping of mesh half-edges by hash key.
  */
 void DeleteEdge(const HalfEdge& edge, std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges) {
   for (const auto edge_key : {hash_value(edge), hash_value(*edge.flip())}) {
@@ -115,9 +115,9 @@ void DeleteEdge(const HalfEdge& edge, std::unordered_map<std::size_t, std::share
 }
 
 /**
- * \brief Deletes a face in the half-edge mesh.
- * \param face The face to delete.
- * \param faces A mapping of mesh faces by hash key.
+ * @brief Deletes a face in the half-edge mesh.
+ * @param face The face to delete.
+ * @param faces A mapping of mesh faces by hash key.
  */
 void DeleteFace(const Face& face, std::unordered_map<std::size_t, std::shared_ptr<Face>>& faces) {
   const auto iterator = faces.find(hash_value(face));
@@ -126,13 +126,13 @@ void DeleteFace(const Face& face, std::unordered_map<std::size_t, std::shared_pt
 }
 
 /**
- * \brief Attaches edges incident to a vertex to a new vertex.
- * \param v_target The vertex whose incident edges should be updated.
- * \param v_start The vertex opposite of \p v_target representing the first half-edge to process.
- * \param v_end The vertex opposite of \p v_target representing the last half-edge to process.
- * \param v_new The new vertex to attach edges to.
- * \param edges A mapping of mesh half-edges by hash key.
- * \param faces A mapping of mesh faces by hash key.
+ * @brief Attaches edges incident to a vertex to a new vertex.
+ * @param v_target The vertex whose incident edges should be updated.
+ * @param v_start The vertex opposite of @p v_target representing the first half-edge to process.
+ * @param v_end The vertex opposite of @p v_target representing the last half-edge to process.
+ * @param v_new The new vertex to attach edges to.
+ * @param edges A mapping of mesh half-edges by hash key.
+ * @param faces A mapping of mesh faces by hash key.
  */
 void UpdateIncidentEdges(const Vertex& v_target,
                          const Vertex& v_start,
@@ -164,9 +164,9 @@ void UpdateIncidentEdges(const Vertex& v_target,
 }
 
 /**
- * \brief Computes a vertex normal by averaging its face normals weighted by surface area.
- * \param v0 The vertex to compute the normal for.
- * \return The weighted vertex normal.
+ * @brief Computes a vertex normal by averaging its face normals weighted by surface area.
+ * @param v0 The vertex to compute the normal for.
+ * @return The weighted vertex normal.
  */
 glm::vec3 ComputeWeightedVertexNormal(const Vertex& v0) {
   glm::vec3 normal{0.0f};

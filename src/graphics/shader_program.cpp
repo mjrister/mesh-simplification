@@ -11,9 +11,9 @@ namespace gfx {
 namespace {
 
 /**
- * \brief Retrieves the contents of a file.
- * \param filepath The filepath to load contents from.
- * \return A string containing the file contents.
+ * @brief Retrieves the contents of a file.
+ * @param filepath The filepath to load contents from.
+ * @return A string containing the file contents.
  */
 std::string ReadFile(const std::filesystem::path& filepath) {
   if (std::ifstream ifs{filepath, std::ios::ate | std::ios::binary}) {  // NOLINT(hicpp-signed-bitwise)
@@ -27,9 +27,9 @@ std::string ReadFile(const std::filesystem::path& filepath) {
 }
 
 /**
- * \brief Verifies the status of a shader.
- * \param shader_id The shader ID.
- * \param status_type The status type to verify.
+ * @brief Verifies the status of a shader.
+ * @param shader_id The shader ID.
+ * @param status_type The status type to verify.
  */
 void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
   GLint success{};
@@ -45,9 +45,9 @@ void VerifyShaderStatus(const GLuint shader_id, const GLenum status_type) {
 }
 
 /**
- * \brief Verifies the status of a shader program.
- * \param shader_program_id The shader program ID.
- * \param status_type The shader program status type to verify.
+ * @brief Verifies the status of a shader program.
+ * @param shader_program_id The shader program ID.
+ * @param status_type The shader program status type to verify.
  */
 void VerifyShaderProgramStatus(const GLuint shader_program_id, const GLenum status_type) {
   GLint success{};

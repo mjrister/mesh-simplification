@@ -7,17 +7,17 @@
 namespace gfx {
 
 /**
- * \brief A material with various light reflectance properties used in the Phong reflection model.
- * \note Material properties courtesy of http://devernay.free.fr/cours/opengl/materials.html
+ * @brief A material with various light reflectance properties used in the Phong reflection model.
+ * @note Material properties courtesy of http://devernay.free.fr/cours/opengl/materials.html
  */
 struct Material {
-  /** \brief An enumeration for various material types. */
+  /** @brief An enumeration for various material types. */
   enum class Type { kBrass, kBronze, kChrome, kEmerald, kGold, kJade, kObsidian, kPearl, kRuby, kSilver, kTurquoise };
 
   /**
-   * \brief A static factory function to construct a material from a dedicated material type.
-   * \param type The material type representing the material to construct.
-   * \return A material containing light reflectance properties for the provided material type.
+   * @brief A static factory function to construct a material from a dedicated material type.
+   * @param type The material type representing the material to construct.
+   * @return A material containing light reflectance properties for the provided material type.
    */
   static constexpr Material FromType(const Type type) noexcept {
     // NOLINTBEGIN(*-magic-numbers)

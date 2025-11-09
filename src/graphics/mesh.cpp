@@ -8,7 +8,7 @@ namespace gfx {
 namespace {
 
 /**
- * \brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
+ * @brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
  *        triangle mesh in addition to enforcing alignment between vertex attribute.
  */
 void Validate(const std::span<const glm::vec3> positions,

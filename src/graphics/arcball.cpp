@@ -14,10 +14,10 @@ namespace gfx {
 namespace {
 
 /**
- * \brief Gets the cursor position in normalized device coordinates.
- * \param cursor_position The cursor position in the window.
- * \param window_dimensions The window width and height.
- * \return The cursor position in normalized device coordinates.
+ * @brief Gets the cursor position in normalized device coordinates.
+ * @param cursor_position The cursor position in the window.
+ * @param window_dimensions The window width and height.
+ * @return The cursor position in normalized device coordinates.
  */
 glm::vec2 GetNormalizedDeviceCoordinates(const glm::vec2& cursor_position,
                                          const std::pair<int, int>& window_dimensions) {
@@ -34,9 +34,9 @@ glm::vec2 GetNormalizedDeviceCoordinates(const glm::vec2& cursor_position,
 }
 
 /**
- * \brief Projects a cursor position onto the surface of the arcball.
- * \param cursor_position_ndc The cursor position in normalized device coordinates.
- * \return The cursor position on the arcball.
+ * @brief Projects a cursor position onto the surface of the arcball.
+ * @param cursor_position_ndc The cursor position in normalized device coordinates.
+ * @return The cursor position on the arcball.
  */
 glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
   const auto x = cursor_position_ndc.x;

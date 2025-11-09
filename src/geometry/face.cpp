@@ -10,10 +10,10 @@ namespace gfx {
 namespace {
 
 /**
- * \brief Gets a canonical ordering of face vertices such that the vertex with the lowest ID.
- * \param v0,v1,v2 The face vertices.
- * \return A tuple consisting of \p v0, \p v1, \p v2 ordered by the lowest ID.
- * \note Preserves winding order. The is necessary to disambiguate equivalent face elements queries.
+ * @brief Gets a canonical ordering of face vertices such that the vertex with the lowest ID.
+ * @param v0,v1,v2 The face vertices.
+ * @return A tuple consisting of @p v0, @p v1, @p v2 ordered by the lowest ID.
+ * @note Preserves winding order. The is necessary to disambiguate equivalent face elements queries.
  */
 auto GetMinVertexOrder(const std::shared_ptr<const Vertex>& v0,
                        const std::shared_ptr<const Vertex>& v1,

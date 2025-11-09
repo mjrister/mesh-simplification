@@ -13,14 +13,14 @@
 
 namespace gfx {
 
-/** \brief A program used to run one or more OpenGL shaders on the host GPU. */
+/** @brief A program used to run one or more OpenGL shaders on the host GPU. */
 class ShaderProgram {
 public:
   /**
-   * \brief Creates a shader program.
-   * \param vertex_shader_filepath The filepath to the vertex shader to be compiled.
-   * \param fragment_shader_filepath The filepath to the fragment shader to be compiled.
-   * \throw std::runtime_error Thrown if the a file could not be opened or shader program creation was unsuccessful.
+   * @brief Creates a shader program.
+   * @param vertex_shader_filepath The filepath to the vertex shader to be compiled.
+   * @param fragment_shader_filepath The filepath to the fragment shader to be compiled.
+   * @throw std::runtime_error Thrown if the a file could not be opened or shader program creation was unsuccessful.
    */
   ShaderProgram(const std::filesystem::path& vertex_shader_filepath,
                 const std::filesystem::path& fragment_shader_filepath);
@@ -33,14 +33,14 @@ public:
 
   ~ShaderProgram() noexcept { glDeleteProgram(id_); }
 
-  /** \brief Binds the shader program to the current OpenGL context. */
+  /** @brief Binds the shader program to the current OpenGL context. */
   void Enable() const noexcept { glUseProgram(id_); }
 
   /**
-   * \brief Sets a uniform variable in the shader program.
-   * \tparam T The uniform variable type.
-   * \param name The uniform variable name.
-   * \param value The uniform variable value.
+   * @brief Sets a uniform variable in the shader program.
+   * @tparam T The uniform variable type.
+   * @param name The uniform variable name.
+   * @param value The uniform variable value.
    */
   template <typename T>
   void SetUniform(const std::string_view name, const T& value) const {
@@ -64,14 +64,14 @@ public:
   }
 
 private:
-  /** \brief A shader in the OpenGL graphics pipeline. */
+  /** @brief A shader in the OpenGL graphics pipeline. */
   class Shader {
   public:
     /**
-     * \brief Creates a shader.
-     * \param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)
-     * \param shader_source The shader source code to be compiled.
-     * \throw std::runtime_error Thrown if shader creation was unsuccessful.
+     * @brief Creates a shader.
+     * @param shader_type The shader type (e.g., GL_FRAGMENT_SHADER)
+     * @param shader_source The shader source code to be compiled.
+     * @throw std::runtime_error Thrown if shader creation was unsuccessful.
      */
     Shader(GLenum shader_type, const std::string& shader_source);
 
@@ -102,9 +102,9 @@ private:
   };
 
   /**
-   * \brief Gets the location for a uniform variable in the shader program.
-   * \param name The uniform variable name.
-   * \return An integer representing the uniform variable location. Returns -1 if the variable is not active.
+   * @brief Gets the location for a uniform variable in the shader program.
+   * @param name The uniform variable name.
+   * @return An integer representing the uniform variable location. Returns -1 if the variable is not active.
    */
   [[nodiscard]] GLint GetUniformLocation(const std::string_view name) const {
     auto iterator = uniform_locations_.find(name);

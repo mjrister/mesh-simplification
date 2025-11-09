@@ -25,10 +25,10 @@ namespace {
 constexpr auto kInvalidFaceElementIndex = -1;
 
 /**
- * \brief Removes a set of characters from the beginning and end of the string.
- * \param line The string to evaluate.
- * \param delimiter A set of characters (in any order) to remove from the beginning and end of the string.
- * \return A view of the characters in \p delimiter removed from the beginning and end of \p line.
+ * @brief Removes a set of characters from the beginning and end of the string.
+ * @param line The string to evaluate.
+ * @param delimiter A set of characters (in any order) to remove from the beginning and end of the string.
+ * @return A view of the characters in @p delimiter removed from the beginning and end of @p line.
  */
 constexpr std::string_view Trim(std::string_view line, const std::string_view delimiter = " \t") noexcept {
   line.remove_prefix(std::min<>(line.find_first_not_of(delimiter), line.size()));
@@ -37,10 +37,10 @@ constexpr std::string_view Trim(std::string_view line, const std::string_view de
 }
 
 /**
- * \brief Gets tokens delimited by a set of characters.
- * \param line The string to evaluate.
- * \param delimiter The set of characters (in any order) to split the string on.
- * \return A vector of tokens in \p line split on the characters in \p delimiter.
+ * @brief Gets tokens delimited by a set of characters.
+ * @param line The string to evaluate.
+ * @param delimiter The set of characters (in any order) to split the string on.
+ * @return A vector of tokens in @p line split on the characters in @p delimiter.
  */
 std::vector<std::string_view> Split(const std::string_view line, const std::string_view delimiter = " \t") {
   std::vector<std::string_view> tokens;
@@ -53,10 +53,10 @@ std::vector<std::string_view> Split(const std::string_view line, const std::stri
 }
 
 /**
- * \brief Parses a string token.
- * \tparam T The type to convert to.
- * \param token The token to parse.
- * \return The converted value of \p token to type \p T.
+ * @brief Parses a string token.
+ * @tparam T The type to convert to.
+ * @param token The token to parse.
+ * @return The converted value of @p token to type @p T.
  */
 template <typename T>
 T ParseToken(const std::string_view token) {
@@ -69,11 +69,11 @@ T ParseToken(const std::string_view token) {
 }
 
 /**
- * \brief Parses a line in an .obj file.
- * \tparam T The type to convert to.
- * \tparam N The number of items to convert (does not include the first token identifying the line type).
- * \param line The line to parse.
- * \return A vector of size \p N containing each item in \p line converted to type \p T.
+ * @brief Parses a line in an .obj file.
+ * @tparam T The type to convert to.
+ * @tparam N The number of items to convert (does not include the first token identifying the line type).
+ * @param line The line to parse.
+ * @return A vector of size @p N containing each item in @p line converted to type @p T.
  */
 template <typename T, int N>
 glm::vec<N, T> ParseLine(const std::string_view line) {
@@ -88,10 +88,10 @@ glm::vec<N, T> ParseLine(const std::string_view line) {
 }
 
 /**
- * \brief Parses a token representing a face element index group.
- * \param token The token to parse. May optionally contain texture coordinate and normal indices.
- * \return A vector containing vertex position, texture coordinate, and normal indices. Unspecified texture
- *         coordinate and normal values are indicated by the value \c kInvalidFaceElementIndex.
+ * @brief Parses a token representing a face element index group.
+ * @param token The token to parse. May optionally contain texture coordinate and normal indices.
+ * @return A vector containing vertex position, texture coordinate, and normal indices. Unspecified texture
+ *         coordinate and normal values are indicated by the value @c kInvalidFaceElementIndex.
  */
 glm::ivec3 ParseIndexGroup(const std::string_view token) {
   static constexpr auto kIndexDelimiter = "/";
@@ -132,9 +132,9 @@ glm::ivec3 ParseIndexGroup(const std::string_view token) {
 }
 
 /**
- * \brief Parses a line representing a triangular face element.
- * \param line The line to parse.
- * \return An array containing three parsed index groups for the face.
+ * @brief Parses a line representing a triangular face element.
+ * @param line The line to parse.
+ * @return An array containing three parsed index groups for the face.
  */
 std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
   if (const auto tokens = Split(line, " \t"); tokens.size() == 4) {
@@ -144,9 +144,9 @@ std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
 }
 
 /**
- * \brief Loads a triangle mesh from an input stream representing the contents of an .obj file.
- * \param is The input stream to parse.
- * \return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
+ * @brief Loads a triangle mesh from an input stream representing the contents of an .obj file.
+ * @param is The input stream to parse.
+ * @return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
  */
 Mesh LoadMesh(std::istream& is) {
   std::vector<glm::vec3> positions;
