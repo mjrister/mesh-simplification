@@ -16,7 +16,7 @@ namespace {
  * @return A string containing the file contents.
  */
 std::string ReadFile(const std::filesystem::path& filepath) {
-  if (std::ifstream ifs{filepath, std::ios::ate | std::ios::binary}) {  // NOLINT(hicpp-signed-bitwise)
+  if (std::ifstream ifs{filepath, std::ios::ate | std::ios::binary}) {
     const std::streamsize size = ifs.tellg();
     std::string source(static_cast<std::size_t>(size), '\0');
     ifs.seekg(0, std::ios::beg);
