@@ -168,7 +168,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
 
     if (const auto min_edge_key = hash_value(*min_edge); !valid_edges.contains(min_edge_key)) {
       const auto [vertex, cost] = GetOptimalEdgeContractionVertex(*edge, quadrics);
-      const auto edge_contraction = make_shared<EdgeContraction>(edge, vertex, cost);
+      const auto edge_contraction = std::make_shared<EdgeContraction>(edge, vertex, cost);
       edge_contractions.push(edge_contraction);
       valid_edges.emplace(min_edge_key, edge_contraction);
     }
@@ -230,7 +230,7 @@ Mesh mesh::Simplify(const Mesh& mesh, const float rate) {
             iterator->second->valid = false;
           }
           const auto [new_vertex, new_cost] = GetOptimalEdgeContractionVertex(*min_edge, quadrics);
-          const auto new_edge_contraction = make_shared<EdgeContraction>(min_edge, new_vertex, new_cost);
+          const auto new_edge_contraction = std::make_shared<EdgeContraction>(min_edge, new_vertex, new_cost);
           valid_edges[min_edge_key] = new_edge_contraction;
           edge_contractions.push(new_edge_contraction);
           visited_edges.emplace(min_edge_key, min_edge);

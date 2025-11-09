@@ -34,8 +34,8 @@ std::shared_ptr<HalfEdge> CreateHalfEdge(const std::shared_ptr<Vertex>& v0,
   }
   assert(!edges.contains(edge10_key));
 
-  auto edge01 = make_shared<HalfEdge>(v1);
-  auto edge10 = make_shared<HalfEdge>(v0);
+  auto edge01 = std::make_shared<HalfEdge>(v1);
+  auto edge10 = std::make_shared<HalfEdge>(v0);
 
   edge01->set_flip(edge10);
   edge10->set_flip(edge01);
@@ -68,7 +68,7 @@ std::shared_ptr<Face> CreateTriangle(const std::shared_ptr<Vertex>& v0,
   edge12->set_next(edge20);
   edge20->set_next(edge01);
 
-  auto face012 = make_shared<Face>(v0, v1, v2);
+  auto face012 = std::make_shared<Face>(v0, v1, v2);
   edge01->set_face(face012);
   edge12->set_face(face012);
   edge20->set_face(face012);
@@ -85,7 +85,8 @@ std::shared_ptr<Face> CreateTriangle(const std::shared_ptr<Vertex>& v0,
 std::shared_ptr<HalfEdge> GetHalfEdge(const Vertex& v0,
                                       const Vertex& v1,
                                       const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>& edges) {
-  const auto iterator = edges.find(hash_value(v0, v1));
+  const auto edge01_key = hash_value(v0, v1);
+  const auto iterator = edges.find(edge01_key);
   assert(iterator != edges.end());
   return iterator->second;
 }
