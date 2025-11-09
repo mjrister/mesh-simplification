@@ -98,13 +98,13 @@ ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_shader_filepath
 GLint ShaderProgram::GetUniformLocation(const std::string_view name) const {
   auto iterator = uniform_locations_.find(name);
   if (iterator == uniform_locations_.end()) {
-    std::string name_string{name};
-    const auto location = glGetUniformLocation(id_, name_string.c_str());
+    std::string name_str{name};  // convert to string here to safely access underlying c-string
+    const auto location = glGetUniformLocation(id_, name_str.c_str());
     if (static constexpr auto kNotActiveUniformVariable = -1; location == kNotActiveUniformVariable) {
       std::cerr << std::format("{} is not an active uniform variable\n", name);
       return kNotActiveUniformVariable;
     }
-    iterator = uniform_locations_.emplace(std::move(name_string), location).first;
+    iterator = uniform_locations_.emplace(std::move(name_str), location).first;
   }
   return iterator->second;
 }

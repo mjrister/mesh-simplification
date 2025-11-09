@@ -23,6 +23,8 @@ Checks: >-
   -readability-identifier-length,
   -readability-isolate-declaration
 CheckOptions:
+  - key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals
+    value: true
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
   - key: readability-identifier-naming.ClassMemberCase
