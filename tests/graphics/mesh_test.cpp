@@ -1,4 +1,4 @@
-#include "graphics/mesh.cpp"
+#include "graphics/mesh.cpp"  // NOLINT
 
 #include <array>
 #include <vector>
@@ -7,7 +7,7 @@
 
 namespace {
 
-using namespace gfx;
+using namespace gfx;  // NOLINT
 
 TEST(MeshTest, TestValidateMeshWithInvalidNumberOfPositions) {
   for (auto i = 0; i <= 4; ++i) {
@@ -58,4 +58,5 @@ TEST(MeshTest, TestValidateMeshWithCorrectNumberOfPositionsTextureCoordinatesNor
   static constexpr std::array<GLuint, 3> kIndices{};
   EXPECT_NO_THROW((gfx::Mesh{kPositions, kTextureCoordinates, kNormals, kIndices}));
 }
+
 }  // namespace

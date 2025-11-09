@@ -1,10 +1,10 @@
-#include "graphics/obj_loader.cpp"
+#include "graphics/obj_loader.cpp"  // NOLINT
 
 #include <gtest/gtest.h>
 
 namespace {
 
-using namespace gfx;
+using namespace gfx;  // NOLINT
 
 TEST(StringTest, TestTrimWhitespaceString) {
   static constexpr auto* kLine = "     ";
@@ -161,4 +161,5 @@ TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
   EXPECT_EQ((std::vector{kVn1, kVn2, kVn0, kVn1, kVn0}), mesh.normals());
   EXPECT_EQ((std::vector{0u, 1u, 2u, 3u, 1u, 4u}), mesh.indices());
 }
+
 }  // namespace

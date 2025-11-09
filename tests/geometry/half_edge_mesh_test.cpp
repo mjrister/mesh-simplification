@@ -1,4 +1,4 @@
-#include "geometry/half_edge_mesh.cpp"
+#include "geometry/half_edge_mesh.cpp"  // NOLINT
 
 #include <vector>
 
@@ -7,7 +7,7 @@
 
 namespace {
 
-using namespace gfx;
+using namespace gfx;  // NOLINT
 
 class HalfEdgeMeshTest : public testing::Test {
 protected:
@@ -38,7 +38,7 @@ protected:
   std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
 };
 
-Mesh CreateValidMesh() {
+static Mesh CreateValidMesh() {
   const std::vector<glm::vec3> positions{
       {1.0f, 0.0f, 0.0f},   // v0
       {2.0f, 0.0f, 0.0f},   // v1
@@ -203,27 +203,29 @@ TEST_F(HalfEdgeMeshTest, TestCollapseInvalidHalfEdgeCausesProgramExit) {
   auto half_edge_mesh = MakeHalfEdgeMesh();
   const auto invalid_vertex = std::make_shared<Vertex>(static_cast<int>(half_edge_mesh.vertices().size()), glm::vec3{});
   const auto invalid_half_edge = std::make_shared<HalfEdge>(invalid_vertex);
+  const auto v_new = std::make_shared<Vertex>(glm::vec3{});
   invalid_half_edge->set_flip(edge01_);
-  EXPECT_DEATH(half_edge_mesh.Contract(*invalid_half_edge, std::make_shared<Vertex>(glm::vec3{})), "");
+  EXPECT_DEATH(half_edge_mesh.Contract(*invalid_half_edge, v_new), "");  // NOLINT(whitespace/newline)
 }
 
 TEST_F(HalfEdgeMeshTest, TestGetInvalidHalfEdgeCausesProgramExit) {
-  EXPECT_DEATH(GetHalfEdge(*v1_, *v0_, (std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>>{})), "");
+  const std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges;
+  EXPECT_DEATH(GetHalfEdge(*v1_, *v0_, edges), "");  // NOLINT(whitespace/newline)
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidVertexCausesProgramExit) {
   std::map<int, std::shared_ptr<Vertex>> vertices;
-  EXPECT_DEATH(DeleteVertex(*v0_, vertices), "");
+  EXPECT_DEATH(DeleteVertex(*v0_, vertices), "");  // NOLINT(whitespace/newline)
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidHalfEdgeCausesProgramExit) {
   std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges;
-  EXPECT_DEATH(DeleteEdge(*edge01_, edges), "");
+  EXPECT_DEATH(DeleteEdge(*edge01_, edges), "");  // NOLINT(whitespace/newline)
 }
 
 TEST_F(HalfEdgeMeshTest, TestDeleteInvalidFaceCausesProgramExit) {
   std::unordered_map<std::size_t, std::shared_ptr<Face>> faces;
-  EXPECT_DEATH(DeleteFace(*face012_, faces), "");
+  EXPECT_DEATH(DeleteFace(*face012_, faces), "");  // NOLINT(whitespace/newline)
 }
 
 #endif

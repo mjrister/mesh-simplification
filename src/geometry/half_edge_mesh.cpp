@@ -1,15 +1,16 @@
-#include "half_edge_mesh.h"
+#include "geometry/half_edge_mesh.h"
 
 #include <cassert>
 #include <ranges>
 #include <utility>
+#include <vector>
 
 #include <glm/vec3.hpp>
 
-#include "face.h"
+#include "geometry/face.h"
+#include "geometry/half_edge.h"
+#include "geometry/vertex.h"
 #include "graphics/mesh.h"
-#include "half_edge.h"
-#include "vertex.h"
 
 namespace gfx {
 

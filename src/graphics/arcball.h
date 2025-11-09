@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPHICS_ARCBALL_H_
+#define GRAPHICS_ARCBALL_H_
 
 #include <optional>
 #include <utility>
@@ -31,3 +32,5 @@ std::optional<Rotation> GetRotation(const glm::vec2& cursor_position_start,
                                     const std::pair<int, int>& window_dimensions);
 
 }  // namespace gfx::arcball
+
+#endif  // GRAPHICS_ARCBALL_H_

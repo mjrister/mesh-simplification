@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRY_VERTEX_H_
+#define GEOMETRY_VERTEX_H_
 
 #include <cassert>
 #include <functional>
@@ -87,3 +88,5 @@ private:
 using SharedVertex = std::shared_ptr<Vertex>;
 
 }  // namespace gfx
+
+#endif  // GEOMETRY_VERTEX_H_

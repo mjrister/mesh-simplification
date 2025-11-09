@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRY_HALF_EDGE_MESH_H_
+#define GEOMETRY_HALF_EDGE_MESH_H_
 
 #include <map>
 #include <memory>
@@ -6,7 +7,7 @@
 
 #include <glm/mat4x4.hpp>
 
-#include "half_edge.h"
+#include "geometry/half_edge.h"
 
 namespace gfx {
 class Face;
@@ -58,3 +59,5 @@ private:
 };
 
 }  // namespace gfx
+
+#endif  // GEOMETRY_HALF_EDGE_MESH_H_

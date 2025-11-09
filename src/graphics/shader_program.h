@@ -1,7 +1,9 @@
-#pragma once
+#ifndef GRAPHICS_SHADER_PROGRAM_H_
+#define GRAPHICS_SHADER_PROGRAM_H_
 
 #include <concepts>
 #include <filesystem>
+#include <functional>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -113,3 +115,5 @@ private:
 };
 
 }  // namespace gfx
+
+#endif  // GRAPHICS_SHADER_PROGRAM_H_

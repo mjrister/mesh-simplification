@@ -4,10 +4,12 @@
 #include <cassert>
 #include <chrono>
 #include <iostream>
+#include <memory>
 #include <queue>
 #include <ranges>
 #include <stdexcept>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include <glm/glm.hpp>

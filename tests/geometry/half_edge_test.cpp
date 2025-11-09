@@ -4,14 +4,16 @@
 
 namespace {
 
-using namespace gfx;
+using namespace gfx;  // NOLINT
 
 class HalfEdgeTest : public testing::Test {
 protected:
   HalfEdgeTest()
-      : v0_{std::make_shared<Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f})},
+      :  // NOLINTBEGIN(*-magic-numbers)
+        v0_{std::make_shared<Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f})},
         v1_{std::make_shared<Vertex>(1, glm::vec3{1.0f, -1.0f, 0.0f})},
         v2_{std::make_shared<Vertex>(2, glm::vec3{0.0f, 0.5f, 0.0f})},
+        // NOLINTEND(*-magic-numbers)
         edge01_{std::make_shared<HalfEdge>(v1_)},
         edge10_{std::make_shared<HalfEdge>(v0_)},
         edge12_{std::make_shared<HalfEdge>(v2_)},
@@ -39,11 +41,11 @@ protected:
     edge20_->set_face(face012_);
   }
 
-  // NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+  // NOLINTBEGIN(*-private-member-variables-in-classes)
   std::shared_ptr<Vertex> v0_, v1_, v2_;
   std::shared_ptr<HalfEdge> edge01_, edge10_, edge12_, edge21_, edge20_, edge02_;
   std::shared_ptr<Face> face012_;
-  // NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+  // NOLINTEND(*-private-member-variables-in-classes)
 };
 
 TEST_F(HalfEdgeTest, TestGetVertex) {
@@ -100,7 +102,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredVertexCausesProgramExit) {
     const auto v0 = std::make_shared<Vertex>(0, glm::vec3{});
     edge10 = std::make_shared<HalfEdge>(v0);
   }
-  EXPECT_DEATH({ std::ignore = edge10->vertex(); }, "");
+  EXPECT_DEATH({ std::ignore = edge10->vertex(); }, "");  // NOLINT
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
@@ -108,7 +110,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredFlipEdgeCausesProgramExit) {
     const auto edge10 = std::make_shared<HalfEdge>(v0_);
     edge01_->set_flip(edge10);
   }
-  EXPECT_DEATH({ std::ignore = edge01_->flip(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01_->flip(); }, "");  // NOLINT(whitespace/newline)
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
@@ -116,7 +118,7 @@ TEST_F(HalfEdgeTest, TestGetExpiredNextEdgeCausesProgramExit) {
     const auto edge12 = std::make_shared<HalfEdge>(v2_);
     edge01_->set_next(edge12);
   }
-  EXPECT_DEATH({ std::ignore = edge01_->next(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01_->next(); }, "");  // NOLINT(whitespace/newline)
 }
 
 TEST_F(HalfEdgeTest, TestGetExpiredFaceCausesProgramExit) {
@@ -124,17 +126,17 @@ TEST_F(HalfEdgeTest, TestGetExpiredFaceCausesProgramExit) {
     const auto face012 = std::make_shared<Face>(v0_, v1_, v2_);
     edge01_->set_face(face012);
   }
-  EXPECT_DEATH({ std::ignore = edge01_->face(); }, "");
+  EXPECT_DEATH({ std::ignore = edge01_->face(); }, "");  // NOLINT(whitespace/newline)
 }
 
 TEST_F(HalfEdgeTest, TestSetInvalidFlipCausesProgramExit) {
-  EXPECT_DEATH(edge01_->set_flip(edge01_), "");
-  EXPECT_DEATH(edge01_->set_flip(edge01_->next()), "");
+  EXPECT_DEATH(edge01_->set_flip(edge01_), "");          // NOLINT(whitespace/newline)
+  EXPECT_DEATH(edge01_->set_flip(edge01_->next()), "");  // NOLINT(whitespace/newline)
 }
 
 TEST_F(HalfEdgeTest, TestSetInvalidNextCausesProgramExit) {
-  EXPECT_DEATH(edge01_->set_next(edge01_), "");
-  EXPECT_DEATH(edge01_->set_next(edge01_->flip()), "");
+  EXPECT_DEATH(edge01_->set_next(edge01_), "");          // NOLINT(whitespace/newline)
+  EXPECT_DEATH(edge01_->set_next(edge01_->flip()), "");  // NOLINT(whitespace/newline)
 }
 
 #endif

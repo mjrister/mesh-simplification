@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPHICS_SCENE_H_
+#define GRAPHICS_SCENE_H_
 
 #include "graphics/mesh.h"
 #include "graphics/shader_program.h"
@@ -28,3 +29,5 @@ private:
 };
 
 }  // namespace gfx
+
+#endif  // GRAPHICS_SCENE_H_

@@ -1,14 +1,14 @@
 #include "geometry/vertex.h"
 
-#include <gtest/gtest.h>
-
 #include <filesystem>
+
+#include <gtest/gtest.h>
 
 #include "geometry/half_edge.h"
 
 namespace {
 
-using namespace gfx;
+using namespace gfx;  // NOLINT
 
 TEST(VertexTest, TestGetVertexId) {
   static constexpr auto kId = 7;
@@ -66,7 +66,7 @@ TEST(VertexTest, TestEqualVertexTriplesHaveTheSameHashValue) {
 
 TEST(VertexTest, TestGetUnsetIdCausesProgramExit) {
   const Vertex vertex{glm::vec3{}};
-  EXPECT_DEATH({ std::ignore = vertex.id(); }, "");
+  EXPECT_DEATH({ std::ignore = vertex.id(); }, "");  // NOLINT(whitespace/newline)
 }
 
 TEST(VertexTest, TestGetExpiredEdgeCausesProgramExit) {
@@ -75,7 +75,7 @@ TEST(VertexTest, TestGetExpiredEdgeCausesProgramExit) {
     const auto edge = std::make_shared<HalfEdge>(vertex);
     vertex->set_edge(edge);
   }
-  EXPECT_DEATH({ std::ignore = vertex->edge(); }, "");
+  EXPECT_DEATH({ std::ignore = vertex->edge(); }, "");  // NOLINT(whitespace/newline)
 }
 
 TEST(VertexTest, TestSetInvalidEdgeCausesProgramExit) {

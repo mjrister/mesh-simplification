@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPHICS_MATERIAL_H_
+#define GRAPHICS_MATERIAL_H_
 
 #include <cassert>
 
@@ -131,3 +132,5 @@ struct Material {
 };
 
 }  // namespace gfx
+
+#endif  // GRAPHICS_MATERIAL_H_

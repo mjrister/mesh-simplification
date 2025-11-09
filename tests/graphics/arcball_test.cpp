@@ -1,10 +1,10 @@
-#include "graphics/arcball.cpp"
+#include "graphics/arcball.cpp"  // NOLINT
 
 #include <gtest/gtest.h>
 
 namespace {
 
-using namespace gfx::arcball;
+using namespace gfx::arcball;  // NOLINT
 
 TEST(ArcballTest, TestGetNormalizedDeviceCoordinates) {
   static constexpr auto kWidth = 300;

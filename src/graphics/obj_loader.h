@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPHICS_OBJ_LOADER_H_
+#define GRAPHICS_OBJ_LOADER_H_
 
 #include <filesystem>
 
@@ -22,3 +23,5 @@ Mesh LoadMesh(const std::filesystem::path& filepath);
 
 }  // namespace obj_loader
 }  // namespace gfx
+
+#endif  // GRAPHICS_OBJ_LOADER_H_

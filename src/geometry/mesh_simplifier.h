@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRY_MESH_SIMPLIFIER_H_
+#define GEOMETRY_MESH_SIMPLIFIER_H_
 
 namespace gfx {
 class Mesh;
@@ -17,3 +18,5 @@ Mesh Simplify(const Mesh& mesh, float rate);
 
 }  // namespace mesh
 }  // namespace gfx
+
+#endif  // GEOMETRY_MESH_SIMPLIFIER_H_

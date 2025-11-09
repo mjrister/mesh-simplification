@@ -4,6 +4,7 @@
 #include <format>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 namespace gfx {
 

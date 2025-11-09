@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPHICS_DELTA_TIME_H_
+#define GRAPHICS_DELTA_TIME_H_
 
 #include <chrono>
 
@@ -30,3 +31,5 @@ private:
 };
 
 }  // namespace gfx
+
+#endif  // GRAPHICS_DELTA_TIME_H_

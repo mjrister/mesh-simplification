@@ -1,6 +1,8 @@
-#pragma once
+#ifndef GRAPHICS_MESH_H_
+#define GRAPHICS_MESH_H_
 
 #include <span>
+#include <utility>
 #include <vector>
 
 #include <GL/gl3w.h>
@@ -98,3 +100,5 @@ private:
   glm::mat4 model_transform_{};
 };
 }  // namespace gfx
+
+#endif  // GRAPHICS_MESH_H_

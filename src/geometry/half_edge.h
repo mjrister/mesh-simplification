@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRY_HALF_EDGE_H_
+#define GEOMETRY_HALF_EDGE_H_
 
 #include <algorithm>
 #include <array>
@@ -103,3 +104,5 @@ inline void Vertex::set_edge(const std::shared_ptr<const HalfEdge>& edge) noexce
 using SharedHalfEdge = std::shared_ptr<HalfEdge>;
 
 }  // namespace gfx
+
+#endif  // GEOMETRY_HALF_EDGE_H_

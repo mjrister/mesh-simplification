@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPHICS_WINDOW_H_
+#define GRAPHICS_WINDOW_H_
 
 #include <concepts>
 #include <functional>
@@ -112,9 +113,11 @@ public:
   }
 
 private:
-  GLFWwindow* window_ = nullptr;  // TODO: convert to std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)>
+  GLFWwindow* window_ = nullptr;
   std::function<void(int)> on_key_press_;
   std::function<void(float, float)> on_scroll_;
 };
 
 }  // namespace gfx
+
+#endif  // GRAPHICS_WINDOW_H_

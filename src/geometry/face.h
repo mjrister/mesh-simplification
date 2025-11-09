@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRY_FACE_H_
+#define GEOMETRY_FACE_H_
 
 #include <cassert>
 #include <memory>
@@ -62,3 +63,5 @@ private:
 using SharedFace = std::shared_ptr<Face>;
 
 }  // namespace gfx
+
+#endif  // GEOMETRY_FACE_H_

@@ -1,4 +1,4 @@
-#include "geometry/face.cpp"
+#include "geometry/face.cpp"  // NOLINT
 
 #include <array>
 
@@ -6,7 +6,7 @@
 
 namespace {
 
-using namespace gfx;
+using namespace gfx;  // NOLINT
 
 std::array<std::shared_ptr<Vertex>, 3> CreateValidTriangle() {
   const auto v0 = std::make_shared<Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f});
@@ -68,16 +68,16 @@ TEST(FaceTest, TestGetExpiredVertexCausesProgramExit) {
     const auto [v0, v1, v2] = CreateValidTriangle();
     face012 = std::make_unique<Face>(v0, v1, v2);
   }
-  EXPECT_DEATH({ std::ignore = face012->v0(); }, "");
-  EXPECT_DEATH({ std::ignore = face012->v1(); }, "");
-  EXPECT_DEATH({ std::ignore = face012->v2(); }, "");
+  EXPECT_DEATH({ std::ignore = face012->v0(); }, "");  // NOLINT(whitespace/newline)
+  EXPECT_DEATH({ std::ignore = face012->v1(); }, "");  // NOLINT(whitespace/newline)
+  EXPECT_DEATH({ std::ignore = face012->v2(); }, "");  // NOLINT(whitespace/newline)
 }
 
 TEST(FaceTest, TestFaceInitializationWithCollinearVerticesCausesProgramExit) {
   const auto v0 = std::make_shared<Vertex>(0, glm::vec3{-1.0f, -1.0f, 0.0f});
   const auto v1 = std::make_shared<Vertex>(1, glm::vec3{0.0f, -1.0f, 0.0f});
   const auto v2 = std::make_shared<Vertex>(2, glm::vec3{1.0f, -1.0f, 0.0f});
-  EXPECT_DEATH((Face{v0, v1, v2}), "");
+  EXPECT_DEATH((Face{v0, v1, v2}), "");  // NOLINT(whitespace/newline)
 }
 
 #endif
