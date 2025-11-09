@@ -39,7 +39,7 @@ struct ViewFrustum {
     .z_far = 100.0f,
 };
 
-struct PointLight {    // NOLINT(modernize-avoid-c-arrays)
+struct PointLight {    // NOLINT(*-avoid-c-arrays)
   glm::vec3 position;  // defined in view-space coordinates
   glm::vec3 color;
   glm::vec3 attenuation;
@@ -61,7 +61,7 @@ struct PointLight {    // NOLINT(modernize-avoid-c-arrays)
     },
 };
 
-void SetMaterial(ShaderProgram& shader_program) {
+void SetMaterial(const ShaderProgram& shader_program) {
   const auto [ambient, diffuse, specular, shininess] = Material::FromType(Material::Type::kJade);
   shader_program.SetUniform("material.ambient", ambient);
   shader_program.SetUniform("material.diffuse", diffuse);
@@ -69,7 +69,7 @@ void SetMaterial(ShaderProgram& shader_program) {
   shader_program.SetUniform("material.shininess", shininess);
 }
 
-void SetPointLights(ShaderProgram& shader_program) {
+void SetPointLights(const ShaderProgram& shader_program) {
   static constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
   shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
@@ -82,7 +82,7 @@ void SetPointLights(ShaderProgram& shader_program) {
   }
 }
 
-void SetViewTransforms(const Window& window, const Mesh& mesh, ShaderProgram& shader_program) {
+void SetViewTransforms(const Window& window, const Mesh& mesh, const ShaderProgram& shader_program) {
   static auto prev_aspect_ratio = 0.0f;
 
   if (const auto aspect_ratio = window.GetAspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.0f) {
@@ -123,6 +123,7 @@ void HandleMouseInput(const Window& window, Mesh& mesh, const float delta_time) 
     prev_cursor_position = std::nullopt;
   }
 }
+
 }  // namespace
 
 Scene::Scene(Window* const window)
