@@ -99,4 +99,7 @@ inline void Vertex::set_edge(const std::shared_ptr<const HalfEdge>& edge) noexce
   edge_ = edge;
 }
 
+/** @brief A type alias for a std::shared_ptr<HalfEdge>. */
+using SharedHalfEdge = std::shared_ptr<HalfEdge>;
+
 }  // namespace gfx

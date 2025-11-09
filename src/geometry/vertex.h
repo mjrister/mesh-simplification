@@ -83,4 +83,7 @@ private:
   std::weak_ptr<const HalfEdge> edge_;
 };
 
+/** @brief A type alias for a std::shared_ptr<Vertex>. */
+using SharedVertex = std::shared_ptr<Vertex>;
+
 }  // namespace gfx

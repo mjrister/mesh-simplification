@@ -58,4 +58,7 @@ private:
   float area_;
 };
 
+/** @brief A type alias for a std::shared_ptr<Face>. */
+using SharedFace = std::shared_ptr<Face>;
+
 }  // namespace gfx

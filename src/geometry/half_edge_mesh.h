@@ -6,6 +6,8 @@
 
 #include <glm/mat4x4.hpp>
 
+#include "half_edge.h"
+
 namespace gfx {
 class Face;
 class HalfEdge;
@@ -31,13 +33,13 @@ public:
   explicit operator Mesh() const;
 
   /** @brief Gets a mapping of mesh vertices by ID. */
-  [[nodiscard]] const auto& vertices() const noexcept { return vertices_; }
+  [[nodiscard]] const std::map<int, SharedVertex>& vertices() const noexcept { return vertices_; }
 
   /** @brief Gets a mapping of mesh half-edges by hash key. */
-  [[nodiscard]] const auto& edges() const noexcept { return edges_; }
+  [[nodiscard]] const std::unordered_map<std::size_t, SharedHalfEdge>& edges() const noexcept { return edges_; }
 
   /** @brief Gets a mapping of mesh faces by hash key. */
-  [[nodiscard]] const auto& faces() const noexcept { return faces_; }
+  [[nodiscard]] const std::unordered_map<std::size_t, SharedFace>& faces() const noexcept { return faces_; }
 
   /**
    * @brief Performs edge contraction.
@@ -46,12 +48,12 @@ public:
    * @param edge01 The edge from vertex @c v0 to @c v1 to remove.
    * @param v_new The new vertex to update incident edges to.
    */
-  void Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new);
+  void Contract(const HalfEdge& edge01, const SharedVertex& v_new);
 
 private:
-  std::map<int, std::shared_ptr<Vertex>> vertices_;
-  std::unordered_map<std::size_t, std::shared_ptr<HalfEdge>> edges_;
-  std::unordered_map<std::size_t, std::shared_ptr<Face>> faces_;
+  std::map<int, SharedVertex> vertices_;
+  std::unordered_map<std::size_t, SharedHalfEdge> edges_;
+  std::unordered_map<std::size_t, SharedFace> faces_;
   glm::mat4 model_transform_;
 };
 
