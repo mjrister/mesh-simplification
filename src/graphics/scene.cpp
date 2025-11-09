@@ -70,7 +70,7 @@ void SetMaterial(const ShaderProgram& shader_program) {
 }
 
 void SetPointLights(const ShaderProgram& shader_program) {
-  static constexpr auto kPointLightsSize = sizeof kPointLights / sizeof(PointLight);
+  static constexpr auto kPointLightsSize = sizeof(kPointLights) / sizeof(PointLight);
   shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
 
   for (auto i = 0; std::cmp_less(i, kPointLightsSize); ++i) {
@@ -114,7 +114,7 @@ void HandleMouseInput(const Window& window, Mesh& mesh, const float delta_time) 
   } else if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
     if (prev_cursor_position.has_value()) {
       const auto translation_speed = 0.25f * delta_time;
-      const auto cursor_delta = static_cast<glm::vec2>(cursor_position - *prev_cursor_position);
+      const auto cursor_delta = cursor_position - *prev_cursor_position;
       const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
       mesh.Translate(view_model_inv * translation_speed * glm::vec4{cursor_delta.x, -cursor_delta.y, 0.0f, 0.0f});
     }

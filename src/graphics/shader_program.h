@@ -2,8 +2,7 @@
 
 #include <concepts>
 #include <filesystem>
-#include <format>
-#include <iostream>
+#include <string>
 #include <string_view>
 #include <type_traits>
 #include <unordered_map>
@@ -44,20 +43,20 @@ public:
    */
   template <typename T>
   void SetUniform(const std::string_view name, const T& value) const {
-    const auto location = GetUniformLocation(name);
+    const auto uniform_location = GetUniformLocation(name);
 
     if constexpr (std::integral<T>) {
-      glUniform1i(location, static_cast<GLint>(value));
+      glUniform1i(uniform_location, static_cast<GLint>(value));
     } else if constexpr (std::floating_point<T>) {
-      glUniform1f(location, static_cast<GLfloat>(value));
+      glUniform1f(uniform_location, static_cast<GLfloat>(value));
     } else if constexpr (std::same_as<T, glm::vec3>) {
-      glUniform3fv(location, 1, glm::value_ptr(value));
+      glUniform3fv(uniform_location, 1, glm::value_ptr(value));
     } else if constexpr (std::same_as<T, glm::vec4>) {
-      glUniform4fv(location, 1, glm::value_ptr(value));
+      glUniform4fv(uniform_location, 1, glm::value_ptr(value));
     } else if constexpr (std::same_as<T, glm::mat3>) {
-      glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+      glUniformMatrix3fv(uniform_location, 1, GL_FALSE, glm::value_ptr(value));
     } else if constexpr (std::same_as<T, glm::mat4>) {
-      glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+      glUniformMatrix4fv(uniform_location, 1, GL_FALSE, glm::value_ptr(value));
     } else {
       static_assert(kAssertFalse<T>, "Unsupported uniform variable type");
     }
@@ -86,10 +85,6 @@ private:
     GLuint id;  // NOLINT(misc-non-private-member-variables-in-classes): allow direct access to internal shader class
   };
 
-  // this is required as a workaround to ensure that static assertions in "if constexpr" expressions are well-formed
-  template <typename>
-  static constexpr std::false_type kAssertFalse{};
-
   // The following is needed to perform heterogeneous lookup in unordered containers. This is important because
   // each uniform location query is performed using a string_view, but stored as a string. Without heterogeneous
   // lookup, each query would have to be converted to a string (and hence allocate unnecessary memory) which would
@@ -101,24 +96,16 @@ private:
     std::size_t operator()(const std::string_view value) const noexcept { return kStringViewHash(value); }
   };
 
+  // this is required as a workaround to ensure that static assertions in "if constexpr" expressions are well-formed
+  template <typename>
+  static constexpr std::false_type kAssertFalse{};
+
   /**
    * @brief Gets the location for a uniform variable in the shader program.
    * @param name The uniform variable name.
    * @return An integer representing the uniform variable location. Returns -1 if the variable is not active.
    */
-  [[nodiscard]] GLint GetUniformLocation(const std::string_view name) const {
-    auto iterator = uniform_locations_.find(name);
-    if (iterator == uniform_locations_.end()) {
-      std::string name_string{name};
-      const auto location = glGetUniformLocation(id_, name_string.c_str());
-      if (static constexpr auto kNotActiveUniformVariable = -1; location == kNotActiveUniformVariable) {
-        std::cerr << std::format("{} is not an active uniform variable\n", name);
-        return kNotActiveUniformVariable;
-      }
-      iterator = uniform_locations_.emplace(std::move(name_string), location).first;
-    }
-    return iterator->second;
-  }
+  [[nodiscard]] GLint GetUniformLocation(std::string_view name) const;
 
   GLuint id_;
   Shader vertex_shader_, fragment_shader_;

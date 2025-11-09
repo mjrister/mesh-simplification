@@ -4,7 +4,6 @@
 #include <array>
 #include <cassert>
 #include <charconv>
-#include <filesystem>
 #include <format>
 #include <fstream>
 #include <stdexcept>
@@ -21,8 +20,7 @@ namespace gfx {
 
 namespace {
 
-// sentinel value indicating an unspecified face index
-constexpr auto kInvalidFaceElementIndex = -1;
+constexpr auto kInvalidFaceElementIndex = -1;  // sentinel value indicating an unspecified face index
 
 /**
  * @brief Removes a set of characters from the beginning and end of the string.
@@ -145,16 +143,16 @@ std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
 
 /**
  * @brief Loads a triangle mesh from an input stream representing the contents of an .obj file.
- * @param is The input stream to parse.
+ * @param istream The input stream to parse.
  * @return A mesh defined by the position, texture coordinates, normals, and indices specified in the input stream.
  */
-Mesh LoadMesh(std::istream& is) {
+Mesh LoadMesh(std::istream& istream) {
   std::vector<glm::vec3> positions;
   std::vector<glm::vec2> texture_coordinates;
   std::vector<glm::vec3> normals;
   std::vector<std::array<glm::ivec3, 3>> faces;
 
-  for (std::string line; getline(is, line);) {
+  for (std::string line; getline(istream, line);) {
     if (const auto line_view = Trim(line); !line_view.empty() && !line_view.starts_with('#')) {
       if (line_view.starts_with("v ")) {
         positions.push_back(ParseLine<float, 3>(line_view));

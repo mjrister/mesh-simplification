@@ -137,7 +137,7 @@ Window::Window(const char* const title,
   InitializeGlfw(opengl_version);
 
   const auto [width, height] = window_dimensions;
-  // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
+  // NOLINTcppcoreguidelines-prefer-member-initializer)
   window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
   if (window_ == nullptr) throw std::runtime_error{"Window creation failed"};
 

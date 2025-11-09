@@ -21,6 +21,7 @@ public:
    * @param title The UTF-8 window title.
    * @param window_dimensions The window width and height.
    * @param opengl_version The OpenGL major and minor version.
+   * @throw std::runtime_error Thrown if GLFW window creation fails.
    */
   Window(const char* title, const std::pair<int, int>& window_dimensions, const std::pair<int, int>& opengl_version);
 
@@ -62,7 +63,7 @@ public:
   }
 
   /** @brief Sets the window close flag. */
-  void Close() noexcept { glfwSetWindowShouldClose(window_, GLFW_TRUE); }
+  void Close() const noexcept { glfwSetWindowShouldClose(window_, GLFW_TRUE); }
 
   /**
    * @brief Checks if the window close flag has been set.
@@ -71,7 +72,7 @@ public:
   [[nodiscard]] bool IsClosed() const noexcept { return glfwWindowShouldClose(window_) == GLFW_TRUE; }
 
   /**
-   * @brief Sets a callback to be invoked when a key press event is detected.
+   * @brief Registers a callback to be invoked when a key press event is detected.
    * @param on_key_press The callback to be invoked on key press parameterized by the active key code.
    */
   template <std::invocable<int> Fn>
@@ -80,7 +81,7 @@ public:
   }
 
   /**
-   * @brief Sets a callback to be invoked when a scroll event is detected.
+   * @brief Registers a callback to be invoked when a scroll event is detected.
    * @param on_scroll A callback to be invoked on scroll parameterized by x/y scroll offsets (respectively).
    */
   template <std::invocable<float, float> Fn>
@@ -89,15 +90,15 @@ public:
   }
 
   /**
-   * @brief Determines if a key is pressed.
-   * @param key The key code to evaluate (e.g., GLFW_KEY_ESCAPE).
+   * @brief Checks if a key is pressed.
+   * @param key The GLFW key to check (e.g., GLFW_KEY_ESCAPE).
    * @return @c true if @p key is pressed, otherwise @c false.
    */
   [[nodiscard]] bool IsKeyPressed(const int key) const noexcept { return glfwGetKey(window_, key) == GLFW_PRESS; }
 
   /**
-   * @brief Determines if a mouse button is pressed.
-   * @param button The mouse button code (e.g., GLFW_MOUSE_BUTTON_LEFT).
+   * @brief Checks if a mouse button is pressed.
+   * @param button The GLFW mouse button to check (e.g., GLFW_MOUSE_BUTTON_LEFT).
    * @return @c true if @p button is pressed, otherwise @c false.
    */
   [[nodiscard]] bool IsMouseButtonPressed(const int button) const noexcept {

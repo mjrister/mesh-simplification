@@ -1,8 +1,8 @@
 #include "graphics/shader_program.h"
 
-#include <filesystem>
 #include <format>
 #include <fstream>
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -23,7 +23,7 @@ std::string ReadFile(const std::filesystem::path& filepath) {
     ifs.read(source.data(), size);
     return source;
   }
-  throw std::runtime_error{std::format("Unable to open {}", filepath.generic_string())};
+  throw std::runtime_error{std::format("Failed to open {}", filepath.generic_string())};
 }
 
 /**
@@ -93,6 +93,20 @@ ShaderProgram::ShaderProgram(const std::filesystem::path& vertex_shader_filepath
 
   glDetachShader(id_, vertex_shader_.id);
   glDetachShader(id_, fragment_shader_.id);
+}
+
+GLint ShaderProgram::GetUniformLocation(const std::string_view name) const {
+  auto iterator = uniform_locations_.find(name);
+  if (iterator == uniform_locations_.end()) {
+    std::string name_string{name};
+    const auto location = glGetUniformLocation(id_, name_string.c_str());
+    if (static constexpr auto kNotActiveUniformVariable = -1; location == kNotActiveUniformVariable) {
+      std::cerr << std::format("{} is not an active uniform variable\n", name);
+      return kNotActiveUniformVariable;
+    }
+    iterator = uniform_locations_.emplace(std::move(name_string), location).first;
+  }
+  return iterator->second;
 }
 
 }  // namespace gfx
