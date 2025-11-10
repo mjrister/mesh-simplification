@@ -21,7 +21,7 @@ public:
    * @param positions The mesh vertex positions.
    * @param texture_coordinates The mesh texture coordinates.
    * @param normals The mesh normals.
-   * @param indices Element indices such that each three consecutive integers define a triangle face in the mesh.
+   * @param indices Element indices where consecutive triples define a triangle face in the mesh.
    * @param model_transform A 4x4 matrix representing an affine transform to apply to the mesh in model space.
    * @throw std::invalid_argument Indicates the provided arguments do not represent a valid triangle mesh.
    * @warning If @p indices is empty, @p positions must describe a triangle mesh (i.e., be a nonzero multiple of 3).
@@ -72,9 +72,9 @@ public:
 
   /**
    * @brief Scales the mesh in local object space.
-   * @param xyz The x,y,z directions to scale the mesh.
+   * @param scale The x,y,z directions to scale the mesh.
    */
-  void Scale(const glm::vec3& xyz) { model_transform_ = glm::scale(model_transform_, xyz); }
+  void Scale(const glm::vec3& scale) { model_transform_ = glm::scale(model_transform_, scale); }
 
   /**
    * @brief Rotates the mesh in local object space.
@@ -87,9 +87,9 @@ public:
 
   /**
    * @brief Translates the mesh in local object space.
-   * @param xyz The x,y,z directions to translate the mesh.
+   * @param translation The x,y,z directions to translate the mesh.
    */
-  void Translate(const glm::vec3& xyz) { model_transform_ = glm::translate(model_transform_, xyz); }
+  void Translate(const glm::vec3& translation) { model_transform_ = glm::translate(model_transform_, translation); }
 
 private:
   GLuint vertex_array_ = 0, vertex_buffer_ = 0, element_buffer_ = 0;
