@@ -149,7 +149,7 @@ std::array<glm::ivec3, 3> ParseFace(const std::string_view line) {
  */
 Mesh LoadMesh(std::istream& istream) {
   std::vector<glm::vec3> positions;
-  std::vector<glm::vec2> texture_coordinates;
+  std::vector<glm::vec2> texcoords;
   std::vector<glm::vec3> normals;
   std::vector<std::array<glm::ivec3, 3>> faces;
 
@@ -158,7 +158,7 @@ Mesh LoadMesh(std::istream& istream) {
       if (line_view.starts_with("v ")) {
         positions.push_back(ParseLine<float, 3>(line_view));
       } else if (line_view.starts_with("vt ")) {
-        texture_coordinates.push_back(ParseLine<float, 2>(line_view));
+        texcoords.push_back(ParseLine<float, 2>(line_view));
       } else if (line_view.starts_with("vn ")) {
         normals.push_back(ParseLine<float, 3>(line_view));
       } else if (line_view.starts_with("f ")) {
@@ -167,10 +167,10 @@ Mesh LoadMesh(std::istream& istream) {
     }
   }
 
-  if (faces.empty()) return Mesh{positions, texture_coordinates, normals, {}};
+  if (faces.empty()) return Mesh{positions, normals, texcoords, {}};
 
   std::vector<glm::vec3> ordered_positions;
-  std::vector<glm::vec2> ordered_texture_coordinates;
+  std::vector<glm::vec2> ordered_texcoords;
   std::vector<glm::vec3> ordered_normals;
   std::vector<GLuint> indices;
   indices.reserve(faces.size() * 3);
@@ -186,11 +186,9 @@ Mesh LoadMesh(std::istream& istream) {
         const auto position_index = index_group[0];
         ordered_positions.push_back(positions.at(position_index));
 
-        if (const auto texture_coordinate_index = index_group[1];
-            texture_coordinate_index != kInvalidFaceElementIndex) {
-          ordered_texture_coordinates.push_back(texture_coordinates.at(texture_coordinate_index));
+        if (const auto texcoords_index = index_group[1]; texcoords_index != kInvalidFaceElementIndex) {
+          ordered_texcoords.push_back(texcoords.at(texcoords_index));
         }
-
         if (const auto normal_index = index_group[2]; normal_index != kInvalidFaceElementIndex) {
           ordered_normals.push_back(normals.at(normal_index));
         }
@@ -204,7 +202,7 @@ Mesh LoadMesh(std::istream& istream) {
     }
   }
 
-  return Mesh{ordered_positions, ordered_texture_coordinates, ordered_normals, indices};
+  return Mesh{ordered_positions, ordered_normals, ordered_texcoords, indices};
 }
 
 }  // namespace

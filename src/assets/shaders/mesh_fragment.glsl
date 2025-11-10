@@ -2,8 +2,8 @@
 
 in Fragment {
   vec3 position;
-  vec2 texture_coordinates;
   vec3 normal;
+  vec2 texcoords;
 } fragment;
 
 uniform struct PointLight {

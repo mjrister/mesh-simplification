@@ -225,7 +225,7 @@ HalfEdgeMesh::operator Mesh() const {
     indices.push_back(index_map.at(face->v2()->id()));
   }
 
-  return Mesh{positions, {}, normals, indices, model_transform_};  // remapping texture coordinates is unsupported
+  return Mesh{positions, normals, {}, indices, model_transform_};  // remapping texture coordinates is unsupported
 }
 
 void HalfEdgeMesh::Contract(const HalfEdge& edge01, const std::shared_ptr<Vertex>& v_new) {

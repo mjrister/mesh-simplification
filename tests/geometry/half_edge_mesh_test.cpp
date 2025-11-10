@@ -65,7 +65,7 @@ static Mesh CreateValidMesh() {
       1, 6, 7   // f9
   };
 
-  return Mesh{positions, {}, std::vector(10, glm::vec3{0.0f, 0.0f, 1.0f}), indices};
+  return Mesh{positions, std::vector(10, glm::vec3{0.0f, 0.0f, 1.0f}), {}, indices};
 }
 
 HalfEdgeMesh MakeHalfEdgeMesh() {

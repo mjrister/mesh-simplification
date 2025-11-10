@@ -123,7 +123,7 @@ TEST(ObjLoaderTest, TestLoadMeshWithoutFaceIndices) {
   static constexpr glm::vec3 kVn0{6.0f, 6.1f, 6.2f}, kVn1{7.0f, 7.1f, 7.2f}, kVn2{8.0f, 8.1f, 8.2f};
 
   EXPECT_EQ((std::vector{kV0, kV1, kV2}), mesh.positions());
-  EXPECT_EQ((std::vector{kVt0, kVt1, kVt2}), mesh.texture_coordinates());
+  EXPECT_EQ((std::vector{kVt0, kVt1, kVt2}), mesh.texcoords());
   EXPECT_EQ((std::vector{kVn0, kVn1, kVn2}), mesh.normals());
   EXPECT_TRUE(mesh.indices().empty());
 }
@@ -157,7 +157,7 @@ TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
   static constexpr glm::vec3 kVn0{8.0f, 8.1f, 8.2f}, kVn1{9.0f, 9.1f, 9.2f}, kVn2{10.0f, 10.1f, 10.2f};
 
   EXPECT_EQ((std::vector{kV0, kV1, kV2, kV0, kV3}), mesh.positions());
-  EXPECT_EQ((std::vector{kVt3, kVt0, kVt1, kVt1, kVt2}), mesh.texture_coordinates());
+  EXPECT_EQ((std::vector{kVt3, kVt0, kVt1, kVt1, kVt2}), mesh.texcoords());
   EXPECT_EQ((std::vector{kVn1, kVn2, kVn0, kVn1, kVn0}), mesh.normals());
   EXPECT_EQ((std::vector{0u, 1u, 2u, 3u, 1u, 4u}), mesh.indices());
 }
