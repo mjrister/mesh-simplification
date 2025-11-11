@@ -22,14 +22,14 @@ struct Rotation {
  * @brief Gets a rotation from a cursor movement using the arcball interface.
  * @param cursor_position_start The starting cursor position.
  * @param cursor_position_end The ending cursor position.
- * @param window_dimensions The window width and height.
+ * @param window_size The window width and height.
  * @return The axis (in camera space) and angle to rotate the mesh if the angle between the arcball positions of
  *         @p cursor_position_start and @p cursor_position_end is nonzero, otherwise @c std::nullopt.
  * @see "A User Interface for Specifying Three-Dimensional Orientation Using a Mouse" docs/arcball.pdf
  */
 std::optional<Rotation> GetRotation(const glm::vec2& cursor_position_start,
                                     const glm::vec2& cursor_position_end,
-                                    const std::pair<int, int>& window_dimensions);
+                                    const std::pair<int, int>& window_size);
 
 }  // namespace gfx::arcball
 

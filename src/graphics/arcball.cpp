@@ -14,14 +14,13 @@ namespace {
 /**
  * @brief Gets the cursor position in normalized device coordinates.
  * @param cursor_position The cursor position in screen coordinates.
- * @param window_dimensions The window width and height.
+ * @param window_size The window width and height.
  * @return The normalized cursor position in the range [-1, 1].
  */
-glm::vec2 GetNormalizedDeviceCoordinates(const glm::vec2& cursor_position,
-                                         const std::pair<int, int>& window_dimensions) {
+glm::vec2 GetNormalizedDeviceCoordinates(const glm::vec2& cursor_position, const std::pair<int, int>& window_size) {
   static constexpr auto kMinValue = -1.0f;
   static constexpr auto kMaxValue = 1.0f;
-  const auto& [width, height] = window_dimensions;
+  const auto& [width, height] = window_size;
 
   // normalize cursor position to [-1, 1] using clamp to handle cursor positions outside the window bounds
   const auto x_ndc = std::clamp((2.0f * cursor_position.x / static_cast<float>(width)) - 1.0f, kMinValue, kMaxValue);
@@ -54,9 +53,9 @@ glm::vec3 GetArcballPosition(const glm::vec2& cursor_position_ndc) {
 
 std::optional<Rotation> GetRotation(const glm::vec2& cursor_position_start,
                                     const glm::vec2& cursor_position_end,
-                                    const std::pair<int, int>& window_dimensions) {
-  const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_dimensions);
-  const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_dimensions);
+                                    const std::pair<int, int>& window_size) {
+  const auto cursor_position_start_ndc = GetNormalizedDeviceCoordinates(cursor_position_start, window_size);
+  const auto cursor_position_end_ndc = GetNormalizedDeviceCoordinates(cursor_position_end, window_size);
 
   const auto arcball_position_start = GetArcballPosition(cursor_position_start_ndc);
   const auto arcball_position_end = GetArcballPosition(cursor_position_end_ndc);

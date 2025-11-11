@@ -20,11 +20,11 @@ public:
   /**
    * @brief Creates a window.
    * @param title The UTF-8 window title.
-   * @param window_dimensions The window width and height.
+   * @param window_size The window width and height.
    * @param opengl_version The OpenGL major and minor version.
    * @throw std::runtime_error Thrown if GLFW window creation fails.
    */
-  Window(const char* title, const std::pair<int, int>& window_dimensions, const std::pair<int, int>& opengl_version);
+  Window(const char* title, const std::pair<int, int>& window_size, const std::pair<int, int>& opengl_version);
 
   Window(const Window&) = delete;
   Window& operator=(const Window&) = delete;

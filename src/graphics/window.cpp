@@ -133,11 +133,11 @@ void InitializeGl3w(const std::pair<int, int>& opengl_version) {
 }  // namespace
 
 Window::Window(const char* const title,
-               const std::pair<int, int>& window_dimensions,
+               const std::pair<int, int>& window_size,
                const std::pair<int, int>& opengl_version) {
   InitializeGlfw(opengl_version);
 
-  const auto [width, height] = window_dimensions;
+  const auto [width, height] = window_size;
   // NOLINTcppcoreguidelines-prefer-member-initializer)
   window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
   if (window_ == nullptr) throw std::runtime_error{"Window creation failed"};
