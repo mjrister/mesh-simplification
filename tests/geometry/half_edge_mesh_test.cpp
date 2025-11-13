@@ -18,11 +18,7 @@ protected:
         edge01_{std::make_shared<HalfEdge>(v1_)},
         edge10_{std::make_shared<HalfEdge>(v0_)},
         face012_{std::make_shared<Face>(v0_, v1_, v2_)},
-        vertices_{
-            {v0_->id(), v0_},
-            {v1_->id(), v1_},
-            {v2_->id(), v2_},
-        },
+        vertices_{{v0_->id(), v0_}, {v1_->id(), v1_}, {v2_->id(), v2_}},
         faces_{{hash_value(*face012_), face012_}} {
     edge01_->set_flip(edge10_);
     edge10_->set_flip(edge01_);

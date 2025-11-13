@@ -62,7 +62,6 @@ std::optional<Rotation> GetRotation(const glm::vec2& cursor_position_start,
 
   // use min to account for numerical issues where the dot product is greater than 1 causing acos to produce NaN
   const auto angle = std::acos(std::min<>(1.0f, glm::dot(arcball_position_start, arcball_position_end)));
-
   if (static constexpr auto kEpsilon = 1.0e-3f; angle > kEpsilon) {
     const auto axis = glm::cross(arcball_position_start, arcball_position_end);
     return Rotation{.axis = axis, .angle = angle};

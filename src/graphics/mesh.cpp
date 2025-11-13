@@ -8,12 +8,12 @@ namespace gfx {
 namespace {
 
 /**
- * @brief Ensures the provided vertex positions, texture coordinates, normals, and element indices describe a
+ * @brief Ensures the provided vertex positions, normals, texture coordinates, and element indices describe a
  *        triangle mesh in addition to enforcing alignment between vertex attribute.
  */
 void Validate(const std::span<const glm::vec3> positions,
-              const std::span<const glm::vec2> texcoords,
               const std::span<const glm::vec3> normals,
+              const std::span<const glm::vec2> texcoords,
               const std::span<const GLuint> indices) {
   if (positions.empty()) {
     throw std::invalid_argument{"Vertex positions must be specified"};
@@ -41,7 +41,7 @@ Mesh::Mesh(const std::span<const glm::vec3> positions,
       texcoords_{texcoords.begin(), texcoords.end()},
       indices_{indices.begin(), indices.end()},
       model_transform_{model_transform} {
-  Validate(positions_, texcoords_, normals_, indices_);
+  Validate(positions_, normals_, texcoords_, indices_);
 
   glGenVertexArrays(1, &vertex_array_);
   glBindVertexArray(vertex_array_);
@@ -51,12 +51,12 @@ Mesh::Mesh(const std::span<const glm::vec3> positions,
 
   using PositionType = decltype(positions_)::value_type;
   using NormalType = decltype(normals_)::value_type;
-  using TextureCoordinateType = decltype(texcoords_)::value_type;
+  using TextCoordsType = decltype(texcoords_)::value_type;
 
   // allocate memory for the vertex buffer
   const auto positions_size = static_cast<GLsizeiptr>(sizeof(PositionType) * positions_.size());
   const auto normals_size = static_cast<GLsizeiptr>(sizeof(NormalType) * normals_.size());
-  const auto texcoords_size = static_cast<GLsizeiptr>(sizeof(TextureCoordinateType) * texcoords_.size());
+  const auto texcoords_size = static_cast<GLsizeiptr>(sizeof(TextCoordsType) * texcoords_.size());
   const auto buffer_size = positions_size + normals_size + texcoords_size;
   glNamedBufferStorage(vertex_buffer_, buffer_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
 
@@ -91,15 +91,15 @@ Mesh::Mesh(const std::span<const glm::vec3> positions,
   // copy texture coordinates to the vertex buffer
   if (!texcoords_.empty()) {
     static constexpr auto kTexCoordsAttributeIndex = 2;
-    const auto normals_offset = positions_size + normals_size;
-    glNamedBufferSubData(vertex_buffer_, normals_offset, texcoords_size, texcoords_.data());
+    const auto texcoords_offset = positions_size + normals_size;
+    glNamedBufferSubData(vertex_buffer_, texcoords_offset, texcoords_size, texcoords_.data());
     glVertexAttribPointer(kTexCoordsAttributeIndex,
-                          TextureCoordinateType::length(),
+                          TextCoordsType::length(),
                           GL_FLOAT,
                           GL_FALSE,
                           0,
                           // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast, performance-no-int-to-ptr)
-                          reinterpret_cast<const void*>(normals_offset));
+                          reinterpret_cast<const void*>(texcoords_offset));
     glEnableVertexAttribArray(kTexCoordsAttributeIndex);
   }
 
