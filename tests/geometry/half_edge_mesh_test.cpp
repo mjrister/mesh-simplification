@@ -1,5 +1,8 @@
 #include "geometry/half_edge_mesh.cpp"  // NOLINT
 
+#include <map>
+#include <memory>
+#include <unordered_map>
 #include <vector>
 
 #include <GL/gl3w.h>

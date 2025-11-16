@@ -1,5 +1,7 @@
 #include "geometry/half_edge.h"
 
+#include <memory>
+
 #include <gtest/gtest.h>
 
 namespace {

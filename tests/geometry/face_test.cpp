@@ -1,6 +1,7 @@
 #include "geometry/face.cpp"  // NOLINT
 
 #include <array>
+#include <memory>
 
 #include <gtest/gtest.h>
 

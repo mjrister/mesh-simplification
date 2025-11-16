@@ -1,6 +1,7 @@
 #include "geometry/face.h"
 
 #include <algorithm>
+#include <memory>
 #include <tuple>
 
 #include <glm/geometric.hpp>

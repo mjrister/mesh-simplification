@@ -1,7 +1,10 @@
 #include "geometry/half_edge_mesh.h"
 
 #include <cassert>
+#include <map>
+#include <memory>
 #include <ranges>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
