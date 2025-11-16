@@ -77,7 +77,7 @@ T ParseToken(const std::string_view token) {
 template <typename T, int N>
 glm::vec<N, T> ParseLine(const std::string_view line) {
   if (const auto tokens = Split(line); tokens.size() == N + 1) {
-    glm::vec<N, T> vec{};
+    glm::vec<N, T> vec{0.0f};
     for (auto i = 1; i <= N; ++i) {
       vec[i - 1] = ParseToken<T>(tokens[i]);
     }
@@ -98,12 +98,14 @@ glm::ivec3 ParseIndexGroup(const std::string_view token) {
 
   switch (std::ranges::count(token, *kIndexDelimiter)) {
     case 0:
+      // case: f v0 v1 v2
       if (tokens.size() == 1) {
         const auto x = ParseToken<int>(tokens[0]) - 1;
         return glm::ivec3{x, kInvalidFaceElementIndex, kInvalidFaceElementIndex};
       }
       break;
     case 1:
+      // case: f v0/vt0 v1/vt1 v2/vt2
       if (tokens.size() == 2) {
         const auto x = ParseToken<int>(tokens[0]) - 1;
         const auto y = ParseToken<int>(tokens[1]) - 1;
@@ -111,11 +113,13 @@ glm::ivec3 ParseIndexGroup(const std::string_view token) {
       }
       break;
     case 2:
+      // case: f v0//vn0 v1//vn1 v2//vn2
       if (tokens.size() == 2 && *token.cbegin() != '/' && *(token.cend() - 1) != '/') {
         const auto x = ParseToken<int>(tokens[0]) - 1;
         const auto z = ParseToken<int>(tokens[1]) - 1;
         return glm::ivec3{x, kInvalidFaceElementIndex, z};
       }
+      // case: f v0/vt0/vn0 v1/vt1/vn1 v2/vt2/vn2
       if (tokens.size() == 3) {
         const auto x = ParseToken<int>(tokens[0]) - 1;
         const auto y = ParseToken<int>(tokens[1]) - 1;

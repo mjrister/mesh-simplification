@@ -1,8 +1,9 @@
-add_executable(mesh_simplification main.cpp
+add_executable(mesh_simplification app.cpp
+                                   main.cpp
                                    geometry/face.cpp
                                    geometry/half_edge_mesh.cpp
                                    geometry/mesh_simplifier.cpp
-                                   graphics/arcball.cpp
+                                   graphics/arc_camera.cpp
                                    graphics/mesh.cpp
                                    graphics/obj_loader.cpp
                                    graphics/scene.cpp

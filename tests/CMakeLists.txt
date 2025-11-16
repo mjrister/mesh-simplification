@@ -3,7 +3,6 @@ add_executable(mesh_simplification_tests main.cpp
                                          geometry/half_edge_mesh_test.cpp
                                          geometry/half_edge_test.cpp
                                          geometry/vertex_test.cpp
-                                         graphics/arcball_test.cpp
                                          graphics/mesh_test.cpp
                                          graphics/obj_loader_test.cpp)
 

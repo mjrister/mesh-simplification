@@ -128,9 +128,9 @@ Mesh& Mesh::operator=(Mesh&& mesh) noexcept {
 }
 
 Mesh::~Mesh() noexcept {
-  glDeleteVertexArrays(1, &vertex_array_);
-  glDeleteBuffers(1, &vertex_buffer_);
   glDeleteBuffers(1, &element_buffer_);
+  glDeleteBuffers(1, &vertex_buffer_);
+  glDeleteVertexArrays(1, &vertex_array_);
 }
 
 }  // namespace gfx

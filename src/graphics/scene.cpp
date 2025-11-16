@@ -1,13 +1,9 @@
 #include "graphics/scene.h"
 
-#include <optional>
-#include <utility>
+#include <array>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
-#include "geometry/mesh_simplifier.h"
-#include "graphics/arcball.h"
 #include "graphics/material.h"
 #include "graphics/obj_loader.h"
 #include "graphics/shader_program.h"
@@ -17,49 +13,49 @@ namespace gfx {
 
 namespace {
 
-struct Camera {
-  glm::vec3 look_from;
-  glm::vec3 look_at;
-  glm::vec3 up;
-  glm::mat4 view_transform;
-} const kCamera = {
-    .look_from = glm::vec3{0.0f, 0.4f, 2.0f},
-    .look_at = glm::vec3{0.0f},
-    .up = glm::vec3{0.0f, 1.0f, 0.0f},
-    .view_transform = lookAt(kCamera.look_from, kCamera.look_at, kCamera.up),
+struct PointLight {
+  glm::vec3 position{0.0f};  // defined in view-space coordinates
+  glm::vec3 color{0.0f};
 };
 
-struct ViewFrustum {
-  float field_of_view_y;
-  float z_near;
-  float z_far;
-} constexpr kViewFrustum = {
-    .field_of_view_y = glm::radians(45.0f),
-    .z_near = 0.1f,
-    .z_far = 100.0f,
-};
+ArcCamera CreateCamera(const float aspect_ratio) {
+  static constexpr glm::vec3 kPosition{0.0f, 0.0f, 2.0f};
+  static constexpr glm::vec3 kTarget{0.0f};
 
-struct PointLight {    // NOLINT(*-avoid-c-arrays)
-  glm::vec3 position;  // defined in view-space coordinates
-  glm::vec3 color;
-  glm::vec3 attenuation;
-} constexpr kPointLights[] = {
-    {
-        .position = glm::vec3{1.0f, 1.0f, 0.0f},
-        .color = glm::vec3{1.0f},
-        .attenuation = glm::vec3{0.0f, 0.0f, 1.0f},
-    },
-    {
-        .position = glm::vec3{-1.0f, 0.0f, 1.0f},
-        .color = glm::vec3{1.0f},
-        .attenuation = glm::vec3{0.0f, 0.0f, 1.0f},
-    },
-    {
-        .position = glm::vec3{0.0f, 3.0f, -2.0f},
-        .color = glm::vec3{1.0f},
-        .attenuation = glm::vec3{0.0f, 0.0f, 1.0f},
-    },
-};
+  return ArcCamera{kPosition,
+                   kTarget,
+                   ViewFrustum{
+                       // NOLINTBEGIN(*-magic-numbers)
+                       .field_of_view_y = glm::radians(45.0f),
+                       .aspect_ratio = aspect_ratio,
+                       .z_near = 0.1f,
+                       .z_far = 1.0e6f
+                       // NOLINTEND(*-magic-numbers)
+                   }};
+}
+
+constexpr std::array<PointLight, 3> CreatePointLights() {
+  constexpr glm::vec3 kWhiteColor{1.0f};
+
+  return std::array{
+      // NOLINTBEGIN(*-magic-numbers)
+      PointLight{.position = glm::vec3{1.0f, 1.0f, 0.0f}, .color = kWhiteColor},
+      PointLight{.position = glm::vec3{-1.0f, 0.0f, 1.0f}, .color = kWhiteColor},
+      PointLight{.position = glm::vec3{0.0f, 3.0f, -2.0f}, .color = kWhiteColor}
+      // NOLINTEND(*-magic-numbers)
+  };
+}
+
+void SetPointLights(const ShaderProgram& shader_program) {
+  static constexpr auto kPointLights = CreatePointLights();
+  shader_program.SetUniform("point_lights_size", static_cast<GLint>(kPointLights.size()));
+
+  for (std::size_t i = 0; i < kPointLights.size(); ++i) {
+    const auto& [position, color] = kPointLights[i];  // NOLINT(cppcoreguidelines-pro-bounds-constant-array-index)
+    shader_program.SetUniform(std::format("point_lights[{}].position", i), position);
+    shader_program.SetUniform(std::format("point_lights[{}].color", i), color);
+  }
+}
 
 void SetMaterial(const ShaderProgram& shader_program) {
   const auto [ambient, diffuse, specular, shininess] = Material::FromType(Material::Type::kJade);
@@ -69,102 +65,25 @@ void SetMaterial(const ShaderProgram& shader_program) {
   shader_program.SetUniform("material.shininess", shininess);
 }
 
-void SetPointLights(const ShaderProgram& shader_program) {
-  static constexpr auto kPointLightsSize = sizeof(kPointLights) / sizeof(PointLight);
-  shader_program.SetUniform("point_lights_size", static_cast<int>(kPointLightsSize));
-
-  for (auto i = 0; std::cmp_less(i, kPointLightsSize); ++i) {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
-    const auto& [position, color, attenuation] = kPointLights[i];
-    shader_program.SetUniform(std::format("point_lights[{}].position", i), position);
-    shader_program.SetUniform(std::format("point_lights[{}].color", i), color);
-    shader_program.SetUniform(std::format("point_lights[{}].attenuation", i), attenuation);
-  }
-}
-
-void SetViewTransforms(const Window& window, const Mesh& mesh, const ShaderProgram& shader_program) {
-  static auto prev_aspect_ratio = 0.0f;
-
-  if (const auto aspect_ratio = window.GetAspectRatio(); prev_aspect_ratio != aspect_ratio && aspect_ratio > 0.0f) {
-    const auto [field_of_view_y, z_near, z_far] = kViewFrustum;
-    const auto projection_transform = glm::perspective(field_of_view_y, aspect_ratio, z_near, z_far);
-    shader_program.SetUniform("projection_transform", projection_transform);
-    prev_aspect_ratio = aspect_ratio;
-  }
-
-  const auto model_view_transform = kCamera.view_transform * mesh.model_transform();
-  shader_program.SetUniform("model_view_transform", model_view_transform);
-}
-
-void HandleMouseInput(const Window& window, Mesh& mesh, const float delta_time) {
-  static std::optional<glm::vec2> prev_cursor_position;
-  const auto cursor_position = window.GetCursorPosition();
-
-  if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-    if (prev_cursor_position.has_value()) {
-      const auto rotation = arcball::GetRotation(*prev_cursor_position, cursor_position, window.GetSize());
-      if (rotation.has_value()) {
-        const auto rotation_speed = 256.0f * delta_time;
-        const auto& [rotation_axis, rotation_angle] = *rotation;
-        const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
-        const auto model_rotation_axis = glm::normalize(view_model_inv * glm::vec4{rotation_axis, 0.0f});
-        mesh.Rotate(model_rotation_axis, rotation_speed * rotation_angle);
-      }
-    }
-    prev_cursor_position = cursor_position;
-  } else if (window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-    if (prev_cursor_position.has_value()) {
-      const auto translation_speed = 0.25f * delta_time;
-      const auto cursor_delta = cursor_position - *prev_cursor_position;
-      const auto view_model_inv = glm::inverse(kCamera.view_transform * mesh.model_transform());
-      mesh.Translate(view_model_inv * translation_speed * glm::vec4{cursor_delta.x, -cursor_delta.y, 0.0f, 0.0f});
-    }
-    prev_cursor_position = cursor_position;
-  } else if (prev_cursor_position.has_value()) {
-    prev_cursor_position = std::nullopt;
-  }
-}
-
 }  // namespace
 
-Scene::Scene(Window* const window)
-    : window_{window},
-      mesh_{obj_loader::LoadMesh("assets/models/bunny.obj")},
+Scene::Scene(const Window& window, const std::filesystem::path& obj_filepath)
+    : camera_{CreateCamera(window.GetAspectRatio())},
+      mesh_{obj_loader::LoadMesh(obj_filepath)},
       shader_program_{"assets/shaders/mesh_vertex.glsl", "assets/shaders/mesh_fragment.glsl"} {
-  window_->OnKeyPress([this](const auto key_code) {
-    if (key_code == GLFW_KEY_ESCAPE) {
-      window_->Close();
-      return;
-    }
-    if (key_code == GLFW_KEY_S) {
-      static constexpr auto kDefaultSimplificationRate = 0.5f;
-      mesh_ = mesh::Simplify(mesh_, kDefaultSimplificationRate);
-    }
-  });
-
-  window_->OnScroll([this](const auto /*x_offset*/, const auto y_offset) {
-    static constexpr auto kScaleStep = 0.02f;
-    const auto sign = (y_offset > 0.0f) - (y_offset < 0.0f);
-    mesh_.Scale(glm::vec3{sign * kScaleStep + 1.0f});
-  });
-
   shader_program_.Enable();
-  SetMaterial(shader_program_);
   SetPointLights(shader_program_);
-
-  // NOLINTBEGIN(*-magic-numbers)
-  mesh_.Translate(kCamera.look_at + glm::vec3{0.2f, -0.25f, 0.0f});
-  mesh_.Scale(glm::vec3{0.35f});
-  // NOLINTEND(*-magic-numbers)
+  SetMaterial(shader_program_);
 }
 
-void Scene::Render(const float delta_time) {
+void Scene::Render() const {
+  const auto model_view_transform = camera_.GetViewTransform() * mesh_.model_transform();
+  shader_program_.SetUniform("model_view_transform", model_view_transform);
+  shader_program_.SetUniform("projection_transform", camera_.GetProjectionTransform());
+
   static constexpr auto kDefaultClearColorValue = 0.1f;
   glClearColor(kDefaultClearColorValue, kDefaultClearColorValue, kDefaultClearColorValue, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  HandleMouseInput(*window_, mesh_, delta_time);
-  SetViewTransforms(*window_, mesh_, shader_program_);
 
   mesh_.Render();
 }

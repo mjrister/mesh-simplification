@@ -5,18 +5,21 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace gfx {
 
 namespace {
 
-[[maybe_unused]] void APIENTRY HandleDebugMessageReceived(const GLenum source,
-                                                          const GLenum type,
-                                                          const GLuint id,
-                                                          const GLenum severity,
-                                                          const GLsizei /*length*/,
-                                                          const GLchar* const message,
-                                                          const void* /*user_param*/) {
+#ifndef NDEBUG
+
+void APIENTRY HandleDebugMessageReceived(const GLenum source,
+                                         const GLenum type,
+                                         const GLuint id,
+                                         const GLenum severity,
+                                         const GLsizei /*length*/,
+                                         const GLchar* const message,
+                                         const void* /*user_param*/) {
   std::string message_source;
   switch (source) {
     case GL_DEBUG_SOURCE_API:
@@ -88,6 +91,8 @@ namespace {
                       message);
 }
 
+#endif
+
 void InitializeGlfw(const std::pair<int, int>& opengl_version) {
   if (glfwInit() == GLFW_FALSE) throw std::runtime_error{"GLFW initialization failed"};
 
@@ -145,25 +150,23 @@ Window::Window(const char* const title,
   glfwSetWindowUserPointer(window_, this);
   glfwMakeContextCurrent(window_);
 
-  glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* /*window*/, const int new_width, const int new_height) {
-    glViewport(0, 0, new_width, new_height);
-  });
-
   glfwSetKeyCallback(
       window_,
       [](GLFWwindow* const window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) {
-        if (action == GLFW_PRESS) {
-          const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-          assert(self != nullptr);
-          if (self->on_key_press_) self->on_key_press_(key);
+        if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window)); self->key_event_handler_) {
+          self->key_event_handler_(key, action);
         }
       });
 
-  glfwSetScrollCallback(window_, [](GLFWwindow* const window, const double x_offset, const double y_offset) {
-    const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    assert(self != nullptr);
-    if (self->on_scroll_) {
-      self->on_scroll_(static_cast<float>(x_offset), static_cast<float>(y_offset));
+  glfwSetCursorPosCallback(window_, [](GLFWwindow* const window, const double x, const double y) {
+    if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window)); self->cursor_event_handler_) {
+      self->cursor_event_handler_(static_cast<float>(x), static_cast<float>(y));
+    }
+  });
+
+  glfwSetScrollCallback(window_, [](GLFWwindow* const window, const double /*x_offset*/, const double y_offset) {
+    if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window)); self->scroll_event_handler_) {
+      self->scroll_event_handler_(static_cast<float>(y_offset));
     }
   });
 
