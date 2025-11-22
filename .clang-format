@@ -12,4 +12,3 @@ IncludeBlocks: Preserve
 InsertNewlineAtEOF: true
 PointerAlignment: Left
 QualifierAlignment: Left
-Standard: c++20

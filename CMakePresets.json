@@ -1,22 +1,22 @@
 {
-  "version": 3,
+  "version": 6,
   "configurePresets": [
     {
       "name": "default",
       "hidden": true,
-      "generator": "Ninja",
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "installDir": "${sourceDir}/out/install/${presetName}",
-      "toolchainFile": "${sourceDir}/third_party/vcpkg/scripts/buildsystems/vcpkg.cmake",
-      "cacheVariables": {
-        "CMAKE_CXX_STANDARD": "20",
-        "CMAKE_CXX_STANDARD_REQUIRED": true,
-        "CMAKE_CXX_EXTENSIONS": false,
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      "toolchainFile": "${sourceDir}/third_party/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    },
+    {
+      "name": "ninja",
+      "hidden": true,
+      "generator": "Ninja",
+      "architecture": {
+        "strategy": "external"
+      },
+      "toolset": {
+        "strategy": "external"
       }
     },
     {
@@ -24,11 +24,7 @@
       "hidden": true,
       "inherits": "default",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "cl.exe",
-        "WIN32_LEAN_AND_MEAN": true
-      },
-      "environment": {
-        "CXX_FLAGS": "/W4 /WX"
+        "CMAKE_CXX_COMPILER": "cl.exe"
       },
       "condition": {
         "type": "equals",
@@ -41,10 +37,9 @@
       "hidden": true,
       "inherits": "default",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang++"
-      },
-      "environment": {
-        "CXX_FLAGS": "-Wall -Werror -Wextra -Wpedantic"
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_CXX_FLAGS": "-stdlib=libc++",
+        "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++"
       },
       "condition": {
         "type": "equals",
@@ -55,6 +50,20 @@
         "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
           "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
         }
+      }
+    },
+    {
+      "name": "x64",
+      "hidden": true,
+      "architecture": {
+        "value": "x64"
+      }
+    },
+    {
+      "name": "x86",
+      "hidden": true,
+      "architecture": {
+        "value": "x86"
       }
     },
     {
@@ -72,24 +81,21 @@
       }
     },
     {
-      "name": "clang-tidy",
+      "name": "relwithdebinfo",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--config-file=${sourceDir}/.clang-tidy;-p=${sourceDir}/out/build/${presetName}"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
     },
     {
       "name": "windows-debug",
       "inherits": [
         "windows",
+        "ninja",
+        "x64",
         "debug"
-      ]
-    },
-    {
-      "name": "windows-debug-asan",
-      "inherits": "windows-debug",
+      ],
       "cacheVariables": {
-        "CXX_FLAGS": "/fsanitize=address",
         "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/vcpkg-triplets",
         "VCPKG_TARGET_TRIPLET": "x64-windows-asan"
       }
@@ -98,37 +104,61 @@
       "name": "windows-release",
       "inherits": [
         "windows",
+        "ninja",
+        "x64",
         "release"
-      ],
+      ]
+    },
+    {
+      "name": "windows-relwithdebinfo",
+      "inherits": [
+        "windows",
+        "ninja",
+        "x64",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "windows-clang-tidy",
+      "inherits": "windows-debug",
       "cacheVariables": {
-        "CXX_FLAGS": "/fp:fast /GL",
-        "CXX_LINKER_FLAGS": "/LTCG:INCREMENTAL"
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--config-file=${sourceDir}/.clang-tidy;-p=${sourceDir}/out/build/${presetName};--extra-arg=/EHsc",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
       }
     },
     {
       "name": "linux-debug",
       "inherits": [
         "linux",
+        "ninja",
+        "x64",
         "debug"
       ]
-    },
-    {
-      "name": "linux-debug-asan",
-      "inherits": "linux-debug",
-      "cacheVariables": {
-        "CXX_FLAGS": "-fsanitize=address",
-        "CXX_LINKER_FLAGS": "-fsanitize=address"
-      }
     },
     {
       "name": "linux-release",
       "inherits": [
         "linux",
+        "ninja",
+        "x64",
         "release"
-      ],
+      ]
+    },
+    {
+      "name": "linux-relwithdebinfo",
+      "inherits": [
+        "linux",
+        "ninja",
+        "x64",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "linux-clang-tidy",
+      "inherits": "linux-debug",
       "cacheVariables": {
-        "CXX_FLAGS": "-O3 -ffast-math -flto",
-        "CXX_LINKER_FLAGS": "-flto"
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--config-file=${sourceDir}/.clang-tidy;-p=${sourceDir}/out/build/${presetName}",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
       }
     }
   ],
@@ -138,24 +168,24 @@
       "configurePreset": "windows-debug"
     },
     {
-      "name": "windows-debug-asan",
-      "configurePreset": "windows-debug-asan"
-    },
-    {
       "name": "windows-release",
       "configurePreset": "windows-release"
+    },
+    {
+      "name": "windows-relwithdebinfo",
+      "configurePreset": "windows-relwithdebinfo"
     },
     {
       "name": "linux-debug",
       "configurePreset": "linux-debug"
     },
     {
-      "name": "linux-debug-asan",
-      "configurePreset": "linux-debug-asan"
-    },
-    {
       "name": "linux-release",
       "configurePreset": "linux-release"
+    },
+    {
+      "name": "linux-relwithdebinfo",
+      "configurePreset": "linux-relwithdebinfo"
     }
   ],
   "testPresets": [
@@ -164,24 +194,24 @@
       "configurePreset": "windows-debug"
     },
     {
-      "name": "windows-debug-asan",
-      "configurePreset": "windows-debug-asan"
-    },
-    {
       "name": "windows-release",
       "configurePreset": "windows-release"
+    },
+    {
+      "name": "windows-relwithdebinfo",
+      "configurePreset": "windows-relwithdebinfo"
     },
     {
       "name": "linux-debug",
       "configurePreset": "linux-debug"
     },
     {
-      "name": "linux-debug-asan",
-      "configurePreset": "linux-debug-asan"
-    },
-    {
       "name": "linux-release",
       "configurePreset": "linux-release"
+    },
+    {
+      "name": "linux-relwithdebinfo",
+      "configurePreset": "linux-relwithdebinfo"
     }
   ]
 }

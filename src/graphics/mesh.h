@@ -1,103 +1,50 @@
 #ifndef GRAPHICS_MESH_H_
 #define GRAPHICS_MESH_H_
 
-#include <span>
-#include <utility>
 #include <vector>
 
-#include <GL/gl3w.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <vulkan/vulkan.hpp>
+
+#include "graphics/buffer.h"
 
 namespace gfx {
+class Device;
 
-/** @brief A renderable triangle mesh. */
 class Mesh {
 public:
-  /**
-   * @brief Creates a triangle mesh.
-   * @param positions The vertex positions.
-   * @param normals The vertex normals.
-   * @param texcoords The vertex texture coordinates.
-   * @param indices The vertex indices such that consecutive triples define a triangle face in the mesh.
-   * @param model_transform The initial affine transform to apply to vertices in the mesh.
-   * @throw std::invalid_argument Thrown if the provided vertex attributes do not represent a valid triangle mesh.
-   * @note If @p indices is non-empty, it must define a valid triangle mesh (i.e., its size must be a nonzero multiple
-   *       of 3). Otherwise, triangles are interpreted as sequential triples in @p positions which requires alignment
-   *       with @p normals and @p texcoords if specified.
-   */
-  explicit Mesh(std::span<const glm::vec3> positions,
-                std::span<const glm::vec3> normals = {},
-                std::span<const glm::vec2> texcoords = {},
-                std::span<const GLuint> indices = {},
-                const glm::mat4& model_transform = glm::mat4{1.0f});
+  struct Vertex {
+    glm::vec3 position{0.0f};
+    glm::vec2 texture_coordinates{0.0f};
+    glm::vec3 normal{0.0f};
+  };
 
-  Mesh(const Mesh&) = delete;
-  Mesh& operator=(const Mesh&) = delete;
+  Mesh(const Device& device,
+       const std::vector<Vertex>& vertices,
+       const std::vector<std::uint32_t>& indices,
+       const glm::mat4& transform = glm::mat4{1.0f});
 
-  Mesh(Mesh&& mesh) noexcept { *this = std::move(mesh); }
-  Mesh& operator=(Mesh&& mesh) noexcept;
+  [[nodiscard]] const std::vector<Vertex>& vertices() const noexcept { return vertices_; }
+  [[nodiscard]] const std::vector<std::uint32_t>& indices() const noexcept { return indices_; }
+  [[nodiscard]] const glm::mat4& transform() const noexcept { return transform_; }
 
-  ~Mesh() noexcept;
+  void Translate(const glm::vec3& translation) { transform_ = glm::translate(transform_, translation); }
+  void Rotate(const glm::vec3& axis, const float angle) { transform_ = glm::rotate(transform_, angle, axis); }
+  void Scale(const glm::vec3& scale) { transform_ = glm::scale(transform_, scale); }
 
-  /** @brief Gets the vertex positions. */
-  [[nodiscard]] const std::vector<glm::vec3>& positions() const noexcept { return positions_; }
-
-  /** @brief Gets the vertex normals. */
-  [[nodiscard]] const std::vector<glm::vec3>& normals() const noexcept { return normals_; }
-
-  /** @brief Gets the vertex texture coordinates. */
-  [[nodiscard]] const std::vector<glm::vec2>& texcoords() const noexcept { return texcoords_; }
-
-  /** @brief Gets the vertex indices. */
-  [[nodiscard]] const std::vector<GLuint>& indices() const noexcept { return indices_; }
-
-  /** @brief Gets the model transform for converting mesh vertices to world-space coordinates. */
-  [[nodiscard]] const glm::mat4& model_transform() const noexcept { return model_transform_; }
-
-  /** @brief Renders the mesh to the current render target. */
-  void Render() const noexcept {
-    glBindVertexArray(vertex_array_);
-    if (element_buffer_ != 0) {
-      glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_.size()), GL_UNSIGNED_INT, nullptr);
-    } else {
-      glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(positions_.size()));
-    }
-    glBindVertexArray(0);
+  void Render(const vk::CommandBuffer command_buffer) const {
+    command_buffer.bindVertexBuffers(0, *vertex_buffer_, static_cast<vk::DeviceSize>(0));
+    command_buffer.bindIndexBuffer(*index_buffer_, 0, vk::IndexType::eUint32);
+    command_buffer.drawIndexed(static_cast<std::uint32_t>(indices_.size()), 1, 0, 0, 0);
   }
-
-  /**
-   * @brief Scales the mesh in local object space.
-   * @param scale The x,y,z directions to scale the mesh.
-   */
-  void Scale(const glm::vec3& scale) { model_transform_ = glm::scale(model_transform_, scale); }
-
-  /**
-   * @brief Rotates the mesh in local object space.
-   * @param axis The axis to rotate the mesh about.
-   * @param angle The rotation angle specified in radians.
-   */
-  void Rotate(const glm::vec3& axis, const GLfloat angle) {
-    model_transform_ = glm::rotate(model_transform_, angle, axis);
-  }
-
-  /**
-   * @brief Translates the mesh in local object space.
-   * @param translation The x,y,z directions to translate the mesh.
-   */
-  void Translate(const glm::vec3& translation) { model_transform_ = glm::translate(model_transform_, translation); }
 
 private:
-  std::vector<glm::vec3> positions_;
-  std::vector<glm::vec3> normals_;
-  std::vector<glm::vec2> texcoords_;
-  std::vector<GLuint> indices_;
-  glm::mat4 model_transform_{0.0f};
-  GLuint vertex_array_ = 0;
-  GLuint vertex_buffer_ = 0;
-  GLuint element_buffer_ = 0;
+  std::vector<Vertex> vertices_;
+  std::vector<std::uint32_t> indices_;
+  glm::mat4 transform_;
+  Buffer vertex_buffer_;
+  Buffer index_buffer_;
 };
 
 }  // namespace gfx

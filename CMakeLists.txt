@@ -1,13 +1,33 @@
-cmake_minimum_required(VERSION 3.22)
-project(mesh_simplification VERSION 1.0.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.27)
+project(
+  mesh_simplification
+  VERSION 1.0.0
+  LANGUAGES CXX)
 
-# Defining CMAKE_CXX_FLAGS and CMAKE_EXE_LINKER_FLAGS in CMake presets will overwrite default values provided by CMake.
-# To prevent this, compile and link options for a preset are defined in cache/environment variables and applied here.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} $ENV{CXX_FLAGS} $CACHE{CXX_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} $CACHE{CXX_LINKER_FLAGS}")
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(MSVC)
+  add_compile_options(/W4 /WX)
+  if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    add_compile_options(/fsanitize=address)
+  else()
+    add_compile_options(/Ob3 /GL)
+    add_link_options(/LTCG:INCREMENTAL)
+  endif()
+else()
+  add_compile_options(-Wall -Werror -Wextra -Wpedantic)
+  if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    add_compile_options(-fsanitize=address)
+    add_link_options(-fsanitize=address)
+  else()
+    add_compile_options(-O3 -flto)
+    add_link_options(-flto)
+  endif()
+endif()
 
 add_subdirectory(src)
 
-# TODO: enable unit tests when vcpkg build failure for gtest is resolved
-# enable_testing()
-# add_subdirectory(tests)
+enable_testing()
+add_subdirectory(tests)

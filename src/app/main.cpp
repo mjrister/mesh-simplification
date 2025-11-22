@@ -4,11 +4,13 @@
 
 #include "app/app.h"
 
-int main() {  // NOLINT(bugprone-exception-escape): exceptions are not enabled for standard error stream
+int main() {  // NOLINT(bugprone-exception-escape)
   try {
-    app::Run("Mesh Simplification",
-             gfx::Window::Size{.width = 1920, .height = 1080},
-             gfx::OpenGlVersion{.major = 4, .minor = 1});
+    gfx::App app;
+    app.Run();
+  } catch (const std::system_error& e) {
+    std::cerr << '[' << e.code() << "] " << e.what() << '\n';
+    return EXIT_FAILURE;
   } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';
     return EXIT_FAILURE;

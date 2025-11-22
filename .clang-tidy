@@ -15,16 +15,13 @@ Checks: >-
   -*-uppercase-literal-suffix,
   -bugprone-easily-swappable-parameters,
   -cppcoreguidelines-avoid-do-while,
-  -google-readability-todo,
   -misc-include-cleaner,
   -misc-no-recursion,
+  -misc-non-private-member-variables-in-classes,
   -modernize-use-trailing-return-type,
   -readability-function-cognitive-complexity,
-  -readability-identifier-length,
-  -readability-isolate-declaration
+  -readability-identifier-length
 CheckOptions:
-  - key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals
-    value: true
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
   - key: readability-identifier-naming.ClassMemberCase

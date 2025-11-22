@@ -1,82 +1,92 @@
-#include "graphics/obj_loader.cpp"  // NOLINT
+#include "graphics/obj_loader.cpp"  // NOLINT(build/include)
+
+#include <ranges>
 
 #include <gtest/gtest.h>
 
+#include "tests/device.h"
+
 namespace {
 
-using namespace gfx;  // NOLINT
-
-TEST(StringTest, TestTrimWhitespaceString) {
+TEST(ObjLoaderTest, TrimStringWithOnlyWhitespaceReturnsTheEmptyString) {
   static constexpr auto* kLine = "     ";
   static_assert(Trim(kLine).empty());
 }
 
-TEST(StringTest, TestTrimString) {
-  static constexpr auto* kLine = "\t  Hello, World!  \t";
-  static_assert("Hello, World!" == Trim(kLine));
+TEST(ObjLoaderTest, TrimStringRemovesWhitespaceFromBothEndsOfTheString) {
+  static constexpr auto* kLine = "  Hello, World!  ";
+  static_assert(Trim(kLine) == "Hello, World!");
 }
 
-TEST(StringTest, TestSplitEmptyString) {
+TEST(ObjLoaderTest, SplitEmptyStringReturnsAnEmptyList) {
   static constexpr auto* kLine = "";
-  const auto tokens = Split(kLine, " ");
-  EXPECT_TRUE(tokens.empty());
+  static constexpr auto* kDelimiter = " ";
+  EXPECT_TRUE(Split(kLine, kDelimiter).empty());
 }
 
-TEST(StringTest, TestSplitWhitespaceString) {
+TEST(ObjLoaderTest, SplitStringWithOnlyTheDelimiterReturnsAnEmptyList) {
   static constexpr auto* kLine = "   ";
-  const auto tokens = Split(kLine, " ");
-  EXPECT_TRUE(tokens.empty());
+  static constexpr auto* kDelimiter = " ";
+  EXPECT_TRUE(Split(kLine, kDelimiter).empty());
 }
 
-TEST(StringTest, TestSplitNoWhitespaceString) {
+TEST(ObjLoaderTest, SplitStringWithoutDelimiterReturnsListWithTheOriginalString) {
   static constexpr auto* kLine = "Hello";
-  const auto tokens = Split(kLine, " ");
-  EXPECT_EQ((std::vector<std::string_view>{kLine}), tokens);
+  static constexpr auto* kDelimiter = " ";
+  EXPECT_EQ(Split(kLine, kDelimiter), (std::vector<std::string_view>{kLine}));
 }
 
-TEST(StringTest, TestSplitStringOnWhitespaceAndTab) {
-  static constexpr auto* kLine = "\t vt 0.707 0.395 0.684 ";
-  const auto tokens = Split(kLine, " \t");
-  EXPECT_EQ((std::vector<std::string_view>{"vt", "0.707", "0.395", "0.684"}), tokens);
+TEST(ObjLoaderTest, SplitStringWithDelimiterReturnsListWithSplitStringTokens) {
+  static constexpr auto* kLine = " v  0.707 0.395    0.684 ";
+  static constexpr auto* kDelimiter = " ";
+  EXPECT_EQ(Split(kLine, kDelimiter), (std::vector<std::string_view>{"v", "0.707", "0.395", "0.684"}));
 }
 
-TEST(ObjLoaderTest, TestParseEmptyToken) { EXPECT_THROW(ParseToken<GLint>(""), std::invalid_argument); }
-
-TEST(ObjLoaderTest, TestParseInvalidToken) {
-  EXPECT_THROW(ParseToken<GLfloat>("Definitely a float"), std::invalid_argument);
+TEST(ObjLoaderTest, ParseEmptyStringThrowsAnException) {  //
+  EXPECT_THROW(ParseToken<int>(""), std::invalid_argument);
 }
 
-TEST(ObjLoaderTest, TestParseIntToken) { EXPECT_EQ(42, ParseToken<GLint>("42")); }
-
-TEST(ObjLoaderTest, TestParseFloatToken) { EXPECT_FLOAT_EQ(3.14f, ParseToken<GLfloat>("3.14")); }
-
-TEST(ObjLoaderTest, TestParseEmptyLine) { EXPECT_THROW((ParseLine<GLfloat, 3>("")), std::invalid_argument); }
-
-TEST(ObjLoaderTest, TestParseLineWithInvalidSizeArgument) {
-  EXPECT_THROW((ParseLine<GLfloat, 2>("vt 0.707 0.395 0.684")), std::invalid_argument);
+TEST(ObjLoaderTest, ParseInvalidTokenThrowsAnException) {
+  EXPECT_THROW(ParseToken<float>("Definitely a float"), std::invalid_argument);
 }
 
-TEST(ObjLoaderTest, TestParseLine) {
-  EXPECT_EQ((glm::vec3{.707f, .395f, .684f}), (ParseLine<GLfloat, 3>("vt 0.707 0.395 0.684")));
+TEST(ObjLoaderTest, ParseIntTokenReturnsTheCorrectValue) {  //
+  static_assert(ParseToken<int>("42") == 42);
 }
 
-TEST(ObjLoaderTest, TestParseIndexGroupWithPositionIndex) {
-  EXPECT_EQ((glm::ivec3{0, kInvalidFaceElementIndex, kInvalidFaceElementIndex}), ParseIndexGroup("1"));
+TEST(ObjLoaderTest, ParseFloatTokenReturnsTheCorrectValue) {  //
+  EXPECT_FLOAT_EQ(ParseToken<float>("3.14"), 3.14f);
 }
 
-TEST(ObjLoaderTest, TestParseIndexGroupWithPositionAndTextureCoordinatesIndices) {
-  EXPECT_EQ((glm::ivec3{0, 1, kInvalidFaceElementIndex}), ParseIndexGroup("1/2"));
+TEST(ObjLoaderTest, ParseEmptyLineThrowsAnException) {  //
+  EXPECT_THROW((ParseLine<float, 3>("")), std::invalid_argument);
 }
 
-TEST(ObjLoaderTest, TestParseIndexGroupWithPositionAndNormalIndices) {
-  EXPECT_EQ((glm::ivec3{0, kInvalidFaceElementIndex, 1}), ParseIndexGroup("1//2"));
+TEST(ObjLoaderTest, ParseLineWithInvalidSizeArgumentThrowsAnException) {
+  EXPECT_THROW((ParseLine<float, 2>("v 0.707 0.395 0.684")), std::invalid_argument);
 }
 
-TEST(ObjLoaderTest, TestParseIndexGroupWithPositionTextureCoordinateAndNormalIndices) {
-  EXPECT_EQ((glm::ivec3{0, 1, 2}), ParseIndexGroup("1/2/3"));
+TEST(ObjLoaderTest, ParseLineReturnsVectorWithCorrectValues) {
+  EXPECT_EQ((ParseLine<float, 3>("v 0.707 0.395 0.684")), (glm::vec3{.707f, .395f, .684f}));
 }
 
-TEST(ObjLoaderTest, TestParseInvalidIndexGroup) {
+TEST(ObjLoaderTest, ParseIndexGroupWithOnlyPositionIndexReturnsCorrectIndexGroup) {
+  EXPECT_EQ(ParseIndexGroup("1"), (glm::ivec3{0, kInvalidIndex, kInvalidIndex}));
+}
+
+TEST(ObjLoaderTest, ParseIndexGroupWithPositionAndTextureCoordinatesIndicesReturnsCorrectIndexGroup) {
+  EXPECT_EQ(ParseIndexGroup("1/2"), (glm::ivec3{0, 1, kInvalidIndex}));
+}
+
+TEST(ObjLoaderTest, ParseIndexGroupWithPositionAndNormalIndicesReturnsCorrectIndexGroup) {
+  EXPECT_EQ(ParseIndexGroup("1//2"), (glm::ivec3{0, kInvalidIndex, 1}));
+}
+
+TEST(ObjLoaderTest, ParseIndexGroupWithPositionTextureCoordinateAndNormalIndicesReturnsCorrectIndexGroup) {
+  EXPECT_EQ(ParseIndexGroup("1/2/3"), (glm::ivec3{0, 1, 2}));
+}
+
+TEST(ObjLoaderTest, ParseInvalidIndexGroupThrowsAnException) {
   EXPECT_THROW(ParseIndexGroup(""), std::invalid_argument);
   EXPECT_THROW(ParseIndexGroup("/"), std::invalid_argument);
   EXPECT_THROW(ParseIndexGroup("//"), std::invalid_argument);
@@ -89,77 +99,67 @@ TEST(ObjLoaderTest, TestParseInvalidIndexGroup) {
   EXPECT_THROW(ParseIndexGroup("/2/3"), std::invalid_argument);
 }
 
-TEST(ObjLoaderTest, TestParseFaceWithInvalidNumberOfIndexGroups) {
+TEST(ObjLoaderTest, ParseFaceWithInvalidNumberOfIndexGroupsThrowsAnException) {
+  EXPECT_THROW(ParseFace("f 1/2/3"), std::invalid_argument);
   EXPECT_THROW(ParseFace("f 1/2/3 4/5/6"), std::invalid_argument);
   EXPECT_THROW(ParseFace("f 1/2/3 4/5/6 7/8/9 10/11/12"), std::invalid_argument);
 }
 
-TEST(ObjLoaderTest, TestParseFaceWithThreeIndexGroups) {
-  EXPECT_EQ((std::array{glm::ivec3{0, 1, 2}, glm::ivec3{3, 4, 5}, glm::ivec3{6, 7, 8}}),
-            ParseFace("f 1/2/3 4/5/6 7/8/9"));
+TEST(ObjLoaderTest, ParseFaceReturnsCorrectIndexGroups) {
+  static constexpr std::array kIndexGroups{glm::ivec3{0, 1, 2}, glm::ivec3{3, 4, 5}, glm::ivec3{6, 7, 8}};
+  EXPECT_EQ(ParseFace("f 1/2/3 4/5/6 7/8/9"), kIndexGroups);
 }
 
-TEST(ObjLoaderTest, TestLoadMeshWithoutFaceIndices) {
+TEST(ObjLoaderTest, LoadIndexMeshGetsTheCorrectVerticesAndIndices) {
   // clang-format off
-  std::istringstream ss{R"(
-    # positions
-    v 0.0 0.1 0.2
-    v 1.0 1.1 1.2
-    v 2.0 2.1 2.2
-    # texture coordinates
-    vt 3.0 3.1
-    vt 4.0 4.1
-    vt 5.0 5.1
-    # normals
-    vn 6.0 6.1 6.2
-    vn 7.0 7.1 7.2
-    vn 8.0 8.1 8.2
-  )"};
+   std::istringstream istream{R"(
+     # positions
+     v 0.0 0.1 0.2
+     v 1.0 1.1 1.2
+     v 2.0 2.1 2.2
+     v 3.0 3.1 3.2
+     # texture coordinates
+     vt 4.0 4.1
+     vt 5.0 5.1
+     vt 6.0 6.1
+     vt 7.0 7.1
+     # normals
+     vn 1.0 0.0 0.0
+     vn 0.0 1.0 0.0
+     vn 0.0 0.0 1.0
+     # faces
+     f 1/4/2 2/1/3 3/2/1
+     f 1/2/2 2/1/3 4/3/1
+   )"};
   // clang-format on
 
-  const auto mesh = LoadMesh(ss);
-  static constexpr glm::vec3 kV0{0.0f, 0.1f, 0.2f}, kV1{1.0f, 1.1f, 1.2f}, kV2{2.0f, 2.1f, 2.2f};
-  static constexpr glm::vec2 kVt0{3.0f, 3.1f}, kVt1{4.0f, 4.1f}, kVt2{5.0f, 5.1f};
-  static constexpr glm::vec3 kVn0{6.0f, 6.1f, 6.2f}, kVn1{7.0f, 7.1f, 7.2f}, kVn2{8.0f, 8.1f, 8.2f};
+  static constexpr glm::vec3 kV1{0.0f, 0.1f, 0.2f};
+  static constexpr glm::vec3 kV2{1.0f, 1.1f, 1.2f};
+  static constexpr glm::vec3 kV3{2.0f, 2.1f, 2.2f};
+  static constexpr glm::vec3 kV4{3.0f, 3.1f, 3.2f};
 
-  EXPECT_EQ((std::vector{kV0, kV1, kV2}), mesh.positions());
-  EXPECT_EQ((std::vector{kVt0, kVt1, kVt2}), mesh.texcoords());
-  EXPECT_EQ((std::vector{kVn0, kVn1, kVn2}), mesh.normals());
-  EXPECT_TRUE(mesh.indices().empty());
-}
+  static constexpr glm::vec2 kVt1{4.0f, 4.1f};
+  static constexpr glm::vec2 kVt2{5.0f, 5.1f};
+  static constexpr glm::vec2 kVt3{6.0f, 6.1f};
+  static constexpr glm::vec2 kVt4{7.0f, 7.1f};
 
-TEST(ObjLoaderTest, TestLoadMeshWithFaceIndices) {
-  // clang-format off
-  std::istringstream ss{R"(
-    # positions
-    v 0.0 0.1 0.2
-    v 1.0 1.1 1.2
-    v 2.0 2.1 2.2
-    v 3.0 3.1 3.2
-    # texture coordinates
-    vt 4.0 4.1
-    vt 5.0 5.1
-    vt 6.0 6.1
-    vt 7.0 7.1
-    # normals
-    vn 8.0  8.1  8.2
-    vn 9.0  9.1  9.2
-    vn 10.0 10.1 10.2
-    # faces
-    f 1/4/2 2/1/3 3/2/1
-    f 1/2/2 2/1/3 4/3/1
-  )"};
-  // clang-format on
+  static constexpr glm::vec3 kVn1{1.0f, 0.0f, 0.0f};
+  static constexpr glm::vec3 kVn2{0.0f, 1.0f, 0.0f};
+  static constexpr glm::vec3 kVn3{0.0f, 0.0f, 1.0f};
 
-  const auto mesh = LoadMesh(ss);
-  static constexpr glm::vec3 kV0{0.0f, 0.1f, 0.2f}, kV1{1.0f, 1.1f, 1.2f}, kV2{2.0f, 2.1f, 2.2f}, kV3{3.0f, 3.1f, 3.2f};
-  static constexpr glm::vec2 kVt0{4.0f, 4.1f}, kVt1{5.0f, 5.1f}, kVt2{6.0f, 6.1f}, kVt3{7.0f, 7.1f};
-  static constexpr glm::vec3 kVn0{8.0f, 8.1f, 8.2f}, kVn1{9.0f, 9.1f, 9.2f}, kVn2{10.0f, 10.1f, 10.2f};
-
-  EXPECT_EQ((std::vector{kV0, kV1, kV2, kV0, kV3}), mesh.positions());
-  EXPECT_EQ((std::vector{kVt3, kVt0, kVt1, kVt1, kVt2}), mesh.texcoords());
-  EXPECT_EQ((std::vector{kVn1, kVn2, kVn0, kVn1, kVn0}), mesh.normals());
-  EXPECT_EQ((std::vector{0u, 1u, 2u, 3u, 1u, 4u}), mesh.indices());
+  const auto mesh = LoadMesh(gfx::test::Device::Get(), istream);
+  for (const auto& [actual_vertex, expected_vertex] :
+       std::views::zip(mesh.vertices(),
+                       std::vector{gfx::Mesh::Vertex{.position = kV1, .texture_coordinates = kVt4, .normal = kVn2},
+                                   gfx::Mesh::Vertex{.position = kV2, .texture_coordinates = kVt1, .normal = kVn3},
+                                   gfx::Mesh::Vertex{.position = kV3, .texture_coordinates = kVt2, .normal = kVn1},
+                                   gfx::Mesh::Vertex{.position = kV1, .texture_coordinates = kVt2, .normal = kVn2},
+                                   gfx::Mesh::Vertex{.position = kV4, .texture_coordinates = kVt3, .normal = kVn1}})) {
+    EXPECT_EQ(actual_vertex.position, expected_vertex.position);
+    EXPECT_EQ(actual_vertex.texture_coordinates, expected_vertex.texture_coordinates);
+    EXPECT_EQ(actual_vertex.normal, expected_vertex.normal);
+  }
+  EXPECT_EQ(mesh.indices(), (std::vector{0u, 1u, 2u, 3u, 1u, 4u}));
 }
 
 }  // namespace
